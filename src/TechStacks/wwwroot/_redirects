@@ -1,6 +1,6 @@
-/json/*        http://techstacks-api.web-app.io/json/:splat        200
-/auth/*        http://techstacks-api.web-app.io/auth/:splat        200
-/metadata/*    http://techstacks-api.web-app.io/metadata/:splat    200
-/ss_admin/*    http://techstacks-api.web-app.io/ss_admin/:splat    200
-/swagger-ui/*  http://techstacks-api.web-app.io/swagger-ui/:splat  200
-/*             /index.html                                         200
+/json/*        http://techstacks.netcore.io/json/:splat        200
+/auth/*        http://techstacks.netcore.io/auth/:splat        200
+/metadata/*    http://techstacks.netcore.io/metadata/:splat    200
+/ss_admin/*    http://techstacks.netcore.io/ss_admin/:splat    200
+/swagger-ui/*  http://techstacks.netcore.io/swagger-ui/:splat  200
+/*             /index.html                                     200
