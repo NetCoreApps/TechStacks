@@ -4,14 +4,12 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # Custom
-appsettings.Development.json
-appsettings.json
-
 dist/
-wwwroot/
+# wwwroot/
 coverage/
 node_modules
 .nuxt
+appsettings.*
 
 # User-specific files
 *.suo
