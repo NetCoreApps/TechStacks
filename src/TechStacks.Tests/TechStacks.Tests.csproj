@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TechStacks.ServiceInterface\TechStacks.ServiceInterface.csproj" />
+    <ProjectReference Include="..\TechStacks.ServiceModel\TechStacks.ServiceModel.csproj" />
+
+    <PackageReference Include="NUnit" Version="3.9.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.9.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="Npgsql" Version="3.2.6" />
+    <PackageReference Include="Microsoft.Data.SQLite" Version="2.0.0" />
+
+    <PackageReference Include="ServiceStack" Version="5.*" />
+    <PackageReference Include="ServiceStack.Server" Version="5.*" />
+    <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="5.*" />
+    <PackageReference Include="ServiceStack.OrmLite.Sqlite" Version="5.*" />
+    <PackageReference Include="ServiceStack.Kestrel" Version="5.*" />
+  </ItemGroup>
+
+</Project>
