@@ -5,7 +5,7 @@
 
 # Custom
 dist/
-wwwroot/
+# wwwroot/
 coverage/
 node_modules
 .nuxt
