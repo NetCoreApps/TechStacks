@@ -30,6 +30,12 @@ namespace TechStacks.ServiceModel.Types
         public string Details { get; set; }
 
         public DateTime? LastStatusUpdate { get; set; }
+
+        [Default(0)]
+        public int ViewCount { get; set; }
+
+        [Default(0)]
+        public int FavCount { get; set; }
     }
 
     public class TechnologyStack : TechnologyStackBase {}
@@ -90,6 +96,12 @@ namespace TechStacks.ServiceModel.Types
         public TechnologyTier Tier { get; set; }
 
         public DateTime? LastStatusUpdate { get; set; }
+
+        [Default(0)]
+        public int ViewCount { get; set; }
+
+        [Default(0)]
+        public int FavCount { get; set; }
     }
 
     public class Technology : TechnologyBase {}

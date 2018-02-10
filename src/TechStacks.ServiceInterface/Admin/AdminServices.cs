@@ -6,12 +6,25 @@ using System.Text;
 using System.Threading.Tasks;
 using ServiceStack;
 using ServiceStack.Configuration;
+using ServiceStack.DataAnnotations;
 using ServiceStack.OrmLite;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface.Admin
 {
+    [ExcludeMetadata]
+    [Route("/tasks/daily")]
+    public class DailyTasks : IReturn<DailyTasksResponse> {}
+
+    public class DailyTasksResponse
+    {
+        public int TechStackFavCountRowsUpdated { get; set; }
+        public int TechnologyFavCountRowsUpdated { get; set; }
+        public int TechStackViewCountRowsUpdated { get; set; }
+        public int TechnologyViewCountRowsUpdated { get; set; }
+    }
+
     [Authenticate]
     [RequiredRole("Admin")]
     public class AdminServices : Service
@@ -55,6 +68,28 @@ namespace TechStacks.ServiceInterface.Admin
             tech.IsLocked = request.IsLocked;
             Db.Save(tech);
             return new LockTechResponse();
+        }
+
+        public object Any(DailyTasks request)
+        {
+            return new DailyTasksResponse
+            {
+                TechStackFavCountRowsUpdated = Db.ExecuteSql(@"UPDATE technology_stack SET fav_count=fav.count 
+                    FROM (SELECT technology_stack_id, Count(*) AS Count FROM user_favorite_technology_stack GROUP BY technology_stack_id) as fav
+                    WHERE id = fav.technology_stack_id"),
+
+                TechnologyFavCountRowsUpdated = Db.ExecuteSql(@"UPDATE technology SET fav_count=fav.count 
+                    FROM (SELECT technology_id, Count(*) AS Count FROM user_favorite_technology GROUP BY technology_id) as fav
+                    WHERE id = fav.technology_id"),
+
+                TechStackViewCountRowsUpdated = Db.ExecuteSql(@"UPDATE technology_stack SET view_count=v.view_count
+                    FROM (SELECT ref_slug, view_count FROM page_stats WHERE ref_type='stack') AS v
+                    WHERE v.ref_slug = slug"),
+
+                TechnologyViewCountRowsUpdated = Db.ExecuteSql(@"UPDATE technology SET view_count=v.view_count
+                    FROM (SELECT ref_slug, view_count FROM page_stats WHERE ref_type='tech') AS v
+                    WHERE v.ref_slug = slug"),
+            };
         }
     }
 }
