@@ -91,7 +91,7 @@
                 ></v-text-field>
 
               <v-text-field
-                label="details (Markdown)"
+                label="details (markdown)"
                 v-model="details"
                 multi-line
                 :rows="20"
