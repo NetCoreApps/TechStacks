@@ -17,7 +17,8 @@
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "http://*:16325/"
             }
         },
         {
@@ -45,8 +46,9 @@
                 }
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            },
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "http://*:16325/"
+           },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             }

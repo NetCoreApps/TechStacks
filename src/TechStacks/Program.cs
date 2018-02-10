@@ -20,7 +20,6 @@ namespace TechStacks
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseUrls(Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ?? "http://*:16325/")
                 .Build();
     }
 }
