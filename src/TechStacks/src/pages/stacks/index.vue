@@ -43,7 +43,6 @@
                       <v-layout row wrap justify-space-between>
                         <v-flex xs4>
                           <v-select
-                            :disabled="!hasQuery"
                             label="Order By"
                             :items="orderBy"
                             v-model="orderByField"
@@ -52,7 +51,7 @@
 
                         <v-flex xs4>
                           <v-checkbox 
-                            :disabled="!orderByField"
+                            :disabled="!orderByField || orderByField[0] == '-'"
                             label="Descending"
                             v-model="sortDesc"
                           ></v-checkbox>                        
@@ -121,7 +120,7 @@ export default {
       return heroes.hourly(new Date(), 10);
     },
     hasQuery() {
-      return this.name || this.vendor;
+      return this.name || this.vendor || this.orderByField;
     },
     ...mapGetters(['loading','allTechStacks','allTechStacksTotal','isAuthenticated'])
   },
@@ -144,7 +143,7 @@ export default {
       if (this.vendor)
         q.vendorNameContains = this.vendor;
       if (this.orderByField) 
-        q.orderBy = (this.sortDesc ? '-' : '') + this.orderByField;
+        q.orderBy = (this.sortDesc && this.orderByField[0] != '-' ? '-' : '') + this.orderByField;
       return q;
     },
 
@@ -170,8 +169,10 @@ export default {
     const qs = this.$route.query;
     this.name = qs.nameContains;
     this.vendor = qs.vendorNameContains;
-    this.sortDesc = qs.orderBy && qs.orderBy[0] == '-';
-    this.orderByField = this.sortDesc ? qs.orderBy.substring(1) : qs.orderBy;
+
+    const orderItem = qs.orderBy && this.orderBy.filter(x => x.value.indexOf(qs.orderBy) >= 0)[0];
+    this.sortDesc = qs.orderBy && qs.orderBy[0] == '-' && (orderItem && orderItem.value[0] != '-');
+    this.orderByField = orderItem && orderItem.value;
 
     const setResults = () => {
       if (this.hasQuery) {
@@ -198,7 +199,13 @@ export default {
         vendor: '',
         orderByField: '',
         sortDesc: false,
-        orderBy: ['Name', 'VendorName', 'LastModified', 'Created'],
+        orderBy: [{text:'Most Views', value:'-ViewCount'}, 
+                  {text:'Most Favorited', value:'-FavCount'}, 
+                  {text:'Recently Updated', value:'-LastModified'}, 
+                  {text:'Name', value:'Name'}, 
+                  {text:'Vendor', value:'VendorName'}, 
+                  {text:'Modified', value:'LastModified'},
+                  {text:'Created', value:'Created'}],
         results: [],
         total: 0,
         querying: false,

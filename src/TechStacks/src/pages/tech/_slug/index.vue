@@ -93,7 +93,7 @@
                     </v-card-title>
                     <v-card-actions>
                       <v-flex>
-                        <v-btn to="/stacks/new" large primary>Add TechStack</v-btn>
+                        <v-btn :disabled="!isAuthenticated" to="/stacks/new" large primary>Add TechStack</v-btn>
                       </v-flex>
                     </v-card-actions>
                   </v-card>
