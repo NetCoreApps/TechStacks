@@ -69,7 +69,8 @@ namespace TechStacks
             JsConfig.DateHandler = DateHandler.ISO8601;
 
             container.Register<IDbConnectionFactory>(new OrmLiteConnectionFactory(
-                AppSettings.GetString("OrmLite.ConnectionString"), PostgreSqlDialect.Provider));
+                Environment.GetEnvironmentVariable("TECHSTACKS_DB") ?? AppSettings.GetString("OrmLite.ConnectionString"), 
+                PostgreSqlDialect.Provider));
 
             var dbFactory = container.Resolve<IDbConnectionFactory>();
 

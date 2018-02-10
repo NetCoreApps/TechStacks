@@ -9,7 +9,7 @@ dist/
 coverage/
 node_modules
 .nuxt
-appsettings.*
+appsettings.Production.*
 
 # User-specific files
 *.suo
