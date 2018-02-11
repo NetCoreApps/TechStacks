@@ -76,8 +76,8 @@
       <v-layout row wrap>
         <v-flex>
 
-              <v-toolbar color="green">
-                <v-toolbar-title class="headline white--text">Technologies used by {{ techstack.name }}</v-toolbar-title>
+              <v-toolbar>
+                <v-toolbar-title>Technologies used by {{ techstack.name }}</v-toolbar-title>
               </v-toolbar>
 
               <v-card>
