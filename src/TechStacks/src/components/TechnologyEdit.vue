@@ -72,11 +72,11 @@
               <v-text-field
                 label="Description"
                 v-model="description"
-                :counter="740"
+                :counter="descriptionCounter"
                 multi-line
                 :rows="6"
                 required                        
-                :rules="[v => !!v || 'Required', v => v.length >= 50 || 'Min 50 characters', v => v.length <= 740 || 'Max 740 characters']"
+                :rules="descriptionRules"
                 :error-messages="errorResponse('description')"
                 ></v-text-field>
 
@@ -128,7 +128,7 @@
 <script>
 import FileInput from "~/components/FileInput.vue";
 import { mapGetters } from "vuex";
-import { log, nameCounter, nameRules, urlCounter, urlRules } from "~/shared/utils";
+import { log, nameCounter, nameRules, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";
 import { toObject, errorResponse, dateFmtHM } from "@servicestack/client";
 import { createTechnology, updateTechnology, deleteTechnology, getTechnologyPreviousVersions } from "~/shared/gateway";
 
@@ -212,10 +212,9 @@ export default {
     valid: true,
     allowDelete: false,
     responseStatus: null,
-    nameCounter,
-    nameRules,
-    urlRules,
-    urlCounter,
+    nameCounter, nameRules,
+    urlCounter, urlRules, 
+    descriptionCounter, descriptionRules,
     previousVersions: [],
   })
 };

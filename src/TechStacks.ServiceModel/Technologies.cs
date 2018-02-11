@@ -38,7 +38,7 @@ namespace TechStacks.ServiceModel
 
         public long Id
         {
-            set { this.Slug = value.ToString(); }
+            set => Slug = value.ToString();
         }
 
         public string GetStatsId()
@@ -66,7 +66,7 @@ namespace TechStacks.ServiceModel
         [IgnoreDataMember]
         public long Id
         {
-            set { this.Slug = value.ToString(); }
+            set => Slug = value.ToString();
         }
     }
 

@@ -10,9 +10,28 @@ namespace TechStacks.ServiceInterface.Validations
         {
             RuleSet(ApplyTo.Post, () =>
             {
-                RuleFor(x => x.Name).NotEmpty();
-                //http://stackoverflow.com/a/3831442/670151
-                RuleFor(x => x.Name).Matches("(?!^\\d+$)^.+$");
+                RuleFor(x => x.Name)
+                    .NotEmpty()
+                    .Length(1, 50)
+                    .Matches(ValidatorUtils.NotOnlyNumbersPattern)
+                    .WithMessage(ValidatorUtils.InvalidName);
+
+                RuleFor(x => x.VendorName)
+                    .NotEmpty()
+                    .Length(1, 50);
+
+                RuleFor(x => x.AppUrl)
+                    .NotEmpty()
+                    .Length(1, 200)
+                    .Must(ValidatorUtils.IsValidUrl)
+                    .WithMessage(ValidatorUtils.InvalidUrl);
+
+                RuleFor(x => x.Description)
+                    .NotEmpty()
+                    .Length(50, 740);
+
+                RuleFor(x => x.Details)
+                    .Length(0, 4000);
             });
         }
     }

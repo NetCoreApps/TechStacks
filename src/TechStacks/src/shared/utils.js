@@ -20,3 +20,9 @@ export const urlRules = [
   v => (v && v.indexOf('://') >= 0)  || 'Invalid URL'
 ];
 
+export const descriptionCounter = 740;
+export const descriptionRules = [
+  v => !!v || 'Required', 
+  v => v.length >= 50 || 'Min 50 characters', 
+  v => v.length <= 740 || 'Max 740 characters'
+];
