@@ -91,7 +91,7 @@
 
     <v-container v-if="!loading" class="body" grid-list-md>
       <v-layout row>
-        <v-flex>
+        <v-flex v-if="results.length > 0">
 
               <v-card>
                 <v-data-table
@@ -113,14 +113,14 @@
                     </tr>
                   </template>
 
-                  <template slot="no-data">
-                    <v-alert v-if="!querying" :value="true" color="info" icon="info">
-                      No results matched your query
-                    </v-alert>
-                  </template>
                 </v-data-table>
               </v-card>
 
+        </v-flex>
+        <v-flex v-else-if="!loading">
+          <v-alert outline v-if="!querying" :value="true" color="info" icon="info">
+            No results matched your query
+          </v-alert>          
         </v-flex>
       </v-layout>
     </v-container>

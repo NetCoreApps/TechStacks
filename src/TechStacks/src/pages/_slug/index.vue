@@ -75,6 +75,7 @@
     <v-container v-if="techstack" class="body" grid-list-md>
       <v-layout row wrap>
         <v-flex>
+          <TechnologyPost type="Announcement" :techstack="techstack" @organizationCreated="loadTechStack" style="margin-bottom:1em" />
 
               <v-toolbar>
                 <v-toolbar-title>Technologies used by {{ techstack.name }}</v-toolbar-title>
@@ -112,22 +113,30 @@
       <v-container id="stack-details" class="body" grid-list-md style="padding-bottom:2em">
         <v-card>
           <v-card-title>
-            <div class="details-html" v-html="techstack.detailsHtml" style="padding:2em"></div>
+            <div class="details-html" v-html="techstack.detailsHtml" style="padding:1em"></div>
           </v-card-title>
         </v-card>
       </v-container>
     </section>
+
+    <v-container v-if="techstack" class="body" grid-list-md>
+      <TechnologyComments :techstack="techstack" @organizationCreated="loadTechStack" />
+    </v-container>
     
   </div>
 </template>
 
 <script>
+import TechnologyPost from "~/components/TechnologyPost.vue";
+import TechnologyComments from "~/components/TechnologyComments.vue";
+
 import { mapGetters } from 'vuex';
 import { dateFmt } from '@servicestack/client';
 import { heroes } from "@servicestack/images";
 import { log } from '~/store';
 
 export default {
+  components: { TechnologyPost, TechnologyComments },
   computed: {
     slug() {
       return this.$route.params.slug;
@@ -161,7 +170,9 @@ export default {
   },
 
   methods: {
-    dateFmt,
+    async loadTechStack(){
+      await this.$store.dispatch("loadTechnologyStack", this.slug);
+    },
     refreshPageStats() {
       this.$store.dispatch("getPageStats", { type: "stack", slug: this.slug, id:this.techstack && this.techstack.id });
     },
@@ -175,10 +186,12 @@ export default {
       await this.$store.dispatch('removeFavorite', { type:'stack', id:this.techstack.id });
       this.refreshPageStats();
     },
+
+    dateFmt,
   },
   
   async mounted() {
-    await this.$store.dispatch("getTechnologyStack", this.slug);
+    await this.loadTechStack();
     this.refreshPageStats();
   }
 };

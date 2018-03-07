@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ServiceStack.Interfaces" Version="5.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Types\" />
+    <PackageReference Include="ServiceStack.Interfaces" Version="5.0.3" />
   </ItemGroup>
 
 </Project>

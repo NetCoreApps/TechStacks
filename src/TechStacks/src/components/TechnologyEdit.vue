@@ -27,7 +27,7 @@
           <v-card-title primary-title>
             <v-form v-model="valid" ref="form" lazy-validation style="width:100%">
             <v-container>
-              <v-alert outline color="error" icon="warning" :value="errorResponse()">{{ errorResponse() }}</v-alert>                  
+              <v-alert outline color="error" icon="warning" :value="errorSummary">{{ errorSummary }}</v-alert>                  
               <v-layout>
                 <v-flex xs6>
                     <v-text-field
@@ -37,6 +37,16 @@
                         :rules="nameRules"
                         :counter="nameCounter"
                         :error-messages="errorResponse('name')"
+                        ></v-text-field>
+
+                    <v-text-field
+                        :disabled="isUpdate"
+                        label="Slug"
+                        v-model="slug"
+                        required
+                        :rules="slugRules"
+                        :counter="slugCounter"
+                        :error-messages="errorResponse('slug')"
                         ></v-text-field>
 
                     <v-text-field
@@ -53,6 +63,7 @@
                         :items="allTiers"
                         item-text="title"
                         item-value="name"
+                        autocomplete
                         v-model="tier"
                         required                        
                         :rules="[v => !!v || 'Required']"
@@ -128,12 +139,13 @@
 <script>
 import FileInput from "~/components/FileInput.vue";
 import { mapGetters } from "vuex";
-import { log, nameCounter, nameRules, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";
-import { toObject, errorResponse, dateFmtHM } from "@servicestack/client";
+import { log, nameCounter, nameRules, slugCounter, slugRules, toSlug, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";
+import { toObject, errorResponse, errorResponseExcept, dateFmtHM } from "@servicestack/client";
 import { createTechnology, updateTechnology, deleteTechnology, getTechnologyPreviousVersions } from "~/shared/gateway";
 
 const technology = {
     name: "",
+    slug: "",
     vendorName: "",
     tier: "",
     description: "",
@@ -148,7 +160,21 @@ const technology = {
 export default {
   props: ['technology'],
   components: { FileInput },
-  computed: mapGetters(["loading", "isAuthenticated", "allTiers"]),
+  computed: {
+      isUpdate() { 
+          return this.technology != null;
+      },
+      errorSummary() {
+          return errorResponseExcept.call(this, Object.keys(technology));
+      },
+      ...mapGetters(["loading", "isAuthenticated", "allTiers"])
+  },
+
+  watch: {
+    name(name) {
+      this.slug = toSlug(name);
+    }
+  },
 
   methods: {
     onFileChange(imgFile) {
@@ -213,16 +239,10 @@ export default {
     allowDelete: false,
     responseStatus: null,
     nameCounter, nameRules,
+    slugCounter, slugRules,
     urlCounter, urlRules, 
     descriptionCounter, descriptionRules,
     previousVersions: [],
   })
 };
 </script>
-
-<style>
-.image-upload IMG {
-  max-width: 300px;
-  max-height: 150px;
-}
-</style>

@@ -10,25 +10,11 @@ namespace TechStacks.ServiceInterface.Validations
         {
             RuleSet(ApplyTo.Post, () =>
             {
-                RuleFor(x => x.Name)
-                    .NotEmpty()
-                    .Length(1, 50)
-                    .Matches(ValidatorUtils.NotOnlyNumbersPattern)
-                    .WithMessage(ValidatorUtils.InvalidName);
-
-                RuleFor(x => x.VendorName)
-                    .NotEmpty()
-                    .Length(1, 50);
-
-                RuleFor(x => x.ProductUrl)
-                    .NotEmpty()
-                    .Length(1, 200)
-                    .Must(ValidatorUtils.IsValidUrl)
-                    .WithMessage(ValidatorUtils.InvalidUrl);
-
-                RuleFor(x => x.Description)
-                    .NotEmpty()
-                    .Length(50, 740);
+                RuleFor(x => x.Name).RequiredName();
+                RuleFor(x => x.Slug).RequiredSlug();
+                RuleFor(x => x.VendorName).RequiredName();
+                RuleFor(x => x.ProductUrl).RequiredUrl();
+                RuleFor(x => x.Description).RequiredDescription();
             });
         }
     }
@@ -39,28 +25,11 @@ namespace TechStacks.ServiceInterface.Validations
         {
             RuleSet(ApplyTo.Put, () =>
             {
-                RuleFor(x => x.Id)
-                    .GreaterThan(0);
-
-                RuleFor(x => x.Name)
-                    .NotEmpty()
-                    .Length(1, 50)
-                    .Matches(ValidatorUtils.NotOnlyNumbersPattern)
-                    .WithMessage(ValidatorUtils.InvalidName);
-
-                RuleFor(x => x.VendorName)
-                    .NotEmpty()
-                    .Length(1, 50);
-
-                RuleFor(x => x.ProductUrl)
-                    .NotEmpty()
-                    .Length(1, 200)
-                    .Must(ValidatorUtils.IsValidUrl)
-                    .WithMessage(ValidatorUtils.InvalidUrl);
-
-                RuleFor(x => x.Description)
-                    .NotEmpty()
-                    .Length(50, 740);
+                RuleFor(x => x.Id).GreaterThan(0);
+                RuleFor(x => x.Name).RequiredName();
+                RuleFor(x => x.VendorName).RequiredName();
+                RuleFor(x => x.ProductUrl).RequiredUrl();
+                RuleFor(x => x.Description).RequiredDescription();
             });
         }
     }

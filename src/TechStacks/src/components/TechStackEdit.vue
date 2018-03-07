@@ -27,7 +27,7 @@
           <v-card-title primary-title>
             <v-form v-model="valid" ref="form" lazy-validation style="width:100%">
             <v-container>
-              <v-alert outline color="error" icon="warning" :value="errorResponse()">{{ errorResponse() }}</v-alert>                  
+              <v-alert outline color="error" icon="warning" :value="errorSummary">{{ errorSummary }}</v-alert>                  
               <v-layout>
                 <v-flex xs6>
                     <v-text-field
@@ -40,21 +40,22 @@
                         ></v-text-field>
 
                     <v-text-field
+                        :disabled="isUpdate"
+                        label="Slug"
+                        v-model="slug"
+                        required
+                        :rules="slugRules"
+                        :counter="slugCounter"
+                        :error-messages="errorResponse('slug')"
+                        ></v-text-field>
+
+                    <v-text-field
                         label="Vendor Name"
                         v-model="vendorName"
                         required                        
                         :rules="nameRules"
                         :counter="nameCounter"
                         :error-messages="errorResponse('vendorName')"
-                        ></v-text-field>
-
-                    <v-text-field
-                        label="App URL"
-                        v-model="appUrl"
-                        required                        
-                        :rules="urlRules"
-                        :counter="urlCounter"
-                        :error-messages="errorResponse('appUrl')"
                         ></v-text-field>
                 </v-flex>
 
@@ -66,6 +67,15 @@
                   <file-input :value="screenshotUrl" accept="image/*" @input="onFileChange" ref="fileScreenshot" selectLabel="Add Screenshot"></file-input>
                 </v-flex>
               </v-layout>
+
+            <v-text-field
+                label="App URL"
+                v-model="appUrl"
+                required                        
+                :rules="urlRules"
+                :counter="urlCounter"
+                :error-messages="errorResponse('appUrl')"
+                ></v-text-field>
 
               <v-select
                 label="Select Technologies"
@@ -95,8 +105,8 @@
                 v-model="details"
                 multi-line
                 :rows="20"
-                :counter="4000"
-                :rules="[v => v.length <= 4000 || 'Max 4000 characters']"
+                :counter="8000"
+                :rules="[v => v.length <= 8000 || 'Max 8000 characters']"
                 :error-messages="errorResponse('details')"
                 ></v-text-field>
 
@@ -132,30 +142,43 @@
 <script>
 import FileInput from "~/components/FileInput.vue";
 import { mapGetters } from "vuex";
-import { log, nameCounter, nameRules, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";
-import { toObject, errorResponse, dateFmtHM } from "@servicestack/client";
-import { createTechStack, updateTechStack, deleteTechStack, getTechnologySelectItems, getTechStackPreviousVersions } from "~/shared/gateway";
+import { log, nameCounter, nameRules, slugCounter, slugRules, toSlug, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";
+import { toObject, errorResponse, errorResponseExcept, dateFmtHM } from "@servicestack/client";
+import { createTechStack, updateTechStack, deleteTechStack, getTechStackPreviousVersions } from "~/shared/gateway";
 
 const techstack = {
-    name: "",
-    vendorName: "",
-    appUrl: "",
-    description: "",
-    details: "",
-    isLocked: false,
-    screenshot: null,
-    screenshotUrl: "",
-    technologyIds: [],
+  name: "",
+  slug: "",
+  vendorName: "",
+  appUrl: "",
+  description: "",
+  details: "",
+  isLocked: false,
+  screenshot: null,
+  screenshotUrl: "",
+  technologyIds: [],
 };
 
 export default {
   props: ['techstack'],
   components: { FileInput },
   computed: { 
+    isUpdate() { 
+      return this.techstack != null;
+    },
+    errorSummary() {
+      return errorResponseExcept.call(this, Object.keys(techstack));
+    },
     canChange(){
       return !this.techstack || this.user.userAuthId == this.techstack.ownerId || this.isAdmin;
     },
     ...mapGetters(["loading", "isAuthenticated", "user", "isAdmin"])
+  },
+
+  watch: {
+    name(name) {
+      this.slug = toSlug(name);
+    }
   },
 
   methods: {
@@ -212,7 +235,7 @@ export default {
         this.technologyIds = (this.techstack.technologyChoices || []).map(x => x.technologyId);
         this.previousVersions = await getTechStackPreviousVersions(this.techstack.slug);
       }
-      this.technologySelectItems = await getTechnologySelectItems();
+      this.$store.dispatch('loadTechnologyTiers');
   },
   
   data: () => ({
@@ -223,6 +246,7 @@ export default {
     allowDelete: false,
     responseStatus: null,
     nameCounter, nameRules,
+    slugCounter, slugRules, 
     urlCounter, urlRules, 
     descriptionCounter, descriptionRules,
     technologySelectItems: [],
@@ -230,10 +254,3 @@ export default {
   })
 };
 </script>
-
-<style>
-.image-upload IMG {
-  max-width: 300px;
-  max-height: 150px;
-}
-</style>

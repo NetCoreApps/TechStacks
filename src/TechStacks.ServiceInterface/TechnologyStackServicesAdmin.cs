@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ServiceStack;
 using ServiceStack.Configuration;
 using ServiceStack.OrmLite;
@@ -14,6 +15,8 @@ namespace TechStacks.ServiceInterface
     public class TechnologyStackServicesAdmin : Service
     {
         public IAppSettings AppSettings { get; set; }
+
+        public IMarkdownProvider Markdown { get; set; }
 
         public TwitterUpdates TwitterUpdates { get; set; }
 
@@ -38,10 +41,10 @@ namespace TechStacks.ServiceInterface
             return TwitterUpdates.Tweet(sb.ToString());
         }
 
-        public object Post(CreateTechnologyStack request)
+        public async Task<CreateTechnologyStackResponse> Post(CreateTechnologyStack request)
         {
-            var slug = request.Name.GenerateSlug();
-            var existingStack = Db.Single<TechnologyStack>(q => q.Name == request.Name || q.Slug == slug);
+            var slug = request.Slug;
+            var existingStack = await Db.SingleAsync<TechnologyStack>(q => q.Name == request.Name || q.Slug == slug);
             if (existingStack != null)
                 throw new ArgumentException($"'{slug}' already exists");
 
@@ -59,6 +62,7 @@ namespace TechStacks.ServiceInterface
             techStack.Created = DateTime.UtcNow;
             techStack.LastModified = techStack.Created;
             techStack.Slug = slug;
+            techStack.DetailsHtml = await Markdown.TransformAsync(request.Details, UserCache.GetGitHubToken(session.GetUserId()));
 
             if (string.IsNullOrEmpty(techStack.ScreenshotUrl) && Request.Files.Length > 0)
             {
@@ -79,7 +83,7 @@ namespace TechStacks.ServiceInterface
             long id;
             using (var trans = Db.OpenTransaction())
             {
-                id = Db.Insert(techStack, selectIdentity: true);
+                id = await Db.InsertAsync(techStack, selectIdentity: true);
 
                 if (techIds.Count > 0)
                 {
@@ -92,18 +96,24 @@ namespace TechStacks.ServiceInterface
                         OwnerId = techStack.OwnerId,
                     });
 
-                    Db.InsertAll(techChoices);
+                    await Db.InsertAllAsync(techChoices);
                 }
 
                 trans.Commit();
             }
 
-            var createdTechStack = Db.SingleById<TechnologyStack>(id);
+            var createdTechStack = await Db.SingleByIdAsync<TechnologyStack>(id);
             var history = createdTechStack.ConvertTo<TechnologyStackHistory>();
             history.TechnologyStackId = id;
             history.Operation = "INSERT";
             history.TechnologyIds = techIds.ToList();
-            Db.Insert(history);
+            await Db.InsertAsync(history);
+
+            await Db.ExecuteSqlAsync(
+                @"update user_activity set 
+                         technology_stack_count = (select count(*) from technology_stack where owner_id = @userIdStr)
+                   where id = @userId",
+                new { userId = session.GetUserId(), userIdStr = session.UserAuthId });
 
             Cache.FlushAll();
 
@@ -111,7 +121,7 @@ namespace TechStacks.ServiceInterface
             {
                 var url = new ClientTechnologyStack { Slug = techStack.Slug }.ToAbsoluteUri();
                 PostTwitterUpdate(
-                    "{0}'s Stack! {1} ".Fmt(techStack.Name, url),
+                    $"{techStack.Name}'s Stack! {url} ",
                     request.TechnologyIds,
                     maxLength: 140 - (TweetUrlLength - url.Length));
             }
@@ -122,9 +132,9 @@ namespace TechStacks.ServiceInterface
             };
         }
 
-        public object Put(UpdateTechnologyStack request)
+        public async Task<UpdateTechnologyStackResponse> Put(UpdateTechnologyStack request)
         {
-            var techStack = Db.SingleById<TechnologyStack>(request.Id);
+            var techStack = await Db.SingleByIdAsync<TechnologyStack>(request.Id);
             if (techStack == null)
                 throw HttpError.NotFound("Tech stack not found");
 
@@ -150,6 +160,11 @@ namespace TechStacks.ServiceInterface
                 && techStack.LastStatusUpdate.GetValueOrDefault(DateTime.MinValue) < DateTime.UtcNow.Date
                 && techIds.Count >= 4;
 
+            if (techStack.Details != request.Details)
+            {
+                techStack.DetailsHtml = await Markdown.TransformAsync(request.Details, UserCache.GetGitHubToken(session.GetUserId()));
+            }
+
             techStack.PopulateWith(request);
             techStack.LastModified = DateTime.UtcNow;
             techStack.LastModifiedBy = session.UserName;
@@ -168,9 +183,9 @@ namespace TechStacks.ServiceInterface
 
             using (var trans = Db.OpenTransaction())
             {
-                Db.Save(techStack);
+                await Db.SaveAsync(techStack);
 
-                var existingTechChoices = Db.Select<TechnologyChoice>(q => q.TechnologyStackId == request.Id);
+                var existingTechChoices = await Db.SelectAsync<TechnologyChoice>(q => q.TechnologyStackId == request.Id);
                 var techIdsToAdd = techIds.Except(existingTechChoices.Select(x => x.TechnologyId)).ToHashSet();
                 var techChoices = techIdsToAdd.Map(x => new TechnologyChoice
                 {
@@ -185,9 +200,9 @@ namespace TechStacks.ServiceInterface
                 if (techIds.Count > 0)
                     unusedTechChoices.And(x => !techIds.Contains(x.TechnologyId));
 
-                Db.Delete(unusedTechChoices);
+                await Db.DeleteAsync(unusedTechChoices);
 
-                Db.InsertAll(techChoices);
+                await Db.InsertAllAsync(techChoices);
 
                 trans.Commit();
             }
@@ -196,7 +211,7 @@ namespace TechStacks.ServiceInterface
             history.TechnologyStackId = techStack.Id;
             history.Operation = "UPDATE";
             history.TechnologyIds = techIds.ToList();
-            Db.Insert(history);
+            await Db.InsertAsync(history);
 
             Cache.FlushAll();
 
@@ -211,7 +226,7 @@ namespace TechStacks.ServiceInterface
                 response.ResponseStatus = new ResponseStatus
                 {
                     Message = PostTwitterUpdate(
-                        "{0}'s Stack! {1} ".Fmt(techStack.Name, url),
+                        $"{techStack.Name}'s Stack! {url} ",
                         request.TechnologyIds,
                         maxLength: 140 - (TweetUrlLength - url.Length))
                 };

@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Linq;
 using ServiceStack;
 using ServiceStack.Web;
 using ServiceStack.Data;
@@ -26,6 +27,11 @@ namespace TechStacks.ServiceInterface
             return result;
         }
 
+        private static readonly Regex InvalidCharsRegex = new Regex(@"[^a-z0-9\s-]", RegexOptions.Compiled);
+        private static readonly Regex CollapseSpacesRegex = new Regex(@"\s+", RegexOptions.Compiled);
+        private static readonly Regex SpacesRegex = new Regex(@"\s", RegexOptions.Compiled);
+        private static readonly Regex CollapseHyphensRegex = new Regex("-+", RegexOptions.Compiled);
+
         /// <summary>
         /// From http://stackoverflow.com/a/2921135/670151
         /// </summary>
@@ -33,17 +39,26 @@ namespace TechStacks.ServiceInterface
         /// <returns></returns>
         public static string GenerateSlug(this string phrase)
         {
-            string str = phrase.RemoveAccent().ToLower()
+            var str = phrase.RemoveAccent().ToLower()
                 .Replace("#", "sharp")  // c#, f# => csharp, fsharp
-                .Replace("+", "p");      // c++ => cpp
+                .Replace("++", "pp");   // c++ => cpp
 
-            // invalid chars           
-            str = Regex.Replace(str, @"[^a-z0-9\s-]", "-");
-            // convert multiple spaces into one space   
-            str = Regex.Replace(str, @"\s+", " ").Trim();
+            str = InvalidCharsRegex.Replace(str, "-");
+            //// convert multiple spaces into one space   
+            //str = CollapseSpacesRegex.Replace(str, " ").Trim();
             // cut and trim 
-            str = str.Substring(0, str.Length <= 45 ? str.Length : 45).Trim();
-            str = Regex.Replace(str, @"\s", "-"); // hyphens   
+            str = str.Substring(0, str.Length <= 100 ? str.Length : 100).Trim();
+            str = SpacesRegex.Replace(str, "-");
+            str = CollapseHyphensRegex.Replace(str, "-");
+
+            if (string.IsNullOrEmpty(str))
+                return null;
+
+            if (str[0] == '-')
+                str = str.Substring(1);
+            if (str[str.Length - 1] == '-')
+                str = str.Substring(0, str.Length - 1);
+
             return str;
         }
 

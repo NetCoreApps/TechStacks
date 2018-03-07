@@ -9,7 +9,7 @@ namespace TechStacks.ServiceModel
     [QueryDb(QueryTerm.Or)]
     [Route("/techstacks/search")]
     [AutoQueryViewer(
-        Title = "Find Technology Stacks", Description = "Explore different Technology Stacks", 
+        Title = "Find Technology Stacks", Description = "Explore different Technology Stacks",
         IconUrl = "material-icons:cloud",
         DefaultSearchField = "Description", DefaultSearchType = "Contains", DefaultSearchText = "ServiceStack")]
     public class FindTechStacks : QueryDb<TechnologyStack>
@@ -18,7 +18,9 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/techstacks/query")]
-    public class QueryTechStacks : QueryDb<TechnologyStack> {}
+    public class QueryTechStacks : QueryDb<TechnologyStack>
+    {
+    }
 
     [Route("/techstacks/{Slug}", Verbs = "GET")]
     public class GetTechnologyStack : IReturn<GetTechnologyStackResponse>, IRegisterStats
@@ -28,13 +30,10 @@ namespace TechStacks.ServiceModel
         [IgnoreDataMember]
         public long Id
         {
-            set { this.Slug = value.ToString(); }
+            set => Slug = value.ToString();
         }
 
-        public string GetStatsId()
-        {
-            return "/stack/" + Slug;
-        }
+        public string GetStatsId() => "/stack/" + Slug;
     }
 
     public class GetTechnologyStackResponse
@@ -54,7 +53,7 @@ namespace TechStacks.ServiceModel
         [IgnoreDataMember]
         public long Id
         {
-            set { this.Slug = value.ToString(); }
+            set => Slug = value.ToString();
         }
     }
 
@@ -67,6 +66,7 @@ namespace TechStacks.ServiceModel
     public class CreateTechnologyStack : IReturn<CreateTechnologyStackResponse>
     {
         public string Name { get; set; }
+        public string Slug { get; set; }
         public string VendorName { get; set; }
         public string AppUrl { get; set; }
         public string ScreenshotUrl { get; set; }
@@ -97,7 +97,7 @@ namespace TechStacks.ServiceModel
         public string Details { get; set; }
         public bool IsLocked { get; set; }
 
-        public List<long> TechnologyIds { get; set; } 
+        public List<long> TechnologyIds { get; set; }
     }
 
     public class UpdateTechnologyStackResponse
@@ -121,7 +121,9 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/techstacks", Verbs = "GET")]
-    public class GetAllTechnologyStacks : IReturn<GetAllTechnologyStacksResponse> {}
+    public class GetAllTechnologyStacks : IReturn<GetAllTechnologyStacksResponse>
+    {
+    }
 
     public class GetAllTechnologyStacksResponse
     {
@@ -143,7 +145,6 @@ namespace TechStacks.ServiceModel
 
     public class TechStackDetails : TechnologyStackBase
     {
-        public string DetailsHtml { get; set; }
         public List<TechnologyInStack> TechnologyChoices { get; set; }
     }
 
@@ -157,10 +158,14 @@ namespace TechStacks.ServiceModel
     public class GetConfigResponse
     {
         public List<Option> AllTiers { get; set; }
+        public List<Option> AllPostTypes { get; set; }
+        public List<Option> AllFlagTypes { get; set; }
     }
 
     [Route("/config")]
-    public class GetConfig : IReturn<GetConfigResponse> { }
+    public class GetConfig : IReturn<GetConfigResponse>
+    {
+    }
 
     [Route("/overview")]
     public class Overview : IReturn<OverviewResponse>
@@ -173,6 +178,7 @@ namespace TechStacks.ServiceModel
     {
         public bool Reload { get; set; }
     }
+
     public class AppOverviewResponse
     {
         public DateTime Created { get; set; }
@@ -202,6 +208,7 @@ namespace TechStacks.ServiceModel
         public List<TechnologyInfo> TopTechnologies { get; set; }
         public List<TechStackDetails> LatestTechStacks { get; set; }
         public List<TechnologyStack> PopularTechStacks { get; set; }
+        public List<OrganizationInfo> AllOrganizations { get; set; }
 
         public Dictionary<string, List<TechnologyInfo>> TopTechnologiesByTier { get; set; }
 
@@ -222,5 +229,26 @@ namespace TechStacks.ServiceModel
         public string Name { get; set; }
         public string LogoUrl { get; set; }
         public int StacksCount { get; set; }
+    }
+
+    public class OrganizationInfo
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Slug { get; set; }
+        public long? RefId { get; set; }
+        public string RefSource { get; set; }
+        public long? UpVotes { get; set; }
+        public long? DownVotes { get; set; }
+        public string[] PostTypes { get; set; }
+        public string[] ModeratorPostTypes { get; set; }
+        public List<CategoryInfo> Categories { get; set; }
+    }
+
+    public class CategoryInfo
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Slug { get; set; }
     }
 }

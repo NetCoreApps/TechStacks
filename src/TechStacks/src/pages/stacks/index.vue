@@ -84,7 +84,7 @@
 
     <v-container v-if="!loading" class="body" grid-list-md>
       <v-layout class="body" fluid>
-        <v-flex xs12 sm12>
+        <v-flex v-if="results.length > 0" xs12 sm12>
           <v-card>
             <v-container fluid grid-list-md>
               <v-layout row wrap>
@@ -101,6 +101,11 @@
               </v-layout>
             </v-container>
           </v-card>
+        </v-flex>
+        <v-flex v-else-if="!loading">
+          <v-alert outline v-if="!querying" :value="true" color="info" icon="info">
+            No results matched your query
+          </v-alert>
         </v-flex>
       </v-layout>
     </v-container>

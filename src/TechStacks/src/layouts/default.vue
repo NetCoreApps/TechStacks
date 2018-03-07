@@ -11,9 +11,10 @@
 
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn flat to="/" exact><v-icon>home</v-icon></v-btn>
+        <v-btn flat to="/news">News</v-btn>
         <v-btn flat to="/stacks">Stacks</v-btn>
         <v-btn flat to="/tech">Technologies</v-btn>
-        <v-btn v-if="isAuthenticated" flat to="/favorites" exact>Favorites</v-btn>
+        <v-btn v-if="isAuthenticated" flat to="/favorites">Favorites</v-btn>
         <v-btn v-if="!isAuthenticated" @click="href(`/auth/twitter`)">
           <img src="../static/img/twitter.svg" width="50" height="50" style="backgroundd:#333" />
         </v-btn>
@@ -78,12 +79,6 @@ export default {
         clipped: true,
         drawer: false,
         fixed: true,
-        items: [
-          { icon: 'home', title: 'Home', to: '/' },
-          { icon: 'dns', title: 'Stacks', to: '/stacks' },
-          { icon: 'code', title: 'Technologies', to: '/tech' },
-          { icon: 'star_border', title: 'Favorites', to: '/favorites' },
-        ],
         title: 'TechStacks'
       }
     }

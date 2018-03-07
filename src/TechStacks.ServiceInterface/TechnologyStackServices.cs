@@ -15,8 +15,7 @@ namespace TechStacks.ServiceInterface
             if (request.Slug == null)
                 throw new ArgumentNullException("Slug");
 
-            long id;
-            if (!long.TryParse(request.Slug, out id))
+            if (!long.TryParse(request.Slug, out var id))
             {
                 var techStack = Db.Single<TechnologyStack>(x => x.Slug == request.Slug.ToLower());
                 id = techStack.Id;
@@ -47,6 +46,16 @@ namespace TechStacks.ServiceInterface
             };
         }
 
+        public object Any(ClearCache request)
+        {
+            Cache.FlushAll();
+            PostServicesBase.PeriodicUpdateTableCaches(Db);
+            PostServicesBase.ClearOrganizationCache();
+            Cache.FlushAll();
+
+            return "OK";
+        }
+
         public object Any(HourlyTask request)
         {
             if (!request.Force)
@@ -69,6 +78,10 @@ namespace TechStacks.ServiceInterface
                     new { refId = stackFav.Key, favCount = stackFav.Value });
             }
 
+            PostServicesBase.PeriodicUpdateTableCaches(Db);
+
+            Any(new ClearCache());
+            
             return new HourlyTaskResponse
             {
                 Meta = new Dictionary<string, string>
@@ -122,6 +135,26 @@ namespace TechStacks.ServiceInterface
                     list.RemoveRange(5, list.Count - 5);
             }
 
+            var allOrgs = Db.Select<OrganizationInfo>(Db.From<Organization>()
+                .Where(g => g.Deleted == null));
+
+            var allOrgsMap = allOrgs.ToDictionary(x => x.Id);
+
+            var orgCategories = Db.Select<Category>(x => x.Deleted == null);
+            foreach (var category in orgCategories)
+            {
+                if (allOrgsMap.TryGetValue(category.OrganizationId, out var org))
+                {
+                    (org.Categories ?? (org.Categories = new List<CategoryInfo>()))
+                        .Add(category.ConvertTo<CategoryInfo>());
+                }
+            }
+
+            foreach (var entry in allOrgsMap)
+            {
+                entry.Value.Categories?.Sort((x,y) => string.Compare(x.Name, y.Name, StringComparison.Ordinal));
+            }
+
             var response = new OverviewResponse
             {
                 Created = DateTime.UtcNow,
@@ -130,15 +163,15 @@ namespace TechStacks.ServiceInterface
 
                 TopUsers = Db.Select<UserInfo>(
                     @"select u.user_name as UserName, u.default_profile_url as AvatarUrl, COUNT(*) as StacksCount
-                          from technology_stack ts
-	                          left join
-	                          user_favorite_technology_stack uf on (ts.id = uf.technology_stack_id)
-	                          left join
-	                          custom_user_auth u on (u.id = ts.owner_id::integer)
-                          group by u.user_name, u.default_profile_url
-                          having count(*) > 0
-                          order by StacksCount desc
-                          limit 20"),
+                        from technology_stack ts
+                             left join
+	                           user_favorite_technology_stack uf on (ts.id = uf.technology_stack_id)
+	                           left join
+	                           custom_user_auth u on (u.id = ts.owner_id::integer)
+                       group by u.user_name, u.default_profile_url
+                      having count(*) > 0
+                       order by StacksCount desc
+                       limit 20"),
 
                 TopTechnologies = topTechByCategory
                     .OrderByDescending(x => x.StacksCount)
@@ -150,6 +183,8 @@ namespace TechStacks.ServiceInterface
                       .Join<PageStats>((s, p) => s.Id == p.RefId && p.RefType == "stack")
                       .OrderByDescending<PageStats>(p => p.ViewCount)
                       .Limit(12)),
+
+                AllOrganizations = allOrgs,
 
                 TopTechnologiesByTier = map,
             };
@@ -177,12 +212,12 @@ namespace TechStacks.ServiceInterface
         {
             var topTechByCategory = Db.Select<TechnologyInfo>(
                 @"select t.tier, t.slug as Slug, t.name, t.logo_url, COUNT(*) as StacksCount 
-                        from technology_choice tc
-	                     inner join
-	                     technology t on (tc.technology_id = t.id)
-                        group by t.tier, t.slug, t.name, t.logo_url
-                        having COUNT(*) >= {0}
-                        order by 4 desc".Fmt(minCount));
+                    from technology_choice tc
+	                       inner join
+	                       technology t on (tc.technology_id = t.id)
+                   group by t.tier, t.slug, t.name, t.logo_url
+                  having COUNT(*) >= {0}
+                   order by 4 desc".Fmt(minCount));
             return topTechByCategory;
         }
 
@@ -217,8 +252,7 @@ namespace TechStacks.ServiceInterface
 
         public object Get(GetTechnologyStack request)
         {
-            int id;
-            var techStack = int.TryParse(request.Slug, out id)
+            var techStack = int.TryParse(request.Slug, out var id)
                 ? Db.SingleById<TechnologyStack>(id)
                 : Db.Single<TechnologyStack>(x => x.Slug == request.Slug.ToLower());
 
@@ -231,7 +265,7 @@ namespace TechStacks.ServiceInterface
                 .Where(x => x.TechnologyStackId == techStack.Id));
 
             var result = techStack.ConvertTo<TechStackDetails>();
-            if (!string.IsNullOrEmpty(techStack.Details))
+            if (!string.IsNullOrEmpty(techStack.Details) && string.IsNullOrEmpty(techStack.DetailsHtml))
             {
                 result.DetailsHtml = MarkdownConfig.Transform(techStack.Details);
             }
@@ -270,6 +304,8 @@ namespace TechStacks.ServiceInterface
             return new GetConfigResponse
             {
                 AllTiers = allTiers,
+                AllPostTypes = GetAllPostTypes(),
+                AllFlagTypes = GetAllFlagType(),
             };
         }
 
@@ -281,6 +317,26 @@ namespace TechStacks.ServiceInterface
                     Name = x.ToString(),
                     Title = typeof(TechnologyTier).GetMember(x.ToString())[0].GetDescription(),
                     Value = (TechnologyTier)x,
+                });
+        }
+
+        public static List<Option> GetAllPostTypes()
+        {
+            return Enum.GetValues(typeof(PostType)).Map(x =>
+                new Option
+                {
+                    Name = x.ToString(),
+                    Title = typeof(PostType).GetMember(x.ToString())[0].GetDescription(),
+                });
+        }
+
+        public static List<Option> GetAllFlagType()
+        {
+            return Enum.GetValues(typeof(FlagType)).Map(x =>
+                new Option
+                {
+                    Name = x.ToString(),
+                    Title = typeof(FlagType).GetMember(x.ToString())[0].GetDescription(),
                 });
         }
     }

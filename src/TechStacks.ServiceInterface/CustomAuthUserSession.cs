@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.Configuration;
 using ServiceStack.Data;
+using ServiceStack.DataAnnotations;
 using ServiceStack.OrmLite;
+using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface
 {
@@ -18,30 +22,46 @@ namespace TechStacks.ServiceInterface
             var appSettings = authService.TryResolve<IAppSettings>();
             var userAuthRepo = authService.TryResolve<IAuthRepository>();
             var userAuth = userAuthRepo.GetUserAuth(session, tokens);
-            var dbConnectionFactory = authService.TryResolve<IDbConnectionFactory>();
+            var dbFactory = authService.TryResolve<IDbConnectionFactory>();
+            var userId = this.UserAuthId.ToInt();
+
             foreach (var authTokens in session.ProviderOAuthAccess)
             {
                 if (authTokens.Provider.ToLower() == "github")
                 {
-                    GithubProfileUrl = session.GetProfileUrl();
+                    if (authInfo.TryGetValue("avatar_url", out var avatarUrl))
+                    {
+                        GithubProfileUrl = avatarUrl;
+                    }
+                    UserCache.GitHubUserIdTokenMap[userId] = tokens.AccessTokenSecret;
                 }
                 if (authTokens.Provider.ToLower() == "twitter")
                 {
                     TwitterProfileUrl = session.GetProfileUrl();
-                    if (appSettings.GetList("TwitterAdmins").Contains(session.UserName) && !session.HasRole(RoleNames.Admin, userAuthRepo))
-                    {
-                        userAuthRepo.AssignRoles(userAuth, roles: new[] { RoleNames.Admin });
-                    }
                 }
 
                 ProfileUrl = GithubProfileUrl ?? TwitterProfileUrl;
-                using (var db = dbConnectionFactory.OpenDbConnection())
+                using (var db = dbFactory.OpenDbConnection())
                 {
-                    var userAuthInstance = db.Single<CustomUserAuth>(x => x.Id == this.UserAuthId.ToInt());
+                    var userAuthInstance = db.Single<CustomUserAuth>(x => x.Id == userId);
                     if (userAuthInstance != null)
                     {
                         userAuthInstance.DefaultProfileUrl = this.ProfileUrl;
-                        db.Save(userAuthInstance);
+                        userAuthInstance.IpAddress = authService.Request.UserHostAddress;
+
+                        db.Update(userAuthInstance);
+                    }
+
+                    var userActivity = db.SingleById<UserActivity>(userAuth.Id);
+                    if (userActivity == null)
+                    {
+                        db.Insert(new UserActivity
+                        {
+                            Id = userAuth.Id,
+                            UserName = session.UserName,
+                            Created = DateTime.UtcNow,
+                            Modified = DateTime.UtcNow,
+                        });
                     }
                 }
             }
@@ -51,5 +71,28 @@ namespace TechStacks.ServiceInterface
     public class CustomUserAuth : UserAuth
     {
         public string DefaultProfileUrl { get; set; }
+
+        public string IpAddress { get; set; }
+
+        public string RefSource { get; set; }
+
+        public string RefUrn { get; set; }
+
+        public DateTime? Banned { get; set; }
+
+        public string BannedBy { get; set; }
+
+        public string Notes { get; set; }
+
+        public DateTime? DisableEmails { get; set; }
+    }
+
+    public static class UserCache
+    {
+        public static ConcurrentDictionary<int, string> GitHubUserIdTokenMap = new ConcurrentDictionary<int, string>();
+
+        public static string GetGitHubToken(int userId) =>
+            GitHubUserIdTokenMap.TryGetValue(userId, out var token) ? token : null;
     }
 }
+

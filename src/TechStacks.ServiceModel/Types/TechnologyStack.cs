@@ -27,9 +27,17 @@ namespace TechStacks.ServiceModel.Types
         [Index]
         public string Slug { get; set; }
 
+        [StringLength(StringLengthAttribute.MaxText)]
         public string Details { get; set; }
 
+        [StringLength(StringLengthAttribute.MaxText)]
+        public string DetailsHtml { get; set; }
+
         public DateTime? LastStatusUpdate { get; set; }
+
+        public int? OrganizationId { get; set; }
+
+        public long? CommentsPostId { get; set; }
 
         [Default(0)]
         public int ViewCount { get; set; }
@@ -97,6 +105,10 @@ namespace TechStacks.ServiceModel.Types
 
         public DateTime? LastStatusUpdate { get; set; }
 
+        public int? OrganizationId { get; set; }
+
+        public long? CommentsPostId { get; set; }
+
         [Default(0)]
         public int ViewCount { get; set; }
 
@@ -135,7 +147,7 @@ namespace TechStacks.ServiceModel.Types
         [Description("Operating Systems")]
         OperatingSystem,
         
-        [Description("Cloud/Hardware Infastructure")]
+        [Description("Cloud/Hardware Infrastructure")]
         HardwareInfrastructure,
 
         [Description("3rd Party APIs/Services")]

@@ -31,7 +31,7 @@ export default {
   },
 
   async mounted() {
-    await this.$store.dispatch("getTechnologyStack", this.slug);
+    await this.$store.dispatch("loadTechnologyStack", this.slug);
     this.techstack = this.getTechnologyStack(this.slug);
   },
 

@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-02-05 03:23:32
+Date: 2018-03-06 20:09:37
 Version: 5.03
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -33,6 +33,83 @@ export interface IMeta
 
 export interface IPost
 {
+}
+
+export class Organization
+{
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    color: string;
+    textColor: string;
+    linkColor: string;
+    backgroundColor: string;
+    backgroundUrl: string;
+    logoUrl: string;
+    heroUrl: string;
+    postTypes: string[];
+    moderatorPostTypes: string[];
+    upVotes: number;
+    downVotes: number;
+    views: number;
+    favorites: number;
+    subscribers: number;
+    commentsCount: number;
+    postsCount: number;
+    score: number;
+    rank: number;
+    refId: number;
+    refSource: string;
+    hidden: string;
+    hiddenBy: string;
+    locked: string;
+    lockedBy: string;
+    deleted: string;
+    deletedBy: string;
+    created: string;
+    createdBy: string;
+    modified: string;
+    modifiedBy: string;
+}
+
+export class Category
+{
+    id: number;
+    organizationId: number;
+    name: string;
+    slug: string;
+    description: string;
+    color: string;
+    technologyIds: number[];
+    commentsCount: number;
+    postsCount: number;
+    score: number;
+    rank: number;
+    deleted: string;
+    deletedBy: string;
+    created: string;
+    createdBy: string;
+    modified: string;
+    modifiedBy: string;
+}
+
+export class OrganizationMember
+{
+    id: number;
+    organizationId: number;
+    userId: number;
+    userName: string;
+    isOwner: boolean;
+    isModerator: boolean;
+    denyAll: boolean;
+    denyPosts: boolean;
+    denyComments: boolean;
+    notes: string;
+    created: string;
+    createdBy: string;
+    modified: string;
+    modifiedBy: string;
 }
 
 // @DataContract
@@ -70,39 +147,6 @@ export class ResponseStatus
     meta: { [index:string]: string; };
 }
 
-export type TechnologyTier = "ProgrammingLanguage" | "Client" | "Http" | "Server" | "Data" | "SoftwareInfrastructure" | "OperatingSystem" | "HardwareInfrastructure" | "ThirdPartyServices";
-
-export class TechnologyBase
-{
-    id: number;
-    name: string;
-    vendorName: string;
-    vendorUrl: string;
-    productUrl: string;
-    logoUrl: string;
-    description: string;
-    created: string;
-    createdBy: string;
-    lastModified: string;
-    lastModifiedBy: string;
-    ownerId: string;
-    slug: string;
-    logoApproved: boolean;
-    isLocked: boolean;
-    tier: TechnologyTier;
-    lastStatusUpdate: string;
-}
-
-export class TechnologyHistory extends TechnologyBase
-{
-    technologyId: number;
-    operation: string;
-}
-
-export class Technology extends TechnologyBase
-{
-}
-
 export class QueryBase
 {
     // @DataMember(Order=1)
@@ -131,6 +175,127 @@ export class QueryDb<T> extends QueryBase
 {
 }
 
+export type PostType = "Announcement" | "Post" | "Showcase" | "Question" | "Request";
+
+export class Post
+{
+    id: number;
+    organizationId: number;
+    userId: number;
+    type: PostType;
+    categoryId: number;
+    title: string;
+    slug: string;
+    url: string;
+    imageUrl: string;
+    // @StringLength(2147483647)
+    content: string;
+
+    // @StringLength(2147483647)
+    contentHtml: string;
+
+    pinCommentId: number;
+    technologyIds: number[];
+    approved: boolean;
+    upVotes: number;
+    downVotes: number;
+    views: number;
+    favorites: number;
+    subscribers: number;
+    replyCount: number;
+    commentsCount: number;
+    wordCount: number;
+    reportCount: number;
+    linksCount: number;
+    linkedToCount: number;
+    score: number;
+    rank: number;
+    subscriptionId: number;
+    lastCommentDate: string;
+    lastCommentId: number;
+    lastCommentUserId: number;
+    deleted: string;
+    locked: string;
+    lockedBy: string;
+    hidden: string;
+    archived: boolean;
+    bumped: string;
+    created: string;
+    createdBy: string;
+    modified: string;
+    modifiedBy: string;
+    refId: number;
+    refSource: string;
+    refUrn: string;
+}
+
+export class PostComment
+{
+    id: number;
+    postId: number;
+    userId: number;
+    replyId: number;
+    // @StringLength(2147483647)
+    content: string;
+
+    // @StringLength(2147483647)
+    contentHtml: string;
+
+    score: number;
+    rank: number;
+    upVotes: number;
+    downVotes: number;
+    favorites: number;
+    wordCount: number;
+    deleted: string;
+    hidden: string;
+    modified: string;
+    created: string;
+    createdBy: string;
+    refId: number;
+    refSource: string;
+    refUrn: string;
+}
+
+export type FlagType = "Violation" | "Spam" | "Abusive" | "Confidential" | "OffTopic" | "Other";
+
+export type TechnologyTier = "ProgrammingLanguage" | "Client" | "Http" | "Server" | "Data" | "SoftwareInfrastructure" | "OperatingSystem" | "HardwareInfrastructure" | "ThirdPartyServices";
+
+export class TechnologyBase
+{
+    id: number;
+    name: string;
+    vendorName: string;
+    vendorUrl: string;
+    productUrl: string;
+    logoUrl: string;
+    description: string;
+    created: string;
+    createdBy: string;
+    lastModified: string;
+    lastModifiedBy: string;
+    ownerId: string;
+    slug: string;
+    logoApproved: boolean;
+    isLocked: boolean;
+    tier: TechnologyTier;
+    lastStatusUpdate: string;
+    organizationId: number;
+    commentsPostId: number;
+    viewCount: number;
+    favCount: number;
+}
+
+export class TechnologyHistory extends TechnologyBase
+{
+    technologyId: number;
+    operation: string;
+}
+
+export class Technology extends TechnologyBase
+{
+}
+
 export interface IRegisterStats
 {
 }
@@ -150,8 +315,17 @@ export class TechnologyStackBase
     isLocked: boolean;
     ownerId: string;
     slug: string;
+    // @StringLength(2147483647)
     details: string;
+
+    // @StringLength(2147483647)
+    detailsHtml: string;
+
     lastStatusUpdate: string;
+    organizationId: number;
+    commentsPostId: number;
+    viewCount: number;
+    favCount: number;
 }
 
 export class TechnologyStack extends TechnologyStackBase
@@ -190,8 +364,28 @@ export class TechnologyInStack extends TechnologyBase
 
 export class TechStackDetails extends TechnologyStackBase
 {
-    detailsHtml: string;
     technologyChoices: TechnologyInStack[];
+}
+
+export class CategoryInfo
+{
+    id: number;
+    name: string;
+    slug: string;
+}
+
+export class OrganizationInfo
+{
+    id: number;
+    name: string;
+    slug: string;
+    refId: number;
+    refSource: string;
+    upVotes: number;
+    downVotes: number;
+    postTypes: string[];
+    moderatorPostTypes: string[];
+    categories: CategoryInfo[];
 }
 
 // @DataContract
@@ -205,6 +399,195 @@ export class Option
 
     // @DataMember(Name="value")
     value: TechnologyTier;
+}
+
+export class UserActivity
+{
+    id: number;
+    userName: string;
+    karma: number;
+    technologyCount: number;
+    techStacksCount: number;
+    postsCount: number;
+    postUpVotes: number;
+    postDownVotes: number;
+    commentUpVotes: number;
+    commentDownVotes: number;
+    postCommentsCount: number;
+    pinnedCommentCount: number;
+    postReportCount: number;
+    postCommentReportCount: number;
+    created: string;
+    modified: string;
+}
+
+export class GetOrganizationResponse
+{
+    cache: number;
+    id: number;
+    slug: string;
+    organization: Organization;
+    categories: Category[];
+    members: OrganizationMember[];
+    responseStatus: ResponseStatus;
+}
+
+export class GetOrganizationMembersResponse
+{
+    organizationId: number;
+    results: OrganizationMember[];
+    responseStatus: ResponseStatus;
+}
+
+export class CreateOrganizationForTechnologyResponse
+{
+    organizationId: number;
+    organizationSlug: string;
+    commentsPostId: number;
+    commentsPostSlug: string;
+    responseStatus: ResponseStatus;
+}
+
+export class CreateOrganizationResponse
+{
+    id: number;
+    slug: string;
+    responseStatus: ResponseStatus;
+}
+
+export class UpdateOrganizationResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class AddCategoryResponse
+{
+    id: number;
+    slug: string;
+    responseStatus: ResponseStatus;
+}
+
+export class UpdateCategoryResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class AddOrganizationMemberResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class UpdateOrganizationMemberResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+// @DataContract
+export class QueryResponse<T>
+{
+    // @DataMember(Order=1)
+    offset: number;
+
+    // @DataMember(Order=2)
+    total: number;
+
+    // @DataMember(Order=3)
+    results: T[];
+
+    // @DataMember(Order=4)
+    meta: { [index:string]: string; };
+
+    // @DataMember(Order=5)
+    responseStatus: ResponseStatus;
+}
+
+export class GetPostResponse
+{
+    cache: number;
+    post: Post;
+    comments: PostComment[];
+}
+
+export class CreatePostResponse
+{
+    id: number;
+    slug: string;
+    responseStatus: ResponseStatus;
+}
+
+export class UpdatePostResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class DeletePostResponse
+{
+    id: number;
+    responseStatus: ResponseStatus;
+}
+
+export class GetUserPostActivityResponse
+{
+    upVotedPostIds: number[];
+    downVotedPostIds: number[];
+    favoritePostIds: number[];
+    responseStatus: ResponseStatus;
+}
+
+export class UserPostVoteResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class UserPostFavoriteResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class UserPostReportResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class CreatePostCommentResponse
+{
+    id: number;
+    postId: number;
+    responseStatus: ResponseStatus;
+}
+
+export class UpdatePostCommentResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class DeletePostCommentResponse
+{
+    id: number;
+    postId: number;
+    responseStatus: ResponseStatus;
+}
+
+export class UserPostCommentVoteResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class UserPostCommentReportResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class GetUserPostCommentVotesResponse
+{
+    postId: number;
+    upVotedCommentIds: number[];
+    downVotedCommentIds: number[];
+}
+
+export class PinPostCommentResponse
+{
+    responseStatus: ResponseStatus;
 }
 
 export class SessionInfoResponse
@@ -239,25 +622,6 @@ export class GetAllTechnologiesResponse
 {
     results: Technology[];
     total: number;
-}
-
-// @DataContract
-export class QueryResponse<T>
-{
-    // @DataMember(Order=1)
-    offset: number;
-
-    // @DataMember(Order=2)
-    total: number;
-
-    // @DataMember(Order=3)
-    results: T[];
-
-    // @DataMember(Order=4)
-    meta: { [index:string]: string; };
-
-    // @DataMember(Order=5)
-    responseStatus: ResponseStatus;
 }
 
 export class GetTechnologyResponse
@@ -318,6 +682,7 @@ export class OverviewResponse
     topTechnologies: TechnologyInfo[];
     latestTechStacks: TechStackDetails[];
     popularTechStacks: TechnologyStack[];
+    allOrganizations: OrganizationInfo[];
     topTechnologiesByTier: { [index:string]: TechnologyInfo[]; };
     responseStatus: ResponseStatus;
 }
@@ -352,6 +717,8 @@ export class GetTechnologyStackFavoriteDetailsResponse
 export class GetConfigResponse
 {
     allTiers: Option[];
+    allPostTypes: Option[];
+    allFlagTypes: Option[];
 }
 
 export class CreateTechnologyStackResponse
@@ -397,14 +764,31 @@ export class GetUserFeedResponse
     results: TechStackDetails[];
 }
 
+export class GetUsersKarmaResponse
+{
+    results: { [index:number]: number; };
+    responseStatus: ResponseStatus;
+}
+
 export class GetUserInfoResponse
 {
+    id: number;
     userName: string;
     created: string;
     avatarUrl: string;
     techStacks: TechnologyStack[];
     favoriteTechStacks: TechnologyStack[];
     favoriteTechnologies: Technology[];
+    userActivity: UserActivity;
+    responseStatus: ResponseStatus;
+}
+
+export class SyncDiscourseSiteResponse
+{
+    timeTaken: string;
+    userLogs: string[];
+    postsLogs: string[];
+    responseStatus: ResponseStatus;
 }
 
 export class LogoUrlApprovalResponse
@@ -498,6 +882,340 @@ export class Ping
 {
 }
 
+// @Route("/orgs/{Id}", "GET")
+export class GetOrganization implements IReturn<GetOrganizationResponse>
+{
+    id: number;
+    createResponse() { return new GetOrganizationResponse(); }
+    getTypeName() { return "GetOrganization"; }
+}
+
+// @Route("/organizations/{Slug}", "GET")
+export class GetOrganizationBySlug implements IReturn<GetOrganizationResponse>
+{
+    slug: string;
+    createResponse() { return new GetOrganizationResponse(); }
+    getTypeName() { return "GetOrganizationBySlug"; }
+}
+
+// @Route("/orgs/{Id}/members", "GET")
+export class GetOrganizationMembers implements IReturn<GetOrganizationMembersResponse>
+{
+    id: number;
+    createResponse() { return new GetOrganizationMembersResponse(); }
+    getTypeName() { return "GetOrganizationMembers"; }
+}
+
+// @Route("/orgs/posts/new", "POST")
+export class CreateOrganizationForTechnology implements IReturn<CreateOrganizationForTechnologyResponse>
+{
+    technologyId: number;
+    techStackId: number;
+    createResponse() { return new CreateOrganizationForTechnologyResponse(); }
+    getTypeName() { return "CreateOrganizationForTechnology"; }
+}
+
+// @Route("/orgs", "POST")
+export class CreateOrganization implements IReturn<CreateOrganizationResponse>
+{
+    name: string;
+    slug: string;
+    description: string;
+    refId: number;
+    refSource: string;
+    refUrn: string;
+    createResponse() { return new CreateOrganizationResponse(); }
+    getTypeName() { return "CreateOrganization"; }
+}
+
+// @Route("/orgs/{Id}", "PUT")
+export class UpdateOrganization implements IReturn<UpdateOrganizationResponse>
+{
+    id: number;
+    slug: string;
+    name: string;
+    description: string;
+    color: string;
+    textColor: string;
+    linkColor: string;
+    backgroundColor: string;
+    backgroundUrl: string;
+    logoUrl: string;
+    heroUrl: string;
+    postTypes: string[];
+    moderatorPostTypes: string[];
+    technologyIds: number[];
+    createResponse() { return new UpdateOrganizationResponse(); }
+    getTypeName() { return "UpdateOrganization"; }
+}
+
+// @Route("/orgs/{Id}", "DELETE")
+export class DeleteOrganization implements IReturnVoid
+{
+    id: number;
+    createResponse() {}
+    getTypeName() { return "DeleteOrganization"; }
+}
+
+// @Route("/orgs/{Id}/lock", "PUT")
+export class LockOrganization implements IReturnVoid
+{
+    id: number;
+    lock: boolean;
+    reason: string;
+    createResponse() {}
+    getTypeName() { return "LockOrganization"; }
+}
+
+// @Route("/orgs/{OrganizationId}/categories", "POST")
+export class AddOrganizationCategory implements IReturn<AddCategoryResponse>
+{
+    organizationId: number;
+    slug: string;
+    name: string;
+    description: string;
+    technologyIds: number[];
+    createResponse() { return new AddCategoryResponse(); }
+    getTypeName() { return "AddOrganizationCategory"; }
+}
+
+// @Route("/orgs/{OrganizationId}/categories/{Id}", "PUT")
+export class UpdateOrganizationCategory implements IReturn<UpdateCategoryResponse>
+{
+    organizationId: number;
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    technologyIds: number[];
+    createResponse() { return new UpdateCategoryResponse(); }
+    getTypeName() { return "UpdateOrganizationCategory"; }
+}
+
+// @Route("/orgs/{OrganizationId}/categories/{Id}", "DELETE")
+export class DeleteOrganizationCategory implements IReturnVoid
+{
+    organizationId: number;
+    id: number;
+    createResponse() {}
+    getTypeName() { return "DeleteOrganizationCategory"; }
+}
+
+// @Route("/orgs/{OrganizationId}/members", "POST")
+export class AddOrganizationMember implements IReturn<AddOrganizationMemberResponse>
+{
+    organizationId: number;
+    userName: string;
+    isOwner: boolean;
+    isModerator: boolean;
+    denyPosts: boolean;
+    denyComments: boolean;
+    denyAll: boolean;
+    notes: string;
+    createResponse() { return new AddOrganizationMemberResponse(); }
+    getTypeName() { return "AddOrganizationMember"; }
+}
+
+// @Route("/orgs/{OrganizationId}/members/{Id}", "PUT")
+export class UpdateOrganizationMember implements IReturn<UpdateOrganizationMemberResponse>
+{
+    organizationId: number;
+    userId: number;
+    isOwner: boolean;
+    isModerator: boolean;
+    denyPosts: boolean;
+    denyComments: boolean;
+    denyAll: boolean;
+    notes: string;
+    createResponse() { return new UpdateOrganizationMemberResponse(); }
+    getTypeName() { return "UpdateOrganizationMember"; }
+}
+
+// @Route("/orgs/{OrganizationId}/members/{UserId}", "DELETE")
+export class RemoveOrganizationMember implements IReturnVoid
+{
+    organizationId: number;
+    userId: number;
+    createResponse() {}
+    getTypeName() { return "RemoveOrganizationMember"; }
+}
+
+// @Route("/posts/search")
+export class QueryPosts extends QueryDb<Post> implements IReturn<QueryResponse<Post>>, IMeta
+{
+    organizationId: number;
+    organizationIds: number[];
+    types: string[];
+    anyTechnologyIds: number[];
+    createResponse() { return new QueryResponse<Post>(); }
+    getTypeName() { return "QueryPosts"; }
+}
+
+// @Route("/posts/{Id}", "GET")
+export class GetPost implements IReturn<GetPostResponse>
+{
+    id: number;
+    include: string;
+    createResponse() { return new GetPostResponse(); }
+    getTypeName() { return "GetPost"; }
+}
+
+// @Route("/posts", "POST")
+export class CreatePost implements IReturn<CreatePostResponse>
+{
+    organizationId: number;
+    type: PostType;
+    categoryId: number;
+    title: string;
+    url: string;
+    imageUrl: string;
+    content: string;
+    lock: boolean;
+    technologyIds: number[];
+    refId: number;
+    refSource: string;
+    refUrn: string;
+    createResponse() { return new CreatePostResponse(); }
+    getTypeName() { return "CreatePost"; }
+}
+
+// @Route("/posts/{Id}", "PUT")
+export class UpdatePost implements IReturn<UpdatePostResponse>
+{
+    id: number;
+    organizationId: number;
+    type: PostType;
+    categoryId: number;
+    title: string;
+    url: string;
+    imageUrl: string;
+    content: string;
+    lock: boolean;
+    technologyIds: number[];
+    createResponse() { return new UpdatePostResponse(); }
+    getTypeName() { return "UpdatePost"; }
+}
+
+// @Route("/posts/{Id}", "DELETE")
+export class DeletePost implements IReturn<DeletePostResponse>
+{
+    id: number;
+    createResponse() { return new DeletePostResponse(); }
+    getTypeName() { return "DeletePost"; }
+}
+
+// @Route("/posts/{Id}/lock", "PUT")
+export class LockPost implements IReturnVoid
+{
+    id: number;
+    lock: boolean;
+    reason: string;
+    createResponse() {}
+    getTypeName() { return "LockPost"; }
+}
+
+// @Route("/user/posts/activity")
+export class GetUserPostActivity implements IReturn<GetUserPostActivityResponse>
+{
+    createResponse() { return new GetUserPostActivityResponse(); }
+    getTypeName() { return "GetUserPostActivity"; }
+}
+
+// @Route("/posts/{Id}/vote", "PUT")
+export class UserPostVote implements IReturn<UserPostVoteResponse>
+{
+    id: number;
+    weight: number;
+    createResponse() { return new UserPostVoteResponse(); }
+    getTypeName() { return "UserPostVote"; }
+}
+
+// @Route("/posts/{Id}/favorite", "PUT")
+export class UserPostFavorite implements IReturn<UserPostFavoriteResponse>
+{
+    id: number;
+    createResponse() { return new UserPostFavoriteResponse(); }
+    getTypeName() { return "UserPostFavorite"; }
+}
+
+// @Route("/posts/{Id}/report", "PUT")
+export class UserPostReport implements IReturn<UserPostReportResponse>
+{
+    id: number;
+    type: FlagType;
+    notes: string;
+    createResponse() { return new UserPostReportResponse(); }
+    getTypeName() { return "UserPostReport"; }
+}
+
+// @Route("/posts/{PostId}/comments", "POST")
+export class CreatePostComment implements IReturn<CreatePostCommentResponse>
+{
+    postId: number;
+    replyId: number;
+    content: string;
+    createResponse() { return new CreatePostCommentResponse(); }
+    getTypeName() { return "CreatePostComment"; }
+}
+
+// @Route("/posts/{PostId}/comments/{Id}", "PUT")
+export class UpdatePostComment implements IReturn<UpdatePostCommentResponse>
+{
+    id: number;
+    postId: number;
+    content: string;
+    createResponse() { return new UpdatePostCommentResponse(); }
+    getTypeName() { return "UpdatePostComment"; }
+}
+
+// @Route("/posts/{PostId}/comments/{Id}", "DELETE")
+export class DeletePostComment implements IReturn<DeletePostCommentResponse>
+{
+    id: number;
+    postId: number;
+    createResponse() { return new DeletePostCommentResponse(); }
+    getTypeName() { return "DeletePostComment"; }
+}
+
+// @Route("/posts/{PostId}/comments/{Id}", "GET")
+export class UserPostCommentVote implements IReturn<UserPostCommentVoteResponse>
+{
+    id: number;
+    postId: number;
+    weight: number;
+    createResponse() { return new UserPostCommentVoteResponse(); }
+    getTypeName() { return "UserPostCommentVote"; }
+}
+
+// @Route("/posts/{PostId}/comments/{Id}/report", "PUT")
+export class UserPostCommentReport implements IReturn<UserPostCommentReportResponse>
+{
+    id: number;
+    postId: number;
+    type: FlagType;
+    notes: string;
+    createResponse() { return new UserPostCommentReportResponse(); }
+    getTypeName() { return "UserPostCommentReport"; }
+}
+
+// @Route("/user/comments/votes")
+export class GetUserPostCommentVotes implements IReturn<GetUserPostCommentVotesResponse>
+{
+    postId: number;
+    createResponse() { return new GetUserPostCommentVotesResponse(); }
+    getTypeName() { return "GetUserPostCommentVotes"; }
+}
+
+// @Route("/posts/{PostId}/comments/{Id}/pin", "UPDATE")
+export class PinPostComment implements IReturn<PinPostCommentResponse>
+{
+    id: number;
+    postId: number;
+    pin: boolean;
+    createResponse() { return new PinPostCommentResponse(); }
+    getTypeName() { return "PinPostComment"; }
+}
+
 // @Route("/my-session")
 export class SessionInfo implements IReturn<SessionInfoResponse>
 {
@@ -557,6 +1275,7 @@ export class GetTechnologyFavoriteDetails implements IReturn<GetTechnologyFavori
 export class CreateTechnology implements IReturn<CreateTechnologyResponse>
 {
     name: string;
+    slug: string;
     vendorName: string;
     vendorUrl: string;
     productUrl: string;
@@ -608,6 +1327,13 @@ export class GetPageStats implements IReturn<GetPageStatsResponse>
     id: number;
     createResponse() { return new GetPageStatsResponse(); }
     getTypeName() { return "GetPageStats"; }
+}
+
+// @Route("/cache/clear")
+export class ClearCache implements IReturn<string>
+{
+    createResponse() { return ""; }
+    getTypeName() { return "ClearCache"; }
 }
 
 // @Route("/tasks/hourly")
@@ -684,6 +1410,7 @@ export class GetConfig implements IReturn<GetConfigResponse>
 export class CreateTechnologyStack implements IReturn<CreateTechnologyStackResponse>
 {
     name: string;
+    slug: string;
     vendorName: string;
     appUrl: string;
     screenshotUrl: string;
@@ -774,12 +1501,34 @@ export class GetUserFeed implements IReturn<GetUserFeedResponse>
     getTypeName() { return "GetUserFeed"; }
 }
 
+// @Route("/users/karma", "GET")
+export class GetUsersKarma implements IReturn<GetUsersKarmaResponse>
+{
+    userIds: number[];
+    createResponse() { return new GetUsersKarmaResponse(); }
+    getTypeName() { return "GetUsersKarma"; }
+}
+
 // @Route("/userinfo/{UserName}")
 export class GetUserInfo implements IReturn<GetUserInfoResponse>
 {
     userName: string;
     createResponse() { return new GetUserInfoResponse(); }
     getTypeName() { return "GetUserInfo"; }
+}
+
+// @Route("/users/{UserName}/avatar", "GET")
+export class UserAvatar
+{
+    userName: string;
+}
+
+// @Route("/sync/discourse/{Site}")
+export class SyncDiscourseSite implements IReturn<SyncDiscourseSiteResponse>
+{
+    site: string;
+    createResponse() { return new SyncDiscourseSiteResponse(); }
+    getTypeName() { return "SyncDiscourseSite"; }
 }
 
 // @Route("/admin/technology/{TechnologyId}/logo")
@@ -923,6 +1672,15 @@ export class GetAccessToken implements IReturn<GetAccessTokenResponse>, IPost
     refreshToken: string;
     createResponse() { return new GetAccessTokenResponse(); }
     getTypeName() { return "GetAccessToken"; }
+}
+
+// @Route("/posts/comments/search")
+export class QueryPostComments extends QueryDb<PostComment> implements IReturn<QueryResponse<PostComment>>, IMeta
+{
+    userId: number;
+    postId: number;
+    createResponse() { return new QueryResponse<PostComment>(); }
+    getTypeName() { return "QueryPostComments"; }
 }
 
 // @Route("/admin/technology/search")

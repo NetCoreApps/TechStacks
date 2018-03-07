@@ -30,20 +30,20 @@
                       </v-flex>
                       <v-flex xs12 class="py-2" style="margin-top:1em">
                         <v-btn-toggle mandatory v-model="tab">
-                          <v-btn 
-                            :disabled="user.techStacks.length === 0"
-                          >
-                            {{ user.techStacks.length }} TechStacks Created
+                          <v-btn>
+                            TechStacks Created
                           </v-btn>
-                          <v-btn 
-                            :disabled="user.favoriteTechnologies.length === 0"
-                          >
-                            {{ user.favoriteTechnologies.length }} Favorite Technologies
+                          <v-btn>
+                            Favorite Technologies
                           </v-btn>
-                          <v-btn 
-                            :disabled="user.favoriteTechStacks.length === 0"
-                          >
-                            {{ user.favoriteTechStacks.length }} Favorite TechStacks
+                          <v-btn>
+                            Favorite TechStacks
+                          </v-btn>
+                          <v-btn>
+                            Posts
+                          </v-btn>
+                          <v-btn>
+                            Comments  
                           </v-btn>
                         </v-btn-toggle>
                       </v-flex>                      
@@ -61,7 +61,7 @@
 
     <v-container v-if="user && tab == 0" class="body" grid-list-md>
       <v-layout class="body" fluid>
-        <v-flex xs12 sm12>
+        <v-flex v-if="user.techStacks.length > 0" xs12 sm12>
           <v-toolbar dark>
             <v-toolbar-title class="headline white--text">TechStacks created by @{{ user.userName }}</v-toolbar-title>
           </v-toolbar>
@@ -82,15 +82,20 @@
             </v-container>
           </v-card>
         </v-flex>
+        <v-flex v-else>
+           <v-alert color="info" outline :value="true" style="text-align:center">
+             @{{ user.userName }} has not created any TechStacks yet
+           </v-alert>
+        </v-flex>
       </v-layout>
     </v-container>
     
     <v-container v-if="user && tab == 1" class="body" grid-list-md>
       <v-layout row>
-        <v-flex>
+        <v-flex v-if="user.favoriteTechnologies.length > 0">
 
           <v-toolbar>
-            <v-toolbar-title class="headline">@{{ user.userName }} favorite Technologies</v-toolbar-title>
+            <v-toolbar-title class="headline">@{{ user.userName }} favorite technologies</v-toolbar-title>
           </v-toolbar>
           <v-card>
             <v-data-table
@@ -114,12 +119,17 @@
           </v-card>
 
         </v-flex>
+        <v-flex v-else>
+           <v-alert color="info" outline :value="true" style="text-align:center">
+             @{{ user.userName }} has not favorited any Technologies yet
+           </v-alert>
+        </v-flex>
       </v-layout>
     </v-container>
 
     <v-container v-if="user && tab == 2" class="body" grid-list-md>
       <v-layout class="body" fluid>
-        <v-flex xs12 sm12>
+        <v-flex v-if="user.favoriteTechStacks.length > 0" xs12 sm12>
           <v-toolbar dark>
             <v-toolbar-title class="headline white--text">@{{ user.userName }} favorite TechStacks</v-toolbar-title>
           </v-toolbar>
@@ -140,16 +150,128 @@
             </v-container>
           </v-card>
         </v-flex>
+        <v-flex v-else>
+           <v-alert color="info" outline :value="true" style="text-align:center">
+             @{{ user.userName }} has not favorited any Technologies yet
+           </v-alert>
+        </v-flex>
+      </v-layout>
+    </v-container>
+
+    <v-container v-if="posts && tab == 3" class="body" grid-list-md>
+      <v-layout class="body" fluid>
+        <v-flex v-if="posts.length > 0" xs12 sm12>
+          <v-toolbar>
+            <v-toolbar-title>@{{ user.userName }} posts</v-toolbar-title>
+          </v-toolbar>
+          <v-card>
+            <v-container fluid grid-list-md>
+              <v-layout row wrap>
+
+                <v-flex>
+                  <v-card flat v-for="(post, index) in posts" :key="post.id" :class="['post', votedClass(post.id)]">
+                    <v-card-title>
+                        <v-container fluid grid-list-sm >
+                            <v-layout row align-center>
+                                <v-flex style="max-width:25px">
+                                    <span class="rank">{{index + 1}}</span>
+                                </v-flex>
+                                <v-flex style="max-width:52px">
+                                  <v-layout column style="text-align:center">
+                                    <v-btn icon class="vote-btn up" :disabled="true">
+                                        <v-icon>arrow_drop_up</v-icon>
+                                    </v-btn>
+                                    <h4 class="votes">{{postKarma(post)}}</h4>
+                                    <v-btn icon class="vote-btn down" :disabled="true">
+                                        <v-icon>arrow_drop_down</v-icon>
+                                    </v-btn>
+                                </v-layout>
+                              </v-flex>
+                              <v-flex class="post-body">
+                                  <v-layout column>
+                                    <nuxt-link v-if="!post.url" class="post-link" :to="postCommentsLink(post)">{{ post.title }}</nuxt-link>
+                                    <a v-if="post.url" class="post-link external" :href="post.url">{{ post.title }}</a>
+                                    <div class="post-info">
+                                        submitted {{fromNow(post.created)}}
+
+                                      <span v-if="(post.technologyIds || []).length > 0 && technologyTiers.length > 0">
+                                        tags
+                                        <nuxt-link class="tag" v-for="techId in post.technologyIds" :key="techId" 
+                                          :to="`/tech/${getTechnologySlug(techId)}`">
+                                          {{ getTechnologySlug(techId) }}
+                                        </nuxt-link>
+                                      </span>
+                                    </div>
+                                    <div class="post-actions">
+                                        <nuxt-link :to="postCommentsLink(post)">{{ post.commentsCount || '' }} {{ post.commentsCount > 1 ? 'comments' : 'comment' }}</nuxt-link>
+                                    </div>
+                                  </v-layout>
+                              </v-flex>
+                            </v-layout>
+                        </v-container>
+                    </v-card-title>
+                  </v-card>
+                </v-flex>
+
+              </v-layout>
+            </v-container>
+          </v-card>
+        </v-flex>
+        <v-flex v-else>
+           <v-alert color="info" outline :value="true" style="text-align:center">
+             @{{ user.userName }} has not submitted any posts yet
+           </v-alert>
+        </v-flex>
       </v-layout>
     </v-container>
     
+    <v-container v-if="comments && tab == 4" class="body" grid-list-md>
+      <v-layout class="body" fluid>
+        <v-flex v-if="comments.length > 0" xs12 sm12>
+          <v-toolbar>
+            <v-toolbar-title>@{{ user.userName }} comments</v-toolbar-title>
+          </v-toolbar>
+
+          <div class="comment" v-for="comment in comments" :key="comment.id">
+              <v-card class="comment-parent">
+                  <v-card-title>
+                      <v-layout>
+                          <v-flex class="comment-info">
+                              <nuxt-link :to="`/users/${comment.createdBy}`"><img class="comment-avatar" :src="`/users/${comment.createdBy}/avatar`" :alt="`${comment.createdBy} profile`"></nuxt-link>
+                              <div class="comment-karma"><b>{{ getUsersKarma(comment.userId) }}</b></div>
+                          </v-flex>
+                          <v-flex>
+                              <div class="comment-content" v-html="comment.contentHtml"></div>
+
+                              <v-layout :class="['comment-actions', votedCommentClass(comment.id)]">
+                                  <span class="points">{{commentKarmaLabel(comment)}}</span>
+                                  
+                                  <nuxt-link :to="`/comments/${comment.postId}/${comment.id}`" class="submitted">{{fromNow(comment.created)}}</nuxt-link>
+                              </v-layout>
+                          </v-flex>
+                      </v-layout>
+                  </v-card-title>
+              </v-card>
+          </div>  
+
+        </v-flex>
+        <v-flex v-else>
+           <v-alert color="info" outline :value="true" style="text-align:center">
+             @{{ user.userName }} has not submitted any comments yet
+           </v-alert>
+        </v-flex>
+      </v-layout>
+    </v-container>
+
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 import { heroes } from "@servicestack/images";
-import { log, prettifyUrl } from "~/shared/utils";
+import { log, prettifyUrl, fromNow } from "~/shared/utils";
+import { queryPosts, queryPostComments } from "~/shared/gateway";
+import { postKarma, votedClass, postCommentsLink, commentKarmaLabel, votedCommentClass } from "~/shared/post";
 
 export default {  
   computed: {
@@ -162,28 +284,35 @@ export default {
     user(){
       return this.getUserInfo(this.userName);
     },
-    ...mapGetters(['loading','getUserInfo'])
+    ...mapGetters(['loading','getUserInfo','getTechnologySlug','getUsersKarma','technologyTiers'])
   },
 
   methods: {
     prettifyUrl,
+    postKarma, 
+    votedClass, 
+    postCommentsLink,
+    commentKarmaLabel,
+    votedCommentClass,
+    fromNow,
   },
   
-  mounted() {
+  async mounted() {
     this.tab = parseInt(this.$route.query.tab || 0);
 
-    this.$store.dispatch("getUserInfo", this.userName)
-      .then(x => {
-        if (!this.$route.query.tab) {
-          this.tab = this.user.techStacks.length > 0 ? 
-              0 
-            : this.user.favoriteTechnologies.length > 0 ?
-              1
-            : this.user.favoriteTechStacks.length > 0 ?
-              2 
-            : -1;
-        }
-      });
+    await this.$store.dispatch("getUserInfo", this.userName);
+    if (!this.$route.query.tab) {
+      this.tab = this.user.techStacks.length > 0 ? 
+          0 
+        : this.user.favoriteTechnologies.length > 0 ?
+          1
+        : this.user.favoriteTechStacks.length > 0 ?
+          2 
+        : -1;
+    }
+
+    this.posts = (await queryPosts({ userId: this.user.id, orderBy:"-id" })).results;
+    this.comments = (await queryPostComments({ userId: this.user.id, orderBy:"-id" })).results;
   },
 
   watch: {
@@ -196,6 +325,8 @@ export default {
   data() {
     return {
       tab: -1,
+      posts: null,
+      comments: null,
       pagination: {
         sortBy: null,
         rowsPerPage: -1
@@ -209,24 +340,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.avatarbox {
-    text-align: center;
-    display: inline-block;
-    border: 1px solid #ddd;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-}
-.avatarbox img {
-    margin: 4px;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
-    height: 50px;
-    width: 50px;
-}
-</style>

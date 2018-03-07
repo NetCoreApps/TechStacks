@@ -13,10 +13,9 @@ namespace TechStacks.ServiceInterface
         public object Get(GetTechnologyPreviousVersions request)
         {
             if (request.Slug == null)
-                throw new ArgumentNullException("Slug");
+                throw new ArgumentNullException(nameof(request.Slug));
 
-            long id;
-            if (!long.TryParse(request.Slug, out id))
+            if (!long.TryParse(request.Slug, out var id))
             {
                 var tech = Db.Single<Technology>(x => x.Slug == request.Slug.ToLower());
                 id = tech.Id;
@@ -53,8 +52,7 @@ namespace TechStacks.ServiceInterface
 
         public object Get(GetTechnology request)
         {
-            int id;
-            var tech = int.TryParse(request.Slug, out id)
+            var tech = int.TryParse(request.Slug, out var id)
                 ? Db.SingleById<Technology>(id)
                 : Db.Single<Technology>(x => x.Slug == request.Slug.ToLower());
 
@@ -76,8 +74,7 @@ namespace TechStacks.ServiceInterface
 
         public object Get(GetTechnologyFavoriteDetails request)
         {
-            int id;
-            var tech = int.TryParse(request.Slug, out id)
+            var tech = int.TryParse(request.Slug, out var id)
                 ? Db.SingleById<Technology>(id)
                 : Db.Single<Technology>(x => x.Slug == request.Slug.ToLower());
 

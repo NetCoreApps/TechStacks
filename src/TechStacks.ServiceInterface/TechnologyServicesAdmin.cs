@@ -16,6 +16,8 @@ namespace TechStacks.ServiceInterface
     [Authenticate]
     public class TechnologyServicesAdmin : Service
     {
+        public static ILog Log = LogManager.GetLogger(typeof(TechnologyServicesAdmin));
+
         public IAppSettings AppSettings { get; set; }
 
         public TwitterUpdates TwitterUpdates { get; set; }
@@ -24,29 +26,38 @@ namespace TechStacks.ServiceInterface
 
         private string PostTwitterUpdate(string msgPrefix, List<long> techIds, int maxLength)
         {
-            var stackNames = Db.Column<string>(Db.From<TechnologyStack>()
-                .Where(x => techIds.Contains(x.Id))
-                .Select(x => x.Name));
-
-            var sb = new StringBuilder(msgPrefix);
-            for (int i = 0; i < stackNames.Count; i++)
+            try
             {
-                var name = stackNames[i];
-                if (sb.Length + name.Length + 3 > maxLength)
-                    break;
+                var stackNames = Db.Column<string>(Db.From<TechnologyStack>()
+                    .Where(x => techIds.Contains(x.Id))
+                    .Select(x => x.Name));
 
-                if (i > 0)
-                    sb.Append(",");
+                var sb = new StringBuilder(msgPrefix);
+                for (int i = 0; i < stackNames.Count; i++)
+                {
+                    var name = stackNames[i];
+                    if (sb.Length + name.Length + 3 > maxLength)
+                        break;
 
-                sb.Append(" " + name);
+                    if (i > 0)
+                        sb.Append(",");
+
+                    sb.Append(" " + name);
+                }
+
+                return TwitterUpdates.Tweet(sb.ToString());
+
             }
-
-            return TwitterUpdates.Tweet(sb.ToString());
+            catch (Exception ex)
+            {
+                Log.Error("Could not post to Twitter: " + msgPrefix, ex);
+                return null;
+            }        
         }
 
         public object Post(CreateTechnology request)
         {
-            var slug = request.Name.GenerateSlug();
+            var slug = request.Slug;
             var existingTech = Db.Single<Technology>(q => q.Name == request.Name || q.Slug == slug);
             if (existingTech != null)
                 throw new ArgumentException($"'{slug}' already exists", nameof(request.Name));
@@ -77,7 +88,14 @@ namespace TechStacks.ServiceInterface
             var history = createdTechStack.ConvertTo<TechnologyHistory>();
             history.TechnologyId = id;
             history.Operation = "INSERT";
+
             Db.Insert(history);
+
+            Db.ExecuteSql(
+                @"update user_activity set 
+                                 technology_count = (select count(*) from technology where owner_id = @userIdStr)
+                           where id = @userId",
+                new { userId = session.GetUserId(), userIdStr = session.UserAuthId });
 
             Cache.FlushAll();
 
@@ -85,8 +103,9 @@ namespace TechStacks.ServiceInterface
             if (postUpdate)
             {
                 var url = new ClientTechnology { Slug = tech.Slug }.ToAbsoluteUri();
+                var twitterSlug = tech.Slug.Replace("-", "");
                 PostTwitterUpdate(
-                    "Who's using #{0}? {1}".Fmt(tech.Slug.Replace("-", ""), url),
+                    $"Who's using #{twitterSlug}? {url}",
                     Db.ColumnDistinct<long>(Db.From<TechnologyChoice>()
                         .Where(x => x.TechnologyId == tech.Id)
                         .Select(x => x.TechnologyStackId)).ToList(),
@@ -151,10 +170,12 @@ namespace TechStacks.ServiceInterface
             if (postUpdate)
             {
                 var url = new ClientTechnology { Slug = tech.Slug }.ToAbsoluteUri();
+                var twitterSlug = tech.Slug.Replace("-", "");
+
                 response.ResponseStatus = new ResponseStatus
                 {
                     Message = PostTwitterUpdate(
-                        "Who's using #{0}? {1}".Fmt(tech.Slug.Replace("-", ""), url),
+                        $"Who's using #{twitterSlug}? {url}",
                         Db.ColumnDistinct<long>(Db.From<TechnologyChoice>()
                             .Where(x => x.TechnologyId == tech.Id)
                             .Select(x => x.TechnologyStackId)).ToList(),

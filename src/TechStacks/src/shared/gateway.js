@@ -1,4 +1,4 @@
-import { JsonServiceClient, toFormData } from "@servicestack/client";
+import { log, JsonServiceClient, toFormData } from "@servicestack/client";
 import { 
     GetConfig, 
     Overview, 
@@ -26,6 +26,42 @@ import {
     DeleteTechnologyStack,
     GetTechnologyPreviousVersions,
     GetTechnologyStackPreviousVersions,
+    CreatePost,
+    QueryPosts,
+    UserPostVote,
+    UserPostReport,
+    GetPost,
+    GetUsersKarma,
+    CreatePostComment,
+    UserPostCommentReport,
+    UserPostCommentVote,
+    UpdatePostComment,
+    UpdatePost,
+    DeletePost,
+    DeletePostComment,
+    GetUserPostCommentVotes,
+    PinPostComment,
+    QueryOrganizations,
+    GetOrganizationMembers,
+    QueryPostComments,
+    LockPost,
+    CreateOrganization,
+    DeleteOrganization,
+    UpdateOrganization,
+    CreateCategory,
+    GetOrganizationBySlug,
+    DeleteOrganizationCategory,
+    UpdateOrganizationCategory,
+    LockOrganization,
+    AddOrganizationMember,
+    UpdateOrganizationMember,
+    RemoveOrganizationMember,
+    AddOrganizationCategory,
+    CreateOrganizationFromPost,
+    CreateOrganizationForTechnology,
+    GetOrganization,
+    GetUserPostActivity,
+    UserPostFavorite,
 } from "./dtos";
 
 export const client = new JsonServiceClient("/");
@@ -43,6 +79,45 @@ export const getAllTechStacks = async () => await client.get(new GetAllTechnolog
 export const queryTechnology = async (query) => await client.get(new QueryTechnology(), { include: 'total', ...query });
 
 export const queryTechStacks = async (query) => await client.get(new QueryTechStacks(), { include: 'total', ...query });
+
+export const queryPosts = async (query) => await client.get(new QueryPosts(), 
+    { take:50, ...query, fields: "id,organizationId,userId,type,categoryId,slug,title,imageUrl,technologyIds,commentsCount,created,createdBy" });
+
+export const queryPostComments = async(query) => await client.get(new QueryPostComments(), { take:50, ...query });
+
+export const getUserPostActivity = async() => await client.get(new GetUserPostActivity());
+
+export const getPost = async(id, include="comments") => await client.get(new GetPost(), { id, include });
+
+export const getUsersKarma = async(userIds) => (await client.get(new GetUsersKarma(), { userIds })).results;
+
+export const getUserPostCommentVotes = async(postId) => await client.get(new GetUserPostCommentVotes(), { postId });
+
+export const queryLatestOrganizationsPosts = async (organizationId, types, categoryId, skip, take) => {
+    const request = { organizationId, orderBy:'rank' };
+    if (types) 
+        request.types = types;
+    if (categoryId)
+        request.categoryId = categoryId;
+    if (skip > 0)
+        request.skip = skip;
+    if (take > 0)
+        request.take = take;
+    return (await queryPosts(request)).results
+};
+
+export const queryLatestPosts = async(types, technologyIds, skip, take) => {
+    const request = { orderBy:'rank' };
+    if (types) 
+        request.types = types;
+    if (technologyIds)
+        request.anyTechnologyIds = technologyIds;
+    if (skip > 0)
+        request.skip = skip;
+    if (take > 0)
+        request.take = take;
+    return (await queryPosts(request)).results
+}
 
 export const getTechnology = async(slug) => {
     const request = new GetTechnology();
@@ -147,11 +222,9 @@ export const deleteTechStack = async(id) => {
     return await client.delete(new DeleteTechnologyStack(), { id });
 }
 
-export const getTechnologySelectItems = async() => {
+export const getTechnologyTiers = async() => {
     const request = new QueryTechnology();
-    const results = (await client.get(request, { orderBy:"tier,name", fields:"id,name,tier", jsconfig:"edv" })).results;
-    const to = results.map(x => ({ text:`${x.tier} - ${x.name}`, value:x.id }));
-    return to;
+    return (await client.get(request, { orderBy:"tier,name", fields:"id,name,tier,slug", jsconfig:"edv" })).results;
 }
 
 export const getTechnologyPreviousVersions = async(slug) => {
@@ -164,4 +237,139 @@ export const getTechStackPreviousVersions = async(slug) => {
     const request = new GetTechnologyStackPreviousVersions();
     request.slug = slug;
     return (await client.get(request)).results;
+}
+
+export const getOrganizationBySlug = async(slug) => await client.get(new GetOrganizationBySlug(), { slug });
+
+export const getOrganizationById = async(id) => await client.get(new GetOrganization(), { id });
+
+export const createOrganization = async(name, slug, description) => {
+    const request = new CreateOrganization();
+    request.name = name;
+    request.slug = slug;
+    request.description = description;
+    return await client.post(request);
+}
+
+export const createOrganizationForTechnology = async(technologyId) => 
+    await client.post(Object.assign(new CreateOrganizationForTechnology(), { technologyId }));
+
+export const createOrganizationForTechStack = async(techStackId) => 
+    await client.post(Object.assign(new CreateOrganizationForTechnology(), { techStackId }));
+
+export const updateOrganization = async(args) => await client.put(Object.assign(new UpdateOrganization(), args));
+
+export const deleteOrganization = async(id) => await client.delete(new DeleteOrganization(), { id });
+
+export const lockOrganization = async(id, lock, reason) => {
+    const request = new LockOrganization();
+    request.id = id;
+    request.lock = lock;
+    request.reason = reason;
+    await client.put(request);
+}
+
+export const addCategory = async(args) => await client.post(Object.assign(new AddOrganizationCategory(), args));
+
+export const updateCategory = async(args) => await client.put(Object.assign(new UpdateOrganizationCategory(), args));
+
+export const deleteCategory = async(organizationId, id) => await client.delete(new DeleteOrganizationCategory(), { organizationId, id });
+
+export const addMember = async(args) => await client.post(Object.assign(new AddOrganizationMember(), args));
+
+export const updateMember = async(args) => await client.put(Object.assign(new UpdateOrganizationMember(), args));
+
+export const removeMember = async(organizationId, userId) => await client.delete(new RemoveOrganizationMember(), { organizationId, userId });
+
+export const createPost = async(args, icon) => {
+    const request = new CreatePost();
+    const body = toFormData({...args, icon });
+    return (await client.postBody(request, body));
+}
+
+export const updatePost = async(args, icon) => {
+    const request = new UpdatePost();
+    const body = toFormData({...args, icon });
+    return (await client.putBody(request, body));
+}
+
+export const deletePost = async(id) => {
+    const request = new DeletePost();
+    request.id = id;
+    return await client.delete(request);
+}
+
+export const votePost = async(id, weight) => {
+    const request = new UserPostVote();
+    request.id = id;
+    request.weight = weight;
+    await client.put(request);
+}
+
+export const favoritePost = async(id) => {
+    const request = new UserPostFavorite();
+    request.id = id;
+    await client.put(request);
+}
+
+export const reportPost = async (id, reportType, notes) => {
+    const request = new UserPostReport();
+    request.id = id;
+    request.type = reportType;
+    request.notes = notes;
+    await client.put(request);
+}
+
+export const createPostComment = async (postId, content, replyId) => {
+    const request = new CreatePostComment();
+    request.postId = postId;
+    request.replyId = replyId;
+    request.content = content;
+    await client.post(request);
+}
+
+export const updatePostComment = async (id, postId, content) => {
+    const request = new UpdatePostComment();
+    request.id = id;
+    request.postId = postId;
+    request.content = content;
+    await client.put(request);
+}
+
+export const deletePostComment = async(id) => {
+    const request = new DeletePostComment();
+    request.id = id;
+    return await client.delete(request);
+}
+
+export const reportPostComment = async (postId, commentId, reportType, notes) => {
+    const request = new UserPostCommentReport();
+    request.postId = postId;
+    request.id = commentId;
+    request.notes = notes;
+    await client.put(request);
+}
+
+export const votePostComment = async(postId, commentId, weight) => {
+    const request = new UserPostCommentVote();
+    request.postId = postId;
+    request.id = commentId;
+    request.weight = weight;
+    await client.put(request);
+}
+
+export const pinPostComment = async(postId, commentId, pin) => {
+    const request = new PinPostComment();
+    request.postId = postId;
+    request.id = commentId;
+    request.pin = pin;
+    await client.put(request);
+}
+
+export const lockPost = async(postId, lock, reason) => {
+    const request = new LockPost();
+    request.id = postId;
+    request.lock = lock;
+    request.reason = reason;
+    await client.put(request);
 }

@@ -79,6 +79,7 @@ namespace TechStacks.ServiceModel
     public class CreateTechnology : IReturn<CreateTechnologyResponse>
     {
         public string Name { get; set; }
+        public string Slug { get; set; }
         public string VendorName { get; set; }
         public string VendorUrl { get; set; }
         public string ProductUrl { get; set; }

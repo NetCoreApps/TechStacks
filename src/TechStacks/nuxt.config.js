@@ -12,9 +12,10 @@ module.exports = {
   modules: ['@nuxtjs/proxy'],
   proxy: {
     '/json': 'http://localhost:16325/',
-    '/auth': 'http://localhost:16325/'
+    '/auth': 'http://localhost:16325/',
+    '/users/*/avatar': 'http://localhost:16325/'
   },
-  css: ['~/assets/css/app.css'],
+  css: ['~/assets/css/gfm.css','~/assets/css/app.css'],
   /*
   ** Headers of the page
   */

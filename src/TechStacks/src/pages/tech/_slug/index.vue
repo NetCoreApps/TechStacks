@@ -69,7 +69,10 @@
     </div>
 
     <v-container v-if="technology" class="body" grid-list-md>
-      <v-layout class="body" fluid>
+      <v-layout class="body" fluid column>
+
+        <TechnologyPost type="Announcement" :technology="technology" @organizationCreated="loadTechnology" />
+
         <v-flex xs12 sm12>
           <v-card>
             <v-container fluid grid-list-md>
@@ -103,6 +106,8 @@
           </v-card>
         </v-flex>
       </v-layout>
+
+      <TechnologyComments :technology="technology" @organizationCreated="loadTechnology" />
     </v-container>
 
 
@@ -110,11 +115,15 @@
 </template>
 
 <script>
+import TechnologyPost from "~/components/TechnologyPost.vue";
+import TechnologyComments from "~/components/TechnologyComments.vue";
+
 import { mapGetters } from 'vuex';
 import { heroes } from "@servicestack/images";
 import { log, prettifyUrl } from "~/shared/utils";
 
 export default {
+  components: { TechnologyPost, TechnologyComments },
   computed: {
     slug() {
       return this.$route.params.slug;
@@ -134,11 +143,13 @@ export default {
     pageStats(){
       return this.getPageStats("tech", this.slug);
     },
-    ...mapGetters(['loading','canChangeTechnology','getTechnology','getPageStats','isFavoriteTechnology','isAuthenticated'])
+    ...mapGetters(['loading','canChangeTechnology','getTechnology','getPageStats','isFavoriteTechnology','isAuthenticated','getOrganizationSlug'])
   },
 
   methods: {
-    prettifyUrl,
+    async loadTechnology(){
+      await this.$store.dispatch("loadTechnology", this.slug);
+    },
     refreshPageStats() {
       this.$store.dispatch("getPageStats", { type: "tech", slug: this.slug, id:this.technology && this.technology.id });
     },
@@ -152,10 +163,11 @@ export default {
       await this.$store.dispatch('removeFavorite', { type:'tech', id:this.technology.id });
       this.refreshPageStats();
     },
+    prettifyUrl,
   },
 
   async mounted() {
-    await this.$store.dispatch("getTechnology", this.slug);
+    await this.loadTechnology();
     this.refreshPageStats();
   }
 };

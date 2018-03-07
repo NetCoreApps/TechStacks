@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -63,16 +64,17 @@ namespace TechStacks
             SetConfig(new HostConfig
             {
                 AddRedirectParamsToQueryString = true,
-                DebugMode = debugMode,
+                DebugMode = true,
             });
 
             JsConfig.DateHandler = DateHandler.ISO8601;
 
-            container.Register<IDbConnectionFactory>(new OrmLiteConnectionFactory(
-                Environment.GetEnvironmentVariable("TECHSTACKS_DB") ?? AppSettings.GetString("OrmLite.ConnectionString"), 
-                PostgreSqlDialect.Provider));
+            var dbFactory = new OrmLiteConnectionFactory(
+              Environment.GetEnvironmentVariable("TECHSTACKS_DB") ?? AppSettings.GetString("OrmLite.ConnectionString"),
+              PostgreSqlDialect.Provider);
+            dbFactory.RegisterDialectProvider(nameof(PostgreSqlDialect), PostgreSqlDialect.Provider);
 
-            var dbFactory = container.Resolve<IDbConnectionFactory>();
+            container.Register<IDbConnectionFactory>(dbFactory);
 
             this.Plugins.Add(new AuthFeature(() => new CustomUserSession(), new IAuthProvider[]
             {
@@ -82,6 +84,9 @@ namespace TechStacks
             }){
                 HtmlRedirect = "/"
             });
+
+            container.Register<IMarkdownProvider>(c =>
+                new GitHubApiMarkdownProvider(Environment.GetEnvironmentVariable("GITHUB_AUTH")));
 
             container.Register(new TwitterUpdates(
                 AppSettings.GetString("WebStacks.ConsumerKey"),
@@ -159,7 +164,17 @@ namespace TechStacks
                     OnlyShowAnnotatedServices = true,
                 }
             });
-            Plugins.Add(new AutoQueryFeature { MaxLimit = 500, StripUpperInLike = false });
+            Plugins.Add(new AutoQueryFeature
+            {
+                MaxLimit = 500,
+                StripUpperInLike = false,
+                ResponseFilters =
+                {
+                   ctx => ctx.Response.Meta["Cache"] = Stopwatch.GetTimestamp().ToString()
+                }
+            }.RegisterQueryFilter<QueryPosts, Post>((q, dto, req) =>
+              q.And(x => x.Deleted == null)
+            ));
             Plugins.Add(new AdminFeature());
             Plugins.Add(new OpenApiFeature());
 

@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-02-05 03:23:32
+Date: 2018-03-06 20:09:37
 Version: 5.03
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -24,6 +24,24 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var Organization = /** @class */ (function () {
+    function Organization() {
+    }
+    return Organization;
+}());
+export { Organization };
+var Category = /** @class */ (function () {
+    function Category() {
+    }
+    return Category;
+}());
+export { Category };
+var OrganizationMember = /** @class */ (function () {
+    function OrganizationMember() {
+    }
+    return OrganizationMember;
+}());
+export { OrganizationMember };
 // @DataContract
 var ResponseError = /** @class */ (function () {
     function ResponseError() {
@@ -38,6 +56,32 @@ var ResponseStatus = /** @class */ (function () {
     return ResponseStatus;
 }());
 export { ResponseStatus };
+var QueryBase = /** @class */ (function () {
+    function QueryBase() {
+    }
+    return QueryBase;
+}());
+export { QueryBase };
+var QueryDb = /** @class */ (function (_super) {
+    __extends(QueryDb, _super);
+    function QueryDb() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return QueryDb;
+}(QueryBase));
+export { QueryDb };
+var Post = /** @class */ (function () {
+    function Post() {
+    }
+    return Post;
+}());
+export { Post };
+var PostComment = /** @class */ (function () {
+    function PostComment() {
+    }
+    return PostComment;
+}());
+export { PostComment };
 var TechnologyBase = /** @class */ (function () {
     function TechnologyBase() {
     }
@@ -60,20 +104,6 @@ var Technology = /** @class */ (function (_super) {
     return Technology;
 }(TechnologyBase));
 export { Technology };
-var QueryBase = /** @class */ (function () {
-    function QueryBase() {
-    }
-    return QueryBase;
-}());
-export { QueryBase };
-var QueryDb = /** @class */ (function (_super) {
-    __extends(QueryDb, _super);
-    function QueryDb() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return QueryDb;
-}(QueryBase));
-export { QueryDb };
 var TechnologyStackBase = /** @class */ (function () {
     function TechnologyStackBase() {
     }
@@ -124,6 +154,18 @@ var TechStackDetails = /** @class */ (function (_super) {
     return TechStackDetails;
 }(TechnologyStackBase));
 export { TechStackDetails };
+var CategoryInfo = /** @class */ (function () {
+    function CategoryInfo() {
+    }
+    return CategoryInfo;
+}());
+export { CategoryInfo };
+var OrganizationInfo = /** @class */ (function () {
+    function OrganizationInfo() {
+    }
+    return OrganizationInfo;
+}());
+export { OrganizationInfo };
 // @DataContract
 var Option = /** @class */ (function () {
     function Option() {
@@ -131,6 +173,163 @@ var Option = /** @class */ (function () {
     return Option;
 }());
 export { Option };
+var UserActivity = /** @class */ (function () {
+    function UserActivity() {
+    }
+    return UserActivity;
+}());
+export { UserActivity };
+var GetOrganizationResponse = /** @class */ (function () {
+    function GetOrganizationResponse() {
+    }
+    return GetOrganizationResponse;
+}());
+export { GetOrganizationResponse };
+var GetOrganizationMembersResponse = /** @class */ (function () {
+    function GetOrganizationMembersResponse() {
+    }
+    return GetOrganizationMembersResponse;
+}());
+export { GetOrganizationMembersResponse };
+var CreateOrganizationForTechnologyResponse = /** @class */ (function () {
+    function CreateOrganizationForTechnologyResponse() {
+    }
+    return CreateOrganizationForTechnologyResponse;
+}());
+export { CreateOrganizationForTechnologyResponse };
+var CreateOrganizationResponse = /** @class */ (function () {
+    function CreateOrganizationResponse() {
+    }
+    return CreateOrganizationResponse;
+}());
+export { CreateOrganizationResponse };
+var UpdateOrganizationResponse = /** @class */ (function () {
+    function UpdateOrganizationResponse() {
+    }
+    return UpdateOrganizationResponse;
+}());
+export { UpdateOrganizationResponse };
+var AddCategoryResponse = /** @class */ (function () {
+    function AddCategoryResponse() {
+    }
+    return AddCategoryResponse;
+}());
+export { AddCategoryResponse };
+var UpdateCategoryResponse = /** @class */ (function () {
+    function UpdateCategoryResponse() {
+    }
+    return UpdateCategoryResponse;
+}());
+export { UpdateCategoryResponse };
+var AddOrganizationMemberResponse = /** @class */ (function () {
+    function AddOrganizationMemberResponse() {
+    }
+    return AddOrganizationMemberResponse;
+}());
+export { AddOrganizationMemberResponse };
+var UpdateOrganizationMemberResponse = /** @class */ (function () {
+    function UpdateOrganizationMemberResponse() {
+    }
+    return UpdateOrganizationMemberResponse;
+}());
+export { UpdateOrganizationMemberResponse };
+// @DataContract
+var QueryResponse = /** @class */ (function () {
+    function QueryResponse() {
+    }
+    return QueryResponse;
+}());
+export { QueryResponse };
+var GetPostResponse = /** @class */ (function () {
+    function GetPostResponse() {
+    }
+    return GetPostResponse;
+}());
+export { GetPostResponse };
+var CreatePostResponse = /** @class */ (function () {
+    function CreatePostResponse() {
+    }
+    return CreatePostResponse;
+}());
+export { CreatePostResponse };
+var UpdatePostResponse = /** @class */ (function () {
+    function UpdatePostResponse() {
+    }
+    return UpdatePostResponse;
+}());
+export { UpdatePostResponse };
+var DeletePostResponse = /** @class */ (function () {
+    function DeletePostResponse() {
+    }
+    return DeletePostResponse;
+}());
+export { DeletePostResponse };
+var GetUserPostActivityResponse = /** @class */ (function () {
+    function GetUserPostActivityResponse() {
+    }
+    return GetUserPostActivityResponse;
+}());
+export { GetUserPostActivityResponse };
+var UserPostVoteResponse = /** @class */ (function () {
+    function UserPostVoteResponse() {
+    }
+    return UserPostVoteResponse;
+}());
+export { UserPostVoteResponse };
+var UserPostFavoriteResponse = /** @class */ (function () {
+    function UserPostFavoriteResponse() {
+    }
+    return UserPostFavoriteResponse;
+}());
+export { UserPostFavoriteResponse };
+var UserPostReportResponse = /** @class */ (function () {
+    function UserPostReportResponse() {
+    }
+    return UserPostReportResponse;
+}());
+export { UserPostReportResponse };
+var CreatePostCommentResponse = /** @class */ (function () {
+    function CreatePostCommentResponse() {
+    }
+    return CreatePostCommentResponse;
+}());
+export { CreatePostCommentResponse };
+var UpdatePostCommentResponse = /** @class */ (function () {
+    function UpdatePostCommentResponse() {
+    }
+    return UpdatePostCommentResponse;
+}());
+export { UpdatePostCommentResponse };
+var DeletePostCommentResponse = /** @class */ (function () {
+    function DeletePostCommentResponse() {
+    }
+    return DeletePostCommentResponse;
+}());
+export { DeletePostCommentResponse };
+var UserPostCommentVoteResponse = /** @class */ (function () {
+    function UserPostCommentVoteResponse() {
+    }
+    return UserPostCommentVoteResponse;
+}());
+export { UserPostCommentVoteResponse };
+var UserPostCommentReportResponse = /** @class */ (function () {
+    function UserPostCommentReportResponse() {
+    }
+    return UserPostCommentReportResponse;
+}());
+export { UserPostCommentReportResponse };
+var GetUserPostCommentVotesResponse = /** @class */ (function () {
+    function GetUserPostCommentVotesResponse() {
+    }
+    return GetUserPostCommentVotesResponse;
+}());
+export { GetUserPostCommentVotesResponse };
+var PinPostCommentResponse = /** @class */ (function () {
+    function PinPostCommentResponse() {
+    }
+    return PinPostCommentResponse;
+}());
+export { PinPostCommentResponse };
 var SessionInfoResponse = /** @class */ (function () {
     function SessionInfoResponse() {
     }
@@ -149,13 +348,6 @@ var GetAllTechnologiesResponse = /** @class */ (function () {
     return GetAllTechnologiesResponse;
 }());
 export { GetAllTechnologiesResponse };
-// @DataContract
-var QueryResponse = /** @class */ (function () {
-    function QueryResponse() {
-    }
-    return QueryResponse;
-}());
-export { QueryResponse };
 var GetTechnologyResponse = /** @class */ (function () {
     function GetTechnologyResponse() {
     }
@@ -288,12 +480,24 @@ var GetUserFeedResponse = /** @class */ (function () {
     return GetUserFeedResponse;
 }());
 export { GetUserFeedResponse };
+var GetUsersKarmaResponse = /** @class */ (function () {
+    function GetUsersKarmaResponse() {
+    }
+    return GetUsersKarmaResponse;
+}());
+export { GetUsersKarmaResponse };
 var GetUserInfoResponse = /** @class */ (function () {
     function GetUserInfoResponse() {
     }
     return GetUserInfoResponse;
 }());
 export { GetUserInfoResponse };
+var SyncDiscourseSiteResponse = /** @class */ (function () {
+    function SyncDiscourseSiteResponse() {
+    }
+    return SyncDiscourseSiteResponse;
+}());
+export { SyncDiscourseSiteResponse };
 var LogoUrlApprovalResponse = /** @class */ (function () {
     function LogoUrlApprovalResponse() {
     }
@@ -348,6 +552,287 @@ var Ping = /** @class */ (function () {
     return Ping;
 }());
 export { Ping };
+// @Route("/orgs/{Id}", "GET")
+var GetOrganization = /** @class */ (function () {
+    function GetOrganization() {
+    }
+    GetOrganization.prototype.createResponse = function () { return new GetOrganizationResponse(); };
+    GetOrganization.prototype.getTypeName = function () { return "GetOrganization"; };
+    return GetOrganization;
+}());
+export { GetOrganization };
+// @Route("/organizations/{Slug}", "GET")
+var GetOrganizationBySlug = /** @class */ (function () {
+    function GetOrganizationBySlug() {
+    }
+    GetOrganizationBySlug.prototype.createResponse = function () { return new GetOrganizationResponse(); };
+    GetOrganizationBySlug.prototype.getTypeName = function () { return "GetOrganizationBySlug"; };
+    return GetOrganizationBySlug;
+}());
+export { GetOrganizationBySlug };
+// @Route("/orgs/{Id}/members", "GET")
+var GetOrganizationMembers = /** @class */ (function () {
+    function GetOrganizationMembers() {
+    }
+    GetOrganizationMembers.prototype.createResponse = function () { return new GetOrganizationMembersResponse(); };
+    GetOrganizationMembers.prototype.getTypeName = function () { return "GetOrganizationMembers"; };
+    return GetOrganizationMembers;
+}());
+export { GetOrganizationMembers };
+// @Route("/orgs/posts/new", "POST")
+var CreateOrganizationForTechnology = /** @class */ (function () {
+    function CreateOrganizationForTechnology() {
+    }
+    CreateOrganizationForTechnology.prototype.createResponse = function () { return new CreateOrganizationForTechnologyResponse(); };
+    CreateOrganizationForTechnology.prototype.getTypeName = function () { return "CreateOrganizationForTechnology"; };
+    return CreateOrganizationForTechnology;
+}());
+export { CreateOrganizationForTechnology };
+// @Route("/orgs", "POST")
+var CreateOrganization = /** @class */ (function () {
+    function CreateOrganization() {
+    }
+    CreateOrganization.prototype.createResponse = function () { return new CreateOrganizationResponse(); };
+    CreateOrganization.prototype.getTypeName = function () { return "CreateOrganization"; };
+    return CreateOrganization;
+}());
+export { CreateOrganization };
+// @Route("/orgs/{Id}", "PUT")
+var UpdateOrganization = /** @class */ (function () {
+    function UpdateOrganization() {
+    }
+    UpdateOrganization.prototype.createResponse = function () { return new UpdateOrganizationResponse(); };
+    UpdateOrganization.prototype.getTypeName = function () { return "UpdateOrganization"; };
+    return UpdateOrganization;
+}());
+export { UpdateOrganization };
+// @Route("/orgs/{Id}", "DELETE")
+var DeleteOrganization = /** @class */ (function () {
+    function DeleteOrganization() {
+    }
+    DeleteOrganization.prototype.createResponse = function () { };
+    DeleteOrganization.prototype.getTypeName = function () { return "DeleteOrganization"; };
+    return DeleteOrganization;
+}());
+export { DeleteOrganization };
+// @Route("/orgs/{Id}/lock", "PUT")
+var LockOrganization = /** @class */ (function () {
+    function LockOrganization() {
+    }
+    LockOrganization.prototype.createResponse = function () { };
+    LockOrganization.prototype.getTypeName = function () { return "LockOrganization"; };
+    return LockOrganization;
+}());
+export { LockOrganization };
+// @Route("/orgs/{OrganizationId}/categories", "POST")
+var AddOrganizationCategory = /** @class */ (function () {
+    function AddOrganizationCategory() {
+    }
+    AddOrganizationCategory.prototype.createResponse = function () { return new AddCategoryResponse(); };
+    AddOrganizationCategory.prototype.getTypeName = function () { return "AddOrganizationCategory"; };
+    return AddOrganizationCategory;
+}());
+export { AddOrganizationCategory };
+// @Route("/orgs/{OrganizationId}/categories/{Id}", "PUT")
+var UpdateOrganizationCategory = /** @class */ (function () {
+    function UpdateOrganizationCategory() {
+    }
+    UpdateOrganizationCategory.prototype.createResponse = function () { return new UpdateCategoryResponse(); };
+    UpdateOrganizationCategory.prototype.getTypeName = function () { return "UpdateOrganizationCategory"; };
+    return UpdateOrganizationCategory;
+}());
+export { UpdateOrganizationCategory };
+// @Route("/orgs/{OrganizationId}/categories/{Id}", "DELETE")
+var DeleteOrganizationCategory = /** @class */ (function () {
+    function DeleteOrganizationCategory() {
+    }
+    DeleteOrganizationCategory.prototype.createResponse = function () { };
+    DeleteOrganizationCategory.prototype.getTypeName = function () { return "DeleteOrganizationCategory"; };
+    return DeleteOrganizationCategory;
+}());
+export { DeleteOrganizationCategory };
+// @Route("/orgs/{OrganizationId}/members", "POST")
+var AddOrganizationMember = /** @class */ (function () {
+    function AddOrganizationMember() {
+    }
+    AddOrganizationMember.prototype.createResponse = function () { return new AddOrganizationMemberResponse(); };
+    AddOrganizationMember.prototype.getTypeName = function () { return "AddOrganizationMember"; };
+    return AddOrganizationMember;
+}());
+export { AddOrganizationMember };
+// @Route("/orgs/{OrganizationId}/members/{Id}", "PUT")
+var UpdateOrganizationMember = /** @class */ (function () {
+    function UpdateOrganizationMember() {
+    }
+    UpdateOrganizationMember.prototype.createResponse = function () { return new UpdateOrganizationMemberResponse(); };
+    UpdateOrganizationMember.prototype.getTypeName = function () { return "UpdateOrganizationMember"; };
+    return UpdateOrganizationMember;
+}());
+export { UpdateOrganizationMember };
+// @Route("/orgs/{OrganizationId}/members/{UserId}", "DELETE")
+var RemoveOrganizationMember = /** @class */ (function () {
+    function RemoveOrganizationMember() {
+    }
+    RemoveOrganizationMember.prototype.createResponse = function () { };
+    RemoveOrganizationMember.prototype.getTypeName = function () { return "RemoveOrganizationMember"; };
+    return RemoveOrganizationMember;
+}());
+export { RemoveOrganizationMember };
+// @Route("/posts/search")
+var QueryPosts = /** @class */ (function (_super) {
+    __extends(QueryPosts, _super);
+    function QueryPosts() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    QueryPosts.prototype.createResponse = function () { return new QueryResponse(); };
+    QueryPosts.prototype.getTypeName = function () { return "QueryPosts"; };
+    return QueryPosts;
+}(QueryDb));
+export { QueryPosts };
+// @Route("/posts/{Id}", "GET")
+var GetPost = /** @class */ (function () {
+    function GetPost() {
+    }
+    GetPost.prototype.createResponse = function () { return new GetPostResponse(); };
+    GetPost.prototype.getTypeName = function () { return "GetPost"; };
+    return GetPost;
+}());
+export { GetPost };
+// @Route("/posts", "POST")
+var CreatePost = /** @class */ (function () {
+    function CreatePost() {
+    }
+    CreatePost.prototype.createResponse = function () { return new CreatePostResponse(); };
+    CreatePost.prototype.getTypeName = function () { return "CreatePost"; };
+    return CreatePost;
+}());
+export { CreatePost };
+// @Route("/posts/{Id}", "PUT")
+var UpdatePost = /** @class */ (function () {
+    function UpdatePost() {
+    }
+    UpdatePost.prototype.createResponse = function () { return new UpdatePostResponse(); };
+    UpdatePost.prototype.getTypeName = function () { return "UpdatePost"; };
+    return UpdatePost;
+}());
+export { UpdatePost };
+// @Route("/posts/{Id}", "DELETE")
+var DeletePost = /** @class */ (function () {
+    function DeletePost() {
+    }
+    DeletePost.prototype.createResponse = function () { return new DeletePostResponse(); };
+    DeletePost.prototype.getTypeName = function () { return "DeletePost"; };
+    return DeletePost;
+}());
+export { DeletePost };
+// @Route("/posts/{Id}/lock", "PUT")
+var LockPost = /** @class */ (function () {
+    function LockPost() {
+    }
+    LockPost.prototype.createResponse = function () { };
+    LockPost.prototype.getTypeName = function () { return "LockPost"; };
+    return LockPost;
+}());
+export { LockPost };
+// @Route("/user/posts/activity")
+var GetUserPostActivity = /** @class */ (function () {
+    function GetUserPostActivity() {
+    }
+    GetUserPostActivity.prototype.createResponse = function () { return new GetUserPostActivityResponse(); };
+    GetUserPostActivity.prototype.getTypeName = function () { return "GetUserPostActivity"; };
+    return GetUserPostActivity;
+}());
+export { GetUserPostActivity };
+// @Route("/posts/{Id}/vote", "PUT")
+var UserPostVote = /** @class */ (function () {
+    function UserPostVote() {
+    }
+    UserPostVote.prototype.createResponse = function () { return new UserPostVoteResponse(); };
+    UserPostVote.prototype.getTypeName = function () { return "UserPostVote"; };
+    return UserPostVote;
+}());
+export { UserPostVote };
+// @Route("/posts/{Id}/favorite", "PUT")
+var UserPostFavorite = /** @class */ (function () {
+    function UserPostFavorite() {
+    }
+    UserPostFavorite.prototype.createResponse = function () { return new UserPostFavoriteResponse(); };
+    UserPostFavorite.prototype.getTypeName = function () { return "UserPostFavorite"; };
+    return UserPostFavorite;
+}());
+export { UserPostFavorite };
+// @Route("/posts/{Id}/report", "PUT")
+var UserPostReport = /** @class */ (function () {
+    function UserPostReport() {
+    }
+    UserPostReport.prototype.createResponse = function () { return new UserPostReportResponse(); };
+    UserPostReport.prototype.getTypeName = function () { return "UserPostReport"; };
+    return UserPostReport;
+}());
+export { UserPostReport };
+// @Route("/posts/{PostId}/comments", "POST")
+var CreatePostComment = /** @class */ (function () {
+    function CreatePostComment() {
+    }
+    CreatePostComment.prototype.createResponse = function () { return new CreatePostCommentResponse(); };
+    CreatePostComment.prototype.getTypeName = function () { return "CreatePostComment"; };
+    return CreatePostComment;
+}());
+export { CreatePostComment };
+// @Route("/posts/{PostId}/comments/{Id}", "PUT")
+var UpdatePostComment = /** @class */ (function () {
+    function UpdatePostComment() {
+    }
+    UpdatePostComment.prototype.createResponse = function () { return new UpdatePostCommentResponse(); };
+    UpdatePostComment.prototype.getTypeName = function () { return "UpdatePostComment"; };
+    return UpdatePostComment;
+}());
+export { UpdatePostComment };
+// @Route("/posts/{PostId}/comments/{Id}", "DELETE")
+var DeletePostComment = /** @class */ (function () {
+    function DeletePostComment() {
+    }
+    DeletePostComment.prototype.createResponse = function () { return new DeletePostCommentResponse(); };
+    DeletePostComment.prototype.getTypeName = function () { return "DeletePostComment"; };
+    return DeletePostComment;
+}());
+export { DeletePostComment };
+// @Route("/posts/{PostId}/comments/{Id}", "GET")
+var UserPostCommentVote = /** @class */ (function () {
+    function UserPostCommentVote() {
+    }
+    UserPostCommentVote.prototype.createResponse = function () { return new UserPostCommentVoteResponse(); };
+    UserPostCommentVote.prototype.getTypeName = function () { return "UserPostCommentVote"; };
+    return UserPostCommentVote;
+}());
+export { UserPostCommentVote };
+// @Route("/posts/{PostId}/comments/{Id}/report", "PUT")
+var UserPostCommentReport = /** @class */ (function () {
+    function UserPostCommentReport() {
+    }
+    UserPostCommentReport.prototype.createResponse = function () { return new UserPostCommentReportResponse(); };
+    UserPostCommentReport.prototype.getTypeName = function () { return "UserPostCommentReport"; };
+    return UserPostCommentReport;
+}());
+export { UserPostCommentReport };
+// @Route("/user/comments/votes")
+var GetUserPostCommentVotes = /** @class */ (function () {
+    function GetUserPostCommentVotes() {
+    }
+    GetUserPostCommentVotes.prototype.createResponse = function () { return new GetUserPostCommentVotesResponse(); };
+    GetUserPostCommentVotes.prototype.getTypeName = function () { return "GetUserPostCommentVotes"; };
+    return GetUserPostCommentVotes;
+}());
+export { GetUserPostCommentVotes };
+// @Route("/posts/{PostId}/comments/{Id}/pin", "UPDATE")
+var PinPostComment = /** @class */ (function () {
+    function PinPostComment() {
+    }
+    PinPostComment.prototype.createResponse = function () { return new PinPostCommentResponse(); };
+    PinPostComment.prototype.getTypeName = function () { return "PinPostComment"; };
+    return PinPostComment;
+}());
+export { PinPostComment };
 // @Route("/my-session")
 var SessionInfo = /** @class */ (function () {
     function SessionInfo() {
@@ -461,6 +946,15 @@ var GetPageStats = /** @class */ (function () {
     return GetPageStats;
 }());
 export { GetPageStats };
+// @Route("/cache/clear")
+var ClearCache = /** @class */ (function () {
+    function ClearCache() {
+    }
+    ClearCache.prototype.createResponse = function () { return ""; };
+    ClearCache.prototype.getTypeName = function () { return "ClearCache"; };
+    return ClearCache;
+}());
+export { ClearCache };
 // @Route("/tasks/hourly")
 var HourlyTask = /** @class */ (function () {
     function HourlyTask() {
@@ -637,6 +1131,15 @@ var GetUserFeed = /** @class */ (function () {
     return GetUserFeed;
 }());
 export { GetUserFeed };
+// @Route("/users/karma", "GET")
+var GetUsersKarma = /** @class */ (function () {
+    function GetUsersKarma() {
+    }
+    GetUsersKarma.prototype.createResponse = function () { return new GetUsersKarmaResponse(); };
+    GetUsersKarma.prototype.getTypeName = function () { return "GetUsersKarma"; };
+    return GetUsersKarma;
+}());
+export { GetUsersKarma };
 // @Route("/userinfo/{UserName}")
 var GetUserInfo = /** @class */ (function () {
     function GetUserInfo() {
@@ -646,6 +1149,22 @@ var GetUserInfo = /** @class */ (function () {
     return GetUserInfo;
 }());
 export { GetUserInfo };
+// @Route("/users/{UserName}/avatar", "GET")
+var UserAvatar = /** @class */ (function () {
+    function UserAvatar() {
+    }
+    return UserAvatar;
+}());
+export { UserAvatar };
+// @Route("/sync/discourse/{Site}")
+var SyncDiscourseSite = /** @class */ (function () {
+    function SyncDiscourseSite() {
+    }
+    SyncDiscourseSite.prototype.createResponse = function () { return new SyncDiscourseSiteResponse(); };
+    SyncDiscourseSite.prototype.getTypeName = function () { return "SyncDiscourseSite"; };
+    return SyncDiscourseSite;
+}());
+export { SyncDiscourseSite };
 // @Route("/admin/technology/{TechnologyId}/logo")
 var LogoUrlApproval = /** @class */ (function () {
     function LogoUrlApproval() {
@@ -726,6 +1245,17 @@ var GetAccessToken = /** @class */ (function () {
     return GetAccessToken;
 }());
 export { GetAccessToken };
+// @Route("/posts/comments/search")
+var QueryPostComments = /** @class */ (function (_super) {
+    __extends(QueryPostComments, _super);
+    function QueryPostComments() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    QueryPostComments.prototype.createResponse = function () { return new QueryResponse(); };
+    QueryPostComments.prototype.getTypeName = function () { return "QueryPostComments"; };
+    return QueryPostComments;
+}(QueryDb));
+export { QueryPostComments };
 // @Route("/admin/technology/search")
 // @AutoQueryViewer(DefaultSearchField="Tier", DefaultSearchText="Data", DefaultSearchType="=", Description="Explore different Technologies", IconUrl="octicon:database", Title="Find Technologies Admin")
 var FindTechnologiesAdmin = /** @class */ (function (_super) {

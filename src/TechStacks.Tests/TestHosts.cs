@@ -6,7 +6,6 @@ using ServiceStack.Data;
 using ServiceStack.OrmLite;
 using ServiceStack.Testing;
 using TechStacks.ServiceInterface;
-using TechStacks.ServiceInterface.Filters;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 

@@ -10,7 +10,6 @@ using ServiceStack.Auth;
 using ServiceStack.Configuration;
 using ServiceStack.Data;
 using ServiceStack.OrmLite;
-using TechStacks.ServiceInterface.Filters;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 using TechStacks.ServiceInterface;

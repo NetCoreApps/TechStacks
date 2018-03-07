@@ -26,9 +26,9 @@
                         </div>
                       </v-flex>
                       <v-flex style="text-align:center">
-                        <div class="headline" style="margin-top:.5em">TechStacks built using my favorite technologies</div>
+                        <div class="headline" style="margin-top:.5em">Personalized feeds using my favorite technologies</div>
                         <div style="color:gray;margin-top:.5em">
-                            Favorite <nuxt-link to="/tech">technologies</nuxt-link> to see more TeckStacks in your feed
+                            Favorite <nuxt-link to="/tech">technologies</nuxt-link> for more results.
                         </div>
                       </v-flex>
                     </v-layout>
@@ -45,9 +45,36 @@
     </div>
 
     <v-container v-if="user" class="body" grid-list-md>
+
       <v-layout row>
+        <v-flex xs12>
+          <v-tabs v-model="tab">
+            <v-tab>News</v-tab>
+            <v-tab>TechStacks</v-tab>
+            <v-tab>Favorited Posts</v-tab>
+          </v-tabs>
+        </v-flex>
+      </v-layout>
+
+      <v-layout row>
+
+        <v-flex v-if="tab == 0" xs9>
+          <PostsList :posts="latestNewsPosts" :page="page" />
+
+          <v-flex style="margin-top:5px;">
+            <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)">
+              <v-icon>chevron_left</v-icon>
+              prev
+            </v-btn>
+            <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)">
+              more
+              <v-icon>chevron_right</v-icon>
+            </v-btn>
+          </v-flex>
+
+        </v-flex>
         
-        <v-flex xs8>
+        <v-flex v-if="tab == 1" xs9>
           <v-layout row wrap>
             <v-flex xs12 
               v-for="techstack in sessionFeed"
@@ -60,7 +87,7 @@
                         <v-flex>
                             {{ techstack.name }}
                         </v-flex>
-                        <v-flex style="text-align:right;font-weight:normal;font-size:smaller">
+                        <v-flex style="text-align:right;font-weight:normal;font-size:smaller;margin-right:1em">
                             {{ prettifyUrl(techstack.appUrl) }}
                         </v-flex>
                       </v-layout>
@@ -92,37 +119,30 @@
           </v-layout>
         </v-flex>
 
-        <v-flex xs4>
+        <v-flex v-if="tab == 2" xs9>
+          
+          <PostsList :posts="favoritedPosts" :page="page" />          
+
+          <v-flex v-if="favoritedPosts.length > POSTS_PER_PAGE" style="margin-top:5px;">
+            <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)">
+              <v-icon>chevron_left</v-icon>
+              prev
+            </v-btn>
+            <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)">
+              more
+              <v-icon>chevron_right</v-icon>
+            </v-btn>
+          </v-flex>
+
+          <div style="text-align:center;color:#666;margin-top:1em">
+            posts you've favorited will appear here.
+          </div>
+        </v-flex>
+
+        <v-flex xs3>
           <v-layout column>
 
-            <v-flex>
-              <nuxt-link to="/stacks">
-                <v-toolbar color="pink">
-                  <v-toolbar-title class="white--text">Favorite TechStacks</v-toolbar-title>
-                </v-toolbar>
-              </nuxt-link>
-              <v-card>
-                <v-card-title>
-                  <v-container fill-height fluid>
-                    <v-layout row>
-                      <v-flex>
-                        <v-flex class="headline" v-for="techstack in favoriteTechStacks" :key="techstack.name">
-                          <v-btn icon style="margin:0 .5em 0 0" @click="removeFavorite('stack',techstack.id)"><v-icon color="pink">favorite</v-icon></v-btn>
-                          <nuxt-link :to="`/${techstack.slug}`">{{ techstack.name }}</nuxt-link>
-                        </v-flex>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card-title>
-                <v-card-actions>
-                  <v-flex d-flex>
-                      <v-btn large to="/stacks/new">Add TechStack</v-btn>
-                  </v-flex>
-                </v-card-actions>
-              </v-card>
-            </v-flex>
-
-            <v-flex>
+            <v-flex class="favorite-techs">
               <nuxt-link to="/tech">
                 <v-toolbar color="pink">
                     <v-toolbar-title class="white--text">Favorite Technologies</v-toolbar-title>
@@ -133,7 +153,7 @@
                   <v-container fill-height fluid>
                     <v-layout row>
                       <v-flex>
-                        <v-flex class="headline" v-for="tech in favoriteTechnologies" :key="tech.name">
+                        <v-flex v-for="tech in favoriteTechnologies" :key="tech.name">
                           <v-btn icon style="margin:0 .5em 0 0" @click="removeFavorite('tech',tech.id)"><v-icon color="pink">favorite</v-icon></v-btn>
                           <nuxt-link :to="`/tech/${tech.slug}`">{{ tech.name }}</nuxt-link>
                         </v-flex>
@@ -143,7 +163,34 @@
                 </v-card-title>
                 <v-card-actions>
                   <v-flex d-flex>
-                      <v-btn large to="/tech/new">Add Technology</v-btn>
+                      <v-btn flat to="/tech/new">Add Technology</v-btn>
+                  </v-flex>
+                </v-card-actions>
+              </v-card>
+            </v-flex>
+
+            <v-flex class="favorite-stacks">
+              <nuxt-link to="/stacks">
+                <v-toolbar color="pink">
+                  <v-toolbar-title class="white--text">Favorite TechStacks</v-toolbar-title>
+                </v-toolbar>
+              </nuxt-link>
+              <v-card>
+                <v-card-title>
+                  <v-container fill-height fluid>
+                    <v-layout row>
+                      <v-flex>
+                        <v-flex v-for="techstack in favoriteTechStacks" :key="techstack.name">
+                          <v-btn icon style="margin:0 .5em 0 0" @click="removeFavorite('stack',techstack.id)"><v-icon color="pink">favorite</v-icon></v-btn>
+                          <nuxt-link :to="`/${techstack.slug}`">{{ techstack.name }}</nuxt-link>
+                        </v-flex>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card-title>
+                <v-card-actions>
+                  <v-flex d-flex>
+                      <v-btn flat to="/stacks/new">Add TechStack</v-btn>
                   </v-flex>
                 </v-card-actions>
               </v-card>
@@ -158,14 +205,24 @@
 </template>
 
 <script>
+import PostsList from "~/components/PostsList.vue";
+
 import { mapGetters } from "vuex";
 import { heroes } from "@servicestack/images";
+import { appendQueryString } from "@servicestack/client";
+
+import { queryPosts } from "~/shared/gateway";
 import { log, prettifyUrl } from "~/shared/utils";
+import { POSTS_PER_PAGE } from "~/shared/post";
 
 export default {
+  components: { PostsList },
   computed: {
     heroUrl() {
       return heroes.static(this.user && this.user.userName, 10);
+    },
+    hasMore() {
+      return this.latestNewsPosts.length >= POSTS_PER_PAGE;
     },
     ...mapGetters([
       "loading",
@@ -173,44 +230,84 @@ export default {
       "user",
       "sessionFeed",
       "favoriteTechnologies",
-      "favoriteTechStacks"
+      "favoriteTechStacks",
+      "latestNewsPosts",
+      "userPostActivity"
     ])
   },
 
   methods: {
-    prettifyUrl,
+    async refreshPosts() {
+      await this.$store.dispatch({
+        type: "latestNewsPosts",
+        page: this.page,
+        technologyIds: this.favoriteTechnologies.map(x => x.id),
+      });
+    },
+    loadPage(p) {
+      let qs = Object.assign({}, this.$route.query, { p });
+      if (qs.p == 0) delete qs["p"];
+      this.$router.push(appendQueryString(this.$route.path, qs));
+    },
+    initRoute(qs) {
+      this.stageChanges({ 
+        tab: parseInt(qs.t) || 0, 
+        page: parseInt(qs.p) || 0 
+      });
+    },
+    stageChanges(changes) {
+      this.staging = changes;
+      for (let key in changes) {
+        this[key] = changes[key];
+      }
+      this.$nextTick(() => (this.staging = null));
+    },
     removeFavorite(type, id) {
       this.$store.dispatch('removeFavorite', { type, id });
     },
+
+    prettifyUrl,
   },
 
-  mounted() {
-    this.$store.dispatch("getUserFeed");
+  watch: {
+    tab(to,from) {
+      if (this.staging) return;
+      this.$router.push(this.$route.path + (to > 0 ? `?t=${to}` : ''));
+    }
   },
 
-  data() {
-    return {};
-  }
+  beforeRouteUpdate(to,from,next){
+    console.log('beforeRouteUpdate', to.query)
+    this.initRoute(to.query);
+    if (this.tab == 0) {
+      this.refreshPosts();
+    }
+    next();
+  },
+
+  async mounted() {
+    console.log('mounted', this.$route.query)
+    this.initRoute(this.$route.query);
+    this.refreshPosts();
+    this.$store.dispatch("loadUserFeed");
+    await this.$store.dispatch("loadUserPostActivity");
+    const ids = this.userPostActivity.favorited;
+    if (ids.length > 0) {
+      this.favoritedPosts = (await queryPosts({ ids, orderBy:'rank' })).results;
+    }
+  },
+
+  data: () => ({
+    tab: 0,
+    page: 0,
+    favoritedPosts: [],
+    POSTS_PER_PAGE
+  })
 };
 </script>
 
-<style scoped>
-.avatarbox {
-  text-align: center;
-  display: inline-block;
-  border: 1px solid #ddd;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-}
-.avatarbox img {
-  margin: 4px;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  height: 50px;
-  width: 50px;
+<style>
+.favorite-techs, .favorite-stacks {
+  font-size: 20px;
 }
 </style>

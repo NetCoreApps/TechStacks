@@ -31,7 +31,7 @@ export default {
   },
 
   async mounted() {
-    await this.$store.dispatch("getTechnology", this.slug);
+    await this.$store.dispatch("loadTechnology", this.slug);
     this.technology = this.getTechnology(this.slug);
   },
 
