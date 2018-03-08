@@ -1,5 +1,3 @@
-http://news.techstacks.io/*  http://techstacks.netcore.io:7015/news/:splat 200
-https://news.techstacks.io/*  http://techstacks.netcore.io:7015/news/:splat 200
 /json/*        http://techstacks.netcore.io:7015/json/:splat        200
 /auth/*        http://techstacks.netcore.io:7015/auth/:splat        200
 /metadata/*    http://techstacks.netcore.io:7015/metadata/:splat    200
