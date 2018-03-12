@@ -259,7 +259,7 @@ export default {
     this.initRoute(this.$route.query);
     await this.$store.dispatch("loadOrganizationBySlugIfNotExists", this.slug);
     await this.refreshPosts();
-    this.notFound = (this.latestOrganizationPosts || []).length == 0;
+    this.notFound = this.organization == null && (this.latestOrganizationPosts || []).length == 0;
     this.$store.dispatch("loadUserPostActivity");
     this.$store.dispatch("loadTechnologyTiers");
   },
