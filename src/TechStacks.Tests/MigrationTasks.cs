@@ -39,38 +39,42 @@ namespace TechStacks.Tests
             }
         }
 
-        [Test]
+        //[Test]
         public void Create_GroupMember_schema()
         {
             using (var db = dbFactory.Open())
             {
                 db.DropAndCreateTable<OrganizationMember>();
+                db.DropAndCreateTable<OrganizationMemberInvite>();
 
-                var orgs = db.Select<Organization>();
+                var orgs = db.Select<Organization>(x => x.Slug == "servicestack");
 
                 foreach (var org in orgs)
                 {
-                    db.Insert(new OrganizationMember
+                    if (org.Slug == "servicestack")
                     {
-                        OrganizationId = org.Id,
-                        UserId = 8,
-                        UserName = "ServiceStack",
-                        IsOwner = org.Name == "ServiceStack",
-                        IsModerator = org.Name != "ServiceStack",
-                        DenyPosts = org.Name != "ServiceStack",
-                        Created = DateTime.Now,
-                        CreatedBy = "ServiceStack"
-                    });
-                    db.Insert(new OrganizationMember
-                    {
-                        OrganizationId = org.Id,
-                        UserId = 379,
-                        UserName = "webstacks",
-                        //IsOwner = org.Name != "ServiceStack",
-                        DenyComments = org.Name == "ServiceStack",
-                        Created = DateTime.Now,
-                        CreatedBy = "webstacks"
-                    });
+                        db.Insert(new OrganizationMember
+                        {
+                            OrganizationId = org.Id,
+                            UserId = 8,
+                            UserName = "ServiceStack",
+                            IsOwner = org.Name == "ServiceStack",
+                            IsModerator = org.Name != "ServiceStack",
+                            DenyPosts = org.Name != "ServiceStack",
+                            Created = DateTime.Now,
+                            CreatedBy = "ServiceStack"
+                        });
+                        db.Insert(new OrganizationMember
+                        {
+                            OrganizationId = org.Id,
+                            UserId = 379,
+                            UserName = "webstacks",
+                            DenyComments = org.Name == "ServiceStack",
+                            Created = DateTime.Now,
+                            CreatedBy = "webstacks"
+                        });
+                    }
+
                     db.Insert(new OrganizationMember
                     {
                         OrganizationId = org.Id,
@@ -78,6 +82,7 @@ namespace TechStacks.Tests
                         UserName = "mythz",
                         Created = DateTime.Now,
                         CreatedBy = "mythz",
+                        IsOwner = true,
                     });
                 }
             }
@@ -102,16 +107,16 @@ namespace TechStacks.Tests
             }
         }
 
-        [Test]
+        //[Test]
         public void Add_PostFavorite()
         {
             using (var db = dbFactory.Open())
             {
-                db.DropAndCreateTable<PostFavorite>();
+                db.DropAndCreateTable<OrganizationMemberInvite>();
             }
         }
 
-        [Test]
+        //[Test]
         public void Add_OrganizationId()
         {
             using (var db = dbFactory.Open())
@@ -131,47 +136,16 @@ namespace TechStacks.Tests
         }
 
         [Test]
-        public void Add_org_owners()
-        {
-            using (var db = dbFactory.Open())
-            {
-                //db.AddColumn<CustomUserAuth>(x => x.IpAddress);
-                //db.AddColumn<CustomUserAuth>(x => x.IpAddress);
-                //db.AddColumn<CustomUserAuth>(x => x.Banned);
-                //db.AddColumn<CustomUserAuth>(x => x.BannedBy);
-                //db.AddColumn<CustomUserAuth>(x => x.Notes);
-
-                //db.AddColumn<Organization>(x => x.ModeratorPostTypes);
-
-                //db.DropAndCreateTable<Category>();
-
-                //var orgs = db.Select<Organization>();
-
-                //foreach (var org in orgs)
-                //{
-                //    db.Insert(new Category
-                //    {
-                //        OrganizationId = org.Id,
-                //        Name = OrganizationServices.Uncategorized,
-                //        Created = DateTime.Now,
-                //        CreatedBy = "webstacks",
-                //        Modified = DateTime.Now,
-                //        ModifiedBy = "webstacks"
-                //    });
-                //}
-            }
-        }
-
-        //[Test]
         public void Add_PostTypes()
         {
             using (var db = dbFactory.Open())
             {
-                if (!db.ColumnExists<Organization>(x => x.PostTypes))
-                    db.AddColumn<Organization>(x => x.PostTypes);
+                //db.AddColumn<PostComment>(x => x.ReportCount);
 
-                if (!db.ColumnExists<Organization>(x => x.ModeratorPostTypes))
-                    db.AddColumn<Organization>(x => x.ModeratorPostTypes);
+                //db.DropAndCreateTable<PostReport>();
+                //db.DropAndCreateTable<PostCommentReport>();
+
+                //db.AddColumn<Organization>(x => x.DeletePostsWithReportCount);
 
                 //var postTypes = new[]
                 //{
@@ -190,15 +164,6 @@ namespace TechStacks.Tests
                 //    where: x => parentGroupIds.Contains(x.Id));
             }
         }
-
-        [Test]
-        public void Add_groups()
-        {
-            using (var db = dbFactory.Open())
-            {
-            }
-        }
-
 
         //[Test]
         public void Update_CustomUserAuth()
@@ -244,5 +209,61 @@ namespace TechStacks.Tests
                    where id = @id", new { id = 2 });
             }
         }
+
+        public class PostInfo
+        {
+            public int OrganizationId { get; set; }
+            public long CommentsPostId { get; set; }
+            public int Id { get; set; }
+            public string Slug { get; set; }
+            public string Name { get; set; }
+        }
+
+        //[Test]
+        public void Create_missing_posts()
+        {
+            var now = DateTime.Now;
+            var userName = "mythz";
+            var userId = 17;
+
+            using (var db = dbFactory.Open())
+            {
+                var techsWithMissingPosts = db.SqlList<PostInfo>(
+                    "select t.organization_id, t.comments_post_id, t.id, t.slug, t.name from technology t left join post p on t.comments_post_id = p.id where p.id is null and t.comments_post_id is not null");
+
+                foreach (var info in techsWithMissingPosts)
+                {
+                    var postTitle = $"{info.Name} Page Comments";
+                    var postContent = $"### Comments for [{info.Name} {nameof(Technology)}](/tech/{info.Slug}) page";
+
+                    var post = new Post
+                    {
+                        OrganizationId = info.OrganizationId,
+                        Type = PostType.Post,
+                        Title = postTitle,
+                        Slug = postTitle.GenerateSlug(),
+                        Content = postContent,
+                        ContentHtml = $"<div class='gfm ssfm'>{MarkdownConfig.Transform(postContent)}</div>",
+                        RefId = info.Id,
+                        RefSource = nameof(Technology),
+                        RefUrn = $"urn:{nameof(Technology)}:{info.Id}",
+                        Created = now,
+                        CreatedBy = userName,
+                        Modified = now,
+                        ModifiedBy = userName,
+                        UserId = userId,
+                        UpVotes = 0,
+                        Rank = 0,
+                        TechnologyIds = new[] { info.Id },
+                    };
+
+                    var postId = db.Insert(post, selectIdentity:true);
+                    db.UpdateOnly(() => new Technology {CommentsPostId = postId},
+                        where: x => x.Id == info.Id);
+                }
+
+            }
+        }
+
    }
 }
