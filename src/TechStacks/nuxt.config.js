@@ -7,6 +7,7 @@ module.exports = {
   },
   plugins: [
     '~/plugins/vuetify.js',
+    { src: '~plugins/ga.js', ssr: false },
     { src: '~/plugins/nuxt-client-init.js', ssr: false }
   ],
   modules: ['@nuxtjs/proxy'],
