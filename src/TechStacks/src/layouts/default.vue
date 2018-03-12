@@ -1,20 +1,21 @@
 <template>
   <v-app>
     <v-toolbar fixed app :clipped-left="clipped" style="background:#24292e" dark>
-      <nuxt-link to="/" exact>
+      <nuxt-link :to="routes.homeNews" exact>
         <img src="../static/img/logo-white.svg" width="42" height="42" />
       </nuxt-link>
-      <nuxt-link to="/" exact style="color:#fff;text-decoration:none">
+      <nuxt-link :to="routes.homeNews" exact style="color:#fff;text-decoration:none">
         <v-toolbar-title v-text="title" style="font-size:26px;"></v-toolbar-title>
       </nuxt-link>
+      <nuxt-link class="slogan" :to="routes.post(5944,'welcome')">no noise, just tech!</nuxt-link>
       <v-spacer></v-spacer>
 
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat to="/" exact><v-icon>home</v-icon></v-btn>
-        <v-btn flat to="/news">News</v-btn>
-        <v-btn flat to="/stacks">Stacks</v-btn>
-        <v-btn flat to="/tech">Technologies</v-btn>
-        <v-btn v-if="isAuthenticated" flat to="/favorites">Favorites</v-btn>
+        <v-btn flat :to="routes.homeNews" exact><v-icon>home</v-icon></v-btn>
+        <v-btn flat :to="routes.homeTop">Top</v-btn>
+        <v-btn flat :to="routes.homeStacks">Stacks</v-btn>
+        <v-btn flat :to="routes.homeTech">Technologies</v-btn>
+        <v-btn v-if="isAuthenticated" flat :to="routes.homeFavorites">Favorites</v-btn>
         <v-btn v-if="!isAuthenticated" @click="href(`/auth/twitter`)">
           <img src="../static/img/twitter.svg" width="50" height="50" style="backgroundd:#333" />
         </v-btn>
@@ -28,7 +29,7 @@
           <v-list dark style="margin-top:50px">
             <v-list-tile>
               <v-list-tile-title class="white--text">
-                <nuxt-link :to="`/users/${user.userName}`">Profile</nuxt-link>
+                <nuxt-link :to="routes.user(user.userName)">Profile</nuxt-link>
               </v-list-tile-title>
             </v-list-tile>
             <v-list-tile>
@@ -64,6 +65,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { routes } from "~/shared/routes";
 
 export default {
     computed: mapGetters(['isAuthenticated','user']),
@@ -76,6 +78,7 @@ export default {
 
     data () {
       return {
+        routes,
         clipped: true,
         drawer: false,
         fixed: true,

@@ -9,8 +9,8 @@
 
         <v-card-actions style="text-align:center">
           <v-flex>
-            <v-btn to="/stacks" exact>View TechStacks</v-btn>
-            <v-btn to="/stacks/new" color="primary">Add TechStack</v-btn>
+            <v-btn :to="routes.homeStacks" exact>View TechStacks</v-btn>
+            <v-btn :to="routes.newStack" color="primary">Add TechStack</v-btn>
           </v-flex>
         </v-card-actions>
       </v-card>
@@ -20,6 +20,7 @@
 <script>
 import TechStackEdit from "~/components/TechStackEdit.vue";
 import { mapGetters } from 'vuex';
+import { routes } from "~/shared/routes";
 
 export default {
   components: { TechStackEdit },
@@ -36,6 +37,7 @@ export default {
   },
 
   data: () => ({ 
+    routes,
     techstack: null 
   }),
 }

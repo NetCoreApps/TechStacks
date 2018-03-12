@@ -31,7 +31,12 @@
                                 <div class="post-image" v-if="post.imageUrl">
                                   <a :href="post.url || post.imageUrl"><img :src="post.imageUrl" alt="post image"></a>
                                 </div>
-                                <div v-if="post.contentHtml" class="post-content details-html" v-html="post.contentHtml"></div>
+                                <div v-if="post.contentHtml" class="post-content details-html">
+                                  <div v-html="post.contentHtml"></div>
+                                  <div class="continue" v-if="post.url">
+                                    <a :href="post.url">continue reading</a>
+                                  </div>
+                                </div>
 
                                 <div class="post-actions">
                                     <a v-if="canFavoritePost(post)" @click="favoritePost(post)">{{ favoriteLabel(post) }}</a>
@@ -197,3 +202,13 @@ export default {
   })
 };
 </script>
+
+<style>
+.continue::before {
+  content: "..."
+}
+.continue {
+  margin-top: 1em;
+  font-size: 16px;
+}
+</style>

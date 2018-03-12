@@ -19,7 +19,7 @@
 
                     <v-layout v-else style="margin-bottom:1em">
                       <v-flex>
-                        <nuxt-link :to="`/users/${userName}`">
+                        <nuxt-link :to="routes.user(userName)">
                           @{{ userName }} 
                         </nuxt-link>
                       </v-flex>
@@ -90,6 +90,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { toObject, errorResponse, errorResponseExcept } from "@servicestack/client";
+import { routes } from "~/shared/routes";
 import { addMember, updateMember, removeMember } from "~/shared/gateway";
 import { nameCounter, nameRules } from "~/shared/utils";
 
@@ -173,6 +174,7 @@ export default {
   },
 
   data: () => ({
+    routes,
     ...member,
     valid: true,
     allowDelete: false,

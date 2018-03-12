@@ -5,7 +5,7 @@
             <v-layout>
                 <v-flex class="comment-info">
                     <v-icon v-if="pinned" style="font-size:50px;color:#4caf50;margin-bottom:10px;" title="Pinned Comment">place</v-icon>
-                    <nuxt-link :to="`/users/${comment.createdBy}`"><img class="comment-avatar" :src="`/users/${comment.createdBy}/avatar`" :alt="`${comment.createdBy} profile`"></nuxt-link>
+                    <nuxt-link :to="routes.user(comment.createdBy)"><img class="comment-avatar" :src="routes.userAvatar(comment.createdBy)" :alt="`${comment.createdBy} profile`"></nuxt-link>
                     <div class="comment-karma"><b>{{ getUsersKarma(comment.userId) }}</b></div>
                 </v-flex>
                 <v-flex>
@@ -20,7 +20,7 @@
                     </div>
 
                     <div v-if="reportCommentId">
-                        <ReportDialog :commentId="reportCommentId" v-if="reportCommentId" @close="reportCommentId=null"></ReportDialog>
+                        <ReportDialog :postId="post.id" :commentId="reportCommentId" v-if="reportCommentId" @close="reportCommentId=null"></ReportDialog>
                     </div>
 
                     <v-layout v-if="!(editId || replyId)" :class="['comment-actions', votedCommentClass(comment.id)]">
@@ -30,7 +30,7 @@
                         </div>
                         <span class="points">{{commentKarmaLabel(comment)}}</span>
                         
-                        <nuxt-link :to="`/comments/${post.id}/${comment.id}`" class="submitted">{{fromNow(comment.created)}}</nuxt-link>
+                        <nuxt-link :to="routes.comment(post.id,comment.id)" class="submitted">{{fromNow(comment.created)}}</nuxt-link>
 
                         <a v-if="!pinned && canReplyComment(post,comment)" @click.prevent="replyId=comment.id">reply</a>
                         <a v-if="canReportComment(post,comment)" @click.prevent="reportCommentId=comment.id">report</a>
@@ -55,6 +55,7 @@ import { mapGetters } from "vuex";
 import CommentEdit from "~/components/CommentEdit.vue";
 import ReportDialog from "~/components/ReportDialog.vue";
 import { sortComments, canReplyComment, canUpdateComment, canReportComment, canPinComment, canVoteComment, votedCommentClass, commentKarmaLabel, votePostComment } from "~/shared/post";
+import { routes } from "~/shared/routes";
 import { fromNow } from "~/shared/utils";
 
 export default {
@@ -97,6 +98,7 @@ export default {
   },
 
   data: () => ({
+    routes,
     replyId: null,
     reportCommentId: null,
     editId: null,

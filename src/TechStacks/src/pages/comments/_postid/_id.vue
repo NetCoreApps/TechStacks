@@ -1,12 +1,11 @@
 <template>
 <div>
-
   <div v-if="post && comment">
     <PostAlerts :organization="organization" :post="post"></PostAlerts>
 
     <div class="comments-info">
-      <nuxt-link v-if="comment.replyId" :to="`/comments/${postId}/${comment.replyId}`">parent</nuxt-link>
-      from <nuxt-link :to="`/news/comments/${postId}/${post.slug}`">{{ post.title }}</nuxt-link>
+      <nuxt-link v-if="comment.replyId" :to="routes.comment(postId,comment.replyId)">parent</nuxt-link>
+      from <nuxt-link :to="routes.post(postId,post.slug)">{{ post.title }}</nuxt-link>
     </div>
 
     <v-layout column>
@@ -28,6 +27,7 @@ import PostComment from "~/components/PostComment.vue";
 import PostAlerts from "~/components/PostAlerts.vue";
 
 import { mapGetters } from "vuex";
+import { routes } from "~/shared/routes";
 
 export default {
   components: { PostComment, PostAlerts },
@@ -70,6 +70,7 @@ computed: {
   },
 
   data: () => ({
+    routes,
     notFound: false,
   }),
 }

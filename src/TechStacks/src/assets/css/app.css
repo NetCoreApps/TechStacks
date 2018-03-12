@@ -35,6 +35,16 @@ div.white--text a {
 .toolbar a:hover {
   opacity: 1;
 }
+.slogan {
+  font-size: 14px;
+  padding-left: 10px;
+  font-style: italic;
+  color: #f1f1f1;
+  white-space: nowrap;
+}
+.slogan::before {
+  content: "\2014 "
+}
 
 #content {
   padding: 20px;
@@ -265,6 +275,16 @@ section.block {
 .comment .comment .comment .comment .comment .gfm { max-width: 1050px; }
 .comment .comment .comment .comment .comment .comment .gfm { max-width: 1000px; }
 
+.gfm em {
+  font-style: italic;
+}
+
+.gfm p:first-child > em:first-child {
+  font-size: 22px;
+  font-style: normal;
+  color: rgba(0, 0, 0, 0.50);
+}
+
 .gfm blockquote {
   padding: 10px;
   background-color: #FFF8DC;
@@ -281,6 +301,17 @@ section.block {
 .gfm p, .gfm blockquote, .gfm ul, .gfm ol, .gfm dl, .gfm table {
   font-size: 18px;
 }
+
+@media (min-width: 1225px) {
+  .gfm p, .gfm blockquote, .gfm ul, .gfm ol, .gfm dl {
+    max-width: 1030px;
+  }
+
+  .post-content .gfm .highlight pre {
+    width: 1030px;
+  }
+}
+
 .comment-content p,.comment-content blockquote, .comment-content ul, .comment-content ol, .comment-content dl, .comment-content table {
   font-size: 16px;
 }

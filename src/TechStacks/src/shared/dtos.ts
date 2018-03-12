@@ -1,6 +1,6 @@
 /* Options:
-Date: 2018-03-06 20:09:37
-Version: 5.03
+Date: 2018-03-12 04:01:12
+Version: 5.00
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
 
@@ -50,6 +50,7 @@ export class Organization
     heroUrl: string;
     postTypes: string[];
     moderatorPostTypes: string[];
+    deletePostsWithReportCount: number;
     upVotes: number;
     downVotes: number;
     views: number;
@@ -86,12 +87,6 @@ export class Category
     postsCount: number;
     score: number;
     rank: number;
-    deleted: string;
-    deletedBy: string;
-    created: string;
-    createdBy: string;
-    modified: string;
-    modifiedBy: string;
 }
 
 export class OrganizationMember
@@ -106,10 +101,15 @@ export class OrganizationMember
     denyPosts: boolean;
     denyComments: boolean;
     notes: string;
-    created: string;
-    createdBy: string;
-    modified: string;
-    modifiedBy: string;
+}
+
+export class OrganizationMemberInvite
+{
+    id: number;
+    organizationId: number;
+    userId: number;
+    userName: string;
+    dismissed: string;
 }
 
 // @DataContract
@@ -145,6 +145,55 @@ export class ResponseStatus
 
     // @DataMember(Order=5)
     meta: { [index:string]: string; };
+}
+
+export type FlagType = "Violation" | "Spam" | "Abusive" | "Confidential" | "OffTopic" | "Other";
+
+export class PostReport
+{
+    id: number;
+    organizationId: number;
+    postId: number;
+    userId: number;
+    userName: string;
+    flagType: FlagType;
+    reportNotes: string;
+    created: string;
+    acknowledged: string;
+    acknowledgedBy: string;
+    dismissed: string;
+    dismissedBy: string;
+}
+
+export class PostReportInfo extends PostReport
+{
+    title: string;
+    reportCount: number;
+    createdBy: string;
+}
+
+export class PostCommentReport
+{
+    id: number;
+    organizationId: number;
+    postId: number;
+    postCommentId: number;
+    userId: number;
+    userName: string;
+    flagType: FlagType;
+    reportNotes: string;
+    created: string;
+    acknowledged: string;
+    acknowledgedBy: string;
+    dismissed: string;
+    dismissedBy: string;
+}
+
+export class PostCommentReportInfo extends PostCommentReport
+{
+    contentHtml: string;
+    reportCount: number;
+    createdBy: string;
 }
 
 export class QueryBase
@@ -196,6 +245,11 @@ export class Post
 
     pinCommentId: number;
     technologyIds: number[];
+    fromDate: string;
+    toDate: string;
+    location: string;
+    metaType: string;
+    meta: string;
     approved: boolean;
     upVotes: number;
     downVotes: number;
@@ -257,7 +311,7 @@ export class PostComment
     refUrn: string;
 }
 
-export type FlagType = "Violation" | "Spam" | "Abusive" | "Confidential" | "OffTopic" | "Other";
+export type ReportAction = "Dismiss" | "Delete";
 
 export type TechnologyTier = "ProgrammingLanguage" | "Client" | "Http" | "Server" | "Data" | "SoftwareInfrastructure" | "OperatingSystem" | "HardwareInfrastructure" | "ThirdPartyServices";
 
@@ -429,6 +483,7 @@ export class GetOrganizationResponse
     organization: Organization;
     categories: Category[];
     members: OrganizationMember[];
+    memberInvites: OrganizationMemberInvite[];
     responseStatus: ResponseStatus;
 }
 
@@ -436,6 +491,13 @@ export class GetOrganizationMembersResponse
 {
     organizationId: number;
     results: OrganizationMember[];
+    responseStatus: ResponseStatus;
+}
+
+export class GetOrganizationAdminResponse
+{
+    reportedPosts: PostReportInfo[];
+    reportedPostComments: PostCommentReportInfo[];
     responseStatus: ResponseStatus;
 }
 
@@ -482,6 +544,23 @@ export class UpdateOrganizationMemberResponse
     responseStatus: ResponseStatus;
 }
 
+export class GetOrganizationMemberInvitesResponse
+{
+    results: OrganizationMemberInvite[];
+    responseStatus: ResponseStatus;
+}
+
+export class RequestOrganizationMemberInviteResponse
+{
+    organizationId: number;
+    responseStatus: ResponseStatus;
+}
+
+export class UpdateOrganizationMemberInviteResponse
+{
+    responseStatus: ResponseStatus;
+}
+
 // @DataContract
 export class QueryResponse<T>
 {
@@ -506,6 +585,7 @@ export class GetPostResponse
     cache: number;
     post: Post;
     comments: PostComment[];
+    responseStatus: ResponseStatus;
 }
 
 export class CreatePostResponse
@@ -531,6 +611,7 @@ export class GetUserPostActivityResponse
     upVotedPostIds: number[];
     downVotedPostIds: number[];
     favoritePostIds: number[];
+    memberInviteOrganizationIds: number[];
     responseStatus: ResponseStatus;
 }
 
@@ -906,6 +987,14 @@ export class GetOrganizationMembers implements IReturn<GetOrganizationMembersRes
     getTypeName() { return "GetOrganizationMembers"; }
 }
 
+// @Route("/orgs/{Id}/admin", "GET")
+export class GetOrganizationAdmin implements IReturn<GetOrganizationAdminResponse>
+{
+    id: number;
+    createResponse() { return new GetOrganizationAdminResponse(); }
+    getTypeName() { return "GetOrganizationAdmin"; }
+}
+
 // @Route("/orgs/posts/new", "POST")
 export class CreateOrganizationForTechnology implements IReturn<CreateOrganizationForTechnologyResponse>
 {
@@ -942,6 +1031,7 @@ export class UpdateOrganization implements IReturn<UpdateOrganizationResponse>
     backgroundUrl: string;
     logoUrl: string;
     heroUrl: string;
+    deletePostsWithReportCount: number;
     postTypes: string[];
     moderatorPostTypes: string[];
     technologyIds: number[];
@@ -1040,9 +1130,37 @@ export class RemoveOrganizationMember implements IReturnVoid
     getTypeName() { return "RemoveOrganizationMember"; }
 }
 
-// @Route("/posts/search")
+// @Route("/orgs/{OrganizationId}/invites", "GET")
+export class GetOrganizationMemberInvites implements IReturn<GetOrganizationMemberInvitesResponse>
+{
+    organizationId: number;
+    createResponse() { return new GetOrganizationMemberInvitesResponse(); }
+    getTypeName() { return "GetOrganizationMemberInvites"; }
+}
+
+// @Route("/orgs/{OrganizationId}/invites", "POST")
+export class RequestOrganizationMemberInvite implements IReturn<RequestOrganizationMemberInviteResponse>
+{
+    organizationId: number;
+    createResponse() { return new RequestOrganizationMemberInviteResponse(); }
+    getTypeName() { return "RequestOrganizationMemberInvite"; }
+}
+
+// @Route("/orgs/{OrganizationId}/invites/{UserId}", "PUT")
+export class UpdateOrganizationMemberInvite implements IReturn<UpdateOrganizationMemberInviteResponse>
+{
+    organizationId: number;
+    userName: string;
+    approve: boolean;
+    dismiss: boolean;
+    createResponse() { return new UpdateOrganizationMemberInviteResponse(); }
+    getTypeName() { return "UpdateOrganizationMemberInvite"; }
+}
+
+// @Route("/posts", "GET")
 export class QueryPosts extends QueryDb<Post> implements IReturn<QueryResponse<Post>>, IMeta
 {
+    ids: number[];
     organizationId: number;
     organizationIds: number[];
     types: string[];
@@ -1072,6 +1190,10 @@ export class CreatePost implements IReturn<CreatePostResponse>
     content: string;
     lock: boolean;
     technologyIds: number[];
+    fromDate: string;
+    toDate: string;
+    metaType: string;
+    meta: string;
     refId: number;
     refSource: string;
     refUrn: string;
@@ -1092,6 +1214,10 @@ export class UpdatePost implements IReturn<UpdatePostResponse>
     content: string;
     lock: boolean;
     technologyIds: number[];
+    fromDate: string;
+    toDate: string;
+    metaType: string;
+    meta: string;
     createResponse() { return new UpdatePostResponse(); }
     getTypeName() { return "UpdatePost"; }
 }
@@ -1142,10 +1268,20 @@ export class UserPostFavorite implements IReturn<UserPostFavoriteResponse>
 export class UserPostReport implements IReturn<UserPostReportResponse>
 {
     id: number;
-    type: FlagType;
-    notes: string;
+    flagType: FlagType;
+    reportNotes: string;
     createResponse() { return new UserPostReportResponse(); }
     getTypeName() { return "UserPostReport"; }
+}
+
+// @Route("/posts/{PostId}/report/{Id}", "POST")
+export class ActionPostReport implements IReturnVoid
+{
+    postId: number;
+    id: number;
+    reportAction: ReportAction;
+    createResponse() {}
+    getTypeName() { return "ActionPostReport"; }
 }
 
 // @Route("/posts/{PostId}/comments", "POST")
@@ -1192,10 +1328,21 @@ export class UserPostCommentReport implements IReturn<UserPostCommentReportRespo
 {
     id: number;
     postId: number;
-    type: FlagType;
-    notes: string;
+    flagType: FlagType;
+    reportNotes: string;
     createResponse() { return new UserPostCommentReportResponse(); }
     getTypeName() { return "UserPostCommentReport"; }
+}
+
+// @Route("/posts/{PostId}/comments/{PostCommentId}/report/{Id}", "POST")
+export class ActionPostCommentReport implements IReturnVoid
+{
+    id: number;
+    postCommentId: number;
+    postId: number;
+    reportAction: ReportAction;
+    createResponse() {}
+    getTypeName() { return "ActionPostCommentReport"; }
 }
 
 // @Route("/user/comments/votes")
@@ -1674,7 +1821,7 @@ export class GetAccessToken implements IReturn<GetAccessTokenResponse>, IPost
     getTypeName() { return "GetAccessToken"; }
 }
 
-// @Route("/posts/comments/search")
+// @Route("/posts/comment", "GET")
 export class QueryPostComments extends QueryDb<PostComment> implements IReturn<QueryResponse<PostComment>>, IMeta
 {
     userId: number;

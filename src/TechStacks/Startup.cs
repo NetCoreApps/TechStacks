@@ -172,9 +172,7 @@ namespace TechStacks
                 {
                    ctx => ctx.Response.Meta["Cache"] = Stopwatch.GetTimestamp().ToString()
                 }
-            }.RegisterQueryFilter<QueryPosts, Post>((q, dto, req) =>
-              q.And(x => x.Deleted == null)
-            ));
+            });
             Plugins.Add(new AdminFeature());
             Plugins.Add(new OpenApiFeature());
 

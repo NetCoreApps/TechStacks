@@ -139,6 +139,7 @@
 <script>
 import FileInput from "~/components/FileInput.vue";
 import { mapGetters } from "vuex";
+import { routes } from "~/shared/routes";
 import { log, nameCounter, nameRules, slugCounter, slugRules, toSlug, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";
 import { toObject, errorResponse, errorResponseExcept, dateFmtHM } from "@servicestack/client";
 import { createTechnology, updateTechnology, deleteTechnology, getTechnologyPreviousVersions } from "~/shared/gateway";
@@ -232,6 +233,7 @@ export default {
   },
   
   data: () => ({
+    routes,
     ...technology,
     title: 'Add a new Technology',
     actionLabel: 'Add Technology',

@@ -62,6 +62,11 @@ import {
     GetOrganization,
     GetUserPostActivity,
     UserPostFavorite,
+    RequestOrganizationMemberInvite,
+    UpdateOrganizationMemberInvite,
+    GetOrganizationAdmin,
+    ActionPostReport,
+    ActionPostCommentReport,
 } from "./dtos";
 
 export const client = new JsonServiceClient("/");
@@ -251,6 +256,8 @@ export const createOrganization = async(name, slug, description) => {
     return await client.post(request);
 }
 
+export const getOrganizationAdmin = async(id) => await client.get(new GetOrganizationAdmin(), { id });
+
 export const createOrganizationForTechnology = async(technologyId) => 
     await client.post(Object.assign(new CreateOrganizationForTechnology(), { technologyId }));
 
@@ -312,12 +319,20 @@ export const favoritePost = async(id) => {
     await client.put(request);
 }
 
-export const reportPost = async (id, reportType, notes) => {
+export const reportPost = async (id, flagType, reportNotes) => {
     const request = new UserPostReport();
     request.id = id;
-    request.type = reportType;
-    request.notes = notes;
+    request.flagType = flagType;
+    request.reportNotes = reportNotes;
     await client.put(request);
+}
+
+export const actionPostReport = async (id, postId, reportAction) => {
+    const request = new ActionPostReport();
+    request.id = id;
+    request.postId = postId;
+    request.reportAction = reportAction;
+    await client.post(request);
 }
 
 export const createPostComment = async (postId, content, replyId) => {
@@ -342,12 +357,22 @@ export const deletePostComment = async(id) => {
     return await client.delete(request);
 }
 
-export const reportPostComment = async (postId, commentId, reportType, notes) => {
+export const reportPostComment = async (postId, commentId, flagType, reportNotes) => {
     const request = new UserPostCommentReport();
     request.postId = postId;
     request.id = commentId;
-    request.notes = notes;
+    request.flagType = flagType;
+    request.reportNotes = reportNotes;
     await client.put(request);
+}
+
+export const actionPostCommentReport = async (id, postCommentId, postId, reportAction) => {
+    const request = new ActionPostCommentReport();
+    request.id = id;
+    request.postCommentId = postCommentId;
+    request.postId = postId;
+    request.reportAction = reportAction;
+    await client.post(request);
 }
 
 export const votePostComment = async(postId, commentId, weight) => {
@@ -372,4 +397,19 @@ export const lockPost = async(postId, lock, reason) => {
     request.lock = lock;
     request.reason = reason;
     await client.put(request);
+}
+
+export const requestMemberInvite = async(organizationId) => {
+    const request = new RequestOrganizationMemberInvite();
+    request.organizationId = organizationId;
+    return await client.post(request);
+}
+
+export const updateMemberInvite = async(organizationId, userName, approve) => {
+    const request = new UpdateOrganizationMemberInvite();
+    request.organizationId = organizationId;
+    request.userName = userName;
+    request.approve = approve;
+    request.dismiss = !approve;
+    return client.put(request);
 }

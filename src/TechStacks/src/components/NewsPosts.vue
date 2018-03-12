@@ -2,7 +2,7 @@
     <div class="news">
         <h2 v-if="!organization && loading" class="svg-icon loading">Loading {{slug}} News ...</h2>
 
-        <h2 v-if="!organization && !loading"><v-icon color="red">error_outline</v-icon> '{{slug}}' was not found</h2>
+        <h2 v-if="notFound"><v-icon color="red">error_outline</v-icon> '{{slug}}' was not found</h2>
 
         <v-layout column v-else-if="organization">
             <v-flex>
@@ -23,11 +23,11 @@
 
                     <h1>
                       <span class="parent-organization">
-                        <nuxt-link :to="`/news`" style="color:#333">news </nuxt-link>
+                        <nuxt-link :to="routes.homeNews" style="color:#333">news </nuxt-link>
                         <em>/</em>
                       </span>
                       
-                      <nuxt-link v-if="view == 'category'" :to="`/news/${organization.slug}`" style="color:#333">
+                      <nuxt-link v-if="view == 'category'" :to="routes.organizationNews(organization.slug)" style="color:#333">
                         {{ organization.name }}
                       </nuxt-link>
                       <a v-else @click.prevent="resetQuery()" style="color:#333">
@@ -36,8 +36,10 @@
                     </h1>
                     <v-spacer></v-spacer>
                     
-                    <span v-if="canManageOrganization()" class="org-manage-info">
-                      <nuxt-link :to="`/organizations/${organization.slug}`">manage</nuxt-link>
+                    <span class="org-links">
+                      <nuxt-link v-if="organization.refSource == 'TechnologyStack'" :to="routes.stack(organization.slug)">{{ organization.name }}'s TechStack</nuxt-link>                      
+                      <nuxt-link v-if="organization.refSource == 'Technology'" :to="routes.tech(getTechnologySlug(organization.refId))">TechStacks using {{ organization.name }}</nuxt-link>                      
+                      <nuxt-link v-if="canManageOrganization()" :to="routes.organization(organization.slug)">manage</nuxt-link>
                     </span>
 
                     <v-btn-toggle v-model="all" style="margin-right:5px">
@@ -54,21 +56,26 @@
               <PostEdit :org="organization" :initialTypes="types" :initialCategoryId="categoryId" @done="postDone"></PostEdit>
             </v-flex>
 
-            <v-flex v-if="latestOrganizationPosts.length > 0" style="margin:1em 0">
+            <v-flex v-if="latestOrganizationPosts && latestOrganizationPosts.length > 0" style="margin:1em 0">
                 <v-layout>
                   <PostsList :posts="latestOrganizationPosts" :page="page" />
 
-                  <v-flex v-if="view != 'category' && organization.categories.length > 1" style="max-width:300px;margin-left:1em">
-                    <v-toolbar>
-                      <v-toolbar-title>Categories</v-toolbar-title>
-                    </v-toolbar>
-                    <v-card v-for="category in organization.categories" :key="category.slug" :class="['category', { highlight: c == category.slug }]">
-                      <v-card-title style="padding:10px">
-                        <a @click.prevent="changeCategory(category)">
-                          {{ category.name }}
-                        </a>
-                      </v-card-title>
-                    </v-card>
+                  <v-flex style="max-width:300px;margin-left:1em">
+
+                    <MembersInfo :organization="organization" @done="memberDone" />
+
+                    <div v-if="view != 'category' && organization.categories.length > 1">
+                      <v-toolbar>
+                        <v-toolbar-title>Categories</v-toolbar-title>
+                      </v-toolbar>
+                      <v-card v-for="category in organization.categories" :key="category.slug" :class="['category', { highlight: c == category.slug }]">
+                        <v-card-title style="padding:10px">
+                          <a @click.prevent="changeCategory(category)">
+                            {{ category.name }}
+                          </a>
+                        </v-card-title>
+                      </v-card>
+                    </div>
                   </v-flex>
                 </v-layout>
 
@@ -96,22 +103,24 @@
 <script>
 import PostEdit from "~/components/PostEdit.vue";
 import PostsList from "~/components/PostsList.vue";
+import MembersInfo from "~/components/MembersInfo.vue";
 import DebugInfo from "~/components/DebugInfo.vue";
 
 import { mapGetters } from "vuex";
+import { routes } from "~/shared/routes";
 import { fromNow } from "~/shared/utils";
 import { POSTS_PER_PAGE, canManageOrganization, canPostToOrganization } from "~/shared/post";
 import { appendQueryString } from "@servicestack/client";
 
 export default {
-  components: { PostEdit, PostsList, DebugInfo },
+  components: { PostEdit, PostsList, MembersInfo, DebugInfo },
   props: ["slug","query","view"],
   computed: {
     page() {
       return parseInt(this.$route.query.p || 0);
     },
     hasMore() {
-      return this.latestOrganizationPosts.length >= POSTS_PER_PAGE;
+      return (this.latestOrganizationPosts || []).length >= POSTS_PER_PAGE;
     },
     categoryId() {
       const category = this.organization && this.organization.categories.filter(x => x.slug == this.c)[0];
@@ -132,7 +141,9 @@ export default {
       "organization",
       "browsablePostTypes",
       "postTypeLabelsMap",
-      "latestOrganizationPosts"
+      "latestOrganizationPosts",
+      "getTechnologySlug",
+      "getTechStackSlug"
     ])
   },
 
@@ -142,6 +153,9 @@ export default {
     },
     close() {
       this.add = false;
+    },
+    async memberDone(){
+      this.$store.dispatch('loadOrganizationById', this.organization.id);
     },
     async postDone() {
       this.add = false;
@@ -244,12 +258,14 @@ export default {
     this.$store.commit('latestOrganizationPostsQuery', null);
     this.initRoute(this.$route.query);
     await this.$store.dispatch("loadOrganizationBySlugIfNotExists", this.slug);
-    this.refreshPosts();
+    await this.refreshPosts();
+    this.notFound = (this.latestOrganizationPosts || []).length == 0;
     this.$store.dispatch("loadUserPostActivity");
     this.$store.dispatch("loadTechnologyTiers");
   },
 
   data: () => ({
+    routes,
     types: null,
     c: null,
     staging: null,
@@ -257,6 +273,7 @@ export default {
     all: null,
     add: false,
     reportPostId: null,
+    notFound: false,
   })
 };
 </script>
@@ -266,7 +283,7 @@ export default {
   max-width: 200px;
   max-height: 200px;
 }
-.org-manage-info a {
+.org-links a {
   font-size: 16px;
   line-height: 36px;
   vertical-align: middle;

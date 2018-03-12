@@ -4,15 +4,15 @@
     <v-flex v-if="organizationId" style="min-height:92px">
       <div v-if="latestPost">
         <blockquote class="post-quote">
-          <nuxt-link :to="`/news/comments/${latestPost.id}/${latestPost.slug}`">{{ latestPost.title }}</nuxt-link>
+          <nuxt-link :to="routes.post(latestPost.id,latestPost.slug)">{{ latestPost.title }}</nuxt-link>
           <cite v-if="organizationSlug">
-            <nuxt-link :to="`/news/${organizationSlug}?types=${type}`">more {{ type }}s</nuxt-link>
+            <nuxt-link :to="routes.organizationNews(organizationSlug,{types:type})">more {{ type }}s</nuxt-link>
           </cite>
         </blockquote>
       </div>
       <div v-else>
           <blockquote class="post-quote">
-            <nuxt-link :to="`/news/${organizationSlug}`">{{ tech.name }} {{ type }}s</nuxt-link>
+            <nuxt-link :to="routes.organizationNews(organizationSlug)">{{ tech.name }} {{ type }}s</nuxt-link>
           </blockquote>
       </div>
     </v-flex>
@@ -48,7 +48,7 @@
                       :error-messages="errorResponse('content')"
                       ></v-text-field>
 
-                  <a class="help-fmt" v-if="valid" target="_blank" href="https://guides.github.com/features/mastering-markdown/">formatting help</a>
+                  <a class="help-fmt" v-if="valid" target="_blank" :href="routes.formattingHelp">formatting help</a>
 
                   <v-text-field
                       label="URL"
@@ -86,6 +86,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { toObject, errorResponse, errorResponseExcept } from "@servicestack/client";
+import { routes } from "~/shared/routes";
 import { createOrganizationForTechnology, createOrganizationForTechStack, createPost, queryLatestOrganizationsPosts } from "~/shared/gateway";
 import { titleRules, titleCounter, contentRules, contentCounter, urlRulesOptional, urlCounter } from "~/shared/utils";
 
@@ -149,7 +150,7 @@ export default {
           fields.type = this.type;
           fields.refId = this.tech.id;
           fields.refSource = this.technology ? 'Technology' : 'TechnologyStack';
-          fields.refUrn = `urn:${fields.refSource}:{fields.refId}`;
+          fields.refUrn = `urn:${fields.refSource}:${fields.refId}`;
 
           const response = await createPost(fields);
 
@@ -178,6 +179,7 @@ export default {
   },
 
   data: () => ({
+    routes,
     ...post,
     organizationId: null,
     add: false,

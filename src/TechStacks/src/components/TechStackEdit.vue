@@ -145,6 +145,7 @@ import { mapGetters } from "vuex";
 import { log, nameCounter, nameRules, slugCounter, slugRules, toSlug, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";
 import { toObject, errorResponse, errorResponseExcept, dateFmtHM } from "@servicestack/client";
 import { createTechStack, updateTechStack, deleteTechStack, getTechStackPreviousVersions } from "~/shared/gateway";
+import { routes } from "~/shared/routes";
 
 const techstack = {
   name: "",
@@ -172,7 +173,7 @@ export default {
     canChange(){
       return !this.techstack || this.user.userAuthId == this.techstack.ownerId || this.isAdmin;
     },
-    ...mapGetters(["loading", "isAuthenticated", "user", "isAdmin"])
+    ...mapGetters(["loading", "isAuthenticated", "user", "isAdmin", "technologySelectItems"])
   },
 
   watch: {
@@ -196,7 +197,7 @@ export default {
                 ? await createTechStack(fields, this.screenshot)
                 : await updateTechStack({ ...fields, id:this.id }, this.screenshot);
             
-            this.$router.push(`/${stack.slug}`);
+            this.$router.push(routes.stack(stack.slug));
 
           } catch(e) {
               this.responseStatus = e.responseStatus || e;
@@ -249,7 +250,6 @@ export default {
     slugCounter, slugRules, 
     urlCounter, urlRules, 
     descriptionCounter, descriptionRules,
-    technologySelectItems: [],
     previousVersions: [],
   })
 };

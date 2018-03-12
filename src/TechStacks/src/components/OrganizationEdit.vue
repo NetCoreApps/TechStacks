@@ -1,6 +1,16 @@
 <template>
   <div>
-      <v-layout v-if="id" class="body" fluid column>
+      <v-layout v-if="!id && errorSummary">
+        <v-alert outline color="error" icon="warning" :value="true">
+          Organization was not found
+        </v-alert>                  
+      </v-layout>
+      <v-layout v-else-if="!isOrganizationModerator">
+        <v-alert outline color="error" icon="warning" :value="true">
+          You must be a moderator to be able to manage this Organization
+        </v-alert>                  
+      </v-layout>
+      <v-layout v-else-if="id" class="body" fluid column>
         <v-flex>
           <v-toolbar>
             <v-toolbar-title>
@@ -68,6 +78,14 @@
                       v-model="moderatorPostTypes"
                       ></v-select>
 
+                    <v-text-field
+                      label="Automatically delete Posts and Comments when number of Reports reaches"
+                      v-model="deletePostsWithReportCount"
+                      :disabled="!isOrganizationOwner"
+                      :rules="[v => parseInt(v) > 0 || 'must be a number > 0']"
+                      :error-messages="errorResponse('deletePostsWithReportCount')"
+                      ></v-text-field>
+
                     <v-layout>
                         <v-btn :disabled="!isOrganizationOwner" small @click="lockOrganization(!locked)" class="white--text"
                           :color="locked ? 'green' : 'red'">
@@ -90,10 +108,10 @@
             <v-card-actions v-if="isOrganizationOwner" style="text-align:center">
               <v-layout>
                   <v-flex>
-                      <v-btn large @click="submit" color="primary" :disabled="!valid || loading">Update Organization</v-btn>
+                      <v-btn large @click="done">Close</v-btn>
                   </v-flex>
                   <v-flex>
-                      <v-btn large @click="done">Close</v-btn>
+                      <v-btn large @click="submit" color="primary" :disabled="!valid || loading">Update Organization</v-btn>
                   </v-flex>
                   <v-flex xs1 style="margin:.5em -3em 0 3em">
                       <v-checkbox large label="confirm" v-model="allowDelete"></v-checkbox>
@@ -112,10 +130,19 @@
         <v-flex style="text-align:center;margin-top:2em">
           <v-btn-toggle mandatory v-model="tab">
             <v-btn>
-              Categories
+              Categories ({{ categories.length }})
             </v-btn>
             <v-btn>
-              Members
+              Members ({{ members.length }})
+            </v-btn>
+            <v-btn>
+              Invite Requests ({{ memberInvites.length }})
+            </v-btn>
+            <v-btn>
+              Reported Posts ({{ reportedPosts.length }})
+            </v-btn>
+            <v-btn>
+              Reported Comments ({{ reportedPostComments.length }})
             </v-btn>
           </v-btn-toggle>
         </v-flex>
@@ -203,9 +230,112 @@
           </v-card>
         </v-flex>
 
+        <v-flex v-if="tab==2">
+          <v-card>
+            <v-card-title>
+              <v-layout column>
+                <v-flex>
+                  <v-card flat v-for="member in memberInvites" :key="member.userName">
+                    <v-card-title style="margin:0;padding:0">
+                      <v-layout>
+                        <v-flex>
+                          <v-btn v-if="isOrganizationModerator && member.dismissed == null" small fab dark color="green" @click="updateInvite(member.userName,true)" title="Approve">
+                            <v-icon xsmall dark>check</v-icon>
+                          </v-btn>
+                          <v-btn v-if="isOrganizationModerator && member.dismissed == null" small fab dark color="red" @click="updateInvite(member.userName,false)" title="Dismiss">
+                            <v-icon xsmall dark>close</v-icon>
+                          </v-btn>
+
+                          {{ member.userName }} <em class="tag" v-if="member.dismissed">dismissed</em>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-title>
+                  </v-card>
+                  <v-alert color="info" icon="info" outline :value="memberInvites.length == 0">
+                    No Member Invite Requests remaining
+                  </v-alert>
+                </v-flex>
+              </v-layout>
+            </v-card-title>
+          </v-card>
+        </v-flex>        
+
+        <v-flex v-if="tab==3">
+          <v-card>
+            <v-card-title>
+              <v-layout column>
+                <v-flex>
+                  <v-card flat v-for="report in reportedPosts" :key="report.id">
+                    <v-card-title style="margin:0;padding:5px 0">
+                      <v-layout>
+                        <v-flex>
+                          <div>
+                            <nuxt-link :to="routes.post(report.postId,report.title)">{{ report.title }}</nuxt-link> 
+                            by <nuxt-link :to="routes.user(report.createdBy)">@{{ report.createdBy }}</nuxt-link>
+                          </div>
+                          <div>
+                            <v-btn small dark color="purple" @click="actionPostReport(report.id,report.postId,'Delete')" title="Approve" :disabled="loading">
+                              Delete Post
+                            </v-btn>
+                            <v-btn small @click="actionPostReport(report.id,report.postId,'Dismiss')" title="Dismiss" :disabled="loading">
+                              Dismiss
+                            </v-btn>
+                              total reports: <b>{{ report.reportCount }}</b>, this report from 
+                              <nuxt-link :to="routes.user(report.userName)">@{{ report.userName }}</nuxt-link>:
+                              <b> {{ report.flagType }} </b> <em>{{ report.reportNotes }}</em>
+                          </div>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-title>
+                  </v-card>
+                  <v-alert color="info" icon="info" outline :value="reportedPosts.length == 0">
+                    No Post Reports remaining
+                  </v-alert>
+                </v-flex>
+              </v-layout>
+            </v-card-title>
+          </v-card>
+        </v-flex>        
+
+        <v-flex v-if="tab==4">
+          <v-card>
+            <v-card-title>
+              <v-layout column>
+                <v-flex>
+                  <v-card flat v-for="report in reportedPostComments" :key="report.id">
+                    <v-card-title style="margin:0;padding:5px 0">
+                      <v-layout>
+                        <v-flex>
+                          <div>
+                            <nuxt-link :to="routes.comment(report.postId,report.postCommentId)">{{ report.postCommentId }}</nuxt-link> 
+                            by <nuxt-link :to="routes.user(report.createdBy)">@{{ report.createdBy }}</nuxt-link>
+                            <div class="comment-content" v-html="report.contentHtml" style="border:1px solid #ccc;padding:0 10px;margin:5px 0"></div>
+                          </div>
+                          <div>
+                            <v-btn small dark color="purple" @click="actionPostCommentReport(report.id,report.postCommentId,report.postId,'Delete')" title="Approve" :disabled="loading">
+                              Delete Comment
+                            </v-btn>
+                            <v-btn small @click="actionPostCommentReport(report.id,report.postCommentId,report.postId,'Dismiss')" title="Dismiss" :disabled="loading">
+                              Dismiss
+                            </v-btn>
+                              total reports: <b>{{ report.reportCount }}</b>, this report from 
+                              <nuxt-link :to="routes.user(report.userName)">@{{ report.userName }}</nuxt-link>:
+                              <b> {{ report.flagType }} </b> <em>{{ report.reportNotes }}</em>
+                          </div>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-title>
+                  </v-card>
+                  <v-alert color="info" icon="info" outline :value="reportedPostComments.length == 0">
+                    No Comment Reports remaining
+                  </v-alert>
+                </v-flex>
+              </v-layout>
+            </v-card-title>
+          </v-card>
+        </v-flex>        
+
       </v-layout>
-  
-      <h2 v-if="!id && errorSummary"><v-icon color="red">error_outline</v-icon> Organization was not found</h2>
       
   </div>
 </template>
@@ -216,7 +346,9 @@ import MemberEdit from "~/components/MemberEdit.vue";
 
 import { mapGetters } from "vuex";
 import { toObject, errorResponse, errorResponseExcept } from "@servicestack/client";
-import { getOrganizationBySlug, updateOrganization, createCategory, deleteOrganization, lockOrganization } from "~/shared/gateway";
+import { routes } from "~/shared/routes";
+import { getOrganizationBySlug, getOrganizationAdmin, updateOrganization, createCategory, deleteOrganization, lockOrganization, updateMemberInvite,
+         actionPostReport, actionPostCommentReport } from "~/shared/gateway";
 import { nameCounter, nameRules, slugCounter, slugRules, summaryCounter, summaryRulesOptional } from "~/shared/utils";
 
 const organization = {
@@ -229,6 +361,7 @@ const organization = {
   postTypes: [],
   moderatorPostTypes: [],
   technologyIds: [],
+  deletePostsWithReportCount: 5,
 };
 
 export default {
@@ -250,7 +383,7 @@ export default {
     ...mapGetters(["loading", "isAuthenticated", "isAdmin", "user", "technologySelectItems", "allPostTypeSelectItems"])
   },
 
-  methods: { 
+  methods: {
     categoryDone(changed) {
       this.editCategory = null;
       this.addCategory = false;
@@ -265,14 +398,54 @@ export default {
         this.loadOrgnaization();
       }
     },
+    
     async lockOrganization(lock) {
-        await lockOrganization(this.id, lock);
-        this.locked = this.lockedBy = null;
+      await lockOrganization(this.id, lock);
+      this.locked = this.lockedBy = null;
+      this.loadOrgnaization();
+    },
+
+    async updateInvite(userName,approve) {
+      try {
+        this.$store.commit('loading', true);
+
+        await updateMemberInvite(this.id, userName, approve);
         this.loadOrgnaization();
+      } catch(e) {
+          this.responseStatus = e.responseStatus || e;
+      } finally {
+          this.$store.commit('loading', false);
+      }
+    },
+
+    async actionPostReport(id,postId,action) {
+      try {
+        this.$store.commit('loading', true);
+
+        await actionPostReport(id, postId, action);
+        this.loadOrgnaization();
+      } catch(e) {
+          this.responseStatus = e.responseStatus || e;
+      } finally {
+          this.$store.commit('loading', false);
+      }      
+    },
+
+    async actionPostCommentReport(id,postCommentId,postId,action) {
+      try {
+        this.$store.commit('loading', true);
+
+        await actionPostCommentReport(id, postCommentId, postId, action);
+        this.loadOrgnaization();
+      } catch(e) {
+          this.responseStatus = e.responseStatus || e;
+      } finally {
+          this.$store.commit('loading', false);
+      }      
     },
 
     async done() {
-      this.$router.push(`/news/${this.orgSlug}`);
+      this.$router.push(routes.organizationNews(this.orgSlug));
     },
 
     async remove() {
@@ -313,7 +486,12 @@ export default {
         const response = await getOrganizationBySlug(this.orgSlug);
         Object.assign(this, response.organization);
         this.members = response.members;
+        this.memberInvites = response.memberInvites;
         this.categories = response.categories.filter(x => x.deleted == null);
+        const adminResponse = await getOrganizationAdmin(this.id);
+        this.reportedPosts = adminResponse.reportedPosts;
+        this.reportedPostComments = adminResponse.reportedPostComments;
+        this.responseStatus = null;
       } catch(e) {
         this.responseStatus = e.responseStatus || e;
       }
@@ -329,18 +507,22 @@ export default {
   },
 
   data: () => ({
-      ...organization,
-      categories: [],
-      members: [],
-      tab: 0,
-      addCategory: false,
-      editCategory: null,
-      addMember: false,
-      editMember: null,
-      valid: true,
-      allowDelete: false,
-      nameCounter, nameRules, slugCounter, slugRules, summaryCounter, summaryRulesOptional,
-      responseStatus: null,
+    routes,
+    ...organization,
+    categories: [],
+    members: [],
+    memberInvites: [],
+    reportedPosts: [],
+    reportedPostComments: [],
+    tab: 0,
+    addCategory: false,
+    editCategory: null,
+    addMember: false,
+    editMember: null,
+    valid: true,
+    allowDelete: false,
+    nameCounter, nameRules, slugCounter, slugRules, summaryCounter, summaryRulesOptional,
+    responseStatus: null,
   }),
 
 }

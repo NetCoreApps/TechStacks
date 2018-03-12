@@ -65,7 +65,7 @@
 
                         <v-flex xs5>
                           <v-btn large @click="reset()">reset</v-btn>
-                          <v-btn large :disabled="!isAuthenticated" to="/tech/new" primary>Add Technology</v-btn>
+                          <v-btn large :disabled="!isAuthenticated" :to="routes.newTech" primary>Add Technology</v-btn>
                         </v-flex>
                         
                       </v-layout>
@@ -103,7 +103,7 @@
                     class="elevation-1"
                   >
                   <template slot="items" slot-scope="props">
-                    <tr @click="$router.push(`/tech/${props.item.slug}`)">
+                    <tr @click="$router.push(routes.tech(props.item.slug))">
                       <td class="nowrap">{{ props.item.name }}</td>
                       <td>{{ props.item.description }}</td>
                       <td class="nowrap" style="text-align:center">
@@ -131,6 +131,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { heroes } from "@servicestack/images";
+import { routes } from "~/shared/routes";
 import { queryTechnology } from "~/shared/gateway";
 import { log } from "~/store";
 
@@ -213,6 +214,7 @@ export default {
 
   data () {
       return {
+        routes,
         tier: '',
         name: '',
         vendor: '',

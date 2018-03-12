@@ -58,7 +58,7 @@
                         </v-flex>
 
                         <v-flex xs3>
-                          <v-btn large :disabled="!isAuthenticated" to="/stacks/new" primary>Add TechStack</v-btn>
+                          <v-btn large :disabled="!isAuthenticated" :to="routes.newStack" primary>Add TechStack</v-btn>
                         </v-flex>
                         
                       </v-layout>
@@ -89,7 +89,7 @@
             <v-container fluid grid-list-md>
               <v-layout row wrap>
                 <v-flex xs3 v-for="techstack in results" :key="techstack.id">
-                  <v-card flat tile :to="`/${techstack.slug}`">
+                  <v-card flat tile :to="routes.stack(techstack.slug)">
                     <v-card-media
                       :src="techstack.screenshotUrl"
                       height="270px"
@@ -118,6 +118,7 @@ import { mapGetters } from 'vuex';
 import { heroes } from "@servicestack/images";
 import { queryTechStacks } from "~/shared/gateway";
 import { log, prettifyUrl } from "~/shared/utils";
+import { routes } from "~/shared/routes";
 
 export default {
   computed: {
@@ -199,6 +200,7 @@ export default {
 
   data () {
       return {
+        routes,
         tier: '',
         name: '',
         vendor: '',

@@ -167,7 +167,9 @@ const mutations = {
     organization(state, organizationResponse) {
         const organization = organizationResponse.organization;
         organization.members = organizationResponse.members;
+        organization.memberInvites = organizationResponse.memberInvites;
         organization.categories = organizationResponse.categories;
+        organization.full = true;
 
         state.organization = organization;
         Vue.set(state.organizationIdMap, organization.id, organization); 
@@ -318,7 +320,7 @@ const getters = {
         return state.allPostTypes.map(x => x.name);
     },
     allOrganizations: state => state.allOrganizations,
-    categorySelectItems: (state,getters) => getters.organization.categories
+    categorySelectItems: (state,getters) => (getters.organization.categories || [])
         .sort((a,b) => a.slug.localeCompare(b.slug)).map(x => ({ text:x.name, value:x.id })),
     allowablePostTypeSelectItems: (state,getters) => getters.allowablePostTypes.map(x => ({ text:x, value:x })),
     browsablePostTypeSelectItems: (state,getters) => getters.browsablePostTypes.map(x => ({ text:x, value:x })),
@@ -346,6 +348,7 @@ const getters = {
     getOrganizationSlug: state => orgId => (state.allOrganizations.find(x => x.id === orgId) || {}).slug,
     getOrganization: state => orgId => state.organizationIdMap[orgId] || state.allOrganizations.find(x => x.id === orgId),
     getOrganizationBySlug: (state,getters) => slug => getters.getOrganization(getters.getOrganizationId(slug)),
+    getTechnologyOrganization: (state) => techId => state.allOrganizations.find(x => x.refId == techId && x.refSource == "Technology"),
     getTechnology: state => slug => state.technologyMap[slug],
     getTechnologyId: state => slug => state.technologyMap[slug] && state.technologyMap[slug].id,
     getTechnologyStack: state => slug => state.techstacksMap[slug],
@@ -454,7 +457,7 @@ const actions = {
 
     async loadOrganizationByIdIfNotExists({ commit, getters, dispatch }, orgId) {
         commit('orgById', orgId);
-        if (getters.organization && getters.organization.id === orgId) return;
+        if (getters.organization && getters.organization.id === orgId && getters.organization.full) return;
         await dispatch('loadOrganizationById', orgId);
     },
     
@@ -464,7 +467,7 @@ const actions = {
 
     async loadOrganizationBySlugIfNotExists({ commit, getters, dispatch }, slug) {
         commit('orgBySlug', slug);
-        if (getters.organization && getters.organization.slug === slug) return;
+        if (getters.organization && getters.organization.slug === slug && getters.organization.full) return;
         await dispatch('loadOrganizationBySlug', slug);
     },
     
@@ -549,8 +552,14 @@ const actions = {
         commit('usersKarma', await getUsersKarma(userIds));
     },
 
-    async loadTechnologyTiers({ commit }) {
-        commit('technologyTiers', await getTechnologyTiers());
+    async loadTechnologyTiers({ state, commit }) {
+        await doAction(commit, 'technologyTiers', async() => await getTechnologyTiers());
+    },
+
+    async loadTechnologyTiersIfNotExists({ state, dispatch }) {
+        if ((!state.technologyTiers || state.technologyTiers.length == 0) && !state.loading) {
+            dispatch('loadTechnologyTiers');
+        }
     },
 
     async pinPostComment({ commit, dispatch }, { postId, commentId, pin }) {

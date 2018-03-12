@@ -9,10 +9,6 @@ export const commentKarmaLabel = (comment) => {
   return `${commentKarma(comment)} point${points != 1 ? 's' : ''}`;
 };
 
-export const postCommentsLink = (post) => {
-  return `/news/comments/${post.id}/${post.slug}`;
-};
-
 export function votedClass(postId) {
   if (this.userPostActivity != null) {
       if (this.userPostActivity.upVoted.indexOf(postId) >= 0)

@@ -20,13 +20,13 @@
             </v-flex>
             <v-flex class="post-body">
             <v-layout column>
-              <nuxt-link v-if="!post.url" class="post-link" :to="postCommentsLink(post)">{{ post.title }}</nuxt-link>
+              <nuxt-link v-if="!post.url" class="post-link" :to="routes.post(post.id,post.slug)">{{ post.title }}</nuxt-link>
               <a v-if="post.url" class="post-link external" :href="post.url">{{ post.title }}</a>
               
               <PostInfo :organization="getOrganization(post.organizationId)" :post="post" />
 
               <div class="post-actions">
-              <nuxt-link :to="postCommentsLink(post)">{{ post.commentsCount || '' }} {{ post.commentsCount > 1 ? 'comments' : 'comment' }}</nuxt-link>
+              <nuxt-link :to="routes.post(post.id,post.slug)">{{ post.commentsCount || '' }} {{ post.commentsCount > 1 ? 'comments' : 'comment' }}</nuxt-link>
                 <a @click="hidePost(post.id)">hide</a>
                 <a v-if="canFavoritePost(post)" @click="favoritePost(post)">{{ favoriteLabel(post) }}</a>
                 <a v-if="canReportPost(post)" @click="reportPostId=post.id">report</a>
@@ -47,6 +47,7 @@ import PostInfo from "~/components/PostInfo.vue";
 import ReportDialog from "~/components/ReportDialog.vue";
 
 import { mapGetters } from "vuex";
+import { routes } from "~/shared/routes";
 
 import {
   POSTS_PER_PAGE,
@@ -58,7 +59,6 @@ import {
   hidePost,
   canVotePost,
   canFavoritePost,
-  postCommentsLink,
   canReportPost,
 } from "~/shared/post";
 
@@ -88,11 +88,11 @@ export default {
     hidePost,
     canVotePost,
     canFavoritePost,
-    postCommentsLink,
     canReportPost,
   },
 
   data: () => ({
+    routes,
     reportPostId: null,
   })
 }

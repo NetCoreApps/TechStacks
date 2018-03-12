@@ -22,13 +22,13 @@
                     <v-layout column align-center>
                       <v-flex if="user.profileUrl">
                         <div class="avatarbox">
-                          <nuxt-link :to="`/users/${user.userName}`"><img :src="user.profileUrl"></nuxt-link>
+                          <nuxt-link :to="routes.user(user.userName)"><img :src="user.profileUrl"></nuxt-link>
                         </div>
                       </v-flex>
                       <v-flex style="text-align:center">
                         <div class="headline" style="margin-top:.5em">Personalized feeds using my favorite technologies</div>
                         <div style="color:gray;margin-top:.5em">
-                            Favorite <nuxt-link to="/tech">technologies</nuxt-link> for more results.
+                            Favorite <nuxt-link :to="routes.homeTech">technologies</nuxt-link> for more results.
                         </div>
                       </v-flex>
                     </v-layout>
@@ -80,7 +80,7 @@
               v-for="techstack in sessionFeed"
               :key="techstack.name"
             >
-              <nuxt-link :to="`/${techstack.slug}`">
+              <nuxt-link :to="routes.stack(techstack.slug)">
                 <v-toolbar color="orange" style="width:100%">
                   <v-toolbar-title class="white--text" style="width:100%">
                       <v-layout>
@@ -105,14 +105,14 @@
                     <v-flex>&nbsp;</v-flex>
                     <v-layout wrap>
                       <v-flex v-for="tech in techstack.technologyChoices" :key="tech.name" xs3>
-                        <nuxt-link :to="`/tech/${tech.slug}`"><img :src="tech.logoUrl" height="48"></nuxt-link>
+                        <nuxt-link :to="routes.tech(tech.slug)"><img :src="tech.logoUrl" height="48"></nuxt-link>
                       </v-flex>
                     </v-layout>
                   </v-container>
                 </v-card-title>
                 <v-card-actions class="white">
                   <v-spacer></v-spacer>
-                  <v-btn flat :to="`/${techstack.slug}`">view</v-btn>
+                  <v-btn flat :to="routes.stack(techstack.slug)">view</v-btn>
                 </v-card-actions>
               </v-card>
             </v-flex>
@@ -143,7 +143,7 @@
           <v-layout column>
 
             <v-flex class="favorite-techs">
-              <nuxt-link to="/tech">
+              <nuxt-link :to="routes.homeTech">
                 <v-toolbar color="pink">
                     <v-toolbar-title class="white--text">Favorite Technologies</v-toolbar-title>
                 </v-toolbar>
@@ -155,7 +155,7 @@
                       <v-flex>
                         <v-flex v-for="tech in favoriteTechnologies" :key="tech.name">
                           <v-btn icon style="margin:0 .5em 0 0" @click="removeFavorite('tech',tech.id)"><v-icon color="pink">favorite</v-icon></v-btn>
-                          <nuxt-link :to="`/tech/${tech.slug}`">{{ tech.name }}</nuxt-link>
+                          <nuxt-link :to="routes.tech(tech.slug)">{{ tech.name }}</nuxt-link>
                         </v-flex>
                       </v-flex>
                     </v-layout>
@@ -163,14 +163,14 @@
                 </v-card-title>
                 <v-card-actions>
                   <v-flex d-flex>
-                      <v-btn flat to="/tech/new">Add Technology</v-btn>
+                      <v-btn flat :to="routes.newTech">Add Technology</v-btn>
                   </v-flex>
                 </v-card-actions>
               </v-card>
             </v-flex>
 
             <v-flex class="favorite-stacks">
-              <nuxt-link to="/stacks">
+              <nuxt-link :to="routes.homeStacks">
                 <v-toolbar color="pink">
                   <v-toolbar-title class="white--text">Favorite TechStacks</v-toolbar-title>
                 </v-toolbar>
@@ -182,7 +182,7 @@
                       <v-flex>
                         <v-flex v-for="techstack in favoriteTechStacks" :key="techstack.name">
                           <v-btn icon style="margin:0 .5em 0 0" @click="removeFavorite('stack',techstack.id)"><v-icon color="pink">favorite</v-icon></v-btn>
-                          <nuxt-link :to="`/${techstack.slug}`">{{ techstack.name }}</nuxt-link>
+                          <nuxt-link :to="routes.stack(techstack.slug)">{{ techstack.name }}</nuxt-link>
                         </v-flex>
                       </v-flex>
                     </v-layout>
@@ -190,7 +190,7 @@
                 </v-card-title>
                 <v-card-actions>
                   <v-flex d-flex>
-                      <v-btn flat to="/stacks/new">Add TechStack</v-btn>
+                      <v-btn flat :to="routes.newStack">Add TechStack</v-btn>
                   </v-flex>
                 </v-card-actions>
               </v-card>
@@ -211,6 +211,7 @@ import { mapGetters } from "vuex";
 import { heroes } from "@servicestack/images";
 import { appendQueryString } from "@servicestack/client";
 
+import { routes } from "~/shared/routes";
 import { queryPosts } from "~/shared/gateway";
 import { log, prettifyUrl } from "~/shared/utils";
 import { POSTS_PER_PAGE } from "~/shared/post";
@@ -277,7 +278,6 @@ export default {
   },
 
   beforeRouteUpdate(to,from,next){
-    console.log('beforeRouteUpdate', to.query)
     this.initRoute(to.query);
     if (this.tab == 0) {
       this.refreshPosts();
@@ -286,7 +286,6 @@ export default {
   },
 
   async mounted() {
-    console.log('mounted', this.$route.query)
     this.initRoute(this.$route.query);
     this.refreshPosts();
     this.$store.dispatch("loadUserFeed");
@@ -298,6 +297,7 @@ export default {
   },
 
   data: () => ({
+    routes,
     tab: 0,
     page: 0,
     favoritedPosts: [],

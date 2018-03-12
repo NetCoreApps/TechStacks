@@ -50,13 +50,13 @@
                   </v-flex>
                   <v-flex xs1>
                     <v-btn v-if="canChange" color="pink" dark absolute bottom center fab large
-                      :to="`/tech/${technology.slug}/edit`"
+                      :to="routes.editTech(technology.slug)"
                       :title="`Edit ${technology.name}`">
                       <v-icon>edit</v-icon>
                     </v-btn>
                   </v-flex>
                   <v-flex xs12 style="text-align:right;margin-right:1em;color:gray;font-size:smaller;vertical-align:middle">
-                    <span>added by <nuxt-link :to="`/users/${technology.createdBy}`">{{ technology.createdBy }}</nuxt-link></span>
+                    <span>added by <nuxt-link :to="routes.user(technology.createdBy)">{{ technology.createdBy }}</nuxt-link></span>
                   </v-flex>
                 </v-card-actions>
 
@@ -78,7 +78,7 @@
             <v-container fluid grid-list-md>
               <v-layout row wrap>
                 <v-flex xs3 v-for="techstack in technology.technologyStacks" :key="techstack.id" v-if="techstack.screenshotUrl">
-                  <v-card flat tile :to="`/${techstack.slug}`">
+                  <v-card flat tile :to="routes.stack(techstack.slug)">
                     <v-card-media
                       :src="techstack.screenshotUrl"
                       height="270px"
@@ -89,14 +89,18 @@
                 </v-flex>
                 <v-flex v-if="!technology.technologyStacks.length">
                   <v-card flat tile style="text-align:center">
-                    <v-card-title class="headline">
+                    <v-card-title>
                       <v-flex>
-                        There are currently no TechStacks using {{ technology.name }}
+                        <div class="headline">There are currently no TechStacks using {{ technology.name }}</div>
+                        <nuxt-link v-if="technology.organizationId" :to="routes.newsTech(technology.slug)"
+                          style="display:block;margin-top:.5em;text-transform:lowercase">
+                          latest {{ technology.name }} news
+                        </nuxt-link>
                       </v-flex>
                     </v-card-title>
                     <v-card-actions>
                       <v-flex>
-                        <v-btn :disabled="!isAuthenticated" to="/stacks/new" large primary>Add TechStack</v-btn>
+                        <v-btn :disabled="!isAuthenticated" :to="routes.newStack" large primary>Add TechStack</v-btn>
                       </v-flex>
                     </v-card-actions>
                   </v-card>
@@ -121,6 +125,7 @@ import TechnologyComments from "~/components/TechnologyComments.vue";
 import { mapGetters } from 'vuex';
 import { heroes } from "@servicestack/images";
 import { log, prettifyUrl } from "~/shared/utils";
+import { routes } from "~/shared/routes";
 
 export default {
   components: { TechnologyPost, TechnologyComments },
@@ -169,7 +174,11 @@ export default {
   async mounted() {
     await this.loadTechnology();
     this.refreshPageStats();
-  }
+  },
+
+  data: () => ({
+    routes,
+  })
 };
 </script>
 

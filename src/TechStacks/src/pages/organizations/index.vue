@@ -8,12 +8,12 @@
       <v-card v-for="organization in allOrganizations" :key="organization.id">
         <v-card-title primary-title>
           <v-flex>
-            <nuxt-link :to="`/organizations/${organization.slug}`">
+            <nuxt-link :to="routes.organization(organization.slug)">
               {{ organization.name }}
             </nuxt-link>
           </v-flex>
           <v-flex v-if="organization.userName" style="color:#999;text-align:right">
-            by <nuxt-link :to="`/users/${organization.userName}`">@{{organization.userName}}</nuxt-link>
+            by <nuxt-link :to="routes.user(organization.userName)">@{{organization.userName}}</nuxt-link>
           </v-flex>
         </v-card-title>
       </v-card>
@@ -37,8 +37,10 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import OrganizationAdd from "~/components/OrganizationAdd.vue";
+
+import { mapGetters } from "vuex";
+import { routes } from "~/shared/routes";
 
 export default {
   components: { OrganizationAdd },
@@ -61,6 +63,7 @@ export default {
   },
 
   data: () => ({
+    routes,
     add: false,
   }),
 };

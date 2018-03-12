@@ -9,8 +9,8 @@
 
         <v-card-actions style="text-align:center">
           <v-flex>
-            <v-btn to="/tech" exact>View Technologies</v-btn>
-            <v-btn to="/tech/new" color="primary">Add Technology</v-btn>
+            <v-btn :to="routes.homeTech" exact>View Technologies</v-btn>
+            <v-btn :to="routes.newTech" color="primary">Add Technology</v-btn>
           </v-flex>
         </v-card-actions>
       </v-card>
@@ -20,6 +20,7 @@
 <script>
 import TechnologyEdit from "~/components/TechnologyEdit.vue";
 import { mapGetters } from 'vuex';
+import { routes } from "~/shared/routes";
 
 export default {
   components: { TechnologyEdit },
@@ -36,6 +37,7 @@ export default {
   },
 
   data: () => ({ 
+    routes,
     technology: null 
   }),
 }

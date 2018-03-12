@@ -69,7 +69,7 @@
             <v-container fluid grid-list-md>
               <v-layout row wrap>
                 <v-flex xs3 v-for="techstack in user.techStacks" :key="techstack.id">
-                  <v-card flat tile :to="`/${techstack.slug}`">
+                  <v-card flat tile :to="routes.stack(techstack.slug)">
                     <v-card-media
                       :src="techstack.screenshotUrl"
                       height="270px"
@@ -137,7 +137,7 @@
             <v-container fluid grid-list-md>
               <v-layout row wrap>
                 <v-flex xs3 v-for="techstack in user.favoriteTechStacks" :key="techstack.id">
-                  <v-card flat tile :to="`/${techstack.slug}`">
+                  <v-card flat tile :to="roues.stack(techstack.slug)">
                     <v-card-media
                       :src="techstack.screenshotUrl"
                       height="270px"
@@ -189,7 +189,7 @@
                               </v-flex>
                               <v-flex class="post-body">
                                   <v-layout column>
-                                    <nuxt-link v-if="!post.url" class="post-link" :to="postCommentsLink(post)">{{ post.title }}</nuxt-link>
+                                    <nuxt-link v-if="!post.url" class="post-link" :to="routes.post(post.id,post.slug)">{{ post.title }}</nuxt-link>
                                     <a v-if="post.url" class="post-link external" :href="post.url">{{ post.title }}</a>
                                     <div class="post-info">
                                         submitted {{fromNow(post.created)}}
@@ -197,13 +197,13 @@
                                       <span v-if="(post.technologyIds || []).length > 0 && technologyTiers.length > 0">
                                         tags
                                         <nuxt-link class="tag" v-for="techId in post.technologyIds" :key="techId" 
-                                          :to="`/tech/${getTechnologySlug(techId)}`">
+                                          :to="routes.tech(getTechnologySlug(techId))">
                                           {{ getTechnologySlug(techId) }}
                                         </nuxt-link>
                                       </span>
                                     </div>
                                     <div class="post-actions">
-                                        <nuxt-link :to="postCommentsLink(post)">{{ post.commentsCount || '' }} {{ post.commentsCount > 1 ? 'comments' : 'comment' }}</nuxt-link>
+                                        <nuxt-link :to="routes.post(post.id,post.slug)">{{ post.commentsCount || '' }} {{ post.commentsCount > 1 ? 'comments' : 'comment' }}</nuxt-link>
                                     </div>
                                   </v-layout>
                               </v-flex>
@@ -237,7 +237,7 @@
                   <v-card-title>
                       <v-layout>
                           <v-flex class="comment-info">
-                              <nuxt-link :to="`/users/${comment.createdBy}`"><img class="comment-avatar" :src="`/users/${comment.createdBy}/avatar`" :alt="`${comment.createdBy} profile`"></nuxt-link>
+                              <nuxt-link :to="routes.user(comment.createdBy)"><img class="comment-avatar" :src="routes.userAvatar(comment.createdBy)" :alt="`${comment.createdBy} profile`"></nuxt-link>
                               <div class="comment-karma"><b>{{ getUsersKarma(comment.userId) }}</b></div>
                           </v-flex>
                           <v-flex>
@@ -246,7 +246,7 @@
                               <v-layout :class="['comment-actions', votedCommentClass(comment.id)]">
                                   <span class="points">{{commentKarmaLabel(comment)}}</span>
                                   
-                                  <nuxt-link :to="`/comments/${comment.postId}/${comment.id}`" class="submitted">{{fromNow(comment.created)}}</nuxt-link>
+                                  <nuxt-link :to="routes.comment(comment.postId,comment.id)" class="submitted">{{fromNow(comment.created)}}</nuxt-link>
                               </v-layout>
                           </v-flex>
                       </v-layout>
@@ -269,9 +269,11 @@
 <script>
 import { mapGetters } from 'vuex';
 import { heroes } from "@servicestack/images";
+
+import { routes } from "~/shared/routes";
 import { log, prettifyUrl, fromNow } from "~/shared/utils";
 import { queryPosts, queryPostComments } from "~/shared/gateway";
-import { postKarma, votedClass, postCommentsLink, commentKarmaLabel, votedCommentClass } from "~/shared/post";
+import { postKarma, votedClass, commentKarmaLabel, votedCommentClass } from "~/shared/post";
 
 export default {  
   computed: {
@@ -291,7 +293,6 @@ export default {
     prettifyUrl,
     postKarma, 
     votedClass, 
-    postCommentsLink,
     commentKarmaLabel,
     votedCommentClass,
     fromNow,
@@ -324,6 +325,7 @@ export default {
 
   data() {
     return {
+      routes,
       tab: -1,
       posts: null,
       comments: null,

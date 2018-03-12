@@ -65,10 +65,10 @@ export default {
       if (this.$refs.form.validate()) {
           try {
               this.$store.commit('loading', true);
-              if (this.postId) {
-                  await reportPost(this.postId, this.type, this.notes);
-              } else if (this.commentId) {
+              if (this.commentId) {
                   await reportPostComment(this.postId, this.commentId, this.type, this.notes);
+              } else if (this.postId) {
+                  await reportPost(this.postId, this.type, this.notes);
               }
               this.type = this.notes = null;
               this.close();
