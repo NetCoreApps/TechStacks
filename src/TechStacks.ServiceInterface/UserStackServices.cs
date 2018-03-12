@@ -168,10 +168,10 @@ namespace TechStacks.ServiceInterface
 
         public static int GetUserId(this AuthUserSession session) => session.UserAuthId.ToInt();
 
-        public static bool IsOrganizationModerator(this AuthUserSession session, OrganizationMember organizationMember) =>
-            session.IsAdmin() || organizationMember?.IsModerator == true;
-
         public static bool IsOrganizationOwner(this AuthUserSession session, OrganizationMember organizationMember) =>
             session.IsAdmin() || organizationMember?.IsOwner == true;
+
+        public static bool IsOrganizationModerator(this AuthUserSession session, OrganizationMember organizationMember) =>
+            session.IsOrganizationOwner(organizationMember) || organizationMember?.IsModerator == true;
     }
 }

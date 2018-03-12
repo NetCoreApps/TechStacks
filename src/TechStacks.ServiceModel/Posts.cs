@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ServiceStack;
 using TechStacks.ServiceModel.Types;
 
@@ -42,6 +43,14 @@ namespace TechStacks.ServiceModel
 
         public int[] TechnologyIds { get; set; }
 
+        public DateTime? FromDate { get; set; }
+
+        public DateTime? ToDate { get; set; }
+
+        public string MetaType { get; set; }
+
+        public string Meta { get; set; }
+
         public long? RefId { get; set; }
         public string RefSource { get; set; }
         public string RefUrn { get; set; }
@@ -77,6 +86,14 @@ namespace TechStacks.ServiceModel
         public bool? Lock { get; set; }
 
         public int[] TechnologyIds { get; set; }
+
+        public DateTime? FromDate { get; set; }
+
+        public DateTime? ToDate { get; set; }
+
+        public string MetaType { get; set; }
+
+        public string Meta { get; set; }
     }
 
     public class UpdatePostResponse
@@ -114,6 +131,8 @@ namespace TechStacks.ServiceModel
 
         public List<long> FavoritePostIds { get; set; }
 
+        public List<int> MemberInviteOrganizationIds { get; set; }
+
         public ResponseStatus ResponseStatus { get; set; }
     }
 
@@ -144,13 +163,27 @@ namespace TechStacks.ServiceModel
     public class UserPostReport : IReturn<UserPostReportResponse>
     {
         public long Id { get; set; }
-        public FlagType Type { get; set; }
-        public string Notes { get; set; }
+        public FlagType FlagType { get; set; }
+        public string ReportNotes { get; set; }
     }
 
     public class UserPostReportResponse
     {
         public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    public enum ReportAction
+    {
+        Dismiss,
+        Delete,
+    }
+
+    [Route("/posts/{PostId}/report/{Id}", "POST")]
+    public class ActionPostReport : IReturnVoid
+    {
+        public long PostId { get; set; }
+        public long Id { get; set; }
+        public ReportAction ReportAction { get; set; }
     }
 
     [Route("/posts/{Id}", "GET")]
@@ -167,6 +200,8 @@ namespace TechStacks.ServiceModel
         public Post Post { get; set; }
 
         public List<PostComment> Comments { get; set; }
+
+        public ResponseStatus ResponseStatus { get; set; }
     }
 
     [Route("/posts/{PostId}/comments", "POST")]
@@ -233,13 +268,22 @@ namespace TechStacks.ServiceModel
     {
         public long Id { get; set; }
         public long PostId { get; set; }
-        public FlagType Type { get; set; }
-        public string Notes { get; set; }
+        public FlagType FlagType { get; set; }
+        public string ReportNotes { get; set; }
     }
 
     public class UserPostCommentReportResponse
     {
         public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    [Route("/posts/{PostId}/comments/{PostCommentId}/report/{Id}", "POST")]
+    public class ActionPostCommentReport : IReturnVoid
+    {
+        public long Id { get; set; }
+        public long PostCommentId { get; set; }
+        public long PostId { get; set; }
+        public ReportAction ReportAction { get; set; }
     }
 
     [Route("/user/comments/votes")]

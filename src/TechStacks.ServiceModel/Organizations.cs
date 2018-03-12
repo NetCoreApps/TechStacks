@@ -31,8 +31,44 @@ namespace TechStacks.ServiceModel
 
         public List<OrganizationMember> Members { get; set; }
 
+        public List<OrganizationMemberInvite> MemberInvites { get; set; }
+
         public ResponseStatus ResponseStatus { get; set; }
     }
+
+    [Route("/orgs/{Id}/admin", "GET")]
+    public class GetOrganizationAdmin
+    {
+        public int Id { get; set; }
+    }
+
+    public class PostReportInfo : PostReport
+    {
+        public string Title { get; set; }
+
+        public int ReportCount { get; set; }
+
+        public string CreatedBy { get; set; } //Post
+    }
+
+    public class PostCommentReportInfo : PostCommentReport
+    {
+        public string ContentHtml { get; set; }
+
+        public int ReportCount { get; set; }
+
+        public string CreatedBy { get; set; } //Post
+    }
+
+    public class GetOrganizationAdminResponse
+    {
+        public List<PostReportInfo> ReportedPosts { get; set; }
+
+        public List<PostCommentReportInfo> ReportedPostComments { get; set; }
+
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
 
     [Route("/orgs", "POST")]
     public class CreateOrganization : IReturn<CreateOrganizationResponse>
@@ -85,6 +121,7 @@ namespace TechStacks.ServiceModel
         public string BackgroundUrl { get; set; }
         public string LogoUrl { get; set; }
         public string HeroUrl { get; set; }
+        public int DeletePostsWithReportCount { get; set; }
         public string[] PostTypes { get; set; }
         public string[] ModeratorPostTypes { get; set; }
         public int[] TechnologyIds { get; set; }
@@ -220,5 +257,43 @@ namespace TechStacks.ServiceModel
         public int UserId { get; set; }
     }
 
+    [Route("/orgs/{OrganizationId}/invites", "GET")]
+    public class GetOrganizationMemberInvites : IReturn<GetOrganizationMemberInvitesResponse>
+    {
+        public int OrganizationId { get; set; }
+    }
 
+    public class GetOrganizationMemberInvitesResponse
+    {
+        public List<OrganizationMemberInvite> Results { get; set; }
+
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    [Route("/orgs/{OrganizationId}/invites", "POST")]
+    public class RequestOrganizationMemberInvite : IReturn<RequestOrganizationMemberInviteResponse>
+    {
+        public int OrganizationId { get; set; }
+    }
+
+    public class RequestOrganizationMemberInviteResponse
+    {
+        public int OrganizationId { get; set; }
+
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    [Route("/orgs/{OrganizationId}/invites/{UserId}", "PUT")]
+    public class UpdateOrganizationMemberInvite : IReturn<UpdateOrganizationMemberInviteResponse>
+    {
+        public int OrganizationId { get; set; }
+        public string UserName { get; set; }
+        public bool Approve { get; set; }
+        public bool Dismiss { get; set; }
+    }
+
+    public class UpdateOrganizationMemberInviteResponse
+    {
+        public ResponseStatus ResponseStatus { get; set; }
+    }
 }

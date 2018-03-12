@@ -111,7 +111,7 @@ namespace TechStacks.ServiceInterface
 
             await Db.ExecuteSqlAsync(
                 @"update user_activity set 
-                         technology_stack_count = (select count(*) from technology_stack where owner_id = @userIdStr)
+                         tech_stacks_count = (select count(*) from technology_stack where owner_id = @userIdStr)
                    where id = @userId",
                 new { userId = session.GetUserId(), userIdStr = session.UserAuthId });
 

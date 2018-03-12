@@ -59,6 +59,9 @@ namespace TechStacks.ServiceModel.Types
         [PgSqlTextArray]
         public string[] ModeratorPostTypes { get; set; }
 
+        [Default(5)]
+        public int DeletePostsWithReportCount { get; set; }
+
         public long UpVotes { get; set; }
 
         public long DownVotes { get; set; }
@@ -123,9 +126,7 @@ namespace TechStacks.ServiceModel.Types
         public int[] TechnologyIds { get; set; }
 
         [IgnoreDataMember] public long? RefId { get; set; }
-
         [IgnoreDataMember] public string RefSource { get; set; }
-
         [IgnoreDataMember] public string RefUrn { get; set; }
 
         public int CommentsCount { get; set; }
@@ -136,15 +137,15 @@ namespace TechStacks.ServiceModel.Types
 
         public int Rank { get; set; }
 
-        public DateTime? Deleted { get; set; }
-        public string DeletedBy { get; set; }
+        [IgnoreDataMember] public DateTime? Deleted { get; set; }
+        [IgnoreDataMember] public string DeletedBy { get; set; }
         [IgnoreDataMember] public string Notes { get; set; }
 
-        public DateTime Created { get; set; }
-        public string CreatedBy { get; set; }
+        [IgnoreDataMember] public DateTime Created { get; set; }
+        [IgnoreDataMember] public string CreatedBy { get; set; }
 
-        public DateTime Modified { get; set; }
-        public string ModifiedBy { get; set; }
+        [IgnoreDataMember] public DateTime Modified { get; set; }
+        [IgnoreDataMember] public string ModifiedBy { get; set; }
     }
 
     [UniqueConstraint(nameof(OrganizationId), nameof(UserId))]
@@ -171,29 +172,35 @@ namespace TechStacks.ServiceModel.Types
 
         public string Notes { get; set; }
 
-        public DateTime Created { get; set; }
-        public string CreatedBy { get; set; }
+        [IgnoreDataMember] public DateTime Created { get; set; }
+        [IgnoreDataMember] public string CreatedBy { get; set; }
 
-        public DateTime Modified { get; set; }
-        public string ModifiedBy { get; set; }
+        [IgnoreDataMember] public DateTime Modified { get; set; }
+        [IgnoreDataMember] public string ModifiedBy { get; set; }
     }
 
-    public class MemberInvite
+    [UniqueConstraint(nameof(OrganizationId), nameof(UserId))]
+    public class OrganizationMemberInvite
     {
         [AutoIncrement]
         public int Id { get; set; }
 
         public int OrganizationId { get; set; }
 
+        [Index]
         public int UserId { get; set; }
 
-        public DateTime Created { get; set; }
+        public string UserName { get; set; }
 
-        public DateTime? Acknowledged { get; set; }
-        public string AcknowledgedBy { get; set; }
+        [IgnoreDataMember] public DateTime Created { get; set; }
+
+        [IgnoreDataMember] public int? OrganizationMemberId { get; set; }
+
+        [IgnoreDataMember] public DateTime? Approved { get; set; }
+        [IgnoreDataMember] public string ApprovedBy { get; set; }
 
         public DateTime? Dismissed { get; set; }
-        public string DismissedBy { get; set; }
+        [IgnoreDataMember] public string DismissedBy { get; set; }
     }
 
     public class Subscription
@@ -266,6 +273,17 @@ namespace TechStacks.ServiceModel.Types
 
         [PgSqlIntArray]
         public int[] TechnologyIds { get; set; }
+
+        public DateTime? FromDate { get; set; }
+
+        public DateTime? ToDate { get; set; }
+
+        public string Location { get; set; }
+
+        public string MetaType { get; set; }
+
+        [PgSqlJsonB]
+        public string Meta { get; set; }
 
         public bool Approved { get; set; }
 
@@ -391,13 +409,17 @@ namespace TechStacks.ServiceModel.Types
         public long Id { get; set; }
 
         [Index]
+        public int OrganizationId { get; set; }
+
         public long PostId { get; set; }
 
         public int UserId { get; set; }
 
-        public FlagType Type { get; set; }
+        public string UserName { get; set; }
 
-        public string Notes { get; set; }
+        public FlagType FlagType { get; set; }
+
+        public string ReportNotes { get; set; }
 
         public DateTime Created { get; set; }
 
@@ -437,6 +459,8 @@ namespace TechStacks.ServiceModel.Types
         public long Favorites { get; set; }
 
         public int WordCount { get; set; }
+
+        public int ReportCount { get; set; }
 
         public DateTime? Deleted { get; set; }
         [IgnoreDataMember] public string DeletedBy { get; set; }
@@ -484,15 +508,27 @@ namespace TechStacks.ServiceModel.Types
         public long Id { get; set; }
 
         [Index]
+        public int OrganizationId { get; set; }
+
+        public long PostId { get; set; }
+
         public long PostCommentId { get; set; }
 
         public int UserId { get; set; }
 
-        public FlagType Type { get; set; }
+        public string UserName { get; set; }
 
-        public string Notes { get; set; }
+        public FlagType FlagType { get; set; }
+
+        public string ReportNotes { get; set; }
 
         public DateTime Created { get; set; }
+
+        public DateTime? Acknowledged { get; set; }
+        public string AcknowledgedBy { get; set; }
+
+        public DateTime? Dismissed { get; set; }
+        public string DismissedBy { get; set; }
     }
 
 }

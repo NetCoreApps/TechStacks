@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using MarkdownDeep;
 using ServiceStack;
 using ServiceStack.OrmLite;
 using TechStacks.ServiceModel;
@@ -43,6 +40,7 @@ namespace TechStacks.ServiceInterface
                 Organization = organization,
                 Categories = (await Db.SelectAsync<Category>(x => x.OrganizationId == organization.Id && x.Deleted == null)).OrderBy(x => x.Name).ToList(),
                 Members = await Db.SelectAsync<OrganizationMember>(x => x.OrganizationId == organization.Id),
+                MemberInvites = await Db.SelectAsync<OrganizationMemberInvite>(x => x.OrganizationId == organization.Id && x.Approved == null && x.OrganizationMemberId == null),
             };
         }
 
@@ -65,6 +63,17 @@ namespace TechStacks.ServiceInterface
     public class OrganizationServices : PostServicesBase
     {
         public const string Uncategorized = nameof(Uncategorized);
+
+        public async Task<GetOrganizationAdminResponse> Get(GetOrganizationAdmin request)
+        {
+            return new GetOrganizationAdminResponse
+            {
+                ReportedPosts = await Db.SelectAsync<PostReportInfo>(Db.From<PostReport>()
+                    .Join<Post>().Where(x => x.Acknowledged == null && x.Dismissed == null)),
+                ReportedPostComments = await Db.SelectAsync<PostCommentReportInfo>(Db.From<PostCommentReport>()
+                    .Join<PostComment>().Where(x => x.Acknowledged == null && x.Dismissed == null)),
+            };
+        }
 
         public async Task<CreateOrganizationForTechnologyResponse> Post(CreateOrganizationForTechnology request)
         {
@@ -97,6 +106,9 @@ namespace TechStacks.ServiceInterface
             var id = technology?.Id ?? techstack.Id;
             var techOrgId = technology?.OrganizationId ?? techstack?.OrganizationId;
             var techSlug = technology?.Slug ?? techstack?.Slug;
+            var techRoute = techstack != null
+                ? "stacks"
+                : "tech";
             var organization = techOrgId == null 
                 ? Db.Single<Organization>(x => x.Slug == techSlug)
                 : Db.SingleById<Organization>(techOrgId);
@@ -104,7 +116,7 @@ namespace TechStacks.ServiceInterface
             using (var trans = Db.OpenTransaction())
             {
                 var postTitle = $"{name} Page Comments";
-                var postContent = $"### Comments for [{name} {type.Name}](/tech/{techSlug}) page";
+                var postContent = $"### Comments for [{name} {type.Name}](/{techRoute}/{techSlug}) page";
                 var now = DateTime.Now;
 
                 if (organization == null)
@@ -147,6 +159,8 @@ namespace TechStacks.ServiceInterface
                     CreatedBy = user.UserName,
                     Modified = now,
                     ModifiedBy = user.UserName,
+                    Hidden = now,
+                    HiddenBy = "webstacks",
                     UserId = userId,
                     UpVotes = 0,
                     Rank = 0,                    
@@ -408,8 +422,120 @@ namespace TechStacks.ServiceInterface
                 throw HttpError.Forbidden("This action is limited to Organization Owners");
 
             Db.Delete<OrganizationMember>(x => x.UserId == request.UserId && x.OrganizationId == request.OrganizationId);
+            Db.Delete<OrganizationMemberInvite>(x => x.UserId == request.UserId && x.OrganizationId == request.OrganizationId);
 
             ClearOrganizationCaches();
         }
+
+        public async Task<object> Get(GetOrganizationMemberInvites request)
+        {
+            var user = GetUser();
+            AssertOrganizationModerator(Db, request.OrganizationId, user, out var org, out var orgMember);
+
+            return new GetOrganizationMemberInvitesResponse
+            {
+                Results = await Db.SelectAsync<OrganizationMemberInvite>(x => x.OrganizationId == request.OrganizationId),
+            };
+        }
+
+        public async Task<object> Post(RequestOrganizationMemberInvite request)
+        {
+            if (request.OrganizationId <= 0)
+                throw new ArgumentNullException(nameof(request.OrganizationId));
+
+            var user = GetUser();
+            var userId = user.GetUserId();
+
+            var memberExists = Db.Exists<OrganizationMember>(x =>
+                x.UserId == userId && x.OrganizationId == request.OrganizationId);
+
+            if (memberExists)
+                throw HttpError.Conflict("Already a member");
+
+            var inviteExists = Db.Exists<OrganizationMemberInvite>(x =>
+                x.UserId == userId && x.OrganizationId == request.OrganizationId);
+
+            if (inviteExists)
+                throw HttpError.Conflict("Member Invite already requested");
+
+            await Db.InsertAsync(new OrganizationMemberInvite
+            {
+                UserId = userId,
+                UserName = user.UserName,
+                OrganizationId = request.OrganizationId,
+                Created = DateTime.Now,
+            });
+
+            ClearOrganizationCaches();
+
+            return new RequestOrganizationMemberInviteResponse
+            {
+                OrganizationId = request.OrganizationId,
+            };
+        }
+
+        public async Task<object> Put(UpdateOrganizationMemberInvite request)
+        {
+            if (request.OrganizationId <= 0)
+                throw new ArgumentNullException(nameof(request.OrganizationId));
+
+            if (string.IsNullOrEmpty(request.UserName))
+                throw new ArgumentNullException(nameof(request.UserName));
+
+            var user = GetUser();
+            AssertOrganizationModerator(Db, request.OrganizationId, user, out var org, out var orgMember);
+
+            var userId = Db.Scalar<int>(Db.From<CustomUserAuth>()
+                .Where(x => x.UserName == request.UserName)
+                .Select(x => x.Id));
+
+            if (userId == default(int))
+                throw HttpError.NotFound("User does not exist");
+
+            var now = DateTime.Now;
+            if (request.Approve)
+            {
+                var hasOwnersOrModerators = Db.Exists<OrganizationMember>(x =>
+                    x.OrganizationId == request.OrganizationId && (x.IsOwner || x.IsModerator));
+
+                var id = await Db.InsertAsync(new OrganizationMember
+                    {
+                        OrganizationId = request.OrganizationId,
+                        UserId = userId,
+                        UserName = request.UserName,
+                        IsOwner = !hasOwnersOrModerators,
+                        Created = now,
+                        CreatedBy = user.UserName,
+                        Modified = now,
+                        ModifiedBy = user.UserName,
+                    }, selectIdentity:true);
+
+                await Db.UpdateOnlyAsync(() => new OrganizationMemberInvite
+                    {
+                        Approved = now,
+                        ApprovedBy = user.UserName,
+                        OrganizationMemberId = (int)id,
+                    },
+                    where: x => x.UserId == userId && x.OrganizationId == request.OrganizationId);
+            }
+            else if (request.Dismiss)
+            {
+                await Db.UpdateOnlyAsync(() => new OrganizationMemberInvite
+                    {
+                        Dismissed = now,
+                        DismissedBy = user.UserName,
+                    }, 
+                where: x => x.UserId == userId && x.OrganizationId == request.OrganizationId);
+            }
+            else
+            {
+                throw new Exception("Must Approve or Dismiss");
+            }
+
+            ClearOrganizationCaches();
+
+            return new UpdateOrganizationMemberInviteResponse();
+        }
+
     }
 }

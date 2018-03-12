@@ -104,7 +104,12 @@ namespace TechStacks.ServiceInterface
 
         public static OrganizationMember AssertCanAnnotateOnOrganization(IDbConnection db, int organizationId, AuthUserSession user)
         {
-            AssertCanViewOrganization(db, organizationId, user, out var org, out var orgMember);
+            return AssertCanAnnotateOnOrganization(db, organizationId, user, out var org);
+        }
+
+        public static OrganizationMember AssertCanAnnotateOnOrganization(IDbConnection db, int organizationId, AuthUserSession user, out Organization org)
+        {
+            AssertCanViewOrganization(db, organizationId, user, out org, out var orgMember);
 
             if (orgMember?.DenyAll == true)
                 throw HttpError.Forbidden("Access has been suspended");
@@ -189,6 +194,12 @@ namespace TechStacks.ServiceInterface
         {
             var post = Db.SingleById<Post>(postId);
             return post ?? throw HttpError.NotFound("Post does not exist");
+        }
+
+        protected PostComment AssertPostComment(long postCommentId)
+        {
+            var comment = Db.SingleById<PostComment>(postCommentId);
+            return comment ?? throw HttpError.NotFound("Comment does not exist");
         }
 
         protected async Task<Post> AssertPostAsync(long postId)

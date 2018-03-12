@@ -20,6 +20,8 @@ namespace TechStacks.ServiceInterface
         public object Any(QueryPosts request)
         {
             var q = AutoQuery.CreateQuery(request, Request.GetRequestParams());
+            q.Where(x => x.Deleted == null && x.Hidden == null);
+
             if (!request.AnyTechnologyIds.IsEmpty())
             {
                 var techIds = request.AnyTechnologyIds.Join(",");
@@ -30,8 +32,9 @@ namespace TechStacks.ServiceInterface
                 if (string.IsNullOrEmpty(orgIds))
                     orgIds = "NULL";
 
-                q.Where($"(ARRAY[{techIds}] && technology_ids OR organization_id in ({orgIds}))");
+                q.And($"(ARRAY[{techIds}] && technology_ids OR organization_id in ({orgIds}))");
             }
+
             return AutoQuery.Execute(request, q);
         }
 
@@ -42,7 +45,9 @@ namespace TechStacks.ServiceInterface
 
             var user = SessionAs<AuthUserSession>();
             var post = await Db.SingleByIdAsync<Post>(request.Id);
-            AssertCanViewOrganization(Db, post.OrganizationId, user, out _, out var groupMember);
+            OrganizationMember groupMember = null;
+            if (post != null)
+                AssertCanViewOrganization(Db, post.OrganizationId, user, out _, out groupMember);
 
             if (post == null || post.Deleted != null && !user.IsOrganizationModerator(groupMember))
                 throw HttpError.NotFound("Post does not exist");
@@ -312,7 +317,7 @@ namespace TechStacks.ServiceInterface
 
             var user = GetUser();
             var post = AssertPost(request.Id);
-            var groupMember = AssertCanAnnotateOnOrganization(Db, post.OrganizationId, user);
+            var groupMember = AssertCanAnnotateOnOrganization(Db, post.OrganizationId, user, out var org);
             AssertCanAnnotatePost(post, user, groupMember);
 
             var userId = GetUserId();
@@ -321,20 +326,58 @@ namespace TechStacks.ServiceInterface
             Db.Insert(new PostReport
             {
                 UserId = userId,
+                UserName = user.UserName,
+                OrganizationId = org.Id,
                 PostId = request.Id,
-                Type = request.Type,
-                Notes = request.Notes,
+                FlagType = request.FlagType,
+                ReportNotes = request.ReportNotes,
                 Created = DateTime.Now,
             });
 
-            var reportsCount = Db.Count<PostReport>(x => x.PostId == request.Id);
-            if (reportsCount >= 5)
+            var reportsCount = Db.Count<PostReport>(x => x.OrganizationId == org.Id && x.PostId == request.Id);
+            if (reportsCount >= org.DeletePostsWithReportCount)
             {
                 Db.UpdateOnly(() => new Post { Deleted = DateTime.Now, DeletedBy = nameof(PostReport) },
                     where: x => x.Id == request.Id);
             }
 
+            Db.ExecuteSql(
+                @"update post set 
+                         report_count = (select count(*) from post_report where organization_id = @orgId and post_id = @id)
+                   where id = @id", new { orgId = org.Id, id = request.Id });
+
             return new UserPostReportResponse();
+        }
+
+        public void Post(ActionPostReport request)
+        {
+            if (request.Id <= 0)
+                throw new ArgumentNullException(nameof(request.Id));
+
+            if (request.PostId <= 0)
+                throw new ArgumentNullException(nameof(request.PostId));
+
+            var user = GetUser();
+            var post = AssertPost(request.PostId);
+
+            AssertOrganizationModerator(Db, post.OrganizationId, user, out var org, out var orgMember);
+
+            var now = DateTime.Now;
+            if (request.ReportAction == ReportAction.Dismiss)
+            {
+                Db.UpdateOnly(() => new PostReport { Dismissed = now, DismissedBy = user.UserName },
+                    where: x => x.OrganizationId == org.Id && x.Id == request.Id && x.PostId == post.Id);
+            }
+            else if (request.ReportAction == ReportAction.Delete)
+            {
+                Db.UpdateOnly(() => new Post { Deleted = now, DeletedBy = user.UserName },
+                    where: x => x.OrganizationId == org.Id && x.Id == post.Id);
+
+                Db.UpdateOnly(() => new PostReport { Acknowledged = now, AcknowledgedBy = user.UserName },
+                    where: x => x.OrganizationId == org.Id && x.Id == request.Id && x.PostId == post.Id);
+            }
+
+            ClearPostCaches();
         }
 
         public async Task<CreatePostCommentResponse> Post(CreatePostComment request)
@@ -526,7 +569,7 @@ namespace TechStacks.ServiceInterface
 
             var user = GetUser();
             var post = AssertPost(request.PostId);
-            var groupMember = AssertCanAnnotateOnOrganization(Db, post.OrganizationId, user);
+            var groupMember = AssertCanAnnotateOnOrganization(Db, post.OrganizationId, user, out var org);
             AssertCanAnnotatePost(post, user, groupMember);
 
             var userId = user.GetUserId();
@@ -534,20 +577,66 @@ namespace TechStacks.ServiceInterface
             Db.Insert(new PostCommentReport
             {
                 UserId = userId,
+                UserName = user.UserName,
+                OrganizationId = org.Id,
+                PostId = post.Id,
                 PostCommentId = request.Id,
-                Type = request.Type,
-                Notes = request.Notes,
+                FlagType = request.FlagType,
+                ReportNotes = request.ReportNotes,
                 Created = DateTime.Now,
             });
 
-            var reportsCount = Db.Count<PostCommentReport>(x => x.PostCommentId == request.Id);
-            if (reportsCount >= 5)
+            var reportsCount = Db.Count<PostCommentReport>(x => x.OrganizationId == org.Id && x.PostCommentId == request.Id);
+            if (reportsCount >= org.DeletePostsWithReportCount)
             {
                 Db.UpdateOnly(() => new PostComment { Deleted = DateTime.Now, DeletedBy = nameof(PostCommentReport) },
                     where: x => x.Id == request.Id);
             }
 
+            Db.ExecuteSql(
+                @"update post_comment set 
+                         report_count = (select count(*) from post_comment_report where organization_id = @orgId and post_comment_id = @Id)
+                   where id = @id", new { orgId = org.Id, request.Id });
+
             return new UserPostCommentReportResponse();
+        }
+
+        public void Post(ActionPostCommentReport request)
+        {
+            if (request.Id <= 0)
+                throw new ArgumentNullException(nameof(request.Id));
+
+            if (request.PostCommentId <= 0)
+                throw new ArgumentNullException(nameof(request.PostCommentId));
+
+            if (request.PostId <= 0)
+                throw new ArgumentNullException(nameof(request.PostId));
+
+            var comment = AssertPostComment(request.PostCommentId);
+
+            if (comment.PostId != request.PostId)
+                throw new ArgumentException("Invalid PostId", nameof(request.PostId));
+
+            var user = GetUser();
+            var post = AssertPost(comment.PostId);
+            AssertOrganizationModerator(Db, post.OrganizationId, user, out var org, out var orgMember);
+
+            var now = DateTime.Now;
+            if (request.ReportAction == ReportAction.Dismiss)
+            {
+                Db.UpdateOnly(() => new PostCommentReport { Dismissed = now, DismissedBy = user.UserName },
+                    where: x => x.OrganizationId == org.Id && x.Id == request.Id && x.PostCommentId == request.PostCommentId);
+            }
+            else if (request.ReportAction == ReportAction.Delete)
+            {
+                Db.UpdateOnly(() => new PostComment { Deleted = now, DeletedBy = user.UserName },
+                    where: x => x.PostId == post.Id && x.Id == request.PostCommentId);
+
+                Db.UpdateOnly(() => new PostCommentReport { Acknowledged = now, AcknowledgedBy = user.UserName },
+                    where: x => x.OrganizationId == org.Id && x.Id == request.Id && x.PostCommentId == request.PostCommentId);
+            }
+
+            ClearPostCaches();
         }
 
         public object Get(GetUserPostCommentVotes request)
