@@ -137,7 +137,7 @@
             <v-container fluid grid-list-md>
               <v-layout row wrap>
                 <v-flex xs3 v-for="techstack in user.favoriteTechStacks" :key="techstack.id">
-                  <v-card flat tile :to="roues.stack(techstack.slug)">
+                  <v-card flat tile :to="routes.stack(techstack.slug)">
                     <v-card-media
                       :src="techstack.screenshotUrl"
                       height="270px"
