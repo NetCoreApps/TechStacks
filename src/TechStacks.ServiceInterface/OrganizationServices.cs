@@ -32,6 +32,8 @@ namespace TechStacks.ServiceInterface
         {
             PostServicesBase.AssertCanViewOrganization(Db, organization, SessionAs<AuthUserSession>(), out _);
 
+            var members = await Db.SelectAsync<OrganizationMember>(x => x.OrganizationId == organization.Id && (x.IsOwner || x.IsModerator));
+
             return new GetOrganizationResponse
             {
                 Cache = Stopwatch.GetTimestamp(),
@@ -39,8 +41,9 @@ namespace TechStacks.ServiceInterface
                 Slug = organization.Slug,
                 Organization = organization,
                 Categories = (await Db.SelectAsync<Category>(x => x.OrganizationId == organization.Id && x.Deleted == null)).OrderBy(x => x.Name).ToList(),
-                Members = await Db.SelectAsync<OrganizationMember>(x => x.OrganizationId == organization.Id),
-                MemberInvites = await Db.SelectAsync<OrganizationMemberInvite>(x => x.OrganizationId == organization.Id && x.Approved == null && x.OrganizationMemberId == null),
+                Owners = members.Where(x => x.IsOwner).ToList(),
+                Moderators = members.Where(x => x.IsModerator).ToList(),
+                MembersTotal = PostServicesBase.GetOrganizationMembers(organization.Id).Count, //display only, can be stale
             };
         }
 
@@ -66,8 +69,14 @@ namespace TechStacks.ServiceInterface
 
         public async Task<GetOrganizationAdminResponse> Get(GetOrganizationAdmin request)
         {
+            var user = GetUser();
+            AssertOrganizationModerator(Db, request.Id, user, out var org, out var orgMember);
+
             return new GetOrganizationAdminResponse
             {
+                Members = await Db.SelectAsync(Db.From<OrganizationMember>().Where(x => x.OrganizationId == org.Id).OrderByDescending(x => new{ x.IsOwner, x.IsModerator })),
+                MemberInvites = await Db.SelectAsync<OrganizationMemberInvite>(x => x.OrganizationId == org.Id && x.Approved == null && x.OrganizationMemberId == null),
+
                 ReportedPosts = await Db.SelectAsync<PostReportInfo>(Db.From<PostReport>()
                     .Join<Post>().Where(x => x.Acknowledged == null && x.Dismissed == null)),
                 ReportedPostComments = await Db.SelectAsync<PostCommentReportInfo>(Db.From<PostCommentReport>()

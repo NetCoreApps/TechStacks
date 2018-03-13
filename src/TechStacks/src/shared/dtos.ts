@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-12 04:01:12
+Date: 2018-03-13 00:13:32
 Version: 5.00
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -103,15 +103,6 @@ export class OrganizationMember
     notes: string;
 }
 
-export class OrganizationMemberInvite
-{
-    id: number;
-    organizationId: number;
-    userId: number;
-    userName: string;
-    dismissed: string;
-}
-
 // @DataContract
 export class ResponseError
 {
@@ -145,6 +136,15 @@ export class ResponseStatus
 
     // @DataMember(Order=5)
     meta: { [index:string]: string; };
+}
+
+export class OrganizationMemberInvite
+{
+    id: number;
+    organizationId: number;
+    userId: number;
+    userName: string;
+    dismissed: string;
 }
 
 export type FlagType = "Violation" | "Spam" | "Abusive" | "Confidential" | "OffTopic" | "Other";
@@ -301,6 +301,7 @@ export class PostComment
     downVotes: number;
     favorites: number;
     wordCount: number;
+    reportCount: number;
     deleted: string;
     hidden: string;
     modified: string;
@@ -437,8 +438,10 @@ export class OrganizationInfo
     refSource: string;
     upVotes: number;
     downVotes: number;
+    rank: number;
     postTypes: string[];
     moderatorPostTypes: string[];
+    locked: string;
     categories: CategoryInfo[];
 }
 
@@ -483,7 +486,6 @@ export class GetOrganizationResponse
     organization: Organization;
     categories: Category[];
     members: OrganizationMember[];
-    memberInvites: OrganizationMemberInvite[];
     responseStatus: ResponseStatus;
 }
 
@@ -496,6 +498,7 @@ export class GetOrganizationMembersResponse
 
 export class GetOrganizationAdminResponse
 {
+    memberInvites: OrganizationMemberInvite[];
     reportedPosts: PostReportInfo[];
     reportedPostComments: PostCommentReportInfo[];
     responseStatus: ResponseStatus;
@@ -606,30 +609,6 @@ export class DeletePostResponse
     responseStatus: ResponseStatus;
 }
 
-export class GetUserPostActivityResponse
-{
-    upVotedPostIds: number[];
-    downVotedPostIds: number[];
-    favoritePostIds: number[];
-    memberInviteOrganizationIds: number[];
-    responseStatus: ResponseStatus;
-}
-
-export class UserPostVoteResponse
-{
-    responseStatus: ResponseStatus;
-}
-
-export class UserPostFavoriteResponse
-{
-    responseStatus: ResponseStatus;
-}
-
-export class UserPostReportResponse
-{
-    responseStatus: ResponseStatus;
-}
-
 export class CreatePostCommentResponse
 {
     id: number;
@@ -649,16 +628,6 @@ export class DeletePostCommentResponse
     responseStatus: ResponseStatus;
 }
 
-export class UserPostCommentVoteResponse
-{
-    responseStatus: ResponseStatus;
-}
-
-export class UserPostCommentReportResponse
-{
-    responseStatus: ResponseStatus;
-}
-
 export class GetUserPostCommentVotesResponse
 {
     postId: number;
@@ -667,6 +636,45 @@ export class GetUserPostCommentVotesResponse
 }
 
 export class PinPostCommentResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class GetUserPostActivityResponse
+{
+    upVotedPostIds: number[];
+    downVotedPostIds: number[];
+    favoritePostIds: number[];
+    responseStatus: ResponseStatus;
+}
+
+export class GetUserOrganizationsResponse
+{
+    organizationMembers: OrganizationMember[];
+    organizationMemberInvites: OrganizationMemberInvite[];
+}
+
+export class UserPostVoteResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class UserPostFavoriteResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class UserPostReportResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class UserPostCommentVoteResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class UserPostCommentReportResponse
 {
     responseStatus: ResponseStatus;
 }
@@ -1240,40 +1248,6 @@ export class LockPost implements IReturnVoid
     getTypeName() { return "LockPost"; }
 }
 
-// @Route("/user/posts/activity")
-export class GetUserPostActivity implements IReturn<GetUserPostActivityResponse>
-{
-    createResponse() { return new GetUserPostActivityResponse(); }
-    getTypeName() { return "GetUserPostActivity"; }
-}
-
-// @Route("/posts/{Id}/vote", "PUT")
-export class UserPostVote implements IReturn<UserPostVoteResponse>
-{
-    id: number;
-    weight: number;
-    createResponse() { return new UserPostVoteResponse(); }
-    getTypeName() { return "UserPostVote"; }
-}
-
-// @Route("/posts/{Id}/favorite", "PUT")
-export class UserPostFavorite implements IReturn<UserPostFavoriteResponse>
-{
-    id: number;
-    createResponse() { return new UserPostFavoriteResponse(); }
-    getTypeName() { return "UserPostFavorite"; }
-}
-
-// @Route("/posts/{Id}/report", "PUT")
-export class UserPostReport implements IReturn<UserPostReportResponse>
-{
-    id: number;
-    flagType: FlagType;
-    reportNotes: string;
-    createResponse() { return new UserPostReportResponse(); }
-    getTypeName() { return "UserPostReport"; }
-}
-
 // @Route("/posts/{PostId}/report/{Id}", "POST")
 export class ActionPostReport implements IReturnVoid
 {
@@ -1313,27 +1287,6 @@ export class DeletePostComment implements IReturn<DeletePostCommentResponse>
     getTypeName() { return "DeletePostComment"; }
 }
 
-// @Route("/posts/{PostId}/comments/{Id}", "GET")
-export class UserPostCommentVote implements IReturn<UserPostCommentVoteResponse>
-{
-    id: number;
-    postId: number;
-    weight: number;
-    createResponse() { return new UserPostCommentVoteResponse(); }
-    getTypeName() { return "UserPostCommentVote"; }
-}
-
-// @Route("/posts/{PostId}/comments/{Id}/report", "PUT")
-export class UserPostCommentReport implements IReturn<UserPostCommentReportResponse>
-{
-    id: number;
-    postId: number;
-    flagType: FlagType;
-    reportNotes: string;
-    createResponse() { return new UserPostCommentReportResponse(); }
-    getTypeName() { return "UserPostCommentReport"; }
-}
-
 // @Route("/posts/{PostId}/comments/{PostCommentId}/report/{Id}", "POST")
 export class ActionPostCommentReport implements IReturnVoid
 {
@@ -1361,6 +1314,68 @@ export class PinPostComment implements IReturn<PinPostCommentResponse>
     pin: boolean;
     createResponse() { return new PinPostCommentResponse(); }
     getTypeName() { return "PinPostComment"; }
+}
+
+// @Route("/user/posts/activity")
+export class GetUserPostActivity implements IReturn<GetUserPostActivityResponse>
+{
+    createResponse() { return new GetUserPostActivityResponse(); }
+    getTypeName() { return "GetUserPostActivity"; }
+}
+
+// @Route("/user/organizations")
+export class GetUserOrganizations implements IReturn<GetUserOrganizationsResponse>
+{
+    createResponse() { return new GetUserOrganizationsResponse(); }
+    getTypeName() { return "GetUserOrganizations"; }
+}
+
+// @Route("/posts/{Id}/vote", "PUT")
+export class UserPostVote implements IReturn<UserPostVoteResponse>
+{
+    id: number;
+    weight: number;
+    createResponse() { return new UserPostVoteResponse(); }
+    getTypeName() { return "UserPostVote"; }
+}
+
+// @Route("/posts/{Id}/favorite", "PUT")
+export class UserPostFavorite implements IReturn<UserPostFavoriteResponse>
+{
+    id: number;
+    createResponse() { return new UserPostFavoriteResponse(); }
+    getTypeName() { return "UserPostFavorite"; }
+}
+
+// @Route("/posts/{Id}/report", "PUT")
+export class UserPostReport implements IReturn<UserPostReportResponse>
+{
+    id: number;
+    flagType: FlagType;
+    reportNotes: string;
+    createResponse() { return new UserPostReportResponse(); }
+    getTypeName() { return "UserPostReport"; }
+}
+
+// @Route("/posts/{PostId}/comments/{Id}", "GET")
+export class UserPostCommentVote implements IReturn<UserPostCommentVoteResponse>
+{
+    id: number;
+    postId: number;
+    weight: number;
+    createResponse() { return new UserPostCommentVoteResponse(); }
+    getTypeName() { return "UserPostCommentVote"; }
+}
+
+// @Route("/posts/{PostId}/comments/{Id}/report", "PUT")
+export class UserPostCommentReport implements IReturn<UserPostCommentReportResponse>
+{
+    id: number;
+    postId: number;
+    flagType: FlagType;
+    reportNotes: string;
+    createResponse() { return new UserPostCommentReportResponse(); }
+    getTypeName() { return "UserPostCommentReport"; }
 }
 
 // @Route("/my-session")

@@ -29,7 +29,6 @@ namespace TechStacks.Tests
                 db.DropAndCreateTable<PostCommentReport>();
 
                 db.DropAndCreateTable<Subscription>();
-                db.DropAndCreateTable<SubscriptionUser>();
 
                 db.DropAndCreateTable<Organization>();
                 db.DropAndCreateTable<OrganizationMember>();
@@ -39,7 +38,7 @@ namespace TechStacks.Tests
             }
         }
 
-        //[Test]
+        [Test]
         public void Create_GroupMember_schema()
         {
             using (var db = dbFactory.Open())
@@ -140,7 +139,7 @@ namespace TechStacks.Tests
         {
             using (var db = dbFactory.Open())
             {
-                //db.AddColumn<PostComment>(x => x.ReportCount);
+                //db.DropAndCreateTable<Subscription>();
 
                 //db.DropAndCreateTable<PostReport>();
                 //db.DropAndCreateTable<PostCommentReport>();
@@ -217,6 +216,28 @@ namespace TechStacks.Tests
             public int Id { get; set; }
             public string Slug { get; set; }
             public string Name { get; set; }
+        }
+
+        //[Test]
+        public void Create_missing_userActivities()
+        {
+            using (var db = dbFactory.Open())
+            {
+                var usersWithoutActivities = db.SqlList<CustomUserAuth>(
+                    @"select u.* from custom_user_auth u left join user_activity a on u.id = a.id where a.id is null");
+
+                foreach (var user in usersWithoutActivities)
+                {
+                    $"Inserting User {user.Id} @{user.UserName}".Print();
+                    db.Insert(new UserActivity
+                    {
+                        Id = user.Id,
+                        UserName = user.UserName,
+                        Created = DateTime.UtcNow,
+                        Modified = DateTime.UtcNow,
+                    });
+                }
+            }
         }
 
         //[Test]

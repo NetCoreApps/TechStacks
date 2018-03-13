@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-12 04:01:12
+Date: 2018-03-13 00:13:32
 Version: 5.00
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -42,12 +42,6 @@ var OrganizationMember = /** @class */ (function () {
     return OrganizationMember;
 }());
 export { OrganizationMember };
-var OrganizationMemberInvite = /** @class */ (function () {
-    function OrganizationMemberInvite() {
-    }
-    return OrganizationMemberInvite;
-}());
-export { OrganizationMemberInvite };
 // @DataContract
 var ResponseError = /** @class */ (function () {
     function ResponseError() {
@@ -62,6 +56,12 @@ var ResponseStatus = /** @class */ (function () {
     return ResponseStatus;
 }());
 export { ResponseStatus };
+var OrganizationMemberInvite = /** @class */ (function () {
+    function OrganizationMemberInvite() {
+    }
+    return OrganizationMemberInvite;
+}());
+export { OrganizationMemberInvite };
 var PostReport = /** @class */ (function () {
     function PostReport() {
     }
@@ -322,30 +322,6 @@ var DeletePostResponse = /** @class */ (function () {
     return DeletePostResponse;
 }());
 export { DeletePostResponse };
-var GetUserPostActivityResponse = /** @class */ (function () {
-    function GetUserPostActivityResponse() {
-    }
-    return GetUserPostActivityResponse;
-}());
-export { GetUserPostActivityResponse };
-var UserPostVoteResponse = /** @class */ (function () {
-    function UserPostVoteResponse() {
-    }
-    return UserPostVoteResponse;
-}());
-export { UserPostVoteResponse };
-var UserPostFavoriteResponse = /** @class */ (function () {
-    function UserPostFavoriteResponse() {
-    }
-    return UserPostFavoriteResponse;
-}());
-export { UserPostFavoriteResponse };
-var UserPostReportResponse = /** @class */ (function () {
-    function UserPostReportResponse() {
-    }
-    return UserPostReportResponse;
-}());
-export { UserPostReportResponse };
 var CreatePostCommentResponse = /** @class */ (function () {
     function CreatePostCommentResponse() {
     }
@@ -364,18 +340,6 @@ var DeletePostCommentResponse = /** @class */ (function () {
     return DeletePostCommentResponse;
 }());
 export { DeletePostCommentResponse };
-var UserPostCommentVoteResponse = /** @class */ (function () {
-    function UserPostCommentVoteResponse() {
-    }
-    return UserPostCommentVoteResponse;
-}());
-export { UserPostCommentVoteResponse };
-var UserPostCommentReportResponse = /** @class */ (function () {
-    function UserPostCommentReportResponse() {
-    }
-    return UserPostCommentReportResponse;
-}());
-export { UserPostCommentReportResponse };
 var GetUserPostCommentVotesResponse = /** @class */ (function () {
     function GetUserPostCommentVotesResponse() {
     }
@@ -388,6 +352,48 @@ var PinPostCommentResponse = /** @class */ (function () {
     return PinPostCommentResponse;
 }());
 export { PinPostCommentResponse };
+var GetUserPostActivityResponse = /** @class */ (function () {
+    function GetUserPostActivityResponse() {
+    }
+    return GetUserPostActivityResponse;
+}());
+export { GetUserPostActivityResponse };
+var GetUserOrganizationsResponse = /** @class */ (function () {
+    function GetUserOrganizationsResponse() {
+    }
+    return GetUserOrganizationsResponse;
+}());
+export { GetUserOrganizationsResponse };
+var UserPostVoteResponse = /** @class */ (function () {
+    function UserPostVoteResponse() {
+    }
+    return UserPostVoteResponse;
+}());
+export { UserPostVoteResponse };
+var UserPostFavoriteResponse = /** @class */ (function () {
+    function UserPostFavoriteResponse() {
+    }
+    return UserPostFavoriteResponse;
+}());
+export { UserPostFavoriteResponse };
+var UserPostReportResponse = /** @class */ (function () {
+    function UserPostReportResponse() {
+    }
+    return UserPostReportResponse;
+}());
+export { UserPostReportResponse };
+var UserPostCommentVoteResponse = /** @class */ (function () {
+    function UserPostCommentVoteResponse() {
+    }
+    return UserPostCommentVoteResponse;
+}());
+export { UserPostCommentVoteResponse };
+var UserPostCommentReportResponse = /** @class */ (function () {
+    function UserPostCommentReportResponse() {
+    }
+    return UserPostCommentReportResponse;
+}());
+export { UserPostCommentReportResponse };
 var SessionInfoResponse = /** @class */ (function () {
     function SessionInfoResponse() {
     }
@@ -828,42 +834,6 @@ var LockPost = /** @class */ (function () {
     return LockPost;
 }());
 export { LockPost };
-// @Route("/user/posts/activity")
-var GetUserPostActivity = /** @class */ (function () {
-    function GetUserPostActivity() {
-    }
-    GetUserPostActivity.prototype.createResponse = function () { return new GetUserPostActivityResponse(); };
-    GetUserPostActivity.prototype.getTypeName = function () { return "GetUserPostActivity"; };
-    return GetUserPostActivity;
-}());
-export { GetUserPostActivity };
-// @Route("/posts/{Id}/vote", "PUT")
-var UserPostVote = /** @class */ (function () {
-    function UserPostVote() {
-    }
-    UserPostVote.prototype.createResponse = function () { return new UserPostVoteResponse(); };
-    UserPostVote.prototype.getTypeName = function () { return "UserPostVote"; };
-    return UserPostVote;
-}());
-export { UserPostVote };
-// @Route("/posts/{Id}/favorite", "PUT")
-var UserPostFavorite = /** @class */ (function () {
-    function UserPostFavorite() {
-    }
-    UserPostFavorite.prototype.createResponse = function () { return new UserPostFavoriteResponse(); };
-    UserPostFavorite.prototype.getTypeName = function () { return "UserPostFavorite"; };
-    return UserPostFavorite;
-}());
-export { UserPostFavorite };
-// @Route("/posts/{Id}/report", "PUT")
-var UserPostReport = /** @class */ (function () {
-    function UserPostReport() {
-    }
-    UserPostReport.prototype.createResponse = function () { return new UserPostReportResponse(); };
-    UserPostReport.prototype.getTypeName = function () { return "UserPostReport"; };
-    return UserPostReport;
-}());
-export { UserPostReport };
 // @Route("/posts/{PostId}/report/{Id}", "POST")
 var ActionPostReport = /** @class */ (function () {
     function ActionPostReport() {
@@ -900,24 +870,6 @@ var DeletePostComment = /** @class */ (function () {
     return DeletePostComment;
 }());
 export { DeletePostComment };
-// @Route("/posts/{PostId}/comments/{Id}", "GET")
-var UserPostCommentVote = /** @class */ (function () {
-    function UserPostCommentVote() {
-    }
-    UserPostCommentVote.prototype.createResponse = function () { return new UserPostCommentVoteResponse(); };
-    UserPostCommentVote.prototype.getTypeName = function () { return "UserPostCommentVote"; };
-    return UserPostCommentVote;
-}());
-export { UserPostCommentVote };
-// @Route("/posts/{PostId}/comments/{Id}/report", "PUT")
-var UserPostCommentReport = /** @class */ (function () {
-    function UserPostCommentReport() {
-    }
-    UserPostCommentReport.prototype.createResponse = function () { return new UserPostCommentReportResponse(); };
-    UserPostCommentReport.prototype.getTypeName = function () { return "UserPostCommentReport"; };
-    return UserPostCommentReport;
-}());
-export { UserPostCommentReport };
 // @Route("/posts/{PostId}/comments/{PostCommentId}/report/{Id}", "POST")
 var ActionPostCommentReport = /** @class */ (function () {
     function ActionPostCommentReport() {
@@ -945,6 +897,69 @@ var PinPostComment = /** @class */ (function () {
     return PinPostComment;
 }());
 export { PinPostComment };
+// @Route("/user/posts/activity")
+var GetUserPostActivity = /** @class */ (function () {
+    function GetUserPostActivity() {
+    }
+    GetUserPostActivity.prototype.createResponse = function () { return new GetUserPostActivityResponse(); };
+    GetUserPostActivity.prototype.getTypeName = function () { return "GetUserPostActivity"; };
+    return GetUserPostActivity;
+}());
+export { GetUserPostActivity };
+// @Route("/user/organizations")
+var GetUserOrganizations = /** @class */ (function () {
+    function GetUserOrganizations() {
+    }
+    GetUserOrganizations.prototype.createResponse = function () { return new GetUserOrganizationsResponse(); };
+    GetUserOrganizations.prototype.getTypeName = function () { return "GetUserOrganizations"; };
+    return GetUserOrganizations;
+}());
+export { GetUserOrganizations };
+// @Route("/posts/{Id}/vote", "PUT")
+var UserPostVote = /** @class */ (function () {
+    function UserPostVote() {
+    }
+    UserPostVote.prototype.createResponse = function () { return new UserPostVoteResponse(); };
+    UserPostVote.prototype.getTypeName = function () { return "UserPostVote"; };
+    return UserPostVote;
+}());
+export { UserPostVote };
+// @Route("/posts/{Id}/favorite", "PUT")
+var UserPostFavorite = /** @class */ (function () {
+    function UserPostFavorite() {
+    }
+    UserPostFavorite.prototype.createResponse = function () { return new UserPostFavoriteResponse(); };
+    UserPostFavorite.prototype.getTypeName = function () { return "UserPostFavorite"; };
+    return UserPostFavorite;
+}());
+export { UserPostFavorite };
+// @Route("/posts/{Id}/report", "PUT")
+var UserPostReport = /** @class */ (function () {
+    function UserPostReport() {
+    }
+    UserPostReport.prototype.createResponse = function () { return new UserPostReportResponse(); };
+    UserPostReport.prototype.getTypeName = function () { return "UserPostReport"; };
+    return UserPostReport;
+}());
+export { UserPostReport };
+// @Route("/posts/{PostId}/comments/{Id}", "GET")
+var UserPostCommentVote = /** @class */ (function () {
+    function UserPostCommentVote() {
+    }
+    UserPostCommentVote.prototype.createResponse = function () { return new UserPostCommentVoteResponse(); };
+    UserPostCommentVote.prototype.getTypeName = function () { return "UserPostCommentVote"; };
+    return UserPostCommentVote;
+}());
+export { UserPostCommentVote };
+// @Route("/posts/{PostId}/comments/{Id}/report", "PUT")
+var UserPostCommentReport = /** @class */ (function () {
+    function UserPostCommentReport() {
+    }
+    UserPostCommentReport.prototype.createResponse = function () { return new UserPostCommentReportResponse(); };
+    UserPostCommentReport.prototype.getTypeName = function () { return "UserPostCommentReport"; };
+    return UserPostCommentReport;
+}());
+export { UserPostCommentReport };
 // @Route("/my-session")
 var SessionInfo = /** @class */ (function () {
     function SessionInfo() {

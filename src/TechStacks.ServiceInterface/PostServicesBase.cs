@@ -75,6 +75,19 @@ namespace TechStacks.ServiceInterface
                 set rank = r.rank
                 from (select rank() over(order by bumped desc nulls last, modified desc nulls last), p.id from post p) r
                 where post.id = r.id");
+
+            db.ExecuteSql(@"update organization set  
+                posts_count = (select count(*) from post p where organization_id = organization.id or (organization.ref_source = 'Technology' and p.technology_ids @> ARRAY[organization.ref_id]::int[])),
+                comments_count = (select count(*) from post_comment c join post p on (c.post_id = p.id) where p.organization_id = organization.id),
+                subscribers = (select count(*) from subscription where organization_id = organization.id),
+                favorites = (select count(*) from post_favorite f join post p on (f.post_id = p.id) where p.organization_id = organization.id),
+                up_votes   = (select count(*) from post_vote v join post p on (v.post_id = p.id) where organization_id = organization.id and weight > 0), 
+                down_votes = (select count(*) from post_vote v join post p on (v.post_id = p.id) where organization_id = organization.id and weight < 0)");
+
+            db.ExecuteSql(@"update organization 
+                set rank = r.rank
+                from (select rank() over(order by posts_count desc), o.id from organization o) r
+                where organization.id = r.id");
         }
 
         private static void LoadOrganizations(IDbConnection db) => GetOrganizations(db);

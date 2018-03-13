@@ -44,7 +44,7 @@
     </v-card>
     <div v-if="!pinned" class="comment-children">
         <div class="comment-child" v-for="comment in childComments()" :key="comment.id">
-            <post-comment :post="post" :comment="comment" :hide="hide"></post-comment>
+            <post-comment :post="post" :comment="comment" :hide="hide" @votePostCommentDone="$emit('votePostCommentDone',comment.id)"></post-comment>
         </div>
     </div>
 </div>  

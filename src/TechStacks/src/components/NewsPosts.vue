@@ -155,6 +155,7 @@ export default {
       this.add = false;
     },
     async memberDone(){
+      this.$store.dispatch('loadUserOrganizations');
       this.$store.dispatch('loadOrganizationById', this.organization.id);
     },
     async postDone() {

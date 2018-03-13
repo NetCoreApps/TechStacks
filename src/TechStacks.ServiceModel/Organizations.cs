@@ -29,17 +29,32 @@ namespace TechStacks.ServiceModel
 
         public List<Category> Categories { get; set; }
 
-        public List<OrganizationMember> Members { get; set; }
+        public List<OrganizationMember> Owners { get; set; }
 
-        public List<OrganizationMemberInvite> MemberInvites { get; set; }
+        public List<OrganizationMember> Moderators { get; set; }
+
+        public long MembersTotal { get; set; }
 
         public ResponseStatus ResponseStatus { get; set; }
     }
 
     [Route("/orgs/{Id}/admin", "GET")]
-    public class GetOrganizationAdmin
+    public class GetOrganizationAdmin : IReturn<GetOrganizationAdminResponse>
     {
         public int Id { get; set; }
+    }
+
+    public class GetOrganizationAdminResponse
+    {
+        public List<OrganizationMember> Members { get; set; }
+
+        public List<OrganizationMemberInvite> MemberInvites { get; set; }
+
+        public List<PostReportInfo> ReportedPosts { get; set; }
+
+        public List<PostCommentReportInfo> ReportedPostComments { get; set; }
+
+        public ResponseStatus ResponseStatus { get; set; }
     }
 
     public class PostReportInfo : PostReport
@@ -58,15 +73,6 @@ namespace TechStacks.ServiceModel
         public int ReportCount { get; set; }
 
         public string CreatedBy { get; set; } //Post
-    }
-
-    public class GetOrganizationAdminResponse
-    {
-        public List<PostReportInfo> ReportedPosts { get; set; }
-
-        public List<PostCommentReportInfo> ReportedPostComments { get; set; }
-
-        public ResponseStatus ResponseStatus { get; set; }
     }
 
 

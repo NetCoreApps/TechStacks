@@ -300,7 +300,7 @@ namespace TechStacks.ServiceInterface.Import
                         ? Site.ProfileUrlFormat.Fmt(forumUser.Username, forumUser.UploadedAvatarId.Value)
                         : null;
 
-                    db.Insert(new CustomUserAuth
+                    var userId = (int)db.Insert(new CustomUserAuth
                     {
                         UserName = forumUser.Username,
                         Email = forumUser.Email,
@@ -310,7 +310,16 @@ namespace TechStacks.ServiceInterface.Import
                         RefSource = Site.RefSource,
                         RefId = forumUser.Id,
                         RefUrn = $"urn:user:{forumUser.Id}",
+                    }, selectIdentity:true);
+
+                    db.Insert(new UserActivity
+                    {
+                        Id = userId,
+                        UserName = forumUser.Username,
+                        Created = DateTime.UtcNow,
+                        Modified = DateTime.UtcNow,
                     });
+
                 }
             }
 

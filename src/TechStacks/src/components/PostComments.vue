@@ -64,7 +64,7 @@
         <v-flex class="post-features">
 
             <div v-if="pinnedComment" style="margin-bottom:15px">
-              <PostComment :post="post" :comment="pinnedComment" :pinned="true"></PostComment>
+              <PostComment :post="post" :comment="pinnedComment" :pinned="true" @votePostCommentDone="votePostDone"></PostComment>
             </div>
 
             <h2 v-if="post.comments.length > 1" class="comments-title">All {{post.comments.length || ''}} comments</h2>
@@ -74,7 +74,7 @@
             
         </v-flex>
         <v-flex class="post-comments">
-            <PostComment v-for="comment in parentComments" :key="comment.id" :post="post" :comment="comment"></PostComment>
+            <PostComment v-for="comment in parentComments" :key="comment.id" :post="post" :comment="comment" @votePostCommentDone="votePostDone"></PostComment>
         </v-flex>
     </v-layout>
 
@@ -167,6 +167,9 @@ export default {
         this.loadPost();
       }
     },
+    async votePostDone(id){
+      await this.loadPost();
+    },
 
     postKarma, 
     organizationMember,
@@ -190,6 +193,10 @@ export default {
     this.$store.dispatch('loadUserPostActivity');
     this.$store.dispatch('loadUserPostCommentVotes', this.postId);
     this.$store.dispatch('loadTechnologyTiers');
+
+    this.$on(['votePostCommentDone','votePostDone'], (id) => {
+      this.votePostDone(id)
+    })
   },
 
   data: () => ({

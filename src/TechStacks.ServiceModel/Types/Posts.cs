@@ -78,6 +78,7 @@ namespace TechStacks.ServiceModel.Types
 
         public int Score { get; set; }
 
+        [Index]
         public int Rank { get; set; }
 
         [Index]
@@ -209,35 +210,24 @@ namespace TechStacks.ServiceModel.Types
         public long Id { get; set; }
 
         [Index]
+        public long OrganizationId { get; set; }
+
+        public int UserId { get; set; }
+
         public long RefId { get; set; }
 
         public string RefSource { get; set; } //Organization or Post
 
-        public long Users { get; set; }
+        public int FrequencyDays { get; set; }
+
+        public long LastSyncedId { get; set; }
+
+        [PgSqlTextArray]
+        public string[] PostTypes { get; set; }
 
         public DateTime? LastSynced { get; set; }
 
         public DateTime Created { get; set; }
-    }
-
-    public class SubscriptionUser
-    {
-        [AutoIncrement]
-        public long Id { get; set; }
-
-        public long SubscriptionId { get; set; }
-
-        public int UserId { get; set; }
-
-        public List<SubscriptionRule> Rules { get; set; }
-
-        public DateTime Created { get; set; }
-    }
-
-    public class SubscriptionRule
-    {
-        public string Type { get; set; }
-        public int? Threshold { get; set; }
     }
 
     public class Post

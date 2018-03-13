@@ -10,10 +10,11 @@ export const commentKarmaLabel = (comment) => {
 };
 
 export function votedClass(postId) {
-  if (this.userPostActivity != null) {
-      if (this.userPostActivity.upVoted.indexOf(postId) >= 0)
+  const postActivity = userPostActivity.call(this);
+  if (postActivity != null) {
+      if (postActivity.upVoted.indexOf(postId) >= 0)
           return 'up-voted';
-      if (this.userPostActivity.downVoted.indexOf(postId) >= 0)
+      if (postActivity.downVoted.indexOf(postId) >= 0)
           return 'down-voted';
   }
   return '';
@@ -32,10 +33,12 @@ export function votedCommentClass(commentId) {
 export function user(){ return this.$store.getters.user; }
 export function userId(){ return this.$store.getters.userId; }
 export function userName(){ return this.$store.getters.user && this.$store.getters.user.userName; }
+export function userPostActivity(){ return this.userPostActivity || this.$store.getters.userPostActivity; }
 export function organization(org){ return org || this.organization || this.$store.getters.organization; }
+export function userOrganizations(){ return this.$store.getters.userOrganizations; }
 export function organizationMember(org) { 
-  const o = organization.call(this,org), uid = userId.call(this);
-  const ret = uid != null && o && o.members && o.members.find(x => x.userId === uid);
+  const o = organization.call(this,org);
+  const ret = o && userOrganizations.call(this).members.find(x => x.organizationId === o.id);
   return ret;
 }
 export function isOrganizationMember(org) { return organizationMember.call(this,org) != null; }
@@ -86,6 +89,7 @@ export function canPostToOrganization(org) {
 }
 
 export function canAnnotatePost(post,org) {
+  org = org || this.$store.getters.getOrganization(post.organizationId);
   const ret = canViewOrganization.call(this,org)
     && !memberDenyAll.call(this,org)
     && (!isOrganizationLocked.call(this,org) || isOrganizationMember.call(this,org))
@@ -164,18 +168,20 @@ export function canReportComment(post,comment) {
     && comment.userId !== userId.call(this);
 }
 
-export function votePost(post, weight) {
+export async function votePost(post, weight) {
   const prevVote = this.votedClass(post.id);
   if (prevVote === 'up-voted' && weight === 1 || prevVote === 'down-voted' && weight === -1)
       weight = 0;
-  return this.$store.dispatch('votePost', { postId:post.id, weight });
+  await this.$store.dispatch('votePost', { postId:post.id, weight });
+  this.$emit('votePostDone', post.id);
 }
 
-export function votePostComment(postId, comment, weight) {
+export async function votePostComment(postId, comment, weight) {
   const prevVote = this.votedCommentClass(comment.id);
   if (prevVote === 'up-voted' && weight === 1 || prevVote === 'down-voted' && weight === -1)
       weight = 0;
-  return this.$store.dispatch('votePostComment', { postId, commentId:comment.id, weight });
+  await this.$store.dispatch('votePostComment', { postId, commentId:comment.id, weight });
+  this.$emit('votePostCommentDone', comment.id);
 }
 
 export function favoritePost(post) {

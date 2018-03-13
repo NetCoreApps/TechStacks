@@ -372,7 +372,7 @@ export default {
       return errorResponseExcept.call(this,Object.keys(organization));
     },
     member() {
-      return this.user && this.members.filter(x => x.userId == this.user.userAuthId)[0];
+      return this.userOrganizations.members.find(x => x.organizationId == organization.id);
     },
     isOrganizationOwner(){
       return this.isAdmin || (this.member && this.member.isOwner);
@@ -380,7 +380,7 @@ export default {
     isOrganizationModerator(){
       return this.isOrganizationOwner || (this.member && this.member.isModerator);
     },
-    ...mapGetters(["loading", "isAuthenticated", "isAdmin", "user", "technologySelectItems", "allPostTypeSelectItems"])
+    ...mapGetters(["loading", "isAuthenticated", "isAdmin", "user", "organization", "userOrganizations", "technologySelectItems", "allPostTypeSelectItems"])
   },
 
   methods: {
@@ -483,14 +483,15 @@ export default {
     },
     async loadOrgnaization(){
       try {
-        const response = await getOrganizationBySlug(this.orgSlug);
-        Object.assign(this, response.organization);
+        await this.$store.dispatch('loadOrganizationBySlug', this.orgSlug);
+        Object.assign(this, this.organization);
+        this.categories = this.organization.categories.filter(x => x.deleted == null);
+        const response = await getOrganizationAdmin(this.id);
         this.members = response.members;
         this.memberInvites = response.memberInvites;
-        this.categories = response.categories.filter(x => x.deleted == null);
-        const adminResponse = await getOrganizationAdmin(this.id);
-        this.reportedPosts = adminResponse.reportedPosts;
-        this.reportedPostComments = adminResponse.reportedPostComments;
+        this.reportedPosts = response.reportedPosts;
+        this.reportedPostComments = response.reportedPostComments;
+        this.$store.dispatch('loadUserOrganizations');
         this.responseStatus = null;
       } catch(e) {
         this.responseStatus = e.responseStatus || e;

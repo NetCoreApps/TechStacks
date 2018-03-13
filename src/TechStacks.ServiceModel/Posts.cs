@@ -131,9 +131,16 @@ namespace TechStacks.ServiceModel
 
         public List<long> FavoritePostIds { get; set; }
 
-        public List<int> MemberInviteOrganizationIds { get; set; }
-
         public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    [Route("/user/organizations")]
+    public class GetUserOrganizations : IReturn<GetUserOrganizationsResponse> { }
+
+    public class GetUserOrganizationsResponse
+    {
+        public List<OrganizationMember> Members { get; set; }
+        public List<OrganizationMemberInvite> MemberInvites { get; set; }
     }
 
     [Route("/posts/{Id}/vote", "PUT")]

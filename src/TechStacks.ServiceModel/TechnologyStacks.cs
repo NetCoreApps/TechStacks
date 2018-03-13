@@ -240,8 +240,10 @@ namespace TechStacks.ServiceModel
         public string RefSource { get; set; }
         public long? UpVotes { get; set; }
         public long? DownVotes { get; set; }
+        public int Rank { get; set; }
         public string[] PostTypes { get; set; }
         public string[] ModeratorPostTypes { get; set; }
+        public DateTime? Locked { get; set; }
         public List<CategoryInfo> Categories { get; set; }
     }
 

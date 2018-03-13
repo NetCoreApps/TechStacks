@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ServiceStack;
@@ -12,59 +11,6 @@ using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface
 {
-    [CacheResponse(Duration = 600)]
-    public class PublicPostServices : PostServicesBase
-    {
-        public IAutoQueryDb AutoQuery { get; set; }
-
-        public object Any(QueryPosts request)
-        {
-            var q = AutoQuery.CreateQuery(request, Request.GetRequestParams());
-            q.Where(x => x.Deleted == null && x.Hidden == null);
-
-            if (!request.AnyTechnologyIds.IsEmpty())
-            {
-                var techIds = request.AnyTechnologyIds.Join(",");
-                var orgIds = request.AnyTechnologyIds.Map(id => GetOrganizationByTechnologyId(Db, id))
-                    .Where(x => x != null)
-                    .Select(x => x.Id)
-                    .Join(",");
-                if (string.IsNullOrEmpty(orgIds))
-                    orgIds = "NULL";
-
-                q.And($"(ARRAY[{techIds}] && technology_ids OR organization_id in ({orgIds}))");
-            }
-
-            return AutoQuery.Execute(request, q);
-        }
-
-        public async Task<GetPostResponse> Get(GetPost request)
-        {
-            if (request.Id <= 0)
-                throw new ArgumentNullException(nameof(request.Id));
-
-            var user = SessionAs<AuthUserSession>();
-            var post = await Db.SingleByIdAsync<Post>(request.Id);
-            OrganizationMember groupMember = null;
-            if (post != null)
-                AssertCanViewOrganization(Db, post.OrganizationId, user, out _, out groupMember);
-
-            if (post == null || post.Deleted != null && !user.IsOrganizationModerator(groupMember))
-                throw HttpError.NotFound("Post does not exist");
-
-            var postComments = request.Include == "comments"
-                ? await Db.SelectAsync<PostComment>(x => x.PostId == request.Id && x.Deleted == null)
-                : TypeConstants<PostComment>.EmptyList;
-
-            return new GetPostResponse
-            {
-                Cache = Stopwatch.GetTimestamp(),
-                Post = post,
-                Comments = postComments,
-            };
-        }
-    }
-
     [Authenticate]
     public class PostServices : PostServicesBase
     {
@@ -90,7 +36,7 @@ namespace TechStacks.ServiceInterface
             if (string.IsNullOrEmpty(post.ImageUrl) && Request.Files.Length > 0)
             {
                 post.ImageUrl = Request.Files[0].UploadToImgur(AppSettings.GetString("oauth.imgur.ClientId"),
-                    nameof(post.ImageUrl), minWidth: 500, minHeight: 500, maxWidth: 2560, maxHeight: 2560);
+                    nameof(post.ImageUrl), minWidth: 200, minHeight: 200, maxWidth: 2560, maxHeight: 2560);
             }
 
             var id = await Db.InsertAsync(post, selectIdentity: true);
@@ -128,7 +74,7 @@ namespace TechStacks.ServiceInterface
             if (Request.Files.Length > 0)
             {
                 post.ImageUrl = Request.Files[0].UploadToImgur(AppSettings.GetString("oauth.imgur.ClientId"),
-                    nameof(post.ImageUrl), minWidth: 500, minHeight: 500, maxWidth: 2560, maxHeight: 2560);
+                    nameof(post.ImageUrl), minWidth: 200, minHeight: 200, maxWidth: 2560, maxHeight: 2560);
             }
 
             await Db.UpdateAsync(post);
@@ -209,145 +155,6 @@ namespace TechStacks.ServiceInterface
             ClearPostCaches();
         }
 
-        public async Task<GetUserPostActivityResponse> Get(GetUserPostActivity request)
-        {
-            var userId = GetUserId();
-            var recentVotes = DateTime.Now.AddMonths(-6);
-
-            var q = Db.From<PostVote>()
-                .Where(x => x.UserId == userId && x.Created > recentVotes)
-                .Select(x => new { x.PostId, x.Weight });
-
-            var postVotes = await Db.SelectAsync<(long postId, int weight)>(q);
-
-            var favoritePostIds = await Db.ColumnAsync<long>(Db.From<PostFavorite>()
-                .Where(x => x.UserId == userId)
-                .Select(x => x.PostId));
-
-            return new GetUserPostActivityResponse
-            {
-                UpVotedPostIds = postVotes.Where(x => x.weight > 0).Map(x => x.postId),
-                DownVotedPostIds = postVotes.Where(x => x.weight < 0).Map(x => x.postId),
-                FavoritePostIds = favoritePostIds,
-            };
-        }
-
-        public async Task<UserPostVoteResponse> Put(UserPostVote request)
-        {
-            if (request.Id <= 0)
-                throw new ArgumentNullException(nameof(request.Id));
-
-            var user = GetUser();
-            var post = await AssertPostAsync(request.Id);
-            var groupMember = AssertCanAnnotateOnOrganization(Db, post.OrganizationId, user);
-            AssertCanAnnotatePost(post, user, groupMember);
-
-            var userId = GetUserId();
-
-            await Db.DeleteAsync<PostVote>(x => x.UserId == userId && x.PostId == request.Id);
-            if (request.Weight != 0)
-            {
-                await Db.InsertAsync(new PostVote
-                {
-                    UserId = userId,
-                    PostId = request.Id,
-                    Weight = request.Weight < 0 ? -1 : 1,
-                    Created = DateTime.Now,
-                });
-            }
-
-            await Db.ExecuteSqlAsync(
-                @"update post set 
-                         up_votes   = (select count(*) from post_vote where post_id = @id and weight > 0), 
-                         down_votes = (select count(*) from post_vote where post_id = @id and weight < 0)
-                   where id = @id", new { id = request.Id });
-
-            await Db.ExecuteSqlAsync(
-                @"update user_activity set 
-                         post_up_votes   = (select count(*) from post_vote v 
-                                              join post p on p.id = v.post_id 
-                                             where p.user_id = user_activity.id and weight > 0),
-                         post_down_votes = (select count(*) from post_vote v 
-                                              join post p on p.id = v.post_id 
-                                             where p.user_id = user_activity.id and weight < 0)
-                   where id = (select user_id from post where id = @id)",
-                new { id = request.Id });
-
-            ClearPostCaches();
-
-            return new UserPostVoteResponse();
-        }
-
-        public async Task<UserPostFavoriteResponse> Put(UserPostFavorite request)
-        {
-            if (request.Id <= 0)
-                throw new ArgumentNullException(nameof(request.Id));
-
-            var user = GetUser();
-            var post = await AssertPostAsync(request.Id);
-            var groupMember = AssertCanAnnotateOnOrganization(Db, post.OrganizationId, user);
-            AssertCanAnnotatePost(post, user, groupMember);
-
-            var userId = GetUserId();
-
-            var exists = await Db.DeleteAsync<PostFavorite>(x => x.UserId == userId && x.PostId == request.Id);
-
-            if (exists == 0)
-            {
-                await Db.InsertAsync(new PostFavorite
-                {
-                    UserId = userId,
-                    PostId = request.Id,
-                    Created = DateTime.Now,
-                });
-            }
-
-            await Db.ExecuteSqlAsync(
-                @"update post set 
-                         favorites = (select count(*) from post_favorite where post_id = @id)
-                   where id = @id", new { id = request.Id });
-
-            return new UserPostFavoriteResponse();
-        }
-
-        public object Put(UserPostReport request)
-        {
-            if (request.Id <= 0)
-                throw new ArgumentNullException(nameof(request.Id));
-
-            var user = GetUser();
-            var post = AssertPost(request.Id);
-            var groupMember = AssertCanAnnotateOnOrganization(Db, post.OrganizationId, user, out var org);
-            AssertCanAnnotatePost(post, user, groupMember);
-
-            var userId = GetUserId();
-
-            Db.Delete<PostReport>(x => x.UserId == userId && x.PostId == request.Id);
-            Db.Insert(new PostReport
-            {
-                UserId = userId,
-                UserName = user.UserName,
-                OrganizationId = org.Id,
-                PostId = request.Id,
-                FlagType = request.FlagType,
-                ReportNotes = request.ReportNotes,
-                Created = DateTime.Now,
-            });
-
-            var reportsCount = Db.Count<PostReport>(x => x.OrganizationId == org.Id && x.PostId == request.Id);
-            if (reportsCount >= org.DeletePostsWithReportCount)
-            {
-                Db.UpdateOnly(() => new Post { Deleted = DateTime.Now, DeletedBy = nameof(PostReport) },
-                    where: x => x.Id == request.Id);
-            }
-
-            Db.ExecuteSql(
-                @"update post set 
-                         report_count = (select count(*) from post_report where organization_id = @orgId and post_id = @id)
-                   where id = @id", new { orgId = org.Id, id = request.Id });
-
-            return new UserPostReportResponse();
-        }
 
         public void Post(ActionPostReport request)
         {
@@ -510,97 +317,6 @@ namespace TechStacks.ServiceInterface
             };
         }
 
-        public async Task<object> Put(UserPostCommentVote request)
-        {
-            if (request.Id <= 0)
-                throw new ArgumentNullException(nameof(request.Id));
-            if (request.PostId <= 0)
-                throw new ArgumentNullException(nameof(request.PostId));
-
-            var user = GetUser();
-            var post = await AssertPostAsync(request.PostId);
-            var groupMember = AssertCanAnnotateOnOrganization(Db, post.OrganizationId, user);
-            AssertCanAnnotatePost(post, user, groupMember);
-
-            var userId = GetUserId();
-
-            await Db.DeleteAsync<PostCommentVote>(x => x.UserId == userId && x.PostCommentId == request.Id);
-            if (request.Weight != 0)
-            {
-                await Db.InsertAsync(new PostCommentVote
-                {
-                    UserId = userId,                    
-                    PostId = request.PostId,
-                    PostCommentId = request.Id,
-                    Weight = request.Weight < 0 ? -1 : 1,
-                    Created = DateTime.Now,
-                });
-            }
-
-            await Db.ExecuteSqlAsync(
-                @"update post_comment set 
-                         up_votes   = (select count(*) from post_comment_vote where post_comment_id = @id and weight > 0), 
-                         down_votes = (select count(*) from post_comment_vote where post_comment_id = @id and weight < 0)
-                   where id = @id",
-                new { id = request.Id });
-
-            await Db.ExecuteSqlAsync(
-                @"update user_activity set 
-                         comment_up_votes   = (select count(*) from post_comment_vote v 
-                                                 join post_comment c on c.id = v.post_comment_id 
-                                                where c.user_id = user_activity.id and weight > 0),
-                         comment_down_votes = (select count(*) from post_comment_vote v 
-                                                 join post_comment c on c.id = v.post_comment_id 
-                                                where c.user_id = user_activity.id and weight < 0)
-                   where id = (select user_id from post_comment where id = @id)",
-                new { id = request.Id });
-
-            ClearPostCaches();
-
-            return new UserPostCommentVoteResponse();
-        }
-        
-        public object Put(UserPostCommentReport request)
-        {
-            if (request.Id <= 0)
-                throw new ArgumentNullException(nameof(request.Id));
-            if (request.PostId <= 0)
-                throw new ArgumentNullException(nameof(request.PostId));
-
-            var user = GetUser();
-            var post = AssertPost(request.PostId);
-            var groupMember = AssertCanAnnotateOnOrganization(Db, post.OrganizationId, user, out var org);
-            AssertCanAnnotatePost(post, user, groupMember);
-
-            var userId = user.GetUserId();
-            Db.Delete<PostCommentReport>(x => x.UserId == userId && x.PostCommentId == request.Id);
-            Db.Insert(new PostCommentReport
-            {
-                UserId = userId,
-                UserName = user.UserName,
-                OrganizationId = org.Id,
-                PostId = post.Id,
-                PostCommentId = request.Id,
-                FlagType = request.FlagType,
-                ReportNotes = request.ReportNotes,
-                Created = DateTime.Now,
-            });
-
-            var reportsCount = Db.Count<PostCommentReport>(x => x.OrganizationId == org.Id && x.PostCommentId == request.Id);
-            if (reportsCount >= org.DeletePostsWithReportCount)
-            {
-                Db.UpdateOnly(() => new PostComment { Deleted = DateTime.Now, DeletedBy = nameof(PostCommentReport) },
-                    where: x => x.Id == request.Id);
-            }
-
-            Db.ExecuteSql(
-                @"update post_comment set 
-                         report_count = (select count(*) from post_comment_report where organization_id = @orgId and post_comment_id = @Id)
-                   where id = @id", new { orgId = org.Id, request.Id });
-
-            return new UserPostCommentReportResponse();
-        }
-
         public void Post(ActionPostCommentReport request)
         {
             if (request.Id <= 0)
@@ -694,5 +410,7 @@ namespace TechStacks.ServiceInterface
             return new PinPostCommentResponse();
         }
     }
+
+
 
 }

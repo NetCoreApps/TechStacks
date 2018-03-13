@@ -67,6 +67,7 @@ import {
     GetOrganizationAdmin,
     ActionPostReport,
     ActionPostCommentReport,
+    GetUserOrganizations,
 } from "./dtos";
 
 export const client = new JsonServiceClient("/");
@@ -86,13 +87,15 @@ export const queryTechnology = async (query) => await client.get(new QueryTechno
 export const queryTechStacks = async (query) => await client.get(new QueryTechStacks(), { include: 'total', ...query });
 
 export const queryPosts = async (query) => await client.get(new QueryPosts(), 
-    { take:50, ...query, fields: "id,organizationId,userId,type,categoryId,slug,title,imageUrl,technologyIds,commentsCount,created,createdBy" });
+    { take:50, ...query, fields: "id,organizationId,userId,type,categoryId,slug,title,imageUrl,technologyIds,upVotes,downVotes,commentsCount,created,createdBy" });
 
 export const queryPostComments = async(query) => await client.get(new QueryPostComments(), { take:50, ...query });
 
 export const getUserPostActivity = async() => await client.get(new GetUserPostActivity());
 
 export const getPost = async(id, include="comments") => await client.get(new GetPost(), { id, include });
+
+export const getUserOrganizations = async() => await client.get(new GetUserOrganizations());
 
 export const getUsersKarma = async(userIds) => (await client.get(new GetUsersKarma(), { userIds })).results;
 

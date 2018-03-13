@@ -155,7 +155,8 @@ export default {
       return this.allOrganizations.map(x => ({ text:x.name, value:x.slug }));
     },
     technologyOrganizations(){
-      return this.allOrganizations.filter(x => x.refSource === TechnologySource);
+      return this.allOrganizations.filter(x => x.refSource === TechnologySource)
+        .sort((a,b) => a.rank - b.rank);
     },
     postType(){
       return this.filterTypes.length === 0 
@@ -234,6 +235,7 @@ export default {
         this.addOrganization = false;
       }
     },
+
   },
 
   watch: {

@@ -99,7 +99,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-flex v-if="canUpdatePost(post)" style="max-width:200px; text-align:right">
+        <v-flex v-if="post && canUpdatePost(post)" style="max-width:200px; text-align:right">
             <v-layout>
                 <v-checkbox style="width:100px" label="confirm" v-model="allowDelete"></v-checkbox>
                 <v-btn @click="deletePost" :disabled="!allowDelete" color="red" class="white--text">Delete</v-btn>

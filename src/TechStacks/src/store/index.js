@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import { 
     getConfig, 
     getOverview, 
+    getUserOrganizations,
     convertSessionToToken,
     getTechnology, 
     getTechnologyStack, 
@@ -41,6 +42,7 @@ const state = {
     sessionInfo: null,
     sessionFeed: null,
     userActivity: null,
+    userOrganizations: null,
     favoriteTechnologies: [],
     favoriteTechStacks: [],
     allTiers: [],
@@ -79,6 +81,11 @@ const eachPost = (state, postId, cb) => {
             if (post.id === postId) {
                 cb(post);
             }
+        }
+    }
+    for (let post of state.latestNewsPosts) {
+        if (post.id === postId) {
+            cb(post);
         }
     }
     for (let id in state.postsMap) {
@@ -142,6 +149,9 @@ const mutations = {
     sessionFeed(state, sessionFeed) {
         state.sessionFeed = sessionFeed;
     },
+    userOrganizations(state, userOrganizations) {
+        state.userOrganizations = userOrganizations;
+    },
     userPostActivity(state, userPostActivity) {
         state.userPostActivity = {
             upVoted: userPostActivity.upVotedPostIds,
@@ -166,8 +176,8 @@ const mutations = {
     },
     organization(state, organizationResponse) {
         const organization = organizationResponse.organization;
-        organization.members = organizationResponse.members;
-        organization.memberInvites = organizationResponse.memberInvites;
+        organization.owners = organizationResponse.owners;
+        organization.moderators = organizationResponse.moderators;
         organization.categories = organizationResponse.categories;
         organization.full = true;
 
@@ -286,6 +296,7 @@ const getters = {
     user: state => state.sessionInfo,
     userId: state => state.sessionInfo && state.sessionInfo.userAuthId && parseInt(state.sessionInfo.userAuthId),
     sessionFeed: state => state.sessionFeed,
+    userOrganizations: state => state.userOrganizations,
     userPostActivity: state => state.userPostActivity,
     userPostCommentVotes: state => state.userPostCommentVotes,
     favoriteTechnologies: state => state.favoriteTechnologies,
@@ -320,7 +331,7 @@ const getters = {
         return state.allPostTypes.map(x => x.name);
     },
     allOrganizations: state => state.allOrganizations,
-    categorySelectItems: (state,getters) => (getters.organization.categories || [])
+    categorySelectItems: (state,getters) => (getters.organization && getters.organization.categories || [])
         .sort((a,b) => a.slug.localeCompare(b.slug)).map(x => ({ text:x.name, value:x.id })),
     allowablePostTypeSelectItems: (state,getters) => getters.allowablePostTypes.map(x => ({ text:x, value:x })),
     browsablePostTypeSelectItems: (state,getters) => getters.browsablePostTypes.map(x => ({ text:x, value:x })),
@@ -380,14 +391,19 @@ async function doAction(commit, mutation, action) {
 const actions = {
     async nuxtClientInit({ commit }, { req }) {
         commit('loading', true);
-        const config = getConfig();
-        const overview = getOverview();
-        const sessionInfo = await getSessionInfo();
-        commit('config', await config);
-        commit('overview', await overview);
-        commit('loading', false);
 
+        const [config, overview, sessionInfo, userOrganizations] = await Promise.all([
+            getConfig(),
+            getOverview(),
+            getSessionInfo(),
+            getUserOrganizations(),
+        ])
+        commit('config', config);
+        commit('overview', overview);
         commit('sessionInfo', sessionInfo);
+        commit('userOrganizations', userOrganizations);
+
+        commit('loading', false);
 
         if (sessionInfo != null) {
             commit('sessionUserInfo', await getUserInfo(sessionInfo.userName));
@@ -429,6 +445,10 @@ const actions = {
 
     async loadUserFeed({ commit }) {
         await doAction(commit, 'sessionFeed', async() => await getUserFeed());
+    },
+
+    async loadUserOrganizations({ commit }) {
+        await doAction(commit, 'userOrganizations', async() => await getUserOrganizations());
     },
 
     async addFavorite({ commit, state }, { type, id }) {
@@ -523,17 +543,14 @@ const actions = {
     async votePost({ commit, dispatch }, { postId, weight }) {
         commit('votePost', { postId, weight });
         await votePost(postId, weight);
-        dispatch('loadPost', postId);
     },
 
     async votePostComment({ commit, dispatch }, { postId, commentId, weight }) {
         commit('votePostComment', { postId, commentId, weight });
         await votePostComment(postId, commentId, weight);
-        dispatch('loadPost', postId);
     },
 
     async favoritePost({ commit, dispatch }, { postId }) {
-        console.log('favoritePost', postId)
         commit('favoritePost', { postId });
         await favoritePost(postId);
         commit('userPostActivity', await getUserPostActivity());

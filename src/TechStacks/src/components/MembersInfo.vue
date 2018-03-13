@@ -31,7 +31,7 @@
           </div>
         </v-flex>
 
-        <v-flex style="text-align:center;margin-top:1em" v-if="organization.members.length > 1">{{organization.members.length}} members</v-flex>
+        <v-flex style="text-align:center;margin-top:1em" v-if="membersTotal > 1">{{membersTotal}} members</v-flex>
       </v-layout>
 
     </v-card-title>
@@ -53,22 +53,26 @@ export default {
       return errorResponseExcept.call(this,[]);
     },
     owners(){
-      return this.organization.members.filter(x => x.isOwner);
+      return this.organization.owners;
     },
     moderators(){
-      return this.organization.members.filter(x => x.isModerator && !x.isOwner);
+      return this.organization.moderators;
+    },
+    membersTotal(){
+      return this.organization.membersTotal;
     },
     member(){
-      return this.organization.members.find(x => x.userId == this.userId);
+      return this.userOrganizations.members.find(x => x.organizationId == this.organization.id);
     },
     pendingInvite(){
-      return (this.organization.memberInvites || []).find(x => x.userId == this.userId);
+      return this.userOrganizations.memberInvites.find(x => x.organizationId == this.organization.id);
     },
 
     ...mapGetters([
       "loading",
       "isAuthenticated",
-      "userId"
+      "userId",
+      "userOrganizations"
     ])
   },
 
