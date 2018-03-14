@@ -7,6 +7,11 @@ export const prettifyUrl = (url) => {
     return url && url[url.length-1] === '/' ? url.substring(0, url.length-1) : url;
 }
 
+const ignoreWhenFocused = ['INPUT','TEXTAREA','SELECT'] 
+export const ignoreKeyPress = (e) => {
+  return e.shiftKey || e.ctrlKey || ignoreWhenFocused.indexOf(document.activeElement && document.activeElement.tagName) >= 0;
+}
+
 export const slugCounter = 50;
 export const slugRules = [
   v => !!v || "Required",
@@ -59,6 +64,9 @@ export const contentCounter = 60000;
 export const contentRules = [
   v => !v || v.length >= 25   || 'Min 25 characters', 
   v => !v || v.length <= 60000 || 'Max 60,000 characters'
+];
+export const contentRulesOptional = [
+  v => !v || v.length <= 60000 || 'Max 60000 characters'
 ];
 
 

@@ -100,15 +100,16 @@
                 :error-messages="errorResponse('description')"
                 ></v-text-field>
 
-              <v-text-field
+              <Editor 
                 label="details (markdown)"
                 v-model="details"
-                multi-line
                 :rows="20"
                 :counter="8000"
                 :rules="[v => v.length <= 8000 || 'Max 8000 characters']"
                 :error-messages="errorResponse('details')"
-                ></v-text-field>
+                :lang="getLangByOrganizationId(organizationId)"
+                @save="submit"
+                />
 
               <v-checkbox v-show="canChange"
                 label="Prevent others from editing this Technology?"
@@ -120,7 +121,10 @@
         <v-card-actions style="text-align:center">
             <v-layout>
                 <v-flex>
-                    <v-btn large @click="submit" :disabled="!valid || loading">{{ actionLabel }}</v-btn>
+                    <v-btn large @click="done" title="Close (ESC)">Close</v-btn>
+                </v-flex>
+                <v-flex>
+                    <v-btn large @click="submit" :disabled="!valid || loading" color="primary" title="Save (S)">{{ actionLabel }}</v-btn>
                 </v-flex>
                 <v-flex xs1 v-if="techstack && (techstack.ownerId == user.userAuthId || isAdmin)" style="margin:.5em -3em 0 3em">
                     <v-checkbox large label="confirm" v-model="allowDelete"></v-checkbox>
@@ -141,8 +145,10 @@
 
 <script>
 import FileInput from "~/components/FileInput.vue";
+import Editor from "~/components/Editor.vue";
+
 import { mapGetters } from "vuex";
-import { log, nameCounter, nameRules, slugCounter, slugRules, toSlug, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";
+import { log, ignoreKeyPress, nameCounter, nameRules, slugCounter, slugRules, toSlug, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";
 import { toObject, errorResponse, errorResponseExcept, dateFmtHM } from "@servicestack/client";
 import { createTechStack, updateTechStack, deleteTechStack, getTechStackPreviousVersions } from "~/shared/gateway";
 import { routes } from "~/shared/routes";
@@ -157,12 +163,13 @@ const techstack = {
   isLocked: false,
   screenshot: null,
   screenshotUrl: "",
+  organizationId: null,
   technologyIds: [],
 };
 
 export default {
   props: ['techstack'],
-  components: { FileInput },
+  components: { FileInput, Editor },
   computed: { 
     isUpdate() { 
       return this.techstack != null;
@@ -173,7 +180,7 @@ export default {
     canChange(){
       return !this.techstack || this.user.userAuthId == this.techstack.ownerId || this.isAdmin;
     },
-    ...mapGetters(["loading", "isAuthenticated", "user", "isAdmin", "technologySelectItems"])
+    ...mapGetters(["loading", "isAuthenticated", "user", "isAdmin", "technologySelectItems", "getLangByOrganizationId"])
   },
 
   watch: {
@@ -183,6 +190,10 @@ export default {
   },
 
   methods: {
+    done() {
+      this.$router.push(routes.stack(this.slug));
+    },
+
     onFileChange(imgFile) {
         this.screenshot = imgFile;
     },
@@ -212,7 +223,7 @@ export default {
             this.$store.commit('loading', true);
             await deleteTechStack(this.id);
             this.$store.commit('removeTechStack', this.techstack);
-            await this.$router.push('/stacks');
+            await this.$router.push(routes.homeStacks);
         } catch(e) {
             this.responseStatus = e.responseStatus || e;
         } finally {
@@ -224,19 +235,37 @@ export default {
         Object.assign(this, version, { id:this.id });
     },
 
+    handleKeyUp(e) {
+      if (ignoreKeyPress(e)) return;
+      const c = String.fromCharCode(e.keyCode).toLowerCase();
+      if (e.key === "Escape" || e.keyCode === 27) {
+        this.done();
+      }
+      else if (c === 's') {
+        this.submit();
+        return false;
+      }
+    },
+
     errorResponse,
     dateFmtHM,
   },
 
   async mounted() {
-      if (this.techstack) {
-        this.title = `Edit ${this.techstack.name}`;
-        this.actionLabel = 'Update TechStack'; 
-        Object.assign(this, this.techstack);
-        this.technologyIds = (this.techstack.technologyChoices || []).map(x => x.technologyId);
-        this.previousVersions = await getTechStackPreviousVersions(this.techstack.slug);
-      }
-      this.$store.dispatch('loadTechnologyTiers');
+    if (this.techstack) {
+      this.title = `Edit ${this.techstack.name}`;
+      this.actionLabel = 'Update TechStack'; 
+      Object.assign(this, this.techstack);
+      this.technologyIds = (this.techstack.technologyChoices || []).map(x => x.technologyId);
+      this.previousVersions = await getTechStackPreviousVersions(this.techstack.slug);
+    }
+    this.$store.dispatch('loadTechnologyTiers');
+
+    window.addEventListener('keyup', this.handleKeyUp);
+  },
+
+  destroyed(){
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
   
   data: () => ({

@@ -43,18 +43,15 @@
                         :error-messages="errorResponse('url')"
                         ></v-text-field>
 
-                    <v-text-field
-                        label="Text (markdown)"
+                    <Editor 
+                        label=""
                         v-model="content"
                         :counter="contentCounter"
-                        multi-line
-                        auto-grow
-                        :rows="6"
                         :rules="contentRules"
                         :error-messages="errorResponse('content')"
-                        ></v-text-field>
-
-                    <a class="help-fmt" v-if="valid" target="_blank" href="https://guides.github.com/features/mastering-markdown/">formatting help</a>
+                        :lang="getLangByOrganizationId(organizationId)"
+                        @save="submit"
+                        />
 
                     <v-select v-if="categorySelectItems.length > 0"
                         label="Category"
@@ -90,11 +87,11 @@
     </v-card-title>
     <v-card-actions>
       <v-layout>
-        <v-btn @click="submit" :disabled="!valid || loading" color="primary">
-            Submit
+        <v-btn v-if="edit" @click="reset(false)" title="Close (ESC)">
+          Close
         </v-btn>
-        <v-btn v-if="edit" @click="reset(false)">
-            Close
+        <v-btn @click="submit" :disabled="!valid || loading" color="primary" title="Save (S)">
+          Submit
         </v-btn>
 
         <v-spacer></v-spacer>
@@ -112,10 +109,12 @@
 
 <script>
 import FileInput from "~/components/FileInput.vue";
+import Editor from "~/components/Editor.vue";
+
 import { mapGetters } from "vuex";
 import { toObject, errorResponse } from "@servicestack/client";
 import { createPost, updatePost, deletePost, lockPost } from "~/shared/gateway";
-import { titleCounter, titleRules, urlCounter, urlRulesOptional, contentCounter, contentRules } from "~/shared/utils";
+import { ignoreKeyPress, titleCounter, titleRules, urlCounter, urlRulesOptional, contentCounter, contentRules } from "~/shared/utils";
 import { canUpdatePost } from "~/shared/post";
 
 const post = {
@@ -132,7 +131,7 @@ const post = {
 };
 
 export default {
-  components: { FileInput },
+  components: { FileInput, Editor },
 
   props: [
     'org','initialTypes','initialCategoryId', //add
@@ -143,7 +142,7 @@ export default {
     edit(){
       return !!this.post;
     },
-    ...mapGetters(["loading", "isAuthenticated", "isOrganizationModerator", "allowablePostTypes",
+    ...mapGetters(["loading", "isAuthenticated", "isOrganizationModerator", "allowablePostTypes", "getLangByOrganizationId",
                    "allowablePostTypeSelectItems", "technologySelectItems", "categorySelectItems"])
   },
 
@@ -189,6 +188,18 @@ export default {
       }
     },
     
+    handleKeyUp(e) {
+      if (ignoreKeyPress(e)) return;
+      const c = String.fromCharCode(e.keyCode).toLowerCase();
+      if (e.key === "Escape" || e.keyCode === 27) {
+        this.reset();
+      }
+      else if (c === 's') {
+        this.submit();
+        return false;
+      }
+    },
+
     canUpdatePost,
     errorResponse,
   },
@@ -208,6 +219,12 @@ export default {
     if (this.post) {
       Object.assign(this, this.post);
     }
+    
+    window.addEventListener('keyup', this.handleKeyUp);
+  },
+
+  destroyed(){
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
 
   data: () => ({

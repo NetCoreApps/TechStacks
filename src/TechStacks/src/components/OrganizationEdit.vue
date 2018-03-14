@@ -86,6 +86,14 @@
                       :error-messages="errorResponse('deletePostsWithReportCount')"
                       ></v-text-field>
 
+                    <v-select
+                        label="Primary Language"
+                        autocomplete
+                        :items="langSelectItems"
+                        v-model="lang"
+                        :error-messages="errorResponse('lang')"
+                        ></v-select>
+
                     <v-layout>
                         <v-btn :disabled="!isOrganizationOwner" small @click="lockOrganization(!locked)" class="white--text"
                           :color="locked ? 'green' : 'red'">
@@ -362,6 +370,7 @@ const organization = {
   moderatorPostTypes: [],
   technologyIds: [],
   deletePostsWithReportCount: 5,
+  lang: "",
 };
 
 export default {
@@ -380,7 +389,10 @@ export default {
     isOrganizationModerator(){
       return this.isOrganizationOwner || (this.member && this.member.isModerator);
     },
-    ...mapGetters(["loading", "isAuthenticated", "isAdmin", "user", "organization", "userOrganizations", "technologySelectItems", "allPostTypeSelectItems"])
+    langSelectItems(){
+      return this.technologyTiers.filter(x => x.tier == 'ProgrammingLanguage').map(x => ({ text:x.name, value:x.name }))
+    },
+    ...mapGetters(["loading", "isAuthenticated", "isAdmin", "user", "organization", "userOrganizations", "technologyTiers", "allPostTypeSelectItems"])
   },
 
   methods: {

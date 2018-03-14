@@ -111,7 +111,7 @@
         </v-flex>
       </v-layout>
 
-      <TechnologyComments :technology="technology" @organizationCreated="loadTechnology" />
+      <TechnologyComments ref="techComments" :technology="technology" @organizationCreated="loadTechnology" />
     </v-container>
 
 
@@ -124,7 +124,7 @@ import TechnologyComments from "~/components/TechnologyComments.vue";
 
 import { mapGetters } from 'vuex';
 import { heroes } from "@servicestack/images";
-import { log, prettifyUrl } from "~/shared/utils";
+import { ignoreKeyPress, prettifyUrl } from "~/shared/utils";
 import { routes } from "~/shared/routes";
 
 export default {
@@ -168,12 +168,38 @@ export default {
       await this.$store.dispatch('removeFavorite', { type:'tech', id:this.technology.id });
       this.refreshPageStats();
     },
+
+    handleKeyUp(e) {
+      if (!this.isAuthenticated || ignoreKeyPress(e)) return;
+      const c = String.fromCharCode(e.keyCode).toLowerCase();
+      if (c === 'e') {
+        this.$router.push(routes.editTech(this.technology.slug));
+      }
+      else if (c === 'f') {
+        if (!this.hasFavorited) {
+          this.addFavorite();
+        } else {
+          this.removeFavorite();
+        }
+      } else if (c === 'c') {
+        const $txtComments = this.$refs.techComments.$refs.txtComments;
+        $txtComments.$refs.editor.$refs.txt.focus();
+        $txtComments.$el.scrollIntoView();
+      }
+    },
+
     prettifyUrl,
   },
 
   async mounted() {
     await this.loadTechnology();
     this.refreshPageStats();
+
+window.addEventListener('keyup', this.handleKeyUp);
+  },
+
+  destroyed(){
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
 
   data: () => ({

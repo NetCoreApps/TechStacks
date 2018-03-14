@@ -241,6 +241,7 @@ namespace TechStacks.ServiceModel
         public long? UpVotes { get; set; }
         public long? DownVotes { get; set; }
         public int Rank { get; set; }
+        public string Lang { get; set; }
         public string[] PostTypes { get; set; }
         public string[] ModeratorPostTypes { get; set; }
         public DateTime? Locked { get; set; }

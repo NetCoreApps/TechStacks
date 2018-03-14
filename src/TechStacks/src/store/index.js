@@ -32,7 +32,7 @@ import {
 } from "~/shared/gateway";
 import { Overview } from "~/shared/dtos";
 import { log, prettifyUrl } from "~/shared/utils";
-import { POSTS_PER_PAGE } from "~/shared/post";
+import { POSTS_PER_PAGE, getLangCode } from "~/shared/post";
 import { getOrganizationById } from "../shared/gateway";
 
 const statsKey = (type,slug) => `${type}:${slug}`;
@@ -358,7 +358,8 @@ const getters = {
     getOrganizationId: state => slug => state.orgSlugMap[slug],
     getOrganizationSlug: state => orgId => (state.allOrganizations.find(x => x.id === orgId) || {}).slug,
     getOrganization: state => orgId => state.organizationIdMap[orgId] || state.allOrganizations.find(x => x.id === orgId),
-    getOrganizationBySlug: (state,getters) => slug => getters.getOrganization(getters.getOrganizationId(slug)),
+    getOrganizationBySlug: (state,getters) => slug => getters.getOrganization(getters.getOrganizationId(slug)),    
+    getLangByOrganizationId: (state,getters) => orgId => getLangCode((getters.getOrganization(orgId) || {}).lang),
     getTechnologyOrganization: (state) => techId => state.allOrganizations.find(x => x.refId == techId && x.refSource == "Technology"),
     getTechnology: state => slug => state.technologyMap[slug],
     getTechnologyId: state => slug => state.technologyMap[slug] && state.technologyMap[slug].id,

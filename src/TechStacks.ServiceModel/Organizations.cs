@@ -127,6 +127,7 @@ namespace TechStacks.ServiceModel
         public string BackgroundUrl { get; set; }
         public string LogoUrl { get; set; }
         public string HeroUrl { get; set; }
+        public string Lang { get; set; }
         public int DeletePostsWithReportCount { get; set; }
         public string[] PostTypes { get; set; }
         public string[] ModeratorPostTypes { get; set; }

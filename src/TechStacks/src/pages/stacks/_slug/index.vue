@@ -38,10 +38,10 @@
                   <v-flex xs11 class="viewcounts">
                     <div v-if="pageStats && pageStats.viewCount > 1">
                       <span>
-                        <v-btn v-if="!hasFavorited" icon @click="addFavorite()" :title="!isAuthenticated ? 'Sign In to add to favorites' : 'add to favorites'">
+                        <v-btn v-if="!hasFavorited" icon @click="addFavorite()" :title="!isAuthenticated ? 'Sign In to add to favorites' : 'add to favorites (F)'">
                           <v-icon>favorite_border</v-icon>
                         </v-btn>  
-                        <v-btn v-if="hasFavorited" icon @click="removeFavorite()" title="remove from favorites"><v-icon color="pink">favorite</v-icon></v-btn>  
+                        <v-btn v-if="hasFavorited" icon @click="removeFavorite()" title="remove from favorites (F)"><v-icon color="pink">favorite</v-icon></v-btn>  
                         <b v-if="pageStats.favCount > 0">{{ pageStats.favCount }}</b> /
                       </span>
                       <span><b>{{ pageStats.viewCount }}</b> views</span>
@@ -50,7 +50,7 @@
                   <v-flex xs1>
                     <v-btn v-if="canChange" color="pink" dark absolute bottom center fab large
                       :to="routes.editStack(techstack.slug)"
-                      :title="`Edit ${techstack.name}`">
+                      :title="`Edit ${techstack.name} (E)`">
                       <v-icon>edit</v-icon>
                     </v-btn>
                   </v-flex>
@@ -120,7 +120,7 @@
     </section>
 
     <v-container v-if="techstack" class="body" grid-list-md>
-      <TechnologyComments :techstack="techstack" @organizationCreated="loadTechStack" />
+      <TechnologyComments ref="techComments" :techstack="techstack" @organizationCreated="loadTechStack" />
     </v-container>
     
   </div>
@@ -133,7 +133,7 @@ import TechnologyComments from "~/components/TechnologyComments.vue";
 import { mapGetters } from 'vuex';
 import { dateFmt } from '@servicestack/client';
 import { heroes } from "@servicestack/images";
-import { log } from '~/store';
+import { ignoreKeyPress } from '~/shared/utils';
 import { routes } from "~/shared/routes";
 
 export default {
@@ -188,12 +188,37 @@ export default {
       this.refreshPageStats();
     },
 
+    handleKeyUp(e) {
+      if (!this.isAuthenticated || ignoreKeyPress(e)) return;
+      const c = String.fromCharCode(e.keyCode).toLowerCase();
+      if (c === 'e') {
+        this.$router.push(routes.editStack(this.techstack.slug));
+      }
+      else if (c === 'f') {
+        if (!this.hasFavorited) {
+          this.addFavorite();
+        } else {
+          this.removeFavorite();
+        }
+      } else if (c === 'c') {
+        const $txtComments = this.$refs.techComments.$refs.txtComments;
+        $txtComments.$refs.editor.$refs.txt.focus();
+        $txtComments.$el.scrollIntoView();
+      }
+    },
+
     dateFmt,
   },
   
   async mounted() {
     await this.loadTechStack();
     this.refreshPageStats();
+
+    window.addEventListener('keyup', this.handleKeyUp);
+  },
+
+  destroyed(){
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
 
   data: () => ({

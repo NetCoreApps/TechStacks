@@ -139,6 +139,7 @@ namespace TechStacks.Tests
         {
             using (var db = dbFactory.Open())
             {
+                //db.AddColumn<Organization>(x => x.Lang);
                 //db.DropAndCreateTable<Subscription>();
 
                 //db.DropAndCreateTable<PostReport>();

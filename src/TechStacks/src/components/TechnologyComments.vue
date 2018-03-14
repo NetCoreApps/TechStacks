@@ -9,7 +9,7 @@
             <h2 v-if="post.comments.length > 1" class="comments-title">All {{post.comments.length || ''}} comments</h2>
             <h2 v-else class="comments-title">Leave a comment</h2>
 
-            <CommentEdit v-if="canCommentPost(post)" :post="post" @done="commentDone"></CommentEdit>    
+            <CommentEdit ref="txtComments" v-if="canCommentPost(post)" :post="post" @done="commentDone"></CommentEdit>    
             
         </v-flex>
         <v-flex class="post-comments">

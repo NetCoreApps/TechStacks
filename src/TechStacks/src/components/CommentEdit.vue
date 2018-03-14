@@ -4,18 +4,17 @@
             <v-card-text style="padding-top:0">
                 <v-alert outline color="error" icon="warning" :value="errorMessage()">{{ errorMessage() }}</v-alert>                  
 
-                <v-text-field
-                    ref="txtContent"
-                    label="Comment"
-                    v-model="content"
-                    multi-line
-                    auto-grow
-                    :rows="commentRows"
-                    :rules="[v => !v || v.length <= 60000 || 'Max 60000 characters']"
-                    :error-messages="errorResponse('content')"
-                    ></v-text-field>
-
-                <a v-if="valid" class="help-fmt" target="_blank" href="https://guides.github.com/features/mastering-markdown/">formatting help</a>
+                    <Editor ref="editor"
+                        style="padding-top:10px"
+                        label="Comment"
+                        v-model="content"
+                        :rows="commentRows"
+                        :counter="contentCounter"
+                        :rules="contentRulesOptional"
+                        :error-messages="errorResponse('content')"
+                        :lang="getLangByOrganizationId(post.organizationId)"
+                        @save="submit"
+                        />
 
             </v-card-text>
             <v-card-actions>
@@ -29,9 +28,11 @@
 </template>
 
 <script>
+import Editor from "~/components/Editor.vue";
 import { errorResponse } from "@servicestack/client";
 import { mapGetters } from "vuex";
 import { createPostComment, updatePostComment } from "~/shared/gateway";
+import { contentCounter, contentRulesOptional } from "~/shared/utils";
 
 const comment = {
     postId: null,
@@ -39,7 +40,12 @@ const comment = {
 };
 
 export default {
+    components: { Editor },
     props: ['post', 'comment', 'replyId', 'rows'],
+
+    computed: {
+        ...mapGetters(['getLangByOrganizationId'])
+    },
 
     methods: {
         errorMessage() {
@@ -91,6 +97,7 @@ export default {
         commentRows: 6,
         valid: true,
         allowDelete: false,
+        contentCounter, contentRulesOptional,
         responseStatus: null,
     }),
 }

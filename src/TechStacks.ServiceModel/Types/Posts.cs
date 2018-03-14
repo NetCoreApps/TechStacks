@@ -53,6 +53,8 @@ namespace TechStacks.ServiceModel.Types
 
         public string HeroUrl { get; set; }
 
+        public string Lang { get; set; }
+
         [PgSqlTextArray]
         public string[] PostTypes { get; set; }
 

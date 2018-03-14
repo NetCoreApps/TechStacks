@@ -117,7 +117,10 @@
         <v-card-actions style="text-align:center">
             <v-layout>
                 <v-flex>
-                    <v-btn large @click="submit" :disabled="!valid || loading">{{ actionLabel }}</v-btn>
+                    <v-btn large @click="done" title="Close (ESC)">Close</v-btn>
+                </v-flex>
+                <v-flex>
+                    <v-btn large @click="submit" :disabled="!valid || loading" color="primary" title="Save (S)">{{ actionLabel }}</v-btn>
                 </v-flex>
                 <v-flex v-if="technology" xs1 style="margin:.5em -3em 0 3em">
                     <v-checkbox large label="confirm" v-model="allowDelete"></v-checkbox>
@@ -140,7 +143,7 @@
 import FileInput from "~/components/FileInput.vue";
 import { mapGetters } from "vuex";
 import { routes } from "~/shared/routes";
-import { log, nameCounter, nameRules, slugCounter, slugRules, toSlug, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";
+import { ignoreKeyPress, nameCounter, nameRules, slugCounter, slugRules, toSlug, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";
 import { toObject, errorResponse, errorResponseExcept, dateFmtHM } from "@servicestack/client";
 import { createTechnology, updateTechnology, deleteTechnology, getTechnologyPreviousVersions } from "~/shared/gateway";
 
@@ -178,6 +181,10 @@ export default {
   },
 
   methods: {
+    done() {
+      this.$router.push(routes.tech(this.slug));
+    },
+
     onFileChange(imgFile) {
         this.logo = imgFile;
     },
@@ -192,7 +199,7 @@ export default {
                 ? await createTechnology(fields, this.logo)
                 : await updateTechnology({ ...fields, id:this.id }, this.logo);
             
-            this.$router.push(`/tech/${tech.slug}`);
+            this.$router.push(routes.tech(this.slug));
 
           } catch(e) {
               this.responseStatus = e.responseStatus || e;
@@ -207,7 +214,7 @@ export default {
             this.$store.commit('loading', true);
             await deleteTechnology(this.id);
             this.$store.commit('removeTechnology', this.technology);
-            await this.$router.push('/tech');
+            await this.$router.push(routes.homeTech);
         } catch(e) {
             this.responseStatus = e.responseStatus || e;
         } finally {
@@ -216,7 +223,19 @@ export default {
     },
 
     loadVersion(version) {
-        Object.assign(this, version, { id:this.id });
+      Object.assign(this, version, { id:this.id });
+    },
+
+    handleKeyUp(e) {
+      if (ignoreKeyPress(e)) return;
+      const c = String.fromCharCode(e.keyCode).toLowerCase();
+      if (e.key === "Escape" || e.keyCode === 27) {
+        this.done();
+      }
+      else if (c === 's') {
+        this.submit();
+        return false;
+      }
     },
 
     errorResponse,
@@ -224,12 +243,18 @@ export default {
   },
 
   async mounted() {
-      if (this.technology) {
+    if (this.technology) {
         this.title = `Edit ${this.technology.name}`;
         this.actionLabel = 'Update Technology'; 
         Object.assign(this, this.technology);
         this.previousVersions = await getTechnologyPreviousVersions(this.technology.slug);
-      }
+    }
+
+    window.addEventListener('keyup', this.handleKeyUp);
+  },
+
+  destroyed(){
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
   
   data: () => ({

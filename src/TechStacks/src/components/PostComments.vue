@@ -39,9 +39,9 @@
                                 </div>
 
                                 <div class="post-actions">
-                                    <a v-if="canFavoritePost(post)" @click="favoritePost(post)">{{ favoriteLabel(post) }}</a>
-                                    <a v-if="canReportPost(post)" @click="reportPostId=post.id">report</a>
-                                    <a v-if="canUpdatePost(post)" @click="edit=true">edit</a>
+                                    <a v-if="canFavoritePost(post)" @click="favoritePost(post)" title="Favorite Post (F)">{{ favoriteLabel(post) }}</a>
+                                    <a v-if="canReportPost(post)" @click="reportPostId=post.id" title="Report Post (P)">report</a>
+                                    <a v-if="canUpdatePost(post)" @click="edit=true" title="Edit Post (E)">edit</a>
                                 </div>
                               </div>
                               <div v-else>
@@ -70,7 +70,7 @@
             <h2 v-if="post.comments.length > 1" class="comments-title">All {{post.comments.length || ''}} comments</h2>
             <h2 v-else class="comments-title">{{ post.comments.length == 1 ? '1 Comment' : 'No Comments' }}</h2>
 
-            <CommentEdit v-if="canCommentPost(post)" :post="post" @done="commentDone"></CommentEdit>    
+            <CommentEdit ref="txtComment" v-if="canCommentPost(post)" :post="post" @done="commentDone"></CommentEdit>    
             
         </v-flex>
         <v-flex class="post-comments">
@@ -97,6 +97,7 @@ import DebugInfo from "~/components/DebugInfo.vue";
 
 import { mapGetters } from "vuex";
 import {
+  ignoreKeyPress,
   titleCounter,
   titleRules,
   urlCounter,
@@ -170,6 +171,28 @@ export default {
     async votePostDone(id){
       await this.loadPost();
     },
+    handleKeyUp(e) {
+      if (ignoreKeyPress(e)) return;
+      const c = String.fromCharCode(e.keyCode).toLowerCase();
+      if (e.key === "Escape" || e.keyCode === 27) {
+        this.edit = false;
+        this.reportPostId = null;
+      }
+      else if (c === 'e' && this.canUpdatePost(this.post)) {
+        this.edit = true;
+      }
+      else if (c === 'f' && this.canFavoritePost(this.post)) {
+        this.favoritePost(this.post);
+      }
+      else if (c === 'p' && this.canReportPost(this.post)) {
+        this.reportPostId=this.post.id
+      }      
+      else if (c === 'c' && this.canCommentPost(this.post)) {
+        const $txt = this.$refs.txtComment.$refs.editor.$refs.txt;
+        $txt.focus();
+        this.$refs.txtComment.$el.scrollIntoView();
+      }      
+    },
 
     postKarma, 
     organizationMember,
@@ -189,7 +212,7 @@ export default {
   },
 
   async mounted() {
-    this.loadPost();
+    const task = this.loadPost();
     this.$store.dispatch('loadUserPostActivity');
     this.$store.dispatch('loadUserPostCommentVotes', this.postId);
     this.$store.dispatch('loadTechnologyTiers');
@@ -197,6 +220,13 @@ export default {
     this.$on(['votePostCommentDone','votePostDone'], (id) => {
       this.votePostDone(id)
     })
+
+    await task;
+    window.addEventListener('keyup', this.handleKeyUp);
+  },
+
+  destroyed(){
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
 
   data: () => ({

@@ -1,5 +1,40 @@
 export const POSTS_PER_PAGE = 30;
 
+export const LANG_CODES = {
+  'c': 'c',
+  'c#': 'csharp',
+  'c++': 'cpp',
+  'clojure': 'clojure',
+  'clojurescript': 'clojure',
+  'coffeescript': 'coffee',
+  'd': 'd',
+  'dart': 'dart',
+  'elixir': 'elixir',
+  'f#': 'fsharp',
+  'go': 'go',
+  'groovy': 'groovy',
+  'haskell': 'haskell',
+  'java': 'java',
+  'javascript': 'js',
+  'kotlin': 'kotlin',
+  'lua': 'lua',
+  'node.js': 'js',
+  'objective-c': 'objc',
+  'perl': 'perl',
+  'php': 'php',
+  'pug': 'pug',
+  'python': 'python',
+  'r': 'r',
+  'ruby': 'ruby',
+  'rust': 'rust',
+  'scala': 'scala',
+  'swift': 'swift',
+  'typescript': 'ts',
+  'vb.net': 'vbnet',
+};
+
+export const getLangCode = (name) => name ? (LANG_CODES[name.toLowerCase()] || name.toLowerCase()) : null;
+
 export const postKarma = (post) =>  Math.max(1 + post.upVotes - post.downVotes, 0);
 
 export const commentKarma = (comment) => 1 + comment.upVotes - comment.downVotes;
