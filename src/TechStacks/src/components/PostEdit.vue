@@ -7,13 +7,13 @@
             <v-alert outline color="error" icon="warning" :value="errorResponse()">{{ errorResponse() }}</v-alert>                  
             <v-layout>
                 <v-flex xs8>
-                    <v-select
+                    <v-select ref="type"
                         label="Type"
                         :items="allowablePostTypeSelectItems"
                         v-model="type"
                         ></v-select>
 
-                    <v-text-field
+                    <v-text-field ref="title"
                         label="Title"
                         v-model="title"
                         required

@@ -73,6 +73,7 @@ const state = {
     technologyTiers: [],
     userPostActivity: null,
     userPostCommentVotes: null,
+    showDialog:false,
 };
 
 const eachPost = (state, postId, cb) => {
@@ -137,6 +138,9 @@ const updateVotes = (userVotes, id, weight) => {
 const mutations = {
     loading(state, loading) {
         state.loading = loading;
+    },
+    showDialog(state,dialog) {
+        state.showDialog = dialog;
     },
     sessionInfo(state, sessionInfo) {
         state.sessionInfo = sessionInfo;
@@ -291,10 +295,12 @@ const mutations = {
 
 const getters = {
     loading: state => state.loading,
+    showDialog: state => state.showDialog,
     isAuthenticated: state => state.sessionInfo != null,
     isAdmin: state => state.sessionInfo && (state.sessionInfo.roles || []).indexOf("Admin") >= 0,
     user: state => state.sessionInfo,
     userId: state => state.sessionInfo && state.sessionInfo.userAuthId && parseInt(state.sessionInfo.userAuthId),
+    userName: state => state.sessionInfo && state.sessionInfo.userName,
     sessionFeed: state => state.sessionFeed,
     userOrganizations: state => state.userOrganizations,
     userPostActivity: state => state.userPostActivity,

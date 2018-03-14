@@ -8,10 +8,10 @@
             <v-flex>
                 <v-layout>
                     <div v-if="canPostToOrganization()">
-                      <v-btn v-if="!add" fab dark small color="pink" @click="open" title="Submit New Post">
+                      <v-btn v-if="!add" fab dark small color="pink" @click="open" title="Submit New Post (N)">
                         <v-icon dark>add</v-icon>
                       </v-btn>
-                      <v-btn v-if="add" fab dark small color="pink" @click="close" title="Hide">
+                      <v-btn v-if="add" fab dark small color="pink" @click="close" title="Hide (N)">
                         <v-icon dark>remove</v-icon>
                       </v-btn>
                     </div>
@@ -39,21 +39,21 @@
                     <span class="org-links">
                       <nuxt-link v-if="organization.refSource == 'TechnologyStack'" :to="routes.stack(organization.slug)">{{ organization.name }}'s TechStack</nuxt-link>                      
                       <nuxt-link v-if="organization.refSource == 'Technology'" :to="routes.tech(getTechnologySlug(organization.refId))">TechStacks using {{ organization.name }}</nuxt-link>                      
-                      <nuxt-link v-if="canManageOrganization()" :to="routes.organization(organization.slug)">manage</nuxt-link>
+                      <nuxt-link v-if="canManageOrganization()" :to="routes.organization(organization.slug)" title="Manage Organization (M)">manage</nuxt-link>
                     </span>
 
                     <v-btn-toggle v-model="all" style="margin-right:5px">
-                      <v-btn>all</v-btn>
+                      <v-btn title="show ALL (ALT+1)">all</v-btn>
                     </v-btn-toggle>
 
                     <v-btn-toggle multiple v-if="browsablePostTypes.length > 0" v-model="filterTypes">
-                      <v-btn v-for="label in visibleTypeLabels" :key="label">{{ label }}</v-btn>
+                      <v-btn v-for="(label,index) in visibleTypeLabels" :key="label" :title="`${label} (ALT+${index+2})`">{{ label }}</v-btn>
                     </v-btn-toggle>
                 </v-layout>
             </v-flex>
 
             <v-flex v-if="add">
-              <PostEdit :org="organization" :initialTypes="types" :initialCategoryId="categoryId" @done="postDone"></PostEdit>
+              <PostEdit ref="newPost" :org="organization" :initialTypes="types" :initialCategoryId="categoryId" @done="postDone"></PostEdit>
             </v-flex>
 
             <v-flex v-if="latestOrganizationPosts && latestOrganizationPosts.length > 0" style="margin:1em 0">
@@ -108,7 +108,7 @@ import DebugInfo from "~/components/DebugInfo.vue";
 
 import { mapGetters } from "vuex";
 import { routes } from "~/shared/routes";
-import { fromNow } from "~/shared/utils";
+import { ignoreKeyPress, fromNow } from "~/shared/utils";
 import { POSTS_PER_PAGE, canManageOrganization, canPostToOrganization } from "~/shared/post";
 import { appendQueryString } from "@servicestack/client";
 
@@ -229,6 +229,28 @@ export default {
       this.$nextTick(() => (this.staging = null));
     },
 
+    handleKeyUp(e) {
+      if (ignoreKeyPress(e)) return;
+      const c = String.fromCharCode(e.keyCode).toLowerCase();
+      if (c === 'n') {
+        this.add = !this.add;
+        if (this.add) {
+          this.$nextTick(() => this.$refs.newPost.$refs.title.focus());
+        }
+      }
+      else if (c === 'm') {
+        if (this.canManageOrganization()) {
+          this.$router.push(routes.organization(this.organization.slug))
+        }
+      }
+      else if (e.altKey) {
+        const num = parseInt(c);
+        if (num >= 1 && num <= this.browsablePostTypes.length + 1) {
+          this.filterTypes = num === 1 ? [] : [parseInt(c) - 2];
+        }
+      }
+    },
+
     canManageOrganization,
     canPostToOrganization,
     fromNow
@@ -263,6 +285,12 @@ export default {
     this.notFound = this.organization == null && (this.latestOrganizationPosts || []).length == 0;
     this.$store.dispatch("loadUserPostActivity");
     this.$store.dispatch("loadTechnologyTiers");
+    
+    window.addEventListener('keyup', this.handleKeyUp);
+  },
+
+  destroyed(){
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
 
   data: () => ({

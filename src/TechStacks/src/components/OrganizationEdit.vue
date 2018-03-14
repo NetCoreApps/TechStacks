@@ -116,10 +116,10 @@
             <v-card-actions v-if="isOrganizationOwner" style="text-align:center">
               <v-layout>
                   <v-flex>
-                      <v-btn large @click="done">Close</v-btn>
+                      <v-btn large @click="done" title="Close (ESC)">Close</v-btn>
                   </v-flex>
                   <v-flex>
-                      <v-btn large @click="submit" color="primary" :disabled="!valid || loading">Update Organization</v-btn>
+                      <v-btn large @click="submit" color="primary" :disabled="!valid || loading" title="Save (S)">Update Organization</v-btn>
                   </v-flex>
                   <v-flex xs1 style="margin:.5em -3em 0 3em">
                       <v-checkbox large label="confirm" v-model="allowDelete"></v-checkbox>
@@ -137,19 +137,19 @@
 
         <v-flex style="text-align:center;margin-top:2em">
           <v-btn-toggle mandatory v-model="tab">
-            <v-btn>
+            <v-btn title="Categories (ALT+1)">
               Categories ({{ categories.length }})
             </v-btn>
-            <v-btn>
+            <v-btn title="Members (ALT+2)">
               Members ({{ members.length }})
             </v-btn>
-            <v-btn>
+            <v-btn title="Member Invite Requests (ALT+3)">
               Invite Requests ({{ memberInvites.length }})
             </v-btn>
-            <v-btn>
+            <v-btn title="Reported Posts (ALT+4)">
               Reported Posts ({{ reportedPosts.length }})
             </v-btn>
-            <v-btn>
+            <v-btn title="Reported Comments (ALT+5)">
               Reported Comments ({{ reportedPostComments.length }})
             </v-btn>
           </v-btn-toggle>
@@ -357,7 +357,7 @@ import { toObject, errorResponse, errorResponseExcept } from "@servicestack/clie
 import { routes } from "~/shared/routes";
 import { getOrganizationBySlug, getOrganizationAdmin, updateOrganization, createCategory, deleteOrganization, lockOrganization, updateMemberInvite,
          actionPostReport, actionPostCommentReport } from "~/shared/gateway";
-import { nameCounter, nameRules, slugCounter, slugRules, summaryCounter, summaryRulesOptional } from "~/shared/utils";
+import { ignoreKeyPress, nameCounter, nameRules, slugCounter, slugRules, summaryCounter, summaryRulesOptional } from "~/shared/utils";
 
 const organization = {
   id: null,
@@ -510,6 +510,20 @@ export default {
       }
     },
 
+    handleKeyUp(e) {
+      if (ignoreKeyPress(e)) return;
+      const c = String.fromCharCode(e.keyCode).toLowerCase();
+      if (e.key === "Escape" || e.keyCode === 27) {
+        this.done();
+      }
+      else if (c === 's') {
+        this.submit();
+      }
+      else if (e.altKey && (c >= '1' || c <= '5')) {
+        this.tab = parseInt(c) - 1;
+      }
+    },
+
     errorResponse,
   },
 
@@ -517,6 +531,12 @@ export default {
     this.$store.dispatch('loadOverview');
     this.$store.dispatch('loadTechnologyTiers');
     this.loadOrgnaization();
+    
+    window.addEventListener('keyup', this.handleKeyUp);
+  },
+
+  destroyed(){
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
 
   data: () => ({

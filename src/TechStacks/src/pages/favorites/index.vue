@@ -49,9 +49,9 @@
       <v-layout row>
         <v-flex xs12>
           <v-tabs v-model="tab">
-            <v-tab>News</v-tab>
-            <v-tab>TechStacks</v-tab>
-            <v-tab>Favorited Posts</v-tab>
+            <v-tab title="News (ALT+1)">News</v-tab>
+            <v-tab title="TechStacks (ALT+2)">TechStacks</v-tab>
+            <v-tab title="Favorited (ALT+3)">Favorited Posts</v-tab>
           </v-tabs>
         </v-flex>
       </v-layout>
@@ -213,7 +213,7 @@ import { appendQueryString } from "@servicestack/client";
 
 import { routes } from "~/shared/routes";
 import { queryPosts } from "~/shared/gateway";
-import { log, prettifyUrl } from "~/shared/utils";
+import { ignoreKeyPress, prettifyUrl } from "~/shared/utils";
 import { POSTS_PER_PAGE } from "~/shared/post";
 
 export default {
@@ -267,6 +267,17 @@ export default {
       this.$store.dispatch('removeFavorite', { type, id });
     },
 
+    handleKeyUp(e) {
+      if (ignoreKeyPress(e)) return;
+      const c = String.fromCharCode(e.keyCode).toLowerCase();
+      if (e.altKey) {
+        const num = parseInt(c);
+        if (num >= 1 && num <= 3) {
+          this.tab = num - 1;
+        }
+      }
+    },
+
     prettifyUrl,
   },
 
@@ -294,6 +305,12 @@ export default {
     if (ids.length > 0) {
       this.favoritedPosts = (await queryPosts({ ids, orderBy:'rank' })).results;
     }
+
+    window.addEventListener('keyup', this.handleKeyUp);
+  },
+
+  destroyed(){
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
 
   data: () => ({

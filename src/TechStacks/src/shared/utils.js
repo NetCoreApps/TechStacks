@@ -12,6 +12,37 @@ export const ignoreKeyPress = (e) => {
   return e.shiftKey || e.ctrlKey || ignoreWhenFocused.indexOf(document.activeElement && document.activeElement.tagName) >= 0;
 }
 
+export function globalNavShortcuts(e) {
+  if (e.key === '?' || e.key === 'Escape') {
+    this.$store.commit('showDialog', this.$store.getters.showDialog !== 'Shortcuts' && e.key !== 'Escape' ? 'Shortcuts' : null);
+    return;
+  }
+  if (ignoreKeyPress(e) || e.altKey) return;
+  const c = String.fromCharCode(e.keyCode).toLowerCase();
+  if ((c === '1' || c === 'h')) {
+    this.$router.push(this.routes.homeNews);
+  }
+  if ((c === '2')) {
+    this.$router.push(this.routes.homeTop);
+  }
+  else if ((c === '3')) {
+    this.$router.push(this.routes.homeStacks);
+  }
+  else if ((c === '4')) {
+    this.$router.push(this.routes.homeTech);
+  }
+  else if ((c === '5') && this.isAuthenticated) {
+    this.$router.push(this.routes.homeFavorites);
+  }
+  else if ((c === '6') && this.isAuthenticated) {
+    this.$router.push(this.routes.user(this.$store.getters.userName));
+  } 
+  else {
+    return false;
+  }
+  return true;
+}
+
 export const slugCounter = 50;
 export const slugRules = [
   v => !!v || "Required",

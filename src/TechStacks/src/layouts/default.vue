@@ -1,5 +1,7 @@
 <template>
   <v-app>
+    <Shortcuts v-if="showDialog == 'Shortcuts'" />
+
     <v-toolbar fixed app :clipped-left="clipped" style="background:#24292e" dark>
       <nuxt-link :to="routes.homeNews" exact>
         <img src="../static/img/logo-white.svg" width="42" height="42" />
@@ -11,13 +13,13 @@
       <v-spacer></v-spacer>
 
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat :to="routes.homeNews" exact><v-icon>home</v-icon></v-btn>
-        <v-btn flat :to="routes.homeTop">Top</v-btn>
-        <v-btn flat :to="routes.homeStacks">Stacks</v-btn>
-        <v-btn flat :to="routes.homeTech">Technologies</v-btn>
-        <v-btn v-if="isAuthenticated" flat :to="routes.homeFavorites">Favorites</v-btn>
-        <v-btn v-if="!isAuthenticated" @click="href(`/auth/twitter`)">
-          <img src="../static/img/twitter.svg" width="50" height="50" style="backgroundd:#333" />
+        <v-btn flat :to="routes.homeNews" exact title="Home (1 or H)"><v-icon>home</v-icon></v-btn>
+        <v-btn flat :to="routes.homeTop" title="Top Technologies (2)">Top</v-btn>
+        <v-btn flat :to="routes.homeStacks" title="Technology Stacks (3)">Stacks</v-btn>
+        <v-btn flat :to="routes.homeTech" title="Technologies (4)">Technologies</v-btn>
+        <v-btn v-if="isAuthenticated" flat :to="routes.homeFavorites" title="Favorites (5)">Favorites</v-btn>
+        <v-btn v-if="!isAuthenticated" @click="href(`/auth/twitter`)" title="User Profile (6)">
+          <img src="../static/img/twitter.svg" width="50" height="50" style="background:#333" />
         </v-btn>
         <v-btn v-if="!isAuthenticated" @click="href(`/auth/github`)">
           <img src="../static/img/github.svg" width="30" height="30" style="backgroundd:#333" />
@@ -64,26 +66,34 @@
 </template>
 
 <script>
+import Shortcuts from "~/components/Shortcuts.vue";
+
 import { mapGetters } from "vuex";
 import { routes } from "~/shared/routes";
+import { globalNavShortcuts } from "~/shared/utils";
 
 export default {
-    computed: mapGetters(['isAuthenticated','user']),
+  components: { Shortcuts },
+  computed: mapGetters(['isAuthenticated','user','showDialog']),
 
-    methods: {
-      href(url) {
-        location.href = url;
-      }
+  methods: {
+    href(url) {
+      location.href = url;
     },
+  },
 
-    data () {
-      return {
-        routes,
-        clipped: true,
-        drawer: false,
-        fixed: true,
-        title: 'TechStacks'
-      }
+  mounted(){
+    window.onkeydown = globalNavShortcuts.bind(this);
+  },
+
+  data () {
+    return {
+      routes,
+      clipped: true,
+      drawer: false,
+      fixed: true,
+      title: 'TechStacks',
     }
   }
+}
 </script>

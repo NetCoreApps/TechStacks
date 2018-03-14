@@ -30,19 +30,19 @@
                       </v-flex>
                       <v-flex xs12 class="py-2" style="margin-top:1em">
                         <v-btn-toggle mandatory v-model="tab">
-                          <v-btn>
+                          <v-btn title="TechStacks Created (ALT+1)">
                             TechStacks Created
                           </v-btn>
-                          <v-btn>
+                          <v-btn title="Favorite Technologies (ALT+2)">
                             Favorite Technologies
                           </v-btn>
-                          <v-btn>
+                          <v-btn title="Favorite TechStacks (ALT+3)">
                             Favorite TechStacks
                           </v-btn>
-                          <v-btn>
+                          <v-btn title="Posts (ALT+4)">
                             Posts
                           </v-btn>
-                          <v-btn>
+                          <v-btn title="Comments (ALT+5)">
                             Comments  
                           </v-btn>
                         </v-btn-toggle>
@@ -271,7 +271,7 @@ import { mapGetters } from 'vuex';
 import { heroes } from "@servicestack/images";
 
 import { routes } from "~/shared/routes";
-import { log, prettifyUrl, fromNow } from "~/shared/utils";
+import { ignoreKeyPress, prettifyUrl, fromNow } from "~/shared/utils";
 import { queryPosts, queryPostComments } from "~/shared/gateway";
 import { postKarma, votedClass, commentKarmaLabel, votedCommentClass } from "~/shared/post";
 
@@ -290,12 +290,31 @@ export default {
   },
 
   methods: {
+
+    handleKeyUp(e) {
+      if (ignoreKeyPress(e)) return;
+      const c = String.fromCharCode(e.keyCode).toLowerCase();
+      if (e.altKey) {
+        const num = parseInt(c);
+        if (num >= 1 && num <= 5) {
+          this.tab = num - 1;
+        }
+      }
+    },
+
     prettifyUrl,
     postKarma, 
     votedClass, 
     commentKarmaLabel,
     votedCommentClass,
     fromNow,
+  },
+
+  watch: {
+    tab: function(newTab) {
+      const query = newTab === 0 ? {} : { tab: newTab };
+      this.$router.replace({ query });
+    }
   },
   
   async mounted() {
@@ -314,13 +333,12 @@ export default {
 
     this.posts = (await queryPosts({ userId: this.user.id, orderBy:"-id" })).results;
     this.comments = (await queryPostComments({ userId: this.user.id, orderBy:"-id" })).results;
+
+    window.addEventListener('keyup', this.handleKeyUp);
   },
 
-  watch: {
-    tab: function(newTab) {
-      const query = newTab === 0 ? {} : { tab: newTab };
-      this.$router.replace({ query });
-    }
+  destroyed(){
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
 
   data() {

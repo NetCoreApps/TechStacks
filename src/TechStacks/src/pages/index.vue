@@ -25,11 +25,11 @@
             <v-spacer></v-spacer>
             
             <v-btn-toggle v-model="all" style="margin-right:5px">
-              <v-btn>all</v-btn>
+              <v-btn title="show ALL (ALT+1)">all</v-btn>
             </v-btn-toggle>
 
             <v-btn-toggle multiple v-if="allPostTypes.length > 0" v-model="filterTypes">
-              <v-btn v-for="postType in allPostTypes" :key="postType.name">{{ postType.name }}</v-btn>
+              <v-btn v-for="(postType,index) in allPostTypes" :key="postType.name" :title="`${postType.name} (ALT+${index+2})`">{{ postType.name }}</v-btn>
             </v-btn-toggle>
           </v-layout>
       </v-flex>
@@ -37,7 +37,7 @@
       <v-flex v-if="add">
         <v-card class="news-add">
           <v-card-title>
-            <v-select
+            <v-select ref="postOrg"
               label="Post to where?"
               autocomplete
               :spellcheck="false"
@@ -72,7 +72,7 @@
 
             <v-card style="margin-top:.5em">
               <v-card-title>
-                <v-select
+                <v-select ref="jumpOrg"
                   label="Jump to"
                   autocomplete
                   :spellcheck="false"
@@ -133,6 +133,7 @@ import OrganizationAdd from "~/components/OrganizationAdd.vue";
 import { mapGetters } from "vuex";
 import { appendQueryString } from "@servicestack/client";
 import { POSTS_PER_PAGE } from "~/shared/post";
+import { ignoreKeyPress } from "~/shared/utils";
 import { routes } from "~/shared/routes";
 
 const TechnologySource = 'Technology';
@@ -236,6 +237,32 @@ export default {
       }
     },
 
+    handleKeyUp(e) {
+      if (ignoreKeyPress(e)) return;
+      const c = String.fromCharCode(e.keyCode).toLowerCase();
+      if (c === 'n') {
+        this.add = !this.add;
+        if (this.add) {
+          this.$nextTick(() => this.$refs.postOrg.$refs.input.focus());
+        }
+      }
+      else if (c === 'j') {
+        this.$refs.jumpOrg.$refs.input.focus();
+      }
+      else if (e.altKey) {
+        const num = parseInt(c);
+        if (num >= 1 && num <= this.allPostTypes.length + 1) {
+          this.filterTypes = num === 1 ? [] : [parseInt(c) - 2];
+        }
+      } else if (e.keyCode == 13) {
+        if (this.add && this.organizationSlug) {
+          this.$router.push(routes.organizationNews(this.organizationSlug,{add:this.postType}));
+        } else if (this.jumpToSlug) {
+          this.$router.push(routes.organizationNews(this.jumpToSlug));
+        }
+      }
+    },
+
   },
 
   watch: {
@@ -264,6 +291,12 @@ export default {
     this.initRoute(this.$route.query);
     this.refreshPosts();
     this.$store.dispatch("loadUserPostActivity");
+    
+    window.addEventListener('keyup', this.handleKeyUp);
+  },
+
+  destroyed(){
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
 
   data: () => ({

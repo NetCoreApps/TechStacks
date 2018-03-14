@@ -171,6 +171,7 @@ export default {
     async votePostDone(id){
       await this.loadPost();
     },
+    
     handleKeyUp(e) {
       if (ignoreKeyPress(e)) return;
       const c = String.fromCharCode(e.keyCode).toLowerCase();

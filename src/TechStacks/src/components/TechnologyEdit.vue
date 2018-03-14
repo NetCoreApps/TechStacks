@@ -234,7 +234,6 @@ export default {
       }
       else if (c === 's') {
         this.submit();
-        return false;
       }
     },
 
