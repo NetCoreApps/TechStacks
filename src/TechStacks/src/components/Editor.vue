@@ -7,10 +7,10 @@
         <v-btn small icon @click="quote" title="Blockquote (CTRL+Q)"><v-icon>format_quote</v-icon></v-btn>
         <v-btn small icon @click="image" title="Insert Image (CTRL+SHIFT+L)"><v-icon>insert_photo</v-icon></v-btn>
         <v-btn small icon @click="code" title="Insert Code (CTRL+<)"><v-icon>code</v-icon></v-btn>
-        <v-btn small icon @click="ol" title="Numbered List"><v-icon>format_list_numbered</v-icon></v-btn>
-        <v-btn small icon @click="ul" title="Bulleted List"><v-icon>format_list_bulleted</v-icon></v-btn>
         <v-btn small icon @click="heading" title="H2 Heading (CTRL+H)"><v-icon>format_size</v-icon></v-btn>
-        <v-btn small icon @click="strikethrough" title="Strike Through"><v-icon>format_strikethrough</v-icon></v-btn>
+        <v-btn small icon @click="ol" title="Numbered List (ALT+1)"><v-icon>format_list_numbered</v-icon></v-btn>
+        <v-btn small icon @click="ul" title="Bulleted List (ALT+-)"><v-icon>format_list_bulleted</v-icon></v-btn>
+        <v-btn small icon @click="strikethrough" title="Strike Through (ALT+S)"><v-icon>format_strikethrough</v-icon></v-btn>
         <v-btn small icon @click="undo" title="undo (CTRL+Z)"><v-icon>undo</v-icon></v-btn>
         <v-btn small icon @click="redo" title="redo (CTRL+SHIFT+Z)"><v-icon>redo</v-icon></v-btn>
         <v-btn small icon @click="save" title="Save (CTRL+S)"><v-icon>save</v-icon></v-btn>
@@ -88,10 +88,13 @@ var ops = {
     let afterRange = value.substring(to);
     const toggleOff = prefix && suffix && beforeRange.endsWith(prefix) && afterRange.startsWith(suffix);
 
-    if (from == to) {
+    const originalPos = pos;
+    const noSelection = from == to;
+    if (noSelection) {
       if (!toggleOff) {
         value = beforeRange + prefix + placeholder + suffix + afterRange;
         pos += prefix.length;
+        offsetStart = 0;
         offsetEnd = placeholder.length;
         if (selectionAtEnd) {
           pos += offsetEnd;
@@ -128,6 +131,7 @@ var ops = {
         offsetEnd = selectedText.length;
       }
     }
+
     this.$emit('input', value);
     this.$nextTick(() => {
       $txt.focus();
@@ -164,21 +168,21 @@ var ops = {
   },
   ol(){    
     if (this.hasSelection()) {
-      this.insert('\n\n 1. ','\n\n')
+      this.insert('\n 1. ','\n')
     } else {
       this.insert('\n 1. ','\n','List Item', { offsetStart:-10, offsetEnd:9 })
     }
   },
   ul(){    
     if (this.hasSelection()) {
-      this.insert('\n\n - ','\n\n')
+      this.insert('\n - ','\n')
     } else {
       this.insert('\n - ','\n','List Item', { offsetStart:-10, offsetEnd:9 })
     }
   },
   heading(){
     if (this.hasSelection()) {
-      this.insert('\n## ','\n\n','')
+      this.insert('\n## ','\n','')
     } else {
       this.insert('\n## ','\n','Heading', { offsetStart:-8, offsetEnd:7 })
     }
@@ -211,6 +215,9 @@ var ops = {
         filterSelection: v => v.replace(/^\/\//g,'').replace(/\n\/\//g,"\n") 
       });
     }
+  },
+  blockComment(){
+    this.insert('/*\n','*/\n','')
   },
   undo(){
     if (history.length == 0) return false;
@@ -313,9 +320,25 @@ export default {
           e.preventDefault();
         } else if (c === '/' || e.key === '/') {
           this.comment();
+          e.preventDefault();
+        } else if ((c === '?' || e.key === '?') && e.shiftKey) {
+          this.blockComment();
+          e.preventDefault();
+        }
+      } 
+      else if (e.altKey) {
+        if (e.key === '1' || e.key === '0') {
+          this.ol();
+          e.preventDefault();
+        } else if (e.key === '-') {
+          this.ul();
+          e.preventDefault();
+        } else if (e.key === 's') {
+          this.strikethrough();
+          e.preventDefault();
         }
       }
-    }
+    } 
   },
   
   data: () =>({

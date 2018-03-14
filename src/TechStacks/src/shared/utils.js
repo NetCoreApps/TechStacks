@@ -8,16 +8,19 @@ export const prettifyUrl = (url) => {
 }
 
 const ignoreWhenFocused = ['INPUT','TEXTAREA','SELECT'] 
+export const inInputField = () => ignoreWhenFocused.indexOf(document.activeElement && document.activeElement.tagName) >= 0;
 export const ignoreKeyPress = (e) => {
-  return e.shiftKey || e.ctrlKey || ignoreWhenFocused.indexOf(document.activeElement && document.activeElement.tagName) >= 0;
+  return e.shiftKey || e.ctrlKey || inInputField();
 }
 
 export function globalNavShortcuts(e) {
-  if (e.key === '?' || e.key === 'Escape') {
+  if (inInputField()) return;
+
+  if ((e.key === '?' || e.key === 'Escape') && !e.ctrlKey) {
     this.$store.commit('showDialog', this.$store.getters.showDialog !== 'Shortcuts' && e.key !== 'Escape' ? 'Shortcuts' : null);
     return;
   }
-  if (ignoreKeyPress(e) || e.altKey) return;
+  if (e.shiftKey || e.ctrlKey || e.altKey) return;
   const c = String.fromCharCode(e.keyCode).toLowerCase();
   if ((c === '1' || c === 'h')) {
     this.$router.push(this.routes.homeNews);

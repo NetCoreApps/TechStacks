@@ -187,6 +187,24 @@
                       </th>
                       <td>Save</td>
                     </tr>
+                    <tr>
+                      <th>
+                        <b>CTRL</b>
+                        <span> + </span>
+                        <b>/</b>
+                      </th>
+                      <td>Comment</td>
+                    </tr>
+                    <tr>
+                      <th>
+                        <b>CTRL</b>
+                        <span> + </span>
+                        <b>SHIFT</b>
+                        <span> + </span>
+                        <b>/</b>
+                      </th>
+                      <td>Block Comment</td>
+                    </tr>
 
                 </tbody>
               </table>
