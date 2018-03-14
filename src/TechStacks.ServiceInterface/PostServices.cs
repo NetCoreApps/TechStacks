@@ -155,6 +155,34 @@ namespace TechStacks.ServiceInterface
             ClearPostCaches();
         }
 
+        public void Put(HidePost request)
+        {
+            var user = GetUser();
+            var post = AssertPost(request.Id);
+            AssertCanPostToOrganization(Db, post.OrganizationId, user, out var org, out var orgMember);
+
+            if (!user.IsOrganizationModerator(orgMember))
+                throw HttpError.Forbidden("Access Denied");
+
+            if (request.Hide)
+            {
+                post.Hidden = DateTime.Now;
+                post.HiddenBy = user.UserName;
+                if (!string.IsNullOrEmpty(request.Reason))
+                {
+                    post.Notes = request.Reason;
+                }
+            }
+            else
+            {
+                post.Hidden = null;
+                post.HiddenBy = null;
+            }
+
+            Db.Update(post);
+
+            ClearPostCaches();
+        }
 
         public void Post(ActionPostReport request)
         {

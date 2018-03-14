@@ -68,6 +68,7 @@ import {
     ActionPostReport,
     ActionPostCommentReport,
     GetUserOrganizations,
+    HidePost,
 } from "./dtos";
 
 export const client = new JsonServiceClient("/");
@@ -398,6 +399,14 @@ export const lockPost = async(postId, lock, reason) => {
     const request = new LockPost();
     request.id = postId;
     request.lock = lock;
+    request.reason = reason;
+    await client.put(request);
+}
+
+export const hidePost = async(postId, hide, reason) => {
+    const request = new HidePost();
+    request.id = postId;
+    request.hide = hide;
     request.reason = reason;
     await client.put(request);
 }

@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-13 00:13:32
+Date: 2018-03-14 18:29:53
 Version: 5.00
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -834,6 +834,15 @@ var LockPost = /** @class */ (function () {
     return LockPost;
 }());
 export { LockPost };
+// @Route("/posts/{Id}/hide", "PUT")
+var HidePost = /** @class */ (function () {
+    function HidePost() {
+    }
+    HidePost.prototype.createResponse = function () { };
+    HidePost.prototype.getTypeName = function () { return "HidePost"; };
+    return HidePost;
+}());
+export { HidePost };
 // @Route("/posts/{PostId}/report/{Id}", "POST")
 var ActionPostReport = /** @class */ (function () {
     function ActionPostReport() {

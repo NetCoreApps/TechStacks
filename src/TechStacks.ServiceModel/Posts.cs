@@ -121,6 +121,14 @@ namespace TechStacks.ServiceModel
         public string Reason { get; set; }
     }
 
+    [Route("/posts/{Id}/hide", "PUT")]
+    public class HidePost : IReturnVoid
+    {
+        public long Id { get; set; }
+        public bool Hide { get; set; }
+        public string Reason { get; set; }
+    }
+
     [Route("/user/posts/activity")]
     public class GetUserPostActivity : IReturn<GetUserPostActivityResponse> {}
 

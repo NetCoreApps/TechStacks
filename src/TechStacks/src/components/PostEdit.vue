@@ -76,6 +76,11 @@
                                 {{ locked ? 'Unlock' : 'Lock' }}
                             </v-btn>
                             <span v-if="lockedBy" style="line-height:40px;padding-right:10px;color:#999">locked By @{{lockedBy}}</span>
+
+                            <v-btn small @click="hidePost(!hidden)" class="white--text" :color="hidden ? 'green' : 'red'">
+                                {{ hidden ? 'Un-hide' : 'Hide' }}
+                            </v-btn>
+                            <span v-if="hiddenBy" style="line-height:40px;padding-right:10px;color:#999">hidden By @{{hiddenBy}}</span>
                         </v-layout>
                     </v-flex>
                 </v-flex>
@@ -113,7 +118,7 @@ import Editor from "~/components/Editor.vue";
 
 import { mapGetters } from "vuex";
 import { toObject, errorResponse } from "@servicestack/client";
-import { createPost, updatePost, deletePost, lockPost } from "~/shared/gateway";
+import { createPost, updatePost, deletePost, lockPost, hidePost } from "~/shared/gateway";
 import { ignoreKeyPress, titleCounter, titleRules, urlCounter, urlRulesOptional, contentCounter, contentRules } from "~/shared/utils";
 import { canUpdatePost } from "~/shared/post";
 
@@ -127,6 +132,8 @@ const post = {
     content: null,
     locked: null,
     lockedBy: null,
+    hidden: null,
+    hiddenBy: null,
     technologyIds: [],
 };
 
@@ -160,6 +167,11 @@ export default {
 
     async lockPost(lock) {
         await lockPost(this.post.id, lock);
+        this.reset(true, true);
+    },
+
+    async hidePost(hide) {
+        await hidePost(this.post.id, hide);
         this.reset(true, true);
     },
 

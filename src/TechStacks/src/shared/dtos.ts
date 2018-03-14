@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-13 00:13:32
+Date: 2018-03-14 18:29:53
 Version: 5.00
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -48,6 +48,7 @@ export class Organization
     backgroundUrl: string;
     logoUrl: string;
     heroUrl: string;
+    lang: string;
     postTypes: string[];
     moderatorPostTypes: string[];
     deletePostsWithReportCount: number;
@@ -439,6 +440,7 @@ export class OrganizationInfo
     upVotes: number;
     downVotes: number;
     rank: number;
+    lang: string;
     postTypes: string[];
     moderatorPostTypes: string[];
     locked: string;
@@ -485,7 +487,9 @@ export class GetOrganizationResponse
     slug: string;
     organization: Organization;
     categories: Category[];
-    members: OrganizationMember[];
+    owners: OrganizationMember[];
+    moderators: OrganizationMember[];
+    membersTotal: number;
     responseStatus: ResponseStatus;
 }
 
@@ -498,6 +502,7 @@ export class GetOrganizationMembersResponse
 
 export class GetOrganizationAdminResponse
 {
+    members: OrganizationMember[];
     memberInvites: OrganizationMemberInvite[];
     reportedPosts: PostReportInfo[];
     reportedPostComments: PostCommentReportInfo[];
@@ -650,8 +655,8 @@ export class GetUserPostActivityResponse
 
 export class GetUserOrganizationsResponse
 {
-    organizationMembers: OrganizationMember[];
-    organizationMemberInvites: OrganizationMemberInvite[];
+    members: OrganizationMember[];
+    memberInvites: OrganizationMemberInvite[];
 }
 
 export class UserPostVoteResponse
@@ -1039,6 +1044,7 @@ export class UpdateOrganization implements IReturn<UpdateOrganizationResponse>
     backgroundUrl: string;
     logoUrl: string;
     heroUrl: string;
+    lang: string;
     deletePostsWithReportCount: number;
     postTypes: string[];
     moderatorPostTypes: string[];
@@ -1246,6 +1252,16 @@ export class LockPost implements IReturnVoid
     reason: string;
     createResponse() {}
     getTypeName() { return "LockPost"; }
+}
+
+// @Route("/posts/{Id}/hide", "PUT")
+export class HidePost implements IReturnVoid
+{
+    id: number;
+    hide: boolean;
+    reason: string;
+    createResponse() {}
+    getTypeName() { return "HidePost"; }
 }
 
 // @Route("/posts/{PostId}/report/{Id}", "POST")

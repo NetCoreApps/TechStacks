@@ -315,13 +315,13 @@ namespace TechStacks.ServiceModel.Types
         public int? LastCommentUserId { get; set; }
 
         public DateTime? Deleted { get; set; }
-        [IgnoreDataMember] public string DeletedBy { get; set; }
+        public string DeletedBy { get; set; }
 
         public DateTime? Locked { get; set; }
         public string LockedBy { get; set; }
 
         public DateTime? Hidden { get; set; }
-        [IgnoreDataMember] public string HiddenBy { get; set; }
+        public string HiddenBy { get; set; }
 
         public bool Archived { get; set; }
 

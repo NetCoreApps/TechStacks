@@ -4,13 +4,16 @@
             This is an archived post. You won't be able to vote or comment. Posts are automatically archived after 6 months.
         </v-alert>
         <v-alert v-else-if="post.locked != null" outline color="info" icon="lock" :value="true">
-            This post is locked and contributions is limited to {{ organization.name }} moderators {{ fromNow(post.locked) }}
+            This post is locked and contributions is limited to {{ organization.name }} moderators. {{ fromNow(post.locked) }}
         </v-alert>
         <v-alert v-else-if="organization.locked != null && !isOrganizationMember()" outline color="info" icon="lock" :value="true">
             Contributions to {{ organization.name }} is limited to members only
         </v-alert>
         <v-alert v-else-if="memberCannotComment()" outline color="error" icon="lock" :value="true">
             You are not permitted add comments
+        </v-alert>
+        <v-alert v-if="post.hidden != null" outline color="info" icon="remove_red_eye" :value="true">
+            This post is hidden and will not be displayed in search results or news feeds. {{ fromNow(post.hidden) }}
         </v-alert>
     </div>  
 </template>
