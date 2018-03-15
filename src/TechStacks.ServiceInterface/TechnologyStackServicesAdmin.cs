@@ -62,7 +62,7 @@ namespace TechStacks.ServiceInterface
             techStack.Created = DateTime.UtcNow;
             techStack.LastModified = techStack.Created;
             techStack.Slug = slug;
-            techStack.DetailsHtml = await Markdown.TransformAsync(request.Details, UserCache.GetGitHubToken(session.GetUserId()));
+            techStack.DetailsHtml = await Markdown.TransformAsync(request.Details, session.GetGitHubToken());
 
             if (string.IsNullOrEmpty(techStack.ScreenshotUrl) && Request.Files.Length > 0)
             {
@@ -162,7 +162,7 @@ namespace TechStacks.ServiceInterface
 
             if (techStack.Details != request.Details)
             {
-                techStack.DetailsHtml = await Markdown.TransformAsync(request.Details, UserCache.GetGitHubToken(session.GetUserId()));
+                techStack.DetailsHtml = await Markdown.TransformAsync(request.Details, session.GetGitHubToken());
             }
 
             techStack.PopulateWith(request);

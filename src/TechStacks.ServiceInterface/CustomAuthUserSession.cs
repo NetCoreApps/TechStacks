@@ -33,7 +33,6 @@ namespace TechStacks.ServiceInterface
                     {
                         GithubProfileUrl = avatarUrl;
                     }
-                    UserCache.GitHubUserIdTokenMap[userId] = tokens.AccessTokenSecret;
                 }
                 if (authTokens.Provider.ToLower() == "twitter")
                 {
@@ -85,14 +84,6 @@ namespace TechStacks.ServiceInterface
         public string Notes { get; set; }
 
         public DateTime? DisableEmails { get; set; }
-    }
-
-    public static class UserCache
-    {
-        public static ConcurrentDictionary<int, string> GitHubUserIdTokenMap = new ConcurrentDictionary<int, string>();
-
-        public static string GetGitHubToken(int userId) =>
-            GitHubUserIdTokenMap.TryGetValue(userId, out var token) ? token : null;
     }
 }
 

@@ -168,6 +168,9 @@ namespace TechStacks.ServiceInterface
 
         public static int GetUserId(this AuthUserSession session) => session.UserAuthId.ToInt();
 
+        public static string GetGitHubToken(this AuthUserSession session) => 
+            session?.ProviderOAuthAccess?.FirstOrDefault(x => x.Provider == "github")?.AccessTokenSecret;
+
         public static bool IsOrganizationOwner(this AuthUserSession session, OrganizationMember organizationMember) =>
             session.IsAdmin() || organizationMember?.IsOwner == true;
 

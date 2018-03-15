@@ -80,7 +80,24 @@ namespace TechStacks
             {
                 new TwitterAuthProvider(AppSettings), 
                 new GithubAuthProvider(AppSettings),
-                new JwtAuthProvider(AppSettings) { RequireSecureConnection = false },
+                new JwtAuthProvider(AppSettings) 
+                { 
+                    RequireSecureConnection = false,
+                    CreatePayloadFilter = (payload, session) =>
+                    {
+                        var githubAuth = session.ProviderOAuthAccess.Safe()
+                            .FirstOrDefault(x => x.Provider == "github");
+                        payload["ats"] = githubAuth != null 
+                            ? githubAuth.AccessTokenSecret : null;
+                    },
+                    PopulateSessionFilter = (session, obj, req) => 
+                    {
+                        session.ProviderOAuthAccess = new List<IAuthTokens>
+                        {
+                            new AuthTokens { Provider = "github", AccessTokenSecret = obj["ats"] }
+                        };
+                    } 
+                },
             }){
                 HtmlRedirect = "/"
             });

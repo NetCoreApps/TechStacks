@@ -30,7 +30,7 @@ namespace TechStacks.ServiceInterface
             post.CreatedBy = post.ModifiedBy = user.UserName;
             post.UserId = user.UserAuthId.ToInt();
             post.UpVotes = 0;
-            post.ContentHtml = await Markdown.TransformAsync(post.Content, UserCache.GetGitHubToken(post.UserId));
+            post.ContentHtml = await Markdown.TransformAsync(post.Content, user.GetGitHubToken());
             post.Rank = 0;
 
             if (string.IsNullOrEmpty(post.ImageUrl) && Request.Files.Length > 0)
@@ -63,7 +63,7 @@ namespace TechStacks.ServiceInterface
 
             if (post.Content != request.Content)
             {
-                post.ContentHtml = await Markdown.TransformAsync(request.Content, UserCache.GetGitHubToken(user.GetUserId()));
+                post.ContentHtml = await Markdown.TransformAsync(request.Content, user.GetGitHubToken());
             }
 
             post.PopulateWith(request);
@@ -232,7 +232,7 @@ namespace TechStacks.ServiceInterface
             comment.UserId = userId;
             comment.CreatedBy = user.UserName;
             comment.Created = comment.Modified = DateTime.Now;
-            comment.ContentHtml = await Markdown.TransformAsync(comment.Content, UserCache.GetGitHubToken(userId));
+            comment.ContentHtml = await Markdown.TransformAsync(comment.Content, user.GetGitHubToken());
             comment.UpVotes = 0;
 
             var id = await Db.InsertAsync(comment, selectIdentity: true);
@@ -271,7 +271,7 @@ namespace TechStacks.ServiceInterface
 
             var userId = user.GetUserId();
 
-            var html = await Markdown.TransformAsync(request.Content, UserCache.GetGitHubToken(userId));
+            var html = await Markdown.TransformAsync(request.Content, user.GetGitHubToken());
             var rowsUpdated = !user.IsAdmin()
                 ? await Db.UpdateOnlyAsync(() => new PostComment {
                     Content = request.Content,
