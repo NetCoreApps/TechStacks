@@ -2,8 +2,6 @@
   <v-layout column>
     <v-flex v-if="post" class="post-features">
 
-        <PostAlerts :organization="organization" :post="post"></PostAlerts>
-
         <v-flex class="post-features">
 
             <h2 v-if="post.comments.length > 1" class="comments-title">All {{post.comments.length || ''}} comments</h2>
