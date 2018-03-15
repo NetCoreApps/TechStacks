@@ -402,18 +402,22 @@ const actions = {
         const [config, overview, sessionInfo, userOrganizations] = await Promise.all([
             getConfig(),
             getOverview(),
-            getSessionInfo(),
-            getUserOrganizations(),
+            getSessionInfo()
         ])
         commit('config', config);
         commit('overview', overview);
         commit('sessionInfo', sessionInfo);
-        commit('userOrganizations', userOrganizations);
 
         commit('loading', false);
 
         if (sessionInfo != null) {
-            commit('sessionUserInfo', await getUserInfo(sessionInfo.userName));
+            const [sessionUserInfo, userOrganizations] = await Promise.all([
+                await getUserInfo(sessionInfo.userName),
+                getUserOrganizations()
+            ]);
+
+            commit('sessionUserInfo', sessionUserInfo);
+            commit('userOrganizations', userOrganizations);
             await convertSessionToToken();
         }
     },

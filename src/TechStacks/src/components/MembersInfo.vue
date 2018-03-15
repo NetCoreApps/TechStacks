@@ -62,10 +62,10 @@ export default {
       return this.organization.membersTotal;
     },
     member(){
-      return this.userOrganizations.members.find(x => x.organizationId == this.organization.id);
+      return this.userOrganizations && this.userOrganizations.members.find(x => x.organizationId == this.organization.id);
     },
     pendingInvite(){
-      return this.userOrganizations.memberInvites.find(x => x.organizationId == this.organization.id);
+      return this.userOrganizations && this.userOrganizations.memberInvites.find(x => x.organizationId == this.organization.id);
     },
 
     ...mapGetters([

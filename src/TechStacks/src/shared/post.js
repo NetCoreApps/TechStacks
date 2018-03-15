@@ -73,7 +73,8 @@ export function organization(org){ return org || this.organization || this.$stor
 export function userOrganizations(){ return this.$store.getters.userOrganizations; }
 export function organizationMember(org) { 
   const o = organization.call(this,org);
-  const ret = o && userOrganizations.call(this).members.find(x => x.organizationId === o.id);
+  const userOrgs = o && userOrganizations.call(this);
+  const ret = userOrgs && userOrgs.members.find(x => x.organizationId === o.id);
   return ret;
 }
 export function isOrganizationMember(org) { return organizationMember.call(this,org) != null; }
