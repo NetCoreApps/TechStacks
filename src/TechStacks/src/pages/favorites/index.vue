@@ -62,11 +62,11 @@
           <PostsList :posts="latestNewsPosts" :page="page" />
 
           <v-flex style="margin-top:5px;">
-            <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)">
+            <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)" title="View Previous (←)">
               <v-icon>chevron_left</v-icon>
               prev
             </v-btn>
-            <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)">
+            <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)" title="View Next (→)">
               more
               <v-icon>chevron_right</v-icon>
             </v-btn>
@@ -124,11 +124,11 @@
           <PostsList :posts="favoritedPosts" :page="page" />          
 
           <v-flex v-if="favoritedPosts.length > POSTS_PER_PAGE" style="margin-top:5px;">
-            <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)">
+            <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)" title="View Previous (←)">
               <v-icon>chevron_left</v-icon>
               prev
             </v-btn>
-            <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)">
+            <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)" title="View Next (→)">
               more
               <v-icon>chevron_right</v-icon>
             </v-btn>
@@ -274,6 +274,14 @@ export default {
         const num = parseInt(c);
         if (num >= 1 && num <= 3) {
           this.tab = num - 1;
+        }
+      } else if (e.key == "ArrowLeft" || e.keyCode == 37) {
+        if (this.page > 0) {
+          this.loadPage(this.page-1);
+        }
+      } else if (e.key == "ArrowRight" || e.keyCode == 39) {
+        if (this.hasMore) {
+          this.loadPage(this.page+1);
         }
       }
     },

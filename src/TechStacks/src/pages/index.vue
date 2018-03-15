@@ -106,11 +106,11 @@
         </v-layout>
 
           <v-flex style="margin-top:5px;">
-            <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)">
+            <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)" title="View Previous (←)">
               <v-icon>chevron_left</v-icon>
               prev
             </v-btn>
-            <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)">
+            <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)" title="View Next (→)">
               more
               <v-icon>chevron_right</v-icon>
             </v-btn>
@@ -259,6 +259,14 @@ export default {
           this.$router.push(routes.organizationNews(this.organizationSlug,{add:this.postType}));
         } else if (this.jumpToSlug) {
           this.$router.push(routes.organizationNews(this.jumpToSlug));
+        }
+      } else if (e.key == "ArrowLeft" || e.keyCode == 37) {
+        if (this.page > 0) {
+          this.loadPage(this.page-1);
+        }
+      } else if (e.key == "ArrowRight" || e.keyCode == 39) {
+        if (this.hasMore) {
+          this.loadPage(this.page+1);
         }
       }
     },

@@ -279,6 +279,10 @@ section.block {
   font-style: italic;
 }
 
+.gfm strong>code:first-child {
+  padding: 0 5px;
+}
+
 .gfm p:first-child > em:first-child {
   font-size: 22px;
   font-style: normal;

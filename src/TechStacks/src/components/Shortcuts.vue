@@ -69,6 +69,10 @@
                         <td>Comment</td>
                     </tr>
                     <tr>
+                        <th><span> ← / → </span><i>:</i></th>
+                        <td>Prev / Next Results</td>
+                    </tr>
+                    <tr>
                         <th>
                             <b>ESC</b>
                             <i>:</i>
@@ -163,6 +167,22 @@
                     </tr>
                     <tr>
                       <th>
+                        <b>ALT</b>
+                        <span> + </span>
+                        <b>1</b>
+                      </th>
+                      <td>Numbered List</td>
+                    </tr>
+                    <tr>
+                      <th>
+                        <b>ALT</b>
+                        <span> + </span>
+                        <b>-</b>
+                      </th>
+                      <td>Unordered List</td>
+                    </tr>
+                    <tr>
+                      <th>
                         <b>CTRL</b>
                         <span> + </span>
                         <b>Z</b>
@@ -235,7 +255,7 @@ export default {
 
 <style>
 #dialog {
-  position: absolute;
+  position: fixed;
   height: 100%;
   width: 100%;
   background: rgba(0, 0, 0, 0.3);
@@ -245,12 +265,7 @@ export default {
 }
 .dialog {
   position: relative;
-  top: 520px;
-  -webkit-transform: translateY(-50%);
-  -moz-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -o-transform: translateY(-50%);
-  transform: translateY(-50%);
+  top: 50px;
   text-align: left;
   display: inline-block;
   background: #fff;
@@ -262,10 +277,6 @@ export default {
   -moz-background-clip: padding-box;
   background-clip: padding-box;
 
-  /* vertical align */
-  -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  transform-style: preserve-3d;
 }
 .dialog-header {
   font-size: 18px;
