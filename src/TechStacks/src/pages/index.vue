@@ -79,7 +79,7 @@
                   :items="organizationsSelectItems"
                   v-model="jumpToSlug"
                   ></v-select>
-                  <v-btn :disabled="!jumpToSlug" color="primary" :to="routes.organizationNews(jumpToSlug)">
+                  <v-btn :disabled="!jumpToSlug" color="primary" :to="routes.organizationNews(jumpToSlug)" title="Jump (J)">
                     Go!
                     <v-icon>chevron_right</v-icon>
                   </v-btn>

@@ -8,6 +8,7 @@ using ServiceStack.OrmLite;
 using TechStacks.ServiceModel.Types;
 using ServiceStack.Text;
 using TechStacks.ServiceInterface;
+using TechStacks.ServiceInterface.DataModel;
 
 namespace TechStacks.Tests
 {
@@ -27,8 +28,6 @@ namespace TechStacks.Tests
                 db.DropAndCreateTable<PostComment>();
                 db.DropAndCreateTable<PostCommentVote>();
                 db.DropAndCreateTable<PostCommentReport>();
-
-                db.DropAndCreateTable<Subscription>();
 
                 db.DropAndCreateTable<Organization>();
                 db.DropAndCreateTable<OrganizationMember>();
@@ -131,6 +130,18 @@ namespace TechStacks.Tests
 
                 if (!db.ColumnExists<TechnologyStackHistory>(x => x.OrganizationId))
                     db.AddColumn<TechnologyStackHistory>(x => x.OrganizationId);
+            }
+        }
+
+        [Test]
+        public void Create_Subscription_Tables()
+        {
+            using (var db = dbFactory.Open())
+            {
+                db.DropAndCreateTable<SubscribeOrganization>();
+                db.DropAndCreateTable<SubscribePost>();
+
+                db.DropAndCreateTable<SubscriptionPost>();
             }
         }
 
