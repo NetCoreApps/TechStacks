@@ -23,7 +23,7 @@
               </span>
             </h1>
             <v-spacer></v-spacer>
-            
+
             <v-btn-toggle v-model="all" style="margin-right:5px">
               <v-btn title="show ALL (ALT+1)">all</v-btn>
             </v-btn-toggle>
@@ -43,13 +43,14 @@
               :spellcheck="false"
               :items="organizationsSelectItems"
               v-model="organizationSlug"
+              @input="organizationSlug && $router.push(routes.organizationNews(organizationSlug,{add:postType}))"
               ></v-select>
 
             <v-btn :disabled="!organizationSlug" color="primary" :to="routes.organizationNews(organizationSlug,{add:postType})">
               next
               <v-icon>chevron_right</v-icon>
             </v-btn>
-            
+
           </v-card-title>
         </v-card>
       </v-flex>
@@ -78,6 +79,7 @@
                   :spellcheck="false"
                   :items="organizationsSelectItems"
                   v-model="jumpToSlug"
+                  @input="jumpToSlug && $router.push(routes.organizationNews(jumpToSlug))"                  
                   ></v-select>
                   <v-btn :disabled="!jumpToSlug" color="primary" :to="routes.organizationNews(jumpToSlug)" title="Jump (J)">
                     Go!
@@ -121,7 +123,7 @@
           No Results matched your Query
         </v-alert>
       </v-flex>
-      
+
     </v-layout>
   </div>
 </template>
@@ -160,7 +162,7 @@ export default {
         .sort((a,b) => a.rank - b.rank);
     },
     postType(){
-      return this.filterTypes.length === 0 
+      return this.filterTypes.length === 0
         ? 'Post'
         : (this.allPostTypes[this.filterTypes[0]] || {}).name || 'Post';
     },
@@ -254,12 +256,6 @@ export default {
         if (num >= 1 && num <= this.allPostTypes.length + 1) {
           this.filterTypes = num === 1 ? [] : [parseInt(c) - 2];
         }
-      } else if (e.keyCode == 13) {
-        if (this.add && this.organizationSlug) {
-          this.$router.push(routes.organizationNews(this.organizationSlug,{add:this.postType}));
-        } else if (this.jumpToSlug) {
-          this.$router.push(routes.organizationNews(this.jumpToSlug));
-        }
       } else if (e.key == "ArrowLeft" || e.keyCode == 37) {
         if (this.page > 0) {
           this.loadPage(this.page-1);
@@ -299,7 +295,7 @@ export default {
     this.initRoute(this.$route.query);
     this.refreshPosts();
     this.$store.dispatch("loadUserPostActivity");
-    
+
     window.addEventListener('keyup', this.handleKeyUp);
   },
 
@@ -335,7 +331,7 @@ export default {
   color: #333;
 }
 .tech-organizations .tag {
-  margin: 2px; 
+  margin: 2px;
   background: #f1f1f1;
   padding: 2px 6px;
 }

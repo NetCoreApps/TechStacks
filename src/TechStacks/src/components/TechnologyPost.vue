@@ -37,18 +37,14 @@
                       :error-messages="errorResponse('title')"
                       ></v-text-field>
 
-                  <v-text-field
-                      label="Text (markdown)"
+                  <Editor 
+                      label=""
                       v-model="content"
                       :counter="contentCounter"
-                      multi-line
-                      auto-grow
-                      :rows="6"
                       :rules="contentRules"
                       :error-messages="errorResponse('content')"
-                      ></v-text-field>
-
-                  <a class="help-fmt" v-if="valid" target="_blank" :href="routes.formattingHelp">formatting help</a>
+                      @save="submit"
+                      />
 
                   <v-text-field
                       label="URL"
@@ -84,6 +80,8 @@
 </template>
 
 <script>
+import Editor from "~/components/Editor.vue";
+
 import { mapGetters } from "vuex";
 import { toObject, errorResponse, errorResponseExcept } from "@servicestack/client";
 import { routes } from "~/shared/routes";
@@ -97,6 +95,7 @@ const post = {
 };
 
 export default {
+  components: { Editor },
   props: ["type", "technology", "techstack"],
   computed: {
     errorSummary(){

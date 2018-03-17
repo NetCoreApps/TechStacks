@@ -86,7 +86,7 @@ var ops = {
     const from = $txt.selectionStart, to = $txt.selectionEnd, len = to - from;
     let beforeRange = value.substring(0,from);
     let afterRange = value.substring(to);
-    const toggleOff = prefix && suffix && beforeRange.endsWith(prefix) && afterRange.startsWith(suffix);
+    const toggleOff = prefix && beforeRange.endsWith(prefix) && afterRange.startsWith(suffix);
 
     const originalPos = pos;
     const noSelection = from == to;
@@ -153,36 +153,97 @@ var ops = {
     this.insert('[','](http://)','', { offsetStart:-8, offsetEnd:7 })
   },
   quote(){
-    this.insert('\n\n> ','\n\n','Blockquote', {  })
+    this.insert('\n> ','\n','Blockquote', {  })
   },
   image(){
     this.insert('![','](http://)','alt text', { offsetStart:-8, offsetEnd:7 })
   },
   code(e){
-    if (this.hasSelection() && !e.shiftKey) {
+    const sel = this.selection();
+    if (sel && !e.shiftKey) {
       this.insert('`','`','code')
     } else {
-      const lang = this.lang || 'js'
-      this.insert('\n```' + lang + '\n','\n```\n','// code')
+        const lang = this.lang || 'js'
+      const partialSel = sel.indexOf('\n') === -1;
+      if (partialSel) {
+        this.insert('\n```' + lang + '\n','\n```\n','// code')
+      } else {
+        this.insert('```' + lang + '\n','```\n','')
+      }
     }
   },
   ol(){    
     if (this.hasSelection()) {
-      this.insert('\n 1. ','\n')
+      let { sel, selPos, beforeSel, afterSel, prevCRPos, beforeCR, afterCR } = this.selectionInfo();
+      const partialSel = sel.indexOf('\n') === -1;
+      if (!partialSel) {
+        const indent = !sel.startsWith(' 1. ');
+        if (indent) {
+          let index = 1;
+          this.insert('','',' - ', { 
+            selectionAtEnd: true,
+            filterSelection: v => " 1. " + v.replace(/\n$/,'').replace(/\n/g,x => `\n ${++index}. `) + "\n" 
+          });
+        } else {
+          this.insert('','','', {
+            filterValue:(v,opt) => {
+              if (prevCRPos >= 0) {
+                let afterCRTrim = afterCR.replace(/^ - /,'');
+                beforeSel = beforeCR + afterCRTrim;
+                opt.pos -= afterCR.length - afterCRTrim.length;
+              }
+              return beforeSel + afterSel;
+            }, 
+            filterSelection: v => v.replace(/^ 1. /g,'').replace(/\n \d+. /g,"\n") 
+          });
+        }
+      }
+      else {
+        this.insert('\n 1. ','\n');
+      }
     } else {
       this.insert('\n 1. ','\n','List Item', { offsetStart:-10, offsetEnd:9 })
     }
   },
   ul(){    
     if (this.hasSelection()) {
-      this.insert('\n - ','\n')
+      let { sel, selPos, beforeSel, afterSel, prevCRPos, beforeCR, afterCR } = this.selectionInfo();
+      const partialSel = sel.indexOf('\n') === -1;
+      if (!partialSel) {
+        const indent = !sel.startsWith(' - ');
+        if (indent) {
+            this.insert('','',' - ', { 
+              selectionAtEnd: true,
+              filterSelection: v => " - " + v.replace(/\n$/,'').replace(/\n/g,"\n - ") + "\n" 
+            });
+        } else {
+          this.insert('','','', {
+            filterValue:(v,opt) => {
+              if (prevCRPos >= 0) {
+                let afterCRTrim = afterCR.replace(/^ - /,'');
+                beforeSel = beforeCR + afterCRTrim;
+                opt.pos -= afterCR.length - afterCRTrim.length;
+              }
+              return beforeSel + afterSel;
+            }, 
+            filterSelection: v => v.replace(/^ - /g,'').replace(/\n - /g,"\n") 
+          });
+        }
+      } else {
+        this.insert('\n - ','\n');
+      }
     } else {
       this.insert('\n - ','\n','List Item', { offsetStart:-10, offsetEnd:9 })
     }
   },
   heading(){
-    if (this.hasSelection()) {
-      this.insert('\n## ','\n','')
+    const sel = this.selection(), partialSel = sel.indexOf('\n') === -1;
+    if (sel) {
+      if (partialSel) {
+        this.insert('\n## ','\n','')
+      } else {
+        this.insert('## ','','')
+      }
     } else {
       this.insert('\n## ','\n','Heading', { offsetStart:-8, offsetEnd:7 })
     }
@@ -269,13 +330,13 @@ export default {
             filterValue:(v,opt) => {
               let { selPos, beforeSel, afterSel, prevCRPos, beforeCR, afterCR } = this.selectionInfo();
               if (prevCRPos >= 0) {
-                let afterCRTrim = afterCR.replace(/^ ? ? ? ?/,'');
+                let afterCRTrim = afterCR.replace(/\t/g,'    ').replace(/^ ? ? ? ?/,'');
                 beforeSel = beforeCR + afterCRTrim;
                 opt.pos -= afterCR.length - afterCRTrim.length;
               }
               return beforeSel + afterSel;
             }, 
-            filterSelection: v => v.replace(/^ ? ? ? ?/g,'').replace(/\n    /g,"\n") 
+            filterSelection: v => v.replace(/\t/g,'    ').replace(/^ ? ? ? ?/g,'').replace(/\n    /g,"\n") 
           });
         }
         e.preventDefault();

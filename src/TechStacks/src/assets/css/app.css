@@ -283,10 +283,12 @@ section.block {
   padding: 0 5px;
 }
 
-.gfm p:first-child > em:first-child {
+.gfm h2:first-child {
   font-size: 22px;
   font-style: normal;
+  font-weight: normal;
   color: rgba(0, 0, 0, 0.50);
+  border: none;
 }
 
 .gfm blockquote {
