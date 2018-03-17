@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-14 18:29:53
+Date: 2018-03-16 17:16:40
 Version: 5.00
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -270,9 +270,11 @@ export class Post
     lastCommentId: number;
     lastCommentUserId: number;
     deleted: string;
+    deletedBy: string;
     locked: string;
     lockedBy: string;
     hidden: string;
+    hiddenBy: string;
     archived: boolean;
     bumped: string;
     created: string;
@@ -314,6 +316,8 @@ export class PostComment
 }
 
 export type ReportAction = "Dismiss" | "Delete";
+
+export type Frequency = "Daily" | "Weekly" | "Monthly" | "Quarterly";
 
 export type TechnologyTier = "ProgrammingLanguage" | "Client" | "Http" | "Server" | "Data" | "SoftwareInfrastructure" | "OperatingSystem" | "HardwareInfrastructure" | "ThirdPartyServices";
 
@@ -1399,6 +1403,40 @@ export class SessionInfo implements IReturn<SessionInfoResponse>
 {
     createResponse() { return new SessionInfoResponse(); }
     getTypeName() { return "SessionInfo"; }
+}
+
+// @Route("/orgs/{OrganizationId}/subscribe", "PUT")
+export class SubscribeToOrganization implements IReturnVoid
+{
+    organizationId: number;
+    postTypes: PostType[];
+    frequency: Frequency;
+    createResponse() {}
+    getTypeName() { return "SubscribeToOrganization"; }
+}
+
+// @Route("/posts/{PostId}/subscribe", "PUT")
+export class SubscribeToPost implements IReturnVoid
+{
+    postId: number;
+    createResponse() {}
+    getTypeName() { return "SubscribeToPost"; }
+}
+
+// @Route("/orgs/{OrganizationId}/subscribe", "DELETE")
+export class DeleteOrganizationSubscription implements IReturnVoid
+{
+    organizationId: number;
+    createResponse() {}
+    getTypeName() { return "DeleteOrganizationSubscription"; }
+}
+
+// @Route("/posts/{PostId}/subscribe", "DELETE")
+export class DeletePostSubscription implements IReturnVoid
+{
+    postId: number;
+    createResponse() {}
+    getTypeName() { return "DeletePostSubscription"; }
 }
 
 // @Route("/technology/{Slug}/previous-versions", "GET")

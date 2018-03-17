@@ -15,9 +15,15 @@ namespace TechStacks.ServiceInterface.DataModel
         [Index]
         public int OrganizationId { get; set; }
 
+        /// <summary>
+        /// Send notifications
+        /// </summary>
         [PgSqlTextArray]
         public string[] PostTypes { get; set; }
 
+        /// <summary>
+        /// Digest Frequency
+        /// </summary>
         public int FrequencyDays { get; set; }
 
         public long LastSyncedId { get; set; }

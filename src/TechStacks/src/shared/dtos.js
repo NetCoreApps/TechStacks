@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-14 18:29:53
+Date: 2018-03-16 17:16:40
 Version: 5.00
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -978,6 +978,42 @@ var SessionInfo = /** @class */ (function () {
     return SessionInfo;
 }());
 export { SessionInfo };
+// @Route("/orgs/{OrganizationId}/subscribe", "PUT")
+var SubscribeToOrganization = /** @class */ (function () {
+    function SubscribeToOrganization() {
+    }
+    SubscribeToOrganization.prototype.createResponse = function () { };
+    SubscribeToOrganization.prototype.getTypeName = function () { return "SubscribeToOrganization"; };
+    return SubscribeToOrganization;
+}());
+export { SubscribeToOrganization };
+// @Route("/posts/{PostId}/subscribe", "PUT")
+var SubscribeToPost = /** @class */ (function () {
+    function SubscribeToPost() {
+    }
+    SubscribeToPost.prototype.createResponse = function () { };
+    SubscribeToPost.prototype.getTypeName = function () { return "SubscribeToPost"; };
+    return SubscribeToPost;
+}());
+export { SubscribeToPost };
+// @Route("/orgs/{OrganizationId}/subscribe", "DELETE")
+var DeleteOrganizationSubscription = /** @class */ (function () {
+    function DeleteOrganizationSubscription() {
+    }
+    DeleteOrganizationSubscription.prototype.createResponse = function () { };
+    DeleteOrganizationSubscription.prototype.getTypeName = function () { return "DeleteOrganizationSubscription"; };
+    return DeleteOrganizationSubscription;
+}());
+export { DeleteOrganizationSubscription };
+// @Route("/posts/{PostId}/subscribe", "DELETE")
+var DeletePostSubscription = /** @class */ (function () {
+    function DeletePostSubscription() {
+    }
+    DeletePostSubscription.prototype.createResponse = function () { };
+    DeletePostSubscription.prototype.getTypeName = function () { return "DeletePostSubscription"; };
+    return DeletePostSubscription;
+}());
+export { DeletePostSubscription };
 // @Route("/technology/{Slug}/previous-versions", "GET")
 var GetTechnologyPreviousVersions = /** @class */ (function () {
     function GetTechnologyPreviousVersions() {

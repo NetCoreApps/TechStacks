@@ -29,7 +29,7 @@
             </v-btn-toggle>
 
             <v-btn-toggle multiple v-if="allPostTypes.length > 0" v-model="filterTypes">
-              <v-btn v-for="(postType,index) in allPostTypes" :key="postType.name" :title="`${postType.name} (ALT+${index+2})`">{{ postType.name }}</v-btn>
+              <v-btn v-for="(postType,index) in allPostTypes" :key="postType.name" :title="`${postType.title} (ALT+${index+2})`">{{ postType.title }}</v-btn>
             </v-btn-toggle>
           </v-layout>
       </v-flex>
@@ -140,6 +140,13 @@ import { routes } from "~/shared/routes";
 
 const TechnologySource = 'Technology';
 
+const allPostTypes = [
+  {name:'Announcement', title:'Announcements'},
+  {name:'Post', title:'Posts'},
+  {name:'Showcase', title:'Showcase'}
+];
+const allTypeNames = allPostTypes.map(x => x.name).join(',');
+
 export default {
   components: { PostsList, OrganizationAdd },
 
@@ -169,7 +176,7 @@ export default {
     filterTypeNames() {
       return this.filterTypes.map(i => this.allPostTypes[i].name);
     },
-    ...mapGetters(["loading","isAuthenticated","allOrganizations","allPostTypes","latestNewsPosts"])
+    ...mapGetters(["loading","isAuthenticated","allOrganizations","latestNewsPosts"])
   },
 
   methods: {
@@ -177,7 +184,7 @@ export default {
       await this.$store.dispatch({
         type: "latestNewsPosts",
         page: this.page,
-        types: this.types,
+        types: this.types || allTypeNames,
         technologyIds: [this.technologyId],
       });
     },
@@ -305,6 +312,7 @@ export default {
 
   data: () => ({
     routes,
+    allPostTypes,
     types: null,
     t: null,
     add: false,
