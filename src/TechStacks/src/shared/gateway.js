@@ -71,7 +71,11 @@ import {
     HidePost,
 } from "./dtos";
 
-export const client = new JsonServiceClient("/");
+const BaseUrl = location.host == "techstacks.io"
+    ? "https://www.techstacks.io/"
+    : "/";
+
+export const client = new JsonServiceClient(BaseUrl);
 
 export const getConfig = async () => await client.get(new GetConfig());
 

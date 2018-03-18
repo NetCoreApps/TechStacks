@@ -76,7 +76,7 @@ namespace TechStacks
 
             container.Register<IDbConnectionFactory>(dbFactory);
 
-            this.Plugins.Add(new AuthFeature(() => new CustomUserSession(), new IAuthProvider[]
+            Plugins.Add(new AuthFeature(() => new CustomUserSession(), new IAuthProvider[]
             {
                 new TwitterAuthProvider(AppSettings), 
                 new GithubAuthProvider(AppSettings),
@@ -200,7 +200,7 @@ namespace TechStacks
                 dbFactory.RegisterPageView(dto.GetStatsId()));
 
             Plugins.Add(new CorsFeature(
-                allowOriginWhitelist: new[] { "http://localhost", "http://localhost:8080", "http://localhost:56500", "http://test.servicestack.net", "http://null.jsbin.com" },
+                allowOriginWhitelist: new[] { "http://localhost:3000", "http://localhost:16325", "https://techstacks.io", "https://www.techstacks.io", "http://null.jsbin.com" },
                 allowCredentials: true,
                 allowedHeaders: "Content-Type, Allow, Authorization"));        }
     }
