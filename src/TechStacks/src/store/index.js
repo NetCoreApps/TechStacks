@@ -411,14 +411,13 @@ const actions = {
         commit('loading', false);
 
         if (sessionInfo != null) {
-            const [sessionUserInfo, userOrganizations] = await Promise.all([
-                await getUserInfo(sessionInfo.userName),
-                getUserOrganizations()
-            ]);
+            getUserInfo(sessionInfo.userName)
+                .then(sessionUserInfo => commit('sessionUserInfo', sessionUserInfo));
 
-            commit('sessionUserInfo', sessionUserInfo);
-            commit('userOrganizations', userOrganizations);
-            await convertSessionToToken();
+            getUserOrganizations()
+                .then(userOrganizations => commit('userOrganizations', userOrganizations));
+
+            convertSessionToToken();
         }
     },
 
