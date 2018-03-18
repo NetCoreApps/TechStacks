@@ -72,6 +72,8 @@
 
             <CommentEdit ref="txtComment" v-if="canCommentPost(post)" :post="post" @done="commentDone"></CommentEdit>    
             
+            <div v-if="!isAuthenticated">Please Sign In to comment</div>
+
         </v-flex>
         <v-flex class="post-comments">
             <PostComment v-for="comment in parentComments" :key="comment.id" :post="post" :comment="comment" @votePostCommentDone="votePostDone"></PostComment>

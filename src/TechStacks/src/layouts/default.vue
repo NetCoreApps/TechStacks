@@ -44,8 +44,6 @@
       </v-toolbar-items>
     </v-toolbar>
 
-    <!-- <div v-if="!isAuthenticated" id="sign-text" style="position:absolute;top:70px;right:20px">sign in to contribute</div> -->
-
     <v-content>
       <v-container fluid>
         <v-slide-y-transition mode="out-in">
