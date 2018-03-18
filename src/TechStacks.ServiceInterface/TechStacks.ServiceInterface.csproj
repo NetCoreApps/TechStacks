@@ -5,12 +5,35 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ServiceStack" Version="5.0.3" />
-    <PackageReference Include="ServiceStack.Server" Version="5.0.3" />
-  </ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="2.0.0" />
 
-  <ItemGroup>
     <ProjectReference Include="..\TechStacks.ServiceModel\TechStacks.ServiceModel.csproj" />
+    <PackageReference Include="ServiceStack.Server" Version="5.0.3" />
+
+    <!-- <Reference Include="ServiceStack.Text">
+      <HintPath>..\..\..\..\ServiceStack.Text\src\ServiceStack.Text\bin\Debug\netstandard2.0\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces">
+      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Interfaces\bin\Debug\netstandard2.0\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Client">
+      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Client\bin\Debug\netstandard2.0\ServiceStack.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Common">
+      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Common\bin\Debug\netstandard2.0\ServiceStack.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack">
+      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack\bin\Debug\netstandard2.0\ServiceStack.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Server">
+      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Server\bin\Debug\netstandard2.0\ServiceStack.Server.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Redis">
+      <HintPath>..\..\..\..\ServiceStack.Redis\src\ServiceStack.Redis\bin\Debug\netstandard2.0\ServiceStack.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.OrmLite">
+      <HintPath>..\..\..\..\ServiceStack.OrmLite\src\ServiceStack.OrmLite\bin\Debug\netstandard2.0\ServiceStack.OrmLite.dll</HintPath>
+    </Reference> -->
   </ItemGroup>
 
 </Project>
