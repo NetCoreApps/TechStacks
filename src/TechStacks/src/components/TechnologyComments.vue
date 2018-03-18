@@ -22,18 +22,16 @@
               <v-card-text style="padding-top:0">
                   <v-alert outline color="error" icon="warning" :value="errorSummary">{{ errorSummary }}</v-alert>                  
 
-                  <v-text-field
-                      ref="txtContent"
+                  <Editor ref="editor"
+                      style="padding-top:10px"
                       label="Comment"
                       v-model="content"
-                      multi-line
-                      auto-grow
                       :rows="6"
-                      :rules="[v => !v || v.length <= 60000 || 'Max 60000 characters']"
+                      :counter="contentCounter"
+                      :rules="contentRules"
                       :error-messages="errorResponse('content')"
-                      ></v-text-field>
-
-                  <a v-if="valid" class="help-fmt" target="_blank" href="https://guides.github.com/features/mastering-markdown/">formatting help</a>
+                      @save="submit"
+                      />
 
               </v-card-text>
               <v-card-actions>
@@ -52,18 +50,20 @@ import ReportDialog from "~/components/ReportDialog.vue";
 import PostComment from "~/components/PostComment.vue";
 import CommentEdit from "~/components/CommentEdit.vue";
 import PostAlerts from "~/components/PostAlerts.vue";
+import Editor from "~/components/Editor.vue";
 
 import { mapGetters } from "vuex";
 import { toObject, errorResponse, errorResponseExcept } from "@servicestack/client";
 import { createOrganizationForTechnology, createOrganizationForTechStack, createPostComment } from "~/shared/gateway";
 import { canCommentPost, sortComments } from "~/shared/post";
+import { contentCounter, contentRules } from "~/shared/utils";
 
 const comment = {
   content: null,
 };
 
 export default {
-  components: { PostComment, ReportDialog, CommentEdit, PostAlerts },
+  components: { PostComment, ReportDialog, CommentEdit, PostAlerts, Editor },
   props: ["technology", "techstack"],
 
   computed: {
@@ -154,8 +154,9 @@ export default {
     ...comment,
     postId: null,
     valid: true,
-    responseStatus: null,
+    contentCounter, contentRules,
     notFound: false,
+    responseStatus: null,
   }),
   
 }

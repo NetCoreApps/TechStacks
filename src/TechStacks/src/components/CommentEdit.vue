@@ -13,7 +13,9 @@
                         :rules="contentRulesOptional"
                         :error-messages="errorResponse('content')"
                         :lang="getLangByOrganizationId(post.organizationId)"
+                        :autofocus="autofocus"
                         @save="submit"
+                        @close="reset()"
                         />
 
             </v-card-text>
@@ -41,7 +43,7 @@ const comment = {
 
 export default {
     components: { Editor },
-    props: ['post', 'comment', 'replyId', 'rows'],
+    props: ['post', 'comment', 'replyId', 'rows', 'autofocus'],
 
     computed: {
         ...mapGetters(['getLangByOrganizationId'])

@@ -2,7 +2,7 @@
 <div class="comment">
     <v-card class="comment-parent">
         <v-card-title>
-            <v-layout>
+            <v-layout @click="handleCtrlClick">
                 <v-flex class="comment-info">
                     <v-icon v-if="pinned" style="font-size:50px;color:#4caf50;margin-bottom:10px;" title="Pinned Comment">place</v-icon>
                     <nuxt-link :to="routes.user(comment.createdBy)"><img class="comment-avatar" :src="routes.userAvatar(comment.createdBy)" :alt="`${comment.createdBy} profile`"></nuxt-link>
@@ -12,11 +12,11 @@
                     <div v-if="!editId" class="comment-content" v-html="comment.contentHtml"></div>
 
                     <div v-if="editId" class="comment-edit">
-                        <CommentEdit :post="post" :comment="comment" @done="commentDone"></CommentEdit>
+                        <CommentEdit :post="post" :comment="comment" @done="commentDone" :autofocus="true"></CommentEdit>
                     </div>
 
                     <div v-if="replyId" class="comment-reply">
-                        <CommentEdit :post="post" :replyId="replyId" @done="commentDone"></CommentEdit>
+                        <CommentEdit :post="post" :replyId="replyId" @done="commentDone" :autofocus="true"></CommentEdit>
                     </div>
 
                     <div v-if="reportCommentId">
@@ -84,6 +84,12 @@ export default {
 
     pinComment(comment, pin) {
       return this.$store.dispatch('pinPostComment', { postId: this.post.id, commentId:comment.id, pin });
+    },
+
+    handleCtrlClick(e){
+        if (!this.editId && e.ctrlKey && this.canUpdateComment(this.post,this.comment)) {
+            this.editId = this.comment.id;
+        }
     },
 
     canReplyComment,

@@ -34,6 +34,7 @@
                       required
                       :rules="titleRules"
                       :counter="titleCounter"
+                      :autofocus="true"
                       :error-messages="errorResponse('title')"
                       ></v-text-field>
 
@@ -44,6 +45,7 @@
                       :rules="contentRules"
                       :error-messages="errorResponse('content')"
                       @save="submit"
+                      @close="reset(false)"
                       />
 
                   <v-text-field

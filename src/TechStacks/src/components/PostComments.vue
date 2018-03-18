@@ -2,7 +2,7 @@
 <div>
 
   <div v-if="post">
-      <v-layout>
+      <v-layout @click="handleCtrlClick">
           <v-card :class="['post', votedClass(post.id), { deleted: post.deleted }]">
               <v-card-title>
                   <v-container fluid grid-list-sm>
@@ -172,6 +172,12 @@ export default {
       await this.loadPost();
     },
     
+    handleCtrlClick(e){
+        if (!this.edit && e.ctrlKey && this.canUpdatePost(this.post)) {
+            this.edit = true;
+        }
+    },
+
     handleKeyUp(e) {
       if (ignoreKeyPress(e)) return;
       const c = String.fromCharCode(e.keyCode).toLowerCase();
@@ -248,5 +254,9 @@ export default {
 .continue {
   margin-top: 1em;
   font-size: 16px;
+}
+.post-features textarea
+{
+  min-height: 223px; /* fixes autoscroll issue in Chrome/Opera: https://github.com/vuetifyjs/vuetify/issues/3082#issuecomment-373969674 */
 }
 </style>

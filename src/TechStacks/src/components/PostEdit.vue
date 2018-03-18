@@ -51,6 +51,7 @@
                         :error-messages="errorResponse('content')"
                         :lang="getLangByOrganizationId(organizationId)"
                         @save="submit"
+                        @close="reset()"
                         />
 
                     <v-select v-if="categorySelectItems.length > 0"

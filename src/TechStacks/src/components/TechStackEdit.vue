@@ -109,6 +109,7 @@
                 :error-messages="errorResponse('details')"
                 :lang="getLangByOrganizationId(organizationId)"
                 @save="submit"
+                @close="done"
                 />
 
               <v-checkbox v-show="canChange"

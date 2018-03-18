@@ -299,7 +299,7 @@ var ops = {
 }
 
 export default {
-  props: ['label','value','counter','rows','rules','errorMessages','lang'],
+  props: ['label','value','counter','rows','rules','errorMessages','lang','autofocus'],
 
   methods: {
     save(){
@@ -311,6 +311,7 @@ export default {
   mounted(){
     history = [], redo = [];
     const $txt = this.$refs.txt.$refs.input;
+
     $txt.onkeydown = (e) => {
       if (e.key === "Escape" || e.keyCode === 27) {
         this.$emit('close');
@@ -373,7 +374,7 @@ export default {
             this.image();            
             e.preventDefault();
           }
-        } else if ((c === ',' || e.key === '<' || e.keyCode === 188)) { //<>: code
+        } else if ((c === ',' || e.key === '<' || e.key === '>' || e.keyCode === 188)) { //<>: code
           this.code(e);
           e.preventDefault();
         } else if (c === 's' && !e.shiftKey) { //s: save

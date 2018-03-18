@@ -5,7 +5,7 @@
       <v-parallax :src="heroUrl" >
         <v-layout align-center>
 
-          <v-layout column align-center>
+          <v-layout column align-center @click="handleCtrlClick">
             <v-flex
               fluid
               style="min-height: 0"
@@ -186,6 +186,12 @@ export default {
       if (!this.isAuthenticated) return;
       await this.$store.dispatch('removeFavorite', { type:'stack', id:this.techstack.id });
       this.refreshPageStats();
+    },
+
+    handleCtrlClick(e) {
+      if (e.ctrlKey && this.canChange) {
+        this.$router.push(routes.editStack(this.techstack.slug));
+      }
     },
 
     handleKeyUp(e) {

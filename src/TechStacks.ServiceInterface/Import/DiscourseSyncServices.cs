@@ -491,6 +491,8 @@ namespace TechStacks.ServiceInterface.Import
                     }
                 }
             }
+            
+            Cache.FlushAll();
 
             return logs;
         }

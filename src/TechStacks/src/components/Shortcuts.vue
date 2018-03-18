@@ -1,6 +1,6 @@
 <template>
   <div id="dialog" class="shortcuts dark">
-    <div class="dialog" style="max-width:700px">
+    <div class="dialog" style="max-width:730px">
       <div class="dialog-header">
           <i class="material-icons close" @click="close">close</i>
           Keyboard shortcuts
@@ -50,6 +50,10 @@
                     </tr>
                     <tr>
                         <th><span> E </span><i>:</i></th>
+                        <td>Edit</td>
+                    </tr>
+                    <tr>
+                        <th><b>CTRL</b> <span> + </span> <b>CLICK</b><i>:</i></th>
                         <td>Edit</td>
                     </tr>
                     <tr>
