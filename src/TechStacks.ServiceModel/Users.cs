@@ -110,4 +110,28 @@ namespace TechStacks.ServiceModel
 
         public ResponseStatus ResponseStatus { get; set; }
     }
+
+    public class UserRef
+    {
+        public int Id { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+
+        public int? RefId { get; set; }
+        public string RefSource { get; set; }
+        public string RefUrn { get; set; }
+    }
+
+    [Route("/users/by-email")]
+    public class GetUsersByEmails : IReturn<GetUsersByEmailsResponse>
+    {
+        public string[] Emails { get; set; }
+    }
+
+    public class GetUsersByEmailsResponse
+    {
+        public List<UserRef> Results { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+    
 }

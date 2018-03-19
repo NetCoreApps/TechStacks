@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ServiceStack;
@@ -8,6 +9,27 @@ using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface
 {
+    public class PostPublicUserServices : Service
+    {
+        public object Any(GetUsersByEmails request)
+        {
+            if (request.Emails.IsEmpty())
+                return new GetUsersByEmailsResponse { Results = new List<UserRef>() };
+            
+            var users = Db.Select<UserRef>(
+                @"select distinct c.id, c.user_name, COALESCE(c.email,d.email) as email, c.ref_id, c.ref_source, c.ref_urn
+                   from custom_user_auth c
+                        left join
+                        user_auth_details d on d.user_auth_id = c.id
+                  where c.email in (@Emails)
+                     or d.email in (@Emails)", new { request.Emails });
+
+            return new GetUsersByEmailsResponse {
+                Results = users
+            };
+        }
+    }
+    
     [Authenticate]
     public class PostUserServices : PostServicesBase
     {
