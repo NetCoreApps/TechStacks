@@ -4,7 +4,6 @@ import {
     getConfig, 
     getOverview, 
     getUserOrganizations,
-    convertSessionToToken,
     getTechnology, 
     getTechnologyStack, 
     getPageStats,
@@ -144,6 +143,14 @@ const mutations = {
     },
     sessionInfo(state, sessionInfo) {
         state.sessionInfo = sessionInfo;
+
+        //sessionUserInfo
+        state.favoriteTechnologies = sessionInfo && sessionInfo.favoriteTechnologies || [];
+        state.favoriteTechStacks = sessionInfo && sessionInfo.favoriteTechStacks || [];
+        state.userActivity = sessionInfo && sessionInfo.userActivity;
+
+        //userOrganizations
+        state.userOrganizations = sessionInfo && { members: sessionInfo.members, memberInvites: sessionInfo.memberInvites};
     },
     sessionUserInfo(state, userInfo) {
         state.favoriteTechnologies = userInfo.favoriteTechnologies || [];
@@ -399,7 +406,7 @@ const actions = {
     async nuxtClientInit({ commit }, { req }) {
         commit('loading', true);
 
-        const [config, overview, sessionInfo, userOrganizations] = await Promise.all([
+        const [config, overview, sessionInfo] = await Promise.all([
             getConfig(),
             getOverview(),
             getSessionInfo()
@@ -409,16 +416,6 @@ const actions = {
         commit('sessionInfo', sessionInfo);
 
         commit('loading', false);
-
-        if (sessionInfo != null) {
-            getUserInfo(sessionInfo.userName)
-                .then(sessionUserInfo => commit('sessionUserInfo', sessionUserInfo));
-
-            getUserOrganizations()
-                .then(userOrganizations => commit('userOrganizations', userOrganizations));
-
-            convertSessionToToken();
-        }
     },
 
     async loadOverview({ commit }) {

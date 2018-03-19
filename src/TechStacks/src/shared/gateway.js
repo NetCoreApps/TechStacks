@@ -90,17 +90,27 @@ export const getOverview = async () => await client.get(new Overview());
 
 export const getSessionInfo = async() => {
     try {
-        return await authClient.get(new SessionInfo());
+        const response = await authClient.get(new SessionInfo());
+
+        //Convert to Token Cookie
+        client.bearerToken = authClient.bearerToken = response.accessToken;
+        await Promise.all([
+            authClient.post(new ConvertSessionToToken()),
+            client.post(new ConvertSessionToToken()),
+        ]);
+
+        //Remove JWT from HTTP Headers
+        client.bearerToken = authClient.bearerToken = null;
+        client.headers.delete('Authorization');
+        authClient.headers.delete('Authorization');
+        
+        response.accessToken = null;
+
+        return response;
     } catch (e) {
         return null;
     }
 }
-
-export const convertSessionToToken = async () => {
-    const response = await authClient.get(new ConvertSessionToToken());
-    client.setBearerToken(response.accessToken);
-    console.log('convertSessionToToken', AuthBaseUrl, response);
-};
 
 export const getAllTechnologies = async () => await client.get(new GetAllTechnologies(), { include: 'total' });
 
