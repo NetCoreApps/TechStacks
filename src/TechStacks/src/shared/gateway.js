@@ -71,8 +71,14 @@ import {
     HidePost,
 } from "./dtos";
 
-const BaseUrl = location.host == "techstacks.io"
+const usingProxy = location.host == "techstacks.io";
+
+const BaseUrl = usingProxy
     ? "https://www.techstacks.io/"
+    : "/";
+
+const AuthBaseUrl = usingProxy
+    ? "https://techstacks.io/"
     : "/";
 
 export const client = new JsonServiceClient(BaseUrl);
@@ -81,7 +87,12 @@ export const getConfig = async () => await client.get(new GetConfig());
 
 export const getOverview = async () => await client.get(new Overview());
 
-export const convertSessionToToken = async () => await client.get(new ConvertSessionToToken());
+export const convertSessionToToken = async () => {
+    const authClient = new JsonServiceClient(AuthBaseUrl);
+    const response = await authClient.get(new ConvertSessionToToken());
+    client.setBearerToken(response.accessToken);
+    console.log('convertSessionToToken', AuthBaseUrl, response);
+};
 
 export const getAllTechnologies = async () => await client.get(new GetAllTechnologies(), { include: 'total' });
 

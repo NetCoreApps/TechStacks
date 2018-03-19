@@ -52,19 +52,21 @@ namespace TechStacks
 
     public class AppHost : AppHostBase
     {
-        public AppHost() 
+        public AppHost()
             : base("TechStacks", typeof(TechnologyServices).Assembly) {}
 
         // Configure your AppHost with the necessary configuration and dependencies your App needs
         public override void Configure(Container container)
         {
-            Plugins.Add(new TemplatePagesFeature()); // enable server-side rendering, see: http://templates.servicestack.net
+            // enable server-side rendering, see: http://templates.servicestack.net
+            Plugins.Add(new TemplatePagesFeature {});
 
             var debugMode = AppSettings.Get(nameof(HostConfig.DebugMode), false);
             SetConfig(new HostConfig
             {
                 AddRedirectParamsToQueryString = true,
                 DebugMode = true,
+                AdminAuthSecret = "s3cr3t"
             });
 
             JsConfig.DateHandler = DateHandler.ISO8601;
@@ -78,25 +80,25 @@ namespace TechStacks
 
             Plugins.Add(new AuthFeature(() => new CustomUserSession(), new IAuthProvider[]
             {
-                new TwitterAuthProvider(AppSettings), 
+                new TwitterAuthProvider(AppSettings),
                 new GithubAuthProvider(AppSettings),
-                new JwtAuthProvider(AppSettings) 
-                { 
+                new JwtAuthProvider(AppSettings)
+                {
                     RequireSecureConnection = false,
+                    IncludeJwtInConvertSessionToTokenResponse = true,
                     CreatePayloadFilter = (payload, session) =>
                     {
                         var githubAuth = session.ProviderOAuthAccess.Safe()
                             .FirstOrDefault(x => x.Provider == "github");
-                        payload["ats"] = githubAuth != null 
-                            ? githubAuth.AccessTokenSecret : null;
+                        payload["ats"] = githubAuth?.AccessTokenSecret;
                     },
-                    PopulateSessionFilter = (session, obj, req) => 
+                    PopulateSessionFilter = (session, obj, req) =>
                     {
                         session.ProviderOAuthAccess = new List<IAuthTokens>
                         {
                             new AuthTokens { Provider = "github", AccessTokenSecret = obj["ats"] }
                         };
-                    } 
+                    }
                 },
             }){
                 HtmlRedirect = "/"
@@ -196,7 +198,7 @@ namespace TechStacks
             container.RegisterValidators(typeof(AppHost).Assembly);
             container.RegisterValidators(typeof(TechnologyServices).Assembly);
 
-            RegisterTypedRequestFilter<IRegisterStats>((req,res,dto) => 
+            RegisterTypedRequestFilter<IRegisterStats>((req,res,dto) =>
                 dbFactory.RegisterPageView(dto.GetStatsId()));
 
             Plugins.Add(new CorsFeature(
