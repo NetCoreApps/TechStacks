@@ -82,13 +82,21 @@ const AuthBaseUrl = usingProxy
     : "/";
 
 export const client = new JsonServiceClient(BaseUrl);
+export const authClient = new JsonServiceClient(AuthBaseUrl);
 
 export const getConfig = async () => await client.get(new GetConfig());
 
 export const getOverview = async () => await client.get(new Overview());
 
+export const getSessionInfo = async() => {
+    try {
+        return await authClient.get(new SessionInfo());
+    } catch (e) {
+        return null;
+    }
+}
+
 export const convertSessionToToken = async () => {
-    const authClient = new JsonServiceClient(AuthBaseUrl);
     const response = await authClient.get(new ConvertSessionToToken());
     client.setBearerToken(response.accessToken);
     console.log('convertSessionToToken', AuthBaseUrl, response);
@@ -172,14 +180,6 @@ export const getUserInfo = async(username) => {
     const request = new GetUserInfo();
     request.userName = username;
     return await client.get(request);
-}
-
-export const getSessionInfo = async() => {
-    try {
-        return await client.get(new SessionInfo());
-    } catch (e) {
-        return null;
-    }
 }
 
 export const getUserFeed = async() => {
