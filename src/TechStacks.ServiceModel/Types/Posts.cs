@@ -77,6 +77,8 @@ namespace TechStacks.ServiceModel.Types
         public long UpVotes { get; set; }
 
         public long DownVotes { get; set; }
+        
+        public long VotesModifier { get; set; }
 
         public long Views { get; set; }
 
@@ -101,8 +103,18 @@ namespace TechStacks.ServiceModel.Types
         [Index]
         public int Rank { get; set; }
 
-        public long? SubscriptionId { get; set; }
+        [PgSqlTextArray]
+        public string[] Labels { get; set; }
+        
+        [PgSqlIntArray]
+        public int[] RefUserIds { get; set; }
 
+        [PgSqlTextArray]
+        public string[] RefLinks { get; set; }
+
+        [PgSqlIntArray]
+        public int[] MuteUserIds { get; set; }
+        
         public DateTime? LastCommentDate { get; set; }
 
         public long? LastCommentId { get; set; }
