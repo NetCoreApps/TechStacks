@@ -5,5 +5,5 @@
 /ss_admin/*     http://techstacks.netcore.io:7015/ss_admin/:splat      200
 /swagger-ui/*   http://techstacks.netcore.io:7015/swagger-ui/:splat    200
 /users/*/avatar http://techstacks.netcore.io:7015/users/:splat/avatar  200
-/sitemap*       http://techstacks.netcore.io:7015/:splat               200
+/*.xml          http://techstacks.netcore.io:7015/:splat.xml           200
 /*              /index.html                                            200
