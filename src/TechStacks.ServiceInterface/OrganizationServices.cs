@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -436,6 +437,76 @@ namespace TechStacks.ServiceInterface
             ClearOrganizationCaches();
         }
 
+        public object Post(SetOrganizationMembers request)
+        {
+            var user = GetUser();
+            AssertOrganizationOwner(Db, request.OrganizationId, user, out var organization, out var orgMember);
+
+            var githubUserNames = request.GithubUserNames ?? TypeConstants.EmptyStringArray;
+            var twitterUserNames = request.TwitterUserNames ?? TypeConstants.EmptyStringArray;
+            var emails = request.Emails ?? TypeConstants.EmptyStringArray;
+
+            var users = Db.SqlList<(int userId, string userName)>(
+                @"select c.id, c.user_name 
+                    from custom_user_auth c
+                   where c.email in (@emails)
+                      or exists (select * from user_auth_details d 
+                                  where d.user_auth_id = c.id
+                                    and (email in (@emails) or 
+                                        (user_name in (@twitterUserNames) and provider = 'twitter') or 
+                                        (user_name in (@githubUserNames)  and provider = 'github')))",
+                new { githubUserNames, twitterUserNames, emails });
+            
+            var userIdsMap = new Dictionary<int,string>();
+            users.Each(x => userIdsMap[x.userId] = x.userName);
+
+            var existingUserIds = Db.Column<int>(Db.From<OrganizationMember>()
+                .Where(x => x.OrganizationId == request.OrganizationId)
+                .Select(x => x.UserId));
+            
+            var userIdsAdded = new List<int>();
+            var userIdsToRemove = existingUserIds.Where(x => !userIdsMap.ContainsKey(x)).ToArray();
+
+            var response = new SetOrganizationMembersResponse {
+            };
+
+            var now = DateTime.Now;
+            using (var trans = Db.OpenTransaction())
+            {
+                foreach (var entry in userIdsMap)
+                {
+                    if (existingUserIds.Contains(entry.Key))
+                        continue;
+
+                    var member = request.ConvertTo<OrganizationMember>();
+                    member.UserId = entry.Key;
+                    member.UserName = entry.Value;
+                    member.Created = member.Modified = now;
+                    member.CreatedBy = member.ModifiedBy = user.UserName;
+                    
+                    Db.Insert(member);
+                    userIdsAdded.Add(entry.Key);
+                }
+                
+                if (request.RemoveUnspecifiedMembers)
+                {
+                    Db.Delete<OrganizationMember>(x => x.OrganizationId == request.OrganizationId
+                                                       && userIdsToRemove.Contains(x.UserId));
+
+                    response.UserIdsRemoved = userIdsToRemove;
+                }
+
+                trans.Commit();
+            }
+
+            response.UserIdsAdded = userIdsAdded.ToArray();
+
+            ClearOrganizationCaches();
+
+            return response;
+        }
+
+        
         public async Task<object> Get(GetOrganizationMemberInvites request)
         {
             var user = GetUser();

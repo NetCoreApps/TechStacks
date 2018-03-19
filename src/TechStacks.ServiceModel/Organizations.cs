@@ -303,4 +303,28 @@ namespace TechStacks.ServiceModel
     {
         public ResponseStatus ResponseStatus { get; set; }
     }
+
+    [Route("/orgs/{OrganizationId}/members/set", "POST")]
+    public class SetOrganizationMembers : IReturn<SetOrganizationMembersResponse>
+    {
+        public int OrganizationId { get; set; }
+        public string[] GithubUserNames { get; set; }
+        public string[] TwitterUserNames { get; set; }
+        public string[] Emails { get; set; }
+        
+        public bool RemoveUnspecifiedMembers { get; set; }
+        
+        public bool IsOwner { get; set; }
+        public bool IsModerator { get; set; }
+        public bool DenyPosts { get; set; }
+        public bool DenyComments { get; set; }
+        public bool DenyAll { get; set; }
+    }
+
+    public class SetOrganizationMembersResponse
+    {
+        public int[] UserIdsAdded { get; set; }
+        public int[] UserIdsRemoved { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
 }
