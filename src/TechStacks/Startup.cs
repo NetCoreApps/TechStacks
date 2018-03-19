@@ -161,6 +161,28 @@ namespace TechStacks
                                     LastModified = x.ModifiedDate,
                                     ChangeFrequency = SitemapFrequency.Weekly,
                                 })
+                        },
+                        new Sitemap {
+                          AtPath = "/sitemap-organizations.xml",
+                          LastModified = DateTime.UtcNow,
+                          UrlSet = db.Select(db.From<Organization>().Where(x => x.Deleted == null).OrderByDescending(x => x.Modified))
+                            .Map(x => new SitemapUrl
+                            {
+                              Location = $"/{x.Slug}",
+                              LastModified = x.Modified,
+                              ChangeFrequency = SitemapFrequency.Weekly,
+                            })
+                        },
+                        new Sitemap {
+                          AtPath = "/sitemap-posts.xml",
+                          LastModified = DateTime.UtcNow,
+                          UrlSet = db.Select(db.From<Post>().Where(x => x.Type != PostType.Question && x.Deleted == null).Take(1000).OrderByDescending(x => x.Modified))
+                            .Map(x => new SitemapUrl
+                            {
+                              Location = $"/posts/{x.Id}/{x.Slug}",
+                              LastModified = x.Modified,
+                              ChangeFrequency = SitemapFrequency.Hourly,
+                            })
                         }
                     }
                 });
