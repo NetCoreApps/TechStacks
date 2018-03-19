@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-  
+
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <TypeScriptToolsVersion>2.5</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Npgsql" Version="3.2.6" />
@@ -21,51 +21,51 @@
     <PackageReference Include="ServiceStack.Api.OpenApi" Version="5.0.3" />
     <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="5.0.3" />
 
-    <!-- <Reference Include="ServiceStack.Text">
-      <HintPath>..\..\..\..\ServiceStack.Text\src\ServiceStack.Text\bin\Debug\netstandard2.0\ServiceStack.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Interfaces">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Interfaces\bin\Debug\netstandard2.0\ServiceStack.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Client">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Client\bin\Debug\netstandard2.0\ServiceStack.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Common">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Common\bin\Debug\netstandard2.0\ServiceStack.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack\bin\Debug\netstandard2.0\ServiceStack.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Server">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Server\bin\Debug\netstandard2.0\ServiceStack.Server.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Redis">
-      <HintPath>..\..\..\..\ServiceStack.Redis\src\ServiceStack.Redis\bin\Debug\netstandard2.0\ServiceStack.Redis.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.OrmLite">
-      <HintPath>..\..\..\..\ServiceStack.OrmLite\src\ServiceStack.OrmLite\bin\Debug\netstandard2.0\ServiceStack.OrmLite.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.OrmLite.PostgreSQL">
-      <HintPath>..\..\..\..\ServiceStack.OrmLite\src\ServiceStack.OrmLite.PostgreSQL\bin\Debug\netstandard2.0\ServiceStack.OrmLite.PostgreSQL.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Api.OpenApi">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Api.OpenApi\bin\Debug\netstandard2.0\ServiceStack.Api.OpenApi.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Admin">
-      <HintPath>..\..\..\..\Admin\src\ServiceStack.Admin\bin\Debug\netstandard2.0\ServiceStack.Admin.dll</HintPath>
-    </Reference> -->
+    <!--<Reference Include="ServiceStack.Text">-->
+      <!--<HintPath>..\..\..\..\ServiceStack.Text\src\ServiceStack.Text\bin\Debug\netstandard2.0\ServiceStack.Text.dll</HintPath>-->
+    <!--</Reference>-->
+    <!--<Reference Include="ServiceStack.Interfaces">-->
+      <!--<HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Interfaces\bin\Debug\netstandard2.0\ServiceStack.Interfaces.dll</HintPath>-->
+    <!--</Reference>-->
+    <!--<Reference Include="ServiceStack.Client">-->
+      <!--<HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Client\bin\Debug\netstandard2.0\ServiceStack.Client.dll</HintPath>-->
+    <!--</Reference>-->
+    <!--<Reference Include="ServiceStack.Common">-->
+      <!--<HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Common\bin\Debug\netstandard2.0\ServiceStack.Common.dll</HintPath>-->
+    <!--</Reference>-->
+    <!--<Reference Include="ServiceStack">-->
+      <!--<HintPath>..\..\..\..\ServiceStack\src\ServiceStack\bin\Debug\netstandard2.0\ServiceStack.dll</HintPath>-->
+    <!--</Reference>-->
+    <!--<Reference Include="ServiceStack.Server">-->
+      <!--<HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Server\bin\Debug\netstandard2.0\ServiceStack.Server.dll</HintPath>-->
+    <!--</Reference>-->
+    <!--<Reference Include="ServiceStack.Redis">-->
+      <!--<HintPath>..\..\..\..\ServiceStack.Redis\src\ServiceStack.Redis\bin\Debug\netstandard2.0\ServiceStack.Redis.dll</HintPath>-->
+    <!--</Reference>-->
+    <!--<Reference Include="ServiceStack.OrmLite">-->
+      <!--<HintPath>..\..\..\..\ServiceStack.OrmLite\src\ServiceStack.OrmLite\bin\Debug\netstandard2.0\ServiceStack.OrmLite.dll</HintPath>-->
+    <!--</Reference>-->
+    <!--<Reference Include="ServiceStack.OrmLite.PostgreSQL">-->
+      <!--<HintPath>..\..\..\..\ServiceStack.OrmLite\src\ServiceStack.OrmLite.PostgreSQL\bin\Debug\netstandard2.0\ServiceStack.OrmLite.PostgreSQL.dll</HintPath>-->
+    <!--</Reference>-->
+    <!--<Reference Include="ServiceStack.Api.OpenApi">-->
+      <!--<HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Api.OpenApi\bin\Debug\netstandard2.0\ServiceStack.Api.OpenApi.dll</HintPath>-->
+    <!--</Reference>-->
+    <!--<Reference Include="ServiceStack.Admin">-->
+      <!--<HintPath>..\..\..\..\Admin\src\ServiceStack.Admin\bin\Debug\netstandard2.0\ServiceStack.Admin.dll</HintPath>-->
+    <!--</Reference>-->
 
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\TechStacks.ServiceInterface\TechStacks.ServiceInterface.csproj" />
     <ProjectReference Include="..\TechStacks.ServiceModel\TechStacks.ServiceModel.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
   </ItemGroup>
-  
+
   <Target Name="OnFirstUse" BeforeTargets="Build" Condition=" !Exists('wwwroot\dist') ">
     <Exec Command="node --version" ContinueOnError="true"><Output TaskParameter="ExitCode" PropertyName="ErrorCode" /></Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
