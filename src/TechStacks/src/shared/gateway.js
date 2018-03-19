@@ -82,7 +82,7 @@ const AuthBaseUrl = usingProxy
     : "/";
 
 export const client = new JsonServiceClient(BaseUrl);
-export const authClient = new JsonServiceClient(AuthBaseUrl);
+export const authClient = new JsonServiceClient(AuthBaseUrl); //Note: higher latency as goes through Netlify's reverse proxy
 
 export const getConfig = async () => await client.get(new GetConfig());
 
@@ -90,12 +90,12 @@ export const getOverview = async () => await client.get(new Overview());
 
 export const getSessionInfo = async() => {
     try {
-        const response = await authClient.get(new SessionInfo());
+        //Converts Session to JWT Token Cookie
+        const authResponse = await authClient.get(new ConvertSessionToToken());
 
-        //Convert to Token Cookie
-        client.bearerToken = authClient.bearerToken = response.accessToken;
-        await Promise.all([
-            authClient.post(new ConvertSessionToToken()),
+        client.bearerToken = authResponse.accessToken;
+        const [response, authResponse2] = await Promise.all([
+            client.get(new SessionInfo()),
             client.post(new ConvertSessionToToken()),
         ]);
 
@@ -103,8 +103,6 @@ export const getSessionInfo = async() => {
         client.bearerToken = authClient.bearerToken = null;
         client.headers.delete('Authorization');
         authClient.headers.delete('Authorization');
-        
-        response.accessToken = null;
 
         return response;
     } catch (e) {

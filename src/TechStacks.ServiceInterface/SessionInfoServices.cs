@@ -12,10 +12,8 @@ namespace TechStacks.ServiceInterface
         public async Task<SessionInfoResponse> Any(SessionInfo request)
         {
             var session = SessionAs<CustomUserSession>();
-            var jwtProvider = (JwtAuthProvider)AuthenticateService.GetJwtAuthProvider();
             var response = session.ConvertTo<SessionInfoResponse>();
 
-            response.AccessToken = jwtProvider.CreateJwtBearerToken(Request, session);
             var userInfoTask = Gateway.SendAsync(new GetUserInfo {
                 UserName = session.UserName,
             });
