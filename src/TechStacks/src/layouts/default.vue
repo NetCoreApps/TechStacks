@@ -105,7 +105,7 @@ if (navigator.userAgent.indexOf('puppeteer') == -1) { // it's not our prerendere
             document.getElementById('__nuxt').innerHTML = html;
           } catch(e) {}
 
-        }, 3000);
+        }, 1000);
       }
 
     } catch(e) {}
