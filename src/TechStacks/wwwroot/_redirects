@@ -6,4 +6,4 @@
 /swagger-ui/*   https://www.techstacks.io/swagger-ui/:splat    200
 /users/*/avatar https://www.techstacks.io/users/:splat/avatar  200
 /*.xml          https://www.techstacks.io/:splat.xml           200
-/*              /index.html                                         200
+/*              /index.html                                    200
