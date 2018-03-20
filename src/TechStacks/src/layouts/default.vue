@@ -86,11 +86,16 @@ if (navigator.userAgent.indexOf('puppeteer') == -1) { // it's not our prerendere
       if (isBot) {
           try {
             html = await getPreRender(path);
+            init = document.getElementById('__mounted');
+            if (init || !html) {
+              console.log('bot has mounted, skipping prerendering...');
+              return;
+            }
             document.getElementById('__nuxt').innerHTML = html;
           } catch(e) {}
       } else {
         setTimeout(async () => {
-          let init = document.getElementById('__mounted');
+          init = document.getElementById('__mounted');
           if (init || !html) {
             console.log('has mounted, skipping prerendering...');
             return;
