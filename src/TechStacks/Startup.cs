@@ -66,7 +66,7 @@ namespace TechStacks
             {
                 AddRedirectParamsToQueryString = true,
                 DebugMode = true,
-                AdminAuthSecret = "s3cr3t"
+                AdminAuthSecret = "s3cr3t",
             });
 
             JsConfig.DateHandler = DateHandler.ISO8601;
@@ -125,64 +125,71 @@ namespace TechStacks
                 db.CreateTableIfNotExists<UserFavoriteTechnologyStack>();
                 db.CreateTableIfNotExists<UserFavoriteTechnology>();
 
+                var baseUrl = "https://techstacks.io";
+
                 Plugins.Add(new SitemapFeature
                 {
                     SitemapIndex = {
                         new Sitemap {
+                            Location = baseUrl + "/sitemap-techstacks.xml",
                             AtPath = "/sitemap-techstacks.xml",
                             LastModified = DateTime.UtcNow,
                             UrlSet = db.Select(db.From<TechnologyStack>().OrderByDescending(x => x.LastModified))
                                 .Map(x => new SitemapUrl
                                 {
-                                    Location = new ClientTechnologyStack { Slug = x.Slug }.ToAbsoluteUri(),
+                                    Location = baseUrl + new ClientTechnologyStack { Slug = x.Slug }.ToAbsoluteUri(),
                                     LastModified = x.LastModified,
                                     ChangeFrequency = SitemapFrequency.Weekly,
                                 }),
                         },
                         new Sitemap {
+                            Location = baseUrl + "/sitemap-technologies.xml",
                             AtPath = "/sitemap-technologies.xml",
                             LastModified = DateTime.UtcNow,
                             UrlSet = db.Select(db.From<Technology>().OrderByDescending(x => x.LastModified))
                                 .Map(x => new SitemapUrl
                                 {
-                                    Location = new ClientTechnology { Slug = x.Slug }.ToAbsoluteUri(),
+                                    Location = baseUrl + new ClientTechnology { Slug = x.Slug }.ToAbsoluteUri(),
                                     LastModified = x.LastModified,
                                     ChangeFrequency = SitemapFrequency.Weekly,
                                 })
                         },
                         new Sitemap
                         {
+                            Location = baseUrl + "/sitemap-users.xml",
                             AtPath = "/sitemap-users.xml",
                             LastModified = DateTime.UtcNow,
                             UrlSet = db.Select(db.From<CustomUserAuth>().OrderByDescending(x => x.ModifiedDate))
                                 .Map(x => new SitemapUrl
                                 {
-                                    Location = new ClientUser { UserName = x.UserName }.ToAbsoluteUri(),
+                                    Location = baseUrl + new ClientUser { UserName = x.UserName }.ToAbsoluteUri(),
                                     LastModified = x.ModifiedDate,
                                     ChangeFrequency = SitemapFrequency.Weekly,
                                 })
                         },
                         new Sitemap {
-                          AtPath = "/sitemap-organizations.xml",
-                          LastModified = DateTime.UtcNow,
-                          UrlSet = db.Select(db.From<Organization>().Where(x => x.Deleted == null).OrderByDescending(x => x.Modified))
-                            .Map(x => new SitemapUrl
-                            {
-                              Location = $"/{x.Slug}",
-                              LastModified = x.Modified,
-                              ChangeFrequency = SitemapFrequency.Weekly,
-                            })
+                            Location = baseUrl + "/sitemap-organizations.xml",
+                            AtPath = "/sitemap-organizations.xml",
+                            LastModified = DateTime.UtcNow,
+                            UrlSet = db.Select(db.From<Organization>().Where(x => x.Deleted == null).OrderByDescending(x => x.Modified))
+                                .Map(x => new SitemapUrl
+                                {
+                                    Location = baseUrl + $"/{x.Slug}",
+                                    LastModified = x.Modified,
+                                    ChangeFrequency = SitemapFrequency.Weekly,
+                                })
                         },
                         new Sitemap {
-                          AtPath = "/sitemap-posts.xml",
-                          LastModified = DateTime.UtcNow,
-                          UrlSet = db.Select(db.From<Post>().Where(x => x.Type != PostType.Question && x.Deleted == null).Take(1000).OrderByDescending(x => x.Modified))
-                            .Map(x => new SitemapUrl
-                            {
-                              Location = $"/posts/{x.Id}/{x.Slug}",
-                              LastModified = x.Modified,
-                              ChangeFrequency = SitemapFrequency.Hourly,
-                            })
+                            Location = baseUrl + "/sitemap-posts.xml",
+                            AtPath = "/sitemap-posts.xml",
+                            LastModified = DateTime.UtcNow,
+                            UrlSet = db.Select(db.From<Post>().Where(x => x.Type != PostType.Question && x.Deleted == null && x.Hidden == null).Take(1000).OrderByDescending(x => x.Modified))
+                                .Map(x => new SitemapUrl
+                                {
+                                    Location = baseUrl + $"/posts/{x.Id}/{x.Slug}",
+                                    LastModified = x.Modified,
+                                    ChangeFrequency = SitemapFrequency.Hourly,
+                                })
                         }
                     }
                 });

@@ -38,7 +38,7 @@ namespace TechStacks.ServiceInterface
     [Route("/stacks")]
     public class ClientAllTechnologyStacks { }
 
-    [Route("/{Slug}")]
+    [Route("/stacks/{Slug}")]
     public class ClientTechnologyStack
     {
         public string Slug { get; set; }
