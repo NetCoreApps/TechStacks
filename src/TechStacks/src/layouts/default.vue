@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <Shortcuts v-if="showDialog == 'Shortcuts'" />
-    <span v-if="mounted" id="__mounted"></span>
+    <span v-if="$store.getters.mounted" id="__mounted"></span>
 
     <v-toolbar fixed app :clipped-left="clipped" style="background:#24292e" dark>
       <nuxt-link :to="routes.homeNews" exact>
@@ -74,7 +74,7 @@ import { getPreRender } from "~/shared/gateway";
 
 // G isn't good enough to render Nuxt apps yet, loading pre-rendered version until then
 const isBot = /bot|crawl|spider/i.test(navigator.userAgent);
-if (navigator.userAgent.indexOf('puppeteer') == -1) {
+if (navigator.userAgent.indexOf('puppeteer') == -1) { // it's not our prerenderer
   (async () => {
     try {
       const path = location.pathname + location.search;
@@ -84,17 +84,22 @@ if (navigator.userAgent.indexOf('puppeteer') == -1) {
 
       let html = null;
       if (isBot) {
-        html = await getPreRender(path);
-        init = document.getElementById('__mounted');
-        document.getElementById('__nuxt').innerHTML = html;
+          try {
+            html = await getPreRender(path);
+            document.getElementById('__nuxt').innerHTML = html;
+          } catch(e) {}
       } else {
         setTimeout(async () => {
-          init = document.getElementById('__mounted');
-          if (init || !html)
+          let init = document.getElementById('__mounted');
+          if (init || !html) {
+            console.log('has mounted, skipping prerendering...');
             return;
+          }
+          try {
+            html = await getPreRender(path);
+            document.getElementById('__nuxt').innerHTML = html;
+          } catch(e) {}
 
-          html = await getPreRender(path);
-          document.getElementById('__nuxt').innerHTML = html;
         }, 3000);
       }
 

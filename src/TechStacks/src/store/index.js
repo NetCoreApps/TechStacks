@@ -421,7 +421,6 @@ const actions = {
         commit('sessionInfo', sessionInfo);
 
         commit('loading', false);
-        commit('init', true);
     },
 
     async loadOverview({ commit }) {
