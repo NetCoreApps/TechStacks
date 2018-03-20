@@ -66,7 +66,6 @@ namespace TechStacks
             {
                 AddRedirectParamsToQueryString = true,
                 DebugMode = true,
-                AdminAuthSecret = "s3cr3t",
             });
 
             JsConfig.DateHandler = DateHandler.ISO8601;
