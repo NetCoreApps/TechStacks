@@ -7,7 +7,5 @@ import NewsPosts from "~/components/NewsPosts.vue";
 
 export default {
   components: { NewsPosts },
-  
-  mounted(){ this.$store.commit('mounted', true); }
 }
 </script>

@@ -303,9 +303,8 @@ export default {
   async mounted() {
     this.initRoute(this.$route.query);
     this.$store.dispatch("loadUserPostActivity");
-    await this.refreshPosts();
+    this.refreshPosts();
 
-    this.$store.commit('mounted', true);
     window.addEventListener('keyup', this.handleKeyUp);
   },
 

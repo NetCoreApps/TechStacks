@@ -513,6 +513,7 @@ const actions = {
         const skip = page > 0 ? page * POSTS_PER_PAGE : 0;
     
         await doAction(commit, 'latestNewsPosts', async() => await queryLatestPosts(types, technologyIds, skip));
+        commit('mounted', true);
     },
 
     async latestOrganizationPosts({ commit, getters, state }, query) {
@@ -536,6 +537,7 @@ const actions = {
             organizationId, 
             posts: await queryLatestOrganizationsPosts(organizationId, types, categoryId, skip) 
         }));
+        commit('mounted', true);
     },
 
     async loadUserPostActivity({ commit, state }) {
