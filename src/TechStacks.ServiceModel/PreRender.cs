@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using ServiceStack;
 using ServiceStack.DataAnnotations;
@@ -34,5 +35,14 @@ namespace TechStacks.ServiceModel
         
         public DateTime Modified { get; set; }
         public string ModfiedBy { get; set; }
+    }
+    
+    
+    [Route("/prerender/sites")]
+    public class GetPathsToRender {}
+
+    public class GetPathsToRenderResponse
+    {
+        public List<string> Results { get; set; }
     }
 }

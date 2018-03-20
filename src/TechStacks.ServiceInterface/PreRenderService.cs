@@ -8,6 +8,10 @@ namespace TechStacks.ServiceInterface
 {
     public class PreRenderService : PostServicesBase
     {
+        string GetPath() => Request.RawUrl.StartsWith("/prerender")
+            ? Request.RawUrl.Substring("/prerender".Length)
+            : Request.RawUrl;
+        
 //        [Authenticate]
         public async Task Put(StorePreRender request)
         {
@@ -15,7 +19,7 @@ namespace TechStacks.ServiceInterface
             
             var bytes = request.RequestStream.ReadFully();
 
-            var path = request.Path ?? "/";
+            var path = GetPath();
             
             var updated = await Db.UpdateOnlyAsync(() =>
                 new PreRender {
@@ -42,7 +46,7 @@ namespace TechStacks.ServiceInterface
 
         public async Task Get(GetPreRender request)
         {
-            var path = request.Path ?? "/";
+            var path = GetPath();
             var prerender = Db.SingleById<PreRender>(path);
             if (prerender == null)
                 throw HttpError.NotFound(path);
