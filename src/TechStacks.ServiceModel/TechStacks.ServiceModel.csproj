@@ -1,16 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="ServiceStack.Interfaces" Version="5.0.3" />
-
     <!--<Reference Include="ServiceStack.Interfaces">-->
-      <!--<HintPath>..\..\..\..\ServiceStack\src\ServiceStack\bin\Debug\netstandard2.0\ServiceStack.Interfaces.dll</HintPath>-->
+    <!--<HintPath>..\..\..\..\ServiceStack\src\ServiceStack\bin\Debug\netstandard2.0\ServiceStack.Interfaces.dll</HintPath>-->
     <!--</Reference>-->
-
   </ItemGroup>
-
 </Project>
