@@ -92,7 +92,7 @@ export const getOverview = async () => await client.get(new Overview());
 export const getSessionInfo = async() => {
     try {
         //Converts Session to JWT Token Cookie
-        const authResponse = await authClient.get(new ConvertSessionToToken());
+        const authResponse = await authClient.post(new ConvertSessionToToken());
 
         client.bearerToken = authResponse.accessToken;
         const [response, authResponse2] = await Promise.all([
