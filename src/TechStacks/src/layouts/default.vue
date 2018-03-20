@@ -78,20 +78,22 @@ if (navigator.userAgent.indexOf('puppeteer') == -1) {
   (async () => {
     try {
       const path = location.pathname + location.search;
-      let init = document.getElementById('__mounted'); //injected when there's content to render which G's bot is unable to render
+      let init = document.getElementById('__mounted'); //injected when page is mounted which G's bot is unable to render
       if (init)
         return;
 
+      let html = null;
       if (isBot) {
-        const html = await getPreRender(path);
+        html = await getPreRender(path);
         init = document.getElementById('__mounted');
         document.getElementById('__nuxt').innerHTML = html;
       } else {
-        setTimeout(() => {
+        setTimeout(async () => {
           init = document.getElementById('__mounted');
           if (init || !html)
             return;
 
+          html = await getPreRender(path);
           document.getElementById('__nuxt').innerHTML = html;
         }, 3000);
       }
