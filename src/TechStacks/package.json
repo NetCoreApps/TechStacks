@@ -26,6 +26,7 @@
     "eslint-loader": "^2.0.0",
     "eslint-plugin-vue": "^4.3.0",
     "gulp": "^3.9.1",
+    "puppeteer": "^1.2.0",
     "typescript": "^2.7.2"
   }
 }

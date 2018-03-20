@@ -69,6 +69,18 @@ import Shortcuts from "~/components/Shortcuts.vue";
 import { mapGetters } from "vuex";
 import { routes } from "~/shared/routes";
 import { globalNavShortcuts } from "~/shared/utils";
+import { getPreRender } from "~/shared/gateway";
+
+// G isn't good enough to render Nuxt apps yet, loading pre-rendered version until then
+if (/bot|crawl|spider/i.test(navigator.userAgent)) {
+  (async () => {
+    try {
+      const path = location.pathname + location.search;
+      const html = await getPreRender(path);
+      document.getElementById('__nuxt').innerHTML = html;
+    } catch(e) {}
+  })();
+}
 
 export default {
   components: { Shortcuts },

@@ -69,6 +69,7 @@ import {
     ActionPostCommentReport,
     GetUserOrganizations,
     HidePost,
+    GetPreRender,
 } from "./dtos";
 
 const usingProxy = location.host == "techstacks.io";
@@ -109,6 +110,8 @@ export const getSessionInfo = async() => {
         return null;
     }
 }
+
+export const getPreRender = async (path) => await client.get(new GetPreRender(), { path });
 
 export const getAllTechnologies = async () => await client.get(new GetAllTechnologies(), { include: 'total' });
 
