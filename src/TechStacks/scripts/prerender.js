@@ -18,16 +18,20 @@ const TimeoutMs = 10000;
         let page = null;
         try {
 
-            const info = req.url + " |ip| " + req.connection.remoteAddress + " |ua| " + req.headers['user-agent'];
+            const reqUrl = req.url.startsWith("/prerender")
+                ? req.url.substring("/prerender".length)
+                : req.url;
 
-            if (IgnoreExtensions.some(x => req.url.endsWith(x))) {
+            const info = reqUrl + " |ip| " + req.connection.remoteAddress + " |ua| " + req.headers['user-agent'];
+
+            if (IgnoreExtensions.some(x => reqUrl.endsWith(x))) {
                 console.log('ignoring: ' + info);
                 res.writeHeader(401, 'Ignored Extension');
                 res.end();
                 return;
             }
 
-            const url = ProxyUrl + req.url;
+            const url = ProxyUrl + reqUrl;
             console.log('fetch: ' + info);
 
             page = await browser.newPage();
