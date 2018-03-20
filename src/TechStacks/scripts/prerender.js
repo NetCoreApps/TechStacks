@@ -73,7 +73,7 @@ const TimeoutMs = 10000;
             : req.url;
 
         try {
-            const ip = req.headers['X-Real-IP'] || req.connection.remoteAddress;
+            const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
             const info = id + ": " + reqUrl + " |ip| " + ip + " |ua| " + req.headers['user-agent'];
 
             if (IgnoreExtensions.some(x => reqUrl.endsWith(x))) {
