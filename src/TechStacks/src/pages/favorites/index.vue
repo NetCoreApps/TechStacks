@@ -62,11 +62,11 @@
           <PostsList :posts="latestNewsPosts" :page="page" />
 
           <v-flex style="margin-top:5px;">
-            <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)" title="View Previous (←)">
+            <v-btn v-if="page > 0" color="primary" :to="getPageUrl(page-1)" title="View Previous (←)">
               <v-icon>chevron_left</v-icon>
               prev
             </v-btn>
-            <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)" title="View Next (→)">
+            <v-btn v-if="hasMore" color="primary" :to="getPageUrl(page+1)" title="View Next (→)">
               more
               <v-icon>chevron_right</v-icon>
             </v-btn>
@@ -124,11 +124,11 @@
           <PostsList :posts="favoritedPosts" :page="page" />          
 
           <v-flex v-if="favoritedPosts.length > POSTS_PER_PAGE" style="margin-top:5px;">
-            <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)" title="View Previous (←)">
+            <v-btn v-if="page > 0" color="primary" :to="getPageUrl(page-1)" title="View Previous (←)">
               <v-icon>chevron_left</v-icon>
               prev
             </v-btn>
-            <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)" title="View Next (→)">
+            <v-btn v-if="hasMore" color="primary" :to="getPageUrl(page+1)" title="View Next (→)">
               more
               <v-icon>chevron_right</v-icon>
             </v-btn>
@@ -245,10 +245,13 @@ export default {
         technologyIds: this.favoriteTechnologies.map(x => x.id),
       });
     },
-    loadPage(p) {
+    getPageUrl(p){
       let qs = Object.assign({}, this.$route.query, { p });
       if (qs.p == 0) delete qs["p"];
-      this.$router.push(appendQueryString(this.$route.path, qs));
+      return appendQueryString(this.$route.path, qs);
+    },
+    loadPage(p) {
+      this.$router.push(this.getPageUrl(p));
     },
     initRoute(qs) {
       this.stageChanges({ 
@@ -314,6 +317,7 @@ export default {
       this.favoritedPosts = (await queryPosts({ ids, orderBy:'rank' })).results;
     }
 
+    this.$store.commit('mounted', true);
     window.addEventListener('keyup', this.handleKeyUp);
   },
 

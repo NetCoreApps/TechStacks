@@ -107,7 +107,7 @@
                       <td class="nowrap">{{ props.item.name }}</td>
                       <td>{{ props.item.description }}</td>
                       <td class="nowrap" style="text-align:center">
-                        <img :src="props.item.logoUrl" :alt="props.item.name" style="max-width:220px;max-height:120px;padding:1em 0">
+                        <a :href="routes.tech(props.item.slug)"><img :src="props.item.logoUrl" :alt="props.item.name" style="max-width:220px;max-height:120px;padding:1em 0"></a>
                         <div>{{ props.item.vendorName }}</div>
                       </td>
                     </tr>
@@ -210,6 +210,7 @@ export default {
     }
 
     this.$watch(vm => [vm.name, vm.vendor, vm.tier, vm.orderByField, vm.sortDesc].join(), async val => this.runQuery());
+    this.$store.commit('mounted', true);
   },
 
   data () {

@@ -58,8 +58,9 @@ export default {
     }
   },
 
-  mounted(){
-    this.$store.dispatch('loadOrganizations');
+  async mounted(){
+    await this.$store.dispatch('loadOrganizations');
+    this.$store.commit('mounted', true);
   },
 
   data: () => ({

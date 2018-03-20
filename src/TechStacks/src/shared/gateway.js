@@ -111,7 +111,7 @@ export const getSessionInfo = async() => {
     }
 }
 
-export const getPreRender = async (path) => await client.get(new GetPreRender(), { path });
+export const getPreRender = async (path) => (await fetch(`${BaseUrl}prerender${path || "/"}`)).text();
 
 export const getAllTechnologies = async () => await client.get(new GetAllTechnologies(), { include: 'total' });
 

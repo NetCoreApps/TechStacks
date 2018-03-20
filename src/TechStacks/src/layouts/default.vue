@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <Shortcuts v-if="showDialog == 'Shortcuts'" />
+    <span v-if="mounted" id="__mounted"></span>
 
     <v-toolbar fixed app :clipped-left="clipped" style="background:#24292e" dark>
       <nuxt-link :to="routes.homeNews" exact>
@@ -72,12 +73,29 @@ import { globalNavShortcuts } from "~/shared/utils";
 import { getPreRender } from "~/shared/gateway";
 
 // G isn't good enough to render Nuxt apps yet, loading pre-rendered version until then
-if (/bot|crawl|spider/i.test(navigator.userAgent)) {
+const isBot = /bot|crawl|spider/i.test(navigator.userAgent);
+if (navigator.userAgent.indexOf('puppeteer') == -1) {
   (async () => {
     try {
       const path = location.pathname + location.search;
-      const html = await getPreRender(path);
-      document.getElementById('__nuxt').innerHTML = html;
+      let init = document.getElementById('__mounted'); //injected when there's content to render which G's bot is unable to render
+      if (init)
+        return;
+
+      if (isBot) {
+        const html = await getPreRender(path);
+        init = document.getElementById('__mounted');
+        document.getElementById('__nuxt').innerHTML = html;
+      } else {
+        setTimeout(() => {
+          init = document.getElementById('__mounted');
+          if (init || !html)
+            return;
+
+          document.getElementById('__nuxt').innerHTML = html;
+        }, 3000);
+      }
+
     } catch(e) {}
   })();
 }

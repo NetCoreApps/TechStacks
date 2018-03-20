@@ -70,7 +70,7 @@
                       </v-toolbar>
                       <v-card v-for="category in organization.categories" :key="category.slug" :class="['category', { highlight: c == category.slug }]">
                         <v-card-title style="padding:10px">
-                          <a @click.prevent="changeCategory(category)">
+                          <a :href="`/${slug}?c=${category.slug}`" @click.prevent="changeCategory(category)">
                             {{ category.name }}
                           </a>
                         </v-card-title>
@@ -80,11 +80,11 @@
                 </v-layout>
 
                 <v-flex style="margin-top:5px;">
-                  <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)" title="View Previous (←)">
+                  <v-btn v-if="page > 0" color="primary" :to="getPageUrl(page-1)" title="View Previous (←)">
                     <v-icon>chevron_left</v-icon>
                     prev
                   </v-btn>
-                  <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)" title="View Next (→)">
+                  <v-btn v-if="hasMore" color="primary" :to="getPageUrl(page+1)" title="View Next (→)">
                     more
                     <v-icon>chevron_right</v-icon>
                   </v-btn>
@@ -172,10 +172,13 @@ export default {
         categoryId: this.categoryId
       });
     },
-    loadPage(p) {
+    getPageUrl(p) {
       let qs = Object.assign({}, this.$route.query, { p });
       if (qs.p == 0) delete qs["p"];
-      this.$router.push(appendQueryString(this.$route.path, qs));
+      return appendQueryString(this.$route.path, qs);
+    },
+    loadPage(p) {
+      this.$router.push(this.getPageUrl(p));
     },
     initRoute(qs) {
       this.c = qs.c;

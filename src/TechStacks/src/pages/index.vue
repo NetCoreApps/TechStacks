@@ -57,14 +57,13 @@
 
       <v-flex v-if="latestNewsPosts.length > 0" style="margin:1em 0">
         <v-layout>
-
           <PostsList :posts="latestNewsPosts" :page="page" />
 
           <v-flex class="tech-organizations">
             <v-card>
               <v-card-title>
                 <em v-for="org in technologyOrganizations" :key="org.refId" :class="['tag', { highlight: org.refId == technologyId }]">
-                  <a @click.prevent="changeTechnology(org.slug)">
+                  <a :href="`?t=${org.slug}`" @click.prevent="changeTechnology(org.slug)">
                     {{ org.name }}
                   </a>
                 </em>
@@ -108,11 +107,11 @@
         </v-layout>
 
           <v-flex style="margin-top:5px;">
-            <v-btn v-if="page > 0" color="primary" @click="loadPage(page-1)" title="View Previous (←)">
+            <v-btn v-if="page > 0" color="primary" :to="getPageUrl(page-1)" title="View Previous (←)">
               <v-icon>chevron_left</v-icon>
               prev
             </v-btn>
-            <v-btn v-if="hasMore" color="primary" @click="loadPage(page+1)" title="View Next (→)">
+            <v-btn v-if="hasMore" color="primary" :to="getPageUrl(page+1)" title="View Next (→)">
               more
               <v-icon>chevron_right</v-icon>
             </v-btn>
@@ -188,10 +187,13 @@ export default {
         technologyIds: [this.technologyId],
       });
     },
-    loadPage(p) {
+    getPageUrl(p) {
       let qs = Object.assign({}, this.$route.query, { p });
       if (qs.p == 0) delete qs["p"];
-      this.$router.push(appendQueryString(this.$route.path, qs));
+      return appendQueryString(this.$route.path, qs);
+    },
+    loadPage(p) {
+      this.$router.push(this.getPageUrl(p));
     },
     initRoute(qs) {
       this.t = qs.t;
@@ -303,6 +305,7 @@ export default {
     this.refreshPosts();
     this.$store.dispatch("loadUserPostActivity");
 
+    this.$store.commit('mounted', true);
     window.addEventListener('keyup', this.handleKeyUp);
   },
 

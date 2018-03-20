@@ -196,6 +196,7 @@ export default {
     }
 
     this.$watch(vm => [vm.name, vm.vendor, vm.orderByField, vm.sortDesc].join(), async val => this.runQuery());
+    this.$store.commit('mounted', true);
   },
 
   data () {

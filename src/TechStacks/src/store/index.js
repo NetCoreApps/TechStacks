@@ -37,6 +37,7 @@ import { getOrganizationById } from "../shared/gateway";
 const statsKey = (type,slug) => `${type}:${slug}`;
 
 const state = {
+    mounted: false,
     loading: false,
     sessionInfo: null,
     sessionFeed: null,
@@ -135,6 +136,9 @@ const updateVotes = (userVotes, id, weight) => {
 };
 
 const mutations = {
+    mounted(state, mounted) {
+        state.mounted = mounted;
+    },
     loading(state, loading) {
         state.loading = loading;
     },
@@ -301,6 +305,7 @@ const mutations = {
 }
 
 const getters = {
+    mounted: state => state.mounted,
     loading: state => state.loading,
     showDialog: state => state.showDialog,
     isAuthenticated: state => state.sessionInfo != null,
@@ -416,6 +421,7 @@ const actions = {
         commit('sessionInfo', sessionInfo);
 
         commit('loading', false);
+        commit('init', true);
     },
 
     async loadOverview({ commit }) {
