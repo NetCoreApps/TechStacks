@@ -66,9 +66,6 @@ namespace TechStacks
             {
                 AddRedirectParamsToQueryString = true,
                 DebugMode = debugMode,
-                RestrictAllCookiesToDomain = !debugMode //Allow cookies across subdomains
-                    ? "techstacks.io"
-                    : null
             });
 
             JsConfig.DateHandler = DateHandler.ISO8601;
