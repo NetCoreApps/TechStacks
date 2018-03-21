@@ -142,7 +142,7 @@ let id = 0;
     };
 
     const requestHandler = async (req,res) => {
-        setCorsHeaders(req,res);
+        if (EnableCors) setCorsHeaders(req,res);
 
         const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
         if (req.method == "OPTIONS") {
