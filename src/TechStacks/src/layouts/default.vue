@@ -86,46 +86,52 @@ export default {
     },
 
     async getPrerenderedHtml() {
-      const isBot = /bot|crawl|spider/i.test(navigator.userAgent);
+      try {
+        const host = location.host;
+        const prerenderUrl = host == "techstacks.io" || host == "www.techstacks.io" ?
+            `https://${host}/prerender` 
+          : host.indexOf("localhost") >= 0 ?
+            "http://localhost:9000"
+          : "/prerender";
+        const log = console.log && true;
 
-      const host = location.host;
-      const prerenderUrl = host == "techstacks.io" || host == "www.techstacks.io" ?
-          `https://${host}/prerender` 
-        : host.indexOf("localhost") >= 0 ?
-          "http://localhost:9000"
-        : "/prerender";
-      const log = console.log && true;
+        const path = location.pathname + location.search;
+        const getPreRender = async path =>
+          (await fetch(`${prerenderUrl}${path || "/"}`)).text();
 
-      const path = location.pathname + location.search;
-      const getPreRender = async path =>
-        (await fetch(`${prerenderUrl}${path || "/"}`)).text();
+        //pages can add <i class="__hasData"></i> to indicate data rendered correctly
+        const hasData = () => {
+          if (window.__PRERENDERED) {
+            if (log) console.log('already prerendered, skipping');
+            return true;
+          }
+          const ret = document.getElementsByClassName("__hasData")[0] != null;
+          if (ret && log) console.log("hasData, skipping prerendering...");
+          return ret;
+        };
 
-      //pages can add <i class="__hasData"></i> to indicate data rendered correctly
-      const hasData = () => {
-        if (window.__PRERENDERED) {
-          if (log) console.log('already prerendered, skipping');
-          return true;
+        let html = await getPreRender(path);
+        if (!html || html.trim().length == 0) {
+          if (log) console.log("empty html, skipping prerendering...");
+          return;
         }
-        const ret = document.getElementsByClassName("__hasData")[0] != null;
-        if (ret && log) console.log("hasData, skipping prerendering...");
-        return ret;
-      };
+        if (hasData()) return;
 
-      let html = await getPreRender(path);
-      if (!html || html.trim().length == 0) {
-        if (log) console.log("empty html, skipping prerendering...");
-        return;
+        if (log) console.log(`injecting prerendered content: ${html.length} chars`);
+        return html;
+      } catch(e) {
+        console.log("ERROR getPrerenderedHtml: ", e.message, e.stack);
+        return null;        
       }
-      if (hasData()) return;
-
-      if (log) console.log(`injecting prerendered content: ${html.length} chars`);
-      return html;
     },
   },
 
   async mounted(){
     try {
-      this.prerenderedHtml = await this.getPrerenderedHtml();
+      const isBot = /bot|crawl|spider/i.test(navigator.userAgent);
+      if (isBot) {
+        this.prerenderedHtml = await this.getPrerenderedHtml();
+      }
     } catch(e) {
       console.log('getPrerenderedHtml()', e.message, e.stack);
     }

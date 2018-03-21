@@ -4,23 +4,24 @@ const puppeteer = require('puppeteer');
 const fetch = require('node-fetch');
 const delay = require('delay');
 
+const port = 9000;
+
 const AllowOrigins = ["localhost:16325","localhost:3000","techstacks.io","www.techstacks.io"];
-// const ProxyUrl = 'http://localhost:16325';
 const ProxyUrl = 'https://www.techstacks.io';
-// const elementSelector = "body";
 const elementSelector = '#app';
 
-const port = 9000;
+const EnableCors = false;
+const ExpiredCacheIntervalMs = 30000;
+const RefreshEntriesAfterMs = 10 * 60 * 1000;
+const RemoveEntriesWithViewsLowerThan = 2;
+const IgnoreExtensions = ['svg','png','jpg','jpeg','gif','ico','js','css'];
+const TimeoutMs = 10000;
+const log = true;
+const logErrors = true;
 
 let CACHE = {};
 let PENDING = {};
-let ExpiredCacheIntervalMs = 10000;
-let RefreshEntriesAfterMs = 10 * 60 * 1000;
-let RemoveEntriesWithViewsLowerThan = 3;
 let id = 0;
-
-const IgnoreExtensions = ['svg','png','jpg','jpeg','gif','ico','js','css'];
-const TimeoutMs = 10000;
 
 (async () => {
     const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
@@ -42,7 +43,7 @@ const TimeoutMs = 10000;
             let { html, at, views } = CACHE[url];
             if ((now - at) > RefreshEntriesAfterMs) {
                 if (views <= RemoveEntriesWithViewsLowerThan) {
-                    console.log("deleting " + url + " with " + views + " view(s)");
+                    if (log) console.log("deleting " + url + " with " + views + " view(s)");
                     delete CACHE[url];
                     continue;
                 }
@@ -51,7 +52,7 @@ const TimeoutMs = 10000;
         }
 
         let oldestExpiredUrls = expiredUrls.sort((a,b) => CACHE[a].at - CACHE[b].at);
-        console.log("refreshing " + oldestExpiredUrls.length + " expired url(s)");
+        if (log) console.log("refreshing " + oldestExpiredUrls.length + " expired url(s)");
 
         try {
             if (expiredUrls.length > 0) {
@@ -67,15 +68,15 @@ const TimeoutMs = 10000;
                         let at = new Date();
                         const absoluteUrl = ProxyUrl + reqUrl;
                         let html = await getRenderedHtml(absoluteUrl);
-                        console.log("refreshed expired url: " + reqUrl + " |age| " + (now - CACHE[reqUrl].at) + "ms |size| " + html.length);
+                        if (log) console.log("refreshed expired url: " + reqUrl + " |age| " + (now - CACHE[reqUrl].at) + "ms |size| " + html.length);
                         CACHE[reqUrl] = { html, at, views:1 };
                     } catch(e) {
-                        console.log('ERROR page: ' + reqUrl, e.message, e.stack);
+                        if (logErrors) console.log('ERROR page: ' + reqUrl, e.message, e.stack);
                     }
                 }
             }
         } catch(e) {
-            console.log('ERROR refreshExpiredCaches', e.message, e.stack);
+            if (logErrors) console.log('ERROR refreshExpiredCaches', e.message, e.stack);
         }
 
         setTimeout(refreshExpiredCaches, ExpiredCacheIntervalMs);
@@ -99,7 +100,7 @@ const TimeoutMs = 10000;
                     return html;
 
             } catch(e) {
-                console.log(e);
+                if (logErrors) console.log(e);
             }
 
             var elapsed = new Date() - start;
@@ -114,15 +115,10 @@ const TimeoutMs = 10000;
     const getRenderedHtml = async (absoluteUrl) => {
         let page = null;
         
-        try {
-            page = await pagePool.obtain();
-            // console.log('using page ' + page.__id);
-            return await getPageRenderedHtml(page, absoluteUrl);
-        } finally {
-            if (page) { 
-                pagePool.recycle(page);
-            }
-        }
+        page = await pagePool.obtain();
+        // console.log('using page ' + page.__id);
+        const ret = await getPageRenderedHtml(page, absoluteUrl);
+        pagePool.recycle(page); //only recycle if there were no errors
     };
 
     const setCorsHeaders = (req,res) => {
@@ -172,7 +168,7 @@ const TimeoutMs = 10000;
                 return;
             }
 
-            console.log('fetch: ' + info);
+            if (log) console.log('fetch: ' + info);
 
             let entry = CACHE[reqUrl];
             if (entry != null) {
@@ -186,7 +182,7 @@ const TimeoutMs = 10000;
                     let now = new Date();
                     const absoluteUrl = ProxyUrl + reqUrl;
                     let newHtml = await getRenderedHtml(absoluteUrl);
-                    console.log(id + ': new cache for ' + reqUrl);
+                    if (log) console.log(id + ': new cache for ' + reqUrl);
                     CACHE[reqUrl] = { html: newHtml, at: now, views:1 };
                     writeHtml(res,newHtml);
                 } finally {
@@ -195,7 +191,7 @@ const TimeoutMs = 10000;
                 }
 
         } catch(e) {
-            console.log(e.message, e.stack)
+            if (logErrors) console.log(e.message, e.stack)
             res.writeHeader(500, e.message);
             res.end();
         }
@@ -205,7 +201,7 @@ const TimeoutMs = 10000;
         
     server.listen(port, (err) => {
         if (err) {
-            return console.log('something bad happened', err)
+            return console.log('ERROR server.listen', err)
         }
     
         console.log(`server is listening on ${port}`)
