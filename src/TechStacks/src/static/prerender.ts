@@ -42,9 +42,9 @@
   if (isBot) {
     injectPrenderedContent();
   } else {
-    setTimeout(() => {
-      if (hasData()) return;
-      injectPrenderedContent();
-    }, 2000);
+    // setTimeout(() => {
+    //   if (hasData()) return;
+    //   injectPrenderedContent();
+    // }, 2000);
   }
 })();
