@@ -5,6 +5,6 @@
 /ss_admin/*     http://techstacks.netcore.io/ss_admin/:splat      200
 /swagger-ui/*   http://techstacks.netcore.io/swagger-ui/:splat    200
 /users/*/avatar http://techstacks.netcore.io/users/:splat/avatar  200
-/prerender/*    http://techstacks.netcore.io/prerender/:splat     200
+/prerender/*    http://prerender.netcore.io/:splat                200
 /*.xml          http://techstacks.netcore.io/:splat.xml           200
 /*              /index.html                                       200
