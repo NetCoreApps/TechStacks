@@ -106,10 +106,11 @@ var _this = this;
             injectPrenderedContent();
         }
         else {
-            // setTimeout(() => {
-            //   if (hasData()) return;
-            //   injectPrenderedContent();
-            // }, 2000);
+            setTimeout(function () {
+                if (hasData())
+                    return;
+                injectPrenderedContent();
+            }, 2000);
         }
         return [2 /*return*/];
     });
