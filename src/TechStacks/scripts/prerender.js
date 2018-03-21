@@ -1,8 +1,10 @@
 const http = require('http');
+//const url = require('url');
 const puppeteer = require('puppeteer');
 const fetch = require('node-fetch');
 const delay = require('delay');
 
+const AllowOrigins = ["localhost:16325","localhost:3000","techstacks.io","www.techstacks.io"];
 const ProxyUrl = 'http://localhost:16325';
 const elementId = '__nuxt';
 
@@ -18,14 +20,14 @@ const TimeoutMs = 10000;
 (async () => {
     const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 
-    const getRenderedHtml = async (url) => {
+    const getRenderedHtml = async (absoluteUrl) => {
         let page = null;
         
         try {
             page = await browser.newPage();
             await page.setUserAgent('puppeteer');
             await page.setViewport({ width: 1366, height: 768 });
-            await page.goto(url, {waitUntil: 'networkidle2'});
+            await page.goto(absoluteUrl, {waitUntil: 'networkidle2'});
 
             let html = null;
             const start = new Date();
@@ -58,13 +60,36 @@ const TimeoutMs = 10000;
         }
     }
 
+    const setCorsHeaders = (req,res) => {
+        res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+        const origin = req.headers['origin'];
+        if (origin && AllowOrigins.indexOf(origin) >= 0) {
+            res.setHeader('Access-Control-Allow-Origin', origin);
+        } else {
+            res.setHeader('Access-Control-Allow-Origin', '*');
+        }
+    }
+
     const writeHtml = (res,html) => {
-        res.writeHeader(200, {"Content-Type": "text/html"});  
+        res.writeHeader(200, { 
+            "Content-Type": "text/html"
+        });  
         res.write(html);  
         res.end();             
     };
 
     const requestHandler = async (req,res) => {
+        setCorsHeaders(req,res);
+
+        const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
+        if (req.method == "OPTIONS") {
+            console.log("OPTIONS: " + req.url + " |ip| " + ip + " |ua| " + req.headers['user-agent'])
+            res.end();
+            return;
+        }
+
         id++;
         let page = null;
         let writtenToResponse = false;
@@ -73,7 +98,6 @@ const TimeoutMs = 10000;
             : req.url;
 
         try {
-            const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
             const info = id + ": " + reqUrl + " |ip| " + ip + " |ua| " + req.headers['user-agent'];
 
             if (IgnoreExtensions.some(x => reqUrl.endsWith(x))) {
@@ -83,7 +107,7 @@ const TimeoutMs = 10000;
                 return;
             }
 
-            const url = ProxyUrl + reqUrl;
+            const absoluteUrl = ProxyUrl + reqUrl;
             console.log('fetch: ' + info);
 
             let html = CACHE[reqUrl];
@@ -102,7 +126,7 @@ const TimeoutMs = 10000;
                 setTimeout(async () => {
                     try {
                         //update with new cache in background
-                        let newHtml = await getRenderedHtml(url);
+                        let newHtml = await getRenderedHtml(absoluteUrl);
                         const renderedTooFastWithoutResults = newHtml.length < (html / 2);
                         if (!renderedTooFastWithoutResults) {
                             console.log(id + ': updated cache for ' + reqUrl);
@@ -121,7 +145,7 @@ const TimeoutMs = 10000;
                 PENDING[reqUrl] = true;
 
                 try {
-                    let newHtml = await getRenderedHtml(url);
+                    let newHtml = await getRenderedHtml(absoluteUrl);
                     if (!html) {
                         console.log(id + ': new cache for ' + reqUrl);
                         CACHE[reqUrl] = newHtml;
