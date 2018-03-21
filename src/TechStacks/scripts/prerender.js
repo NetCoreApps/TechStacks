@@ -119,6 +119,7 @@ let id = 0;
         // console.log('using page ' + page.__id);
         const ret = await getPageRenderedHtml(page, absoluteUrl);
         pagePool.recycle(page); //only recycle if there were no errors
+        return ret;
     };
 
     const setCorsHeaders = (req,res) => {
