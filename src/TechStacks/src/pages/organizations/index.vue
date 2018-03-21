@@ -60,7 +60,6 @@ export default {
 
   async mounted(){
     await this.$store.dispatch('loadOrganizations');
-    this.$store.commit('mounted', true);
   },
 
   data: () => ({

@@ -67,8 +67,6 @@ computed: {
     if (this.post) {
       this.$store.dispatch("loadOrganizationByIdIfNotExists", this.post.organizationId);
     }
-
-    this.$store.commit('mounted', true);
   },
 
   data: () => ({

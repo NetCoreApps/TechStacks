@@ -9,7 +9,5 @@ import PostComments from "~/components/PostComments.vue";
 
 export default {
   components: { PostComments },
-  
-  mounted(){ this.$store.commit('mounted', true); }
 }
 </script>

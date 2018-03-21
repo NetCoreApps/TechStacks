@@ -201,7 +201,6 @@ export default {
     await this.loadTechnology();
     this.refreshPageStats();
 
-    this.$store.commit('mounted', true);
     window.addEventListener('keyup', this.handleKeyUp);
   },
 

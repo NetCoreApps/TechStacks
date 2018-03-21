@@ -220,7 +220,6 @@ export default {
     await this.loadTechStack();
     this.refreshPageStats();
 
-    this.$store.commit('mounted', true);
     window.addEventListener('keyup', this.handleKeyUp);
   },
 

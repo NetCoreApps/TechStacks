@@ -317,7 +317,6 @@ export default {
       this.favoritedPosts = (await queryPosts({ ids, orderBy:'rank' })).results;
     }
 
-    this.$store.commit('mounted', true);
     window.addEventListener('keyup', this.handleKeyUp);
   },
 

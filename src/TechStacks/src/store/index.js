@@ -37,7 +37,7 @@ import { getOrganizationById } from "../shared/gateway";
 const statsKey = (type,slug) => `${type}:${slug}`;
 
 const state = {
-    mounted: false,
+    hasData: false,
     loading: false,
     sessionInfo: null,
     sessionFeed: null,
@@ -136,8 +136,8 @@ const updateVotes = (userVotes, id, weight) => {
 };
 
 const mutations = {
-    mounted(state, mounted) {
-        state.mounted = mounted;
+    hasData(state, hasData) {
+        state.hasData = hasData;
     },
     loading(state, loading) {
         state.loading = loading;
@@ -305,7 +305,7 @@ const mutations = {
 }
 
 const getters = {
-    mounted: state => state.mounted,
+    hasData: state => state.hasData,
     loading: state => state.loading,
     showDialog: state => state.showDialog,
     isAuthenticated: state => state.sessionInfo != null,
@@ -513,7 +513,6 @@ const actions = {
         const skip = page > 0 ? page * POSTS_PER_PAGE : 0;
     
         await doAction(commit, 'latestNewsPosts', async() => await queryLatestPosts(types, technologyIds, skip));
-        commit('mounted', true);
     },
 
     async latestOrganizationPosts({ commit, getters, state }, query) {
@@ -537,7 +536,6 @@ const actions = {
             organizationId, 
             posts: await queryLatestOrganizationsPosts(organizationId, types, categoryId, skip) 
         }));
-        commit('mounted', true);
     },
 
     async loadUserPostActivity({ commit, state }) {

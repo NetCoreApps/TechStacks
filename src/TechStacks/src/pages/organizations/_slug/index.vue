@@ -9,7 +9,5 @@ import OrganizationEdit from "~/components/OrganizationEdit.vue";
 
 export default {
   components: { OrganizationEdit },
-  
-  mounted(){ this.$store.commit('mounted', true); }
 }
 </script>

@@ -334,7 +334,6 @@ export default {
     this.posts = (await queryPosts({ userId: this.user.id, orderBy:"-id" })).results;
     this.comments = (await queryPostComments({ userId: this.user.id, orderBy:"-id" })).results;
 
-    this.$store.commit('mounted', true);
     window.addEventListener('keyup', this.handleKeyUp);
   },
 
