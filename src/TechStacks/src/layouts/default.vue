@@ -131,6 +131,11 @@ export default {
       const isBot = /bot|crawl|spider/i.test(navigator.userAgent);
       if (isBot) {
         this.prerenderedHtml = await this.getPrerenderedHtml();
+      } else {
+        setTimeout(async () => {          
+          //still fetch for non-bots when no __hasData, only happens on initial load
+          this.prerenderedHtml = await this.getPrerenderedHtml();
+        }, 1000);
       }
     } catch(e) {
       console.log('getPrerenderedHtml()', e.message, e.stack);
