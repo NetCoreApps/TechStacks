@@ -7,8 +7,8 @@ const delay = require('delay');
 const AllowOrigins = ["localhost:16325","localhost:3000","techstacks.io","www.techstacks.io"];
 // const ProxyUrl = 'http://localhost:16325';
 const ProxyUrl = 'https://www.techstacks.io';
-const elementSelector = "body";
-// const elementId = 'app';
+// const elementSelector = "body";
+const elementId = '#__nuxt';
 
 const port = 9000;
 

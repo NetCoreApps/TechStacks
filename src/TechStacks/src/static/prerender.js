@@ -86,10 +86,8 @@ var _this = this;
                             return [2 /*return*/];
                         if (log)
                             console.log("injecting prerendered content: " + html.length + " chars");
-                        // document.getElementById("__nuxt").innerHTML = html;
+                        document.getElementById("__nuxt").innerHTML = html;
                         window.__PRERENDERED = true;
-                        // html = html.replace('src="/prerender.js"',''); //remove us
-                        document.body.innerHTML = html;
                         return [3 /*break*/, 4];
                     case 3:
                         e_1 = _a.sent();
