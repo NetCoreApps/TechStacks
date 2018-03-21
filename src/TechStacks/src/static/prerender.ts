@@ -37,9 +37,10 @@
       if (log) console.log(`injecting prerendered content: ${html.length} chars`);
       // document.getElementById("__nuxt").innerHTML = html;
       (window as any).__PRERENDERED = true;
-      html = html.replace('src="/prerender.js"',''); //remove us
-      document.write(html);
-      document.close();
+      // html = html.replace('src="/prerender.js"',''); //remove us
+      document.body.innerHTML = html;
+      // document.write(html);
+      // document.close();
     } catch (e) {
       if (log) console.log("prerender error", e);
     }
