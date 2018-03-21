@@ -6,7 +6,8 @@ const delay = require('delay');
 
 const AllowOrigins = ["localhost:16325","localhost:3000","techstacks.io","www.techstacks.io"];
 const ProxyUrl = 'http://localhost:16325';
-const elementId = '__nuxt';
+const elementId = null;
+// const elementId = 'app';
 
 const port = 7000;
 
@@ -14,7 +15,7 @@ let CACHE = {};
 let PENDING = {};
 let id = 0;
 
-const IgnoreExtensions = ['svg','png','jpg','jpeg','gif','ico'];
+const IgnoreExtensions = ['svg','png','jpg','jpeg','gif','ico','js','css'];
 const TimeoutMs = 10000;
 
 (async () => {

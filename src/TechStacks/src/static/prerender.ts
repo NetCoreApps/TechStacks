@@ -12,6 +12,10 @@
 
   //pages can add <i class="__hasData"></i> to indicate data rendered correctly
   const hasData = () => {
+    if ((window as any).__PRERENDERED) {
+      if (log) console.log('already prerendered, skipping');
+      return true;
+    }
     const ret = document.getElementsByClassName("__hasData")[0] != null;
     if (ret && log) console.log("hasData, skipping prerendering...");
     return ret;
@@ -31,7 +35,11 @@
       if (hasData()) return;
 
       if (log) console.log(`injecting prerendered content: ${html.length} chars`);
-      document.getElementById("__nuxt").innerHTML = html;
+      // document.getElementById("__nuxt").innerHTML = html;
+      (window as any).__PRERENDERED = true;
+      html = html.replace('src="/prerender.js"',''); //remove us
+      document.write(html);
+      document.close();
     } catch (e) {
       if (log) console.log("prerender error", e);
     }
