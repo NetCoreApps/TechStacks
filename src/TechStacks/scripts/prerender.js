@@ -8,7 +8,7 @@ const AllowOrigins = ["localhost:16325","localhost:3000","techstacks.io","www.te
 // const ProxyUrl = 'http://localhost:16325';
 const ProxyUrl = 'https://www.techstacks.io';
 // const elementSelector = "body";
-const elementSelector = '#__nuxt';
+const elementSelector = '#app';
 
 const port = 9000;
 
