@@ -39,8 +39,8 @@ var _this = this;
     var host, prerenderUrl, log, getPreRender, hasData, path, injectPrenderedContent, isBot;
     return __generator(this, function (_a) {
         host = location.host;
-        prerenderUrl = host == "techstacks.io" ?
-            "https://www.techstacks.io/prerender"
+        prerenderUrl = host == "techstacks.io" || host == "www.techstacks.io" ?
+            "https://" + host + "/prerender"
             : host.indexOf("localhost") >= 0 ?
                 "http://localhost:7000"
                 : "/prerender";
@@ -101,7 +101,7 @@ var _this = this;
                 if (hasData())
                     return;
                 injectPrenderedContent();
-            }, 1000);
+            }, 2000);
         }
         return [2 /*return*/];
     });

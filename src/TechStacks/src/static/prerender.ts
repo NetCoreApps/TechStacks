@@ -1,7 +1,7 @@
 (async () => {
   const host = location.host;
-  const prerenderUrl = host == "techstacks.io" ? 
-      "https://www.techstacks.io/prerender" 
+  const prerenderUrl = host == "techstacks.io" || host == "www.techstacks.io" ?
+      `https://${host}/prerender` 
     : host.indexOf("localhost") >= 0 ?
       "http://localhost:7000"
     : "/prerender";
@@ -45,6 +45,6 @@
     setTimeout(() => {
       if (hasData()) return;
       injectPrenderedContent();
-    }, 1000);
+    }, 2000);
   }
 })();
