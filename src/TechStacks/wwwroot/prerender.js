@@ -52,6 +52,11 @@ var _this = this;
             }
         }); }); };
         hasData = function () {
+            if (window.__PRERENDERED) {
+                if (log)
+                    console.log('already prerendered, skipping');
+                return true;
+            }
             var ret = document.getElementsByClassName("__hasData")[0] != null;
             if (ret && log)
                 console.log("hasData, skipping prerendering...");
@@ -81,7 +86,11 @@ var _this = this;
                             return [2 /*return*/];
                         if (log)
                             console.log("injecting prerendered content: " + html.length + " chars");
-                        document.getElementById("__nuxt").innerHTML = html;
+                        // document.getElementById("__nuxt").innerHTML = html;
+                        window.__PRERENDERED = true;
+                        html = html.replace('src="/prerender.js"', ''); //remove us to remove recursive loop
+                        document.write(html);
+                        document.close();
                         return [3 /*break*/, 4];
                     case 3:
                         e_1 = _a.sent();
