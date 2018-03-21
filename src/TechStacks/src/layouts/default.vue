@@ -88,11 +88,7 @@ export default {
     async getPrerenderedHtml() {
       try {
         const host = location.host;
-        const prerenderUrl = host == "techstacks.io" || host == "www.techstacks.io" ?
-            `https://${host}/prerender` 
-          : host.indexOf("localhost") >= 0 ?
-            "http://localhost:9000"
-          : "/prerender";
+        const prerenderUrl = "/prerender";
         const log = console.log && true;
 
         const path = location.pathname + location.search;
@@ -113,6 +109,10 @@ export default {
         let html = await getPreRender(path);
         if (!html || html.trim().length == 0) {
           if (log) console.log("empty html, skipping prerendering...");
+          return;
+        }
+        if (html.trim().indexOf("<") == -1) {
+          if (log) console.log("invalid html, skipping prerendering... " + html.trim().substring(0,100));
           return;
         }
         if (hasData()) return;

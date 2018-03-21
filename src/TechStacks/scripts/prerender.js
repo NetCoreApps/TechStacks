@@ -113,9 +113,7 @@ let id = 0;
     };
 
     const getRenderedHtml = async (absoluteUrl) => {
-        let page = null;
-        
-        page = await pagePool.obtain();
+        let page = await pagePool.obtain();
         // console.log('using page ' + page.__id);
         const ret = await getPageRenderedHtml(page, absoluteUrl);
         pagePool.recycle(page); //only recycle if there were no errors
