@@ -1,7 +1,9 @@
 (async () => {
   const host = location.host;
-  const prerenderUrl = host == "techstacks.io" || host == "www.techstacks.io" ?
+  const prerenderUrl = host == "techstacks.io" ?
       `https://${host}/prerender` 
+    : host == "www.techstacks.io" ?
+      "prerender.netcore.io"
     : host.indexOf("localhost") >= 0 ?
       "http://localhost:7000"
     : "/prerender";

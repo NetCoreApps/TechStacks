@@ -39,11 +39,13 @@ var _this = this;
     var host, prerenderUrl, log, getPreRender, hasData, path, injectPrenderedContent, isBot;
     return __generator(this, function (_a) {
         host = location.host;
-        prerenderUrl = host == "techstacks.io" || host == "www.techstacks.io" ?
+        prerenderUrl = host == "techstacks.io" ?
             "https://" + host + "/prerender"
-            : host.indexOf("localhost") >= 0 ?
-                "http://localhost:7000"
-                : "/prerender";
+            : host == "www.techstacks.io" ?
+                "prerender.netcore.io"
+                : host.indexOf("localhost") >= 0 ?
+                    "http://localhost:7000"
+                    : "/prerender";
         log = console.log && true;
         getPreRender = function (path) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
             switch (_a.label) {
@@ -88,7 +90,7 @@ var _this = this;
                             console.log("injecting prerendered content: " + html.length + " chars");
                         // document.getElementById("__nuxt").innerHTML = html;
                         window.__PRERENDERED = true;
-                        html = html.replace('src="/prerender.js"', ''); //remove us to remove recursive loop
+                        html = html.replace('src="/prerender.js"', ''); //remove us
                         document.write(html);
                         document.close();
                         return [3 /*break*/, 4];
