@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nuxt",
     "dtos": "cd src/shared && typescript-ref && tsc -m ES6 dtos.ts",
+    "prerender": "tsc src/static/prerender.ts --target es5 --lib ES2015,DOM",
     "build": "nuxt build",
     "publish": "npm run build && dotnet publish -c Release",
     "lint": "eslint --ext .js,.vue .",

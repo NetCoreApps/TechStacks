@@ -70,47 +70,6 @@ import Shortcuts from "~/components/Shortcuts.vue";
 import { mapGetters } from "vuex";
 import { routes } from "~/shared/routes";
 import { globalNavShortcuts } from "~/shared/utils";
-import { getPreRender } from "~/shared/gateway";
-
-// G isn't good enough to render Nuxt apps yet, loading pre-rendered version until then
-const isBot = /bot|crawl|spider/i.test(navigator.userAgent);
-if (navigator.userAgent.indexOf('puppeteer') == -1) { // it's not our prerenderer
-  (async () => {
-    try {
-      const path = location.pathname + location.search;
-      let init = document.getElementById('__mounted'); //injected when page is mounted which G's bot is unable to render
-      if (init)
-        return;
-
-      let html = null;
-      if (isBot) {
-          try {
-            html = await getPreRender(path);
-            init = document.getElementById('__mounted');
-            if (init || !html) {
-              console.log('bot has mounted, skipping prerendering...');
-              return;
-            }
-            document.getElementById('__nuxt').innerHTML = html;
-          } catch(e) {}
-      } else {
-        setTimeout(async () => {
-          init = document.getElementById('__mounted');
-          if (init || !html) {
-            console.log('has mounted, skipping prerendering...');
-            return;
-          }
-          try {
-            html = await getPreRender(path);
-            document.getElementById('__nuxt').innerHTML = html;
-          } catch(e) {}
-
-        }, 1000);
-      }
-
-    } catch(e) {}
-  })();
-}
 
 export default {
   components: { Shortcuts },
