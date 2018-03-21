@@ -15,7 +15,7 @@ module.exports = {
     '/json': 'http://localhost:16325/',
     '/auth': 'http://localhost:16325/',
     '/users/*/avatar': 'http://localhost:16325/',
-    '/prerender': 'http://localhost:7000/'
+    '/prerender': 'http://localhost:9000/'
   },
   css: ['~/assets/css/gfm.css','~/assets/css/app.css'],
   /*

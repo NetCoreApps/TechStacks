@@ -6,11 +6,11 @@ const delay = require('delay');
 
 const AllowOrigins = ["localhost:16325","localhost:3000","techstacks.io","www.techstacks.io"];
 // const ProxyUrl = 'http://localhost:16325';
-const ProxyUrl = 'https://techstacks.io';
+const ProxyUrl = 'https://www.techstacks.io';
 const elementId = null;
 // const elementId = 'app';
 
-const port = 7000;
+const port = 9000;
 
 let CACHE = {};
 let PENDING = {};
@@ -40,12 +40,12 @@ const TimeoutMs = 10000;
         let now = new Date();
         for (let url in CACHE) {
             let { html, at, views } = CACHE[url];
-            if (views <= RemoveEntriesWithViewsLowerThan) {
-                console.log("deleting " + url + " with " + views + " view(s)");
-                delete CACHE[url];
-                continue;
-            }
             if ((now - at) > RefreshEntriesAfterMs) {
+                if (views <= RemoveEntriesWithViewsLowerThan) {
+                    console.log("deleting " + url + " with " + views + " view(s)");
+                    delete CACHE[url];
+                    continue;
+                }
                 expiredUrls.push(url);
             }
         }
