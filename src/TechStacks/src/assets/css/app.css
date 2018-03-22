@@ -301,6 +301,10 @@ section.block {
   padding: .2em .4em;
 }
 
+pre {
+  word-spacing: normal;
+}
+
 .gfm ::-webkit-scrollbar { width:7px; height:5px } 
 .gfm ::-webkit-scrollbar-thumb { background-color:#ccc; }
 
