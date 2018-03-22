@@ -85,6 +85,7 @@
     <v-container v-if="!loading" class="body" grid-list-md>
       <v-layout class="body" fluid>
         <v-flex v-if="results.length > 0" xs12 sm12>
+          <i class="__hasData"></i>
           <v-card>
             <v-container fluid grid-list-md>
               <v-layout row wrap>

@@ -92,7 +92,7 @@
     <v-container v-if="!loading" class="body" grid-list-md>
       <v-layout row>
         <v-flex v-if="results.length > 0">
-
+              <i class="__hasData"></i>
               <v-card>
                 <v-data-table
                     :headers="headers"
