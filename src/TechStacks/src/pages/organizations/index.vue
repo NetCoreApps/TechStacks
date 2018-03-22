@@ -2,6 +2,7 @@
 <v-container>
   <v-layout fluid>
     <v-flex sm10 offset-sm1 :class="loading ? 'loading-body' : ''">
+      <i v-if="allOrganizations.length > 0" class="no-prerender"></i>
       <v-toolbar>
         <v-toolbar-title class="headline">Organizations</v-toolbar-title>
       </v-toolbar>

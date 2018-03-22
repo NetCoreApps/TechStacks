@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <i v-if="posts.length > 0" class="__hasData"></i>
+    <i v-if="posts.length > 0" class="no-prerender"></i>
     <v-card v-for="(post, index) in posts" :key="post.id" :class="['post', votedClass(post.id)]">
       <v-card-title>
         <v-container fluid grid-list-sm>

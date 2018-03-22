@@ -2,9 +2,31 @@
     <div class="news">
         <h2 v-if="!organization && loading" class="svg-icon loading">Loading {{slug}} News ...</h2>
 
-        <h2 v-if="notFound"><v-icon color="red">error_outline</v-icon> '{{slug}}' was not found</h2>
+        <div v-if="notFound" class="no-prerender">
+          <h2><v-icon color="red">error_outline</v-icon> '{{slug}}' organization does not exist</h2>
 
-        <v-layout column v-else-if="organization">
+          <v-layout style="margin-top:.5em;max-width:650px">
+            <v-card>
+              <v-card-title>
+                <OrganizationAdd v-if="addOrganization" @done="organizationDone" :initialValues="{ slug, name:slugToName(slug) }" />
+                <div v-else style="color:#666">
+                  Create the <b>{{ slug }}</b> organization to create a space with others sharing similar interests.
+                </div>
+              </v-card-title>
+              <v-card-actions v-if="!addOrganization">
+                <v-layout align-center style="text-align:center">
+                  <v-flex>
+                    <v-btn flat large @click="addOrganization=true" :disabled="!isAuthenticated">
+                      Create and Moderate {{ slug }}
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-card-actions>
+            </v-card>
+          </v-layout>
+        </div>
+
+        <v-layout column v-else-if="organization" class="no-prerender">
             <v-flex>
                 <v-layout>
                     <div v-if="canPostToOrganization()">
@@ -104,16 +126,18 @@
 import PostEdit from "~/components/PostEdit.vue";
 import PostsList from "~/components/PostsList.vue";
 import MembersInfo from "~/components/MembersInfo.vue";
+import OrganizationAdd from "~/components/OrganizationAdd.vue";
 import DebugInfo from "~/components/DebugInfo.vue";
 
 import { mapGetters } from "vuex";
 import { routes } from "~/shared/routes";
-import { ignoreKeyPress, fromNow } from "~/shared/utils";
+import { ignoreKeyPress, fromNow, slugToName } from "~/shared/utils";
 import { POSTS_PER_PAGE, canManageOrganization, canPostToOrganization } from "~/shared/post";
 import { appendQueryString } from "@servicestack/client";
+import nuxtErrorVue from '../../.nuxt/components/nuxt-error.vue';
 
 export default {
-  components: { PostEdit, PostsList, MembersInfo, DebugInfo },
+  components: { PostEdit, PostsList, MembersInfo, OrganizationAdd, DebugInfo },
   props: ["slug","query","view"],
   computed: {
     page() {
@@ -231,6 +255,12 @@ export default {
       }
       this.$nextTick(() => (this.staging = null));
     },
+    organizationDone(orgSlug) {
+      this.addOrganization = false;
+      if (orgSlug) {
+        this.$router.push(routes.organization(orgSlug));
+      }
+    },
 
     handleKeyUp(e) {
       if (ignoreKeyPress(e)) return;
@@ -264,7 +294,8 @@ export default {
 
     canManageOrganization,
     canPostToOrganization,
-    fromNow
+    slugToName,
+    fromNow,
   },
 
   watch: {
@@ -288,14 +319,31 @@ export default {
   },
 
   async mounted() {
-    this.c = this.$route.query.c;
-    this.$store.commit('latestOrganizationPostsQuery', null);
-    this.initRoute(this.$route.query);
-    await this.$store.dispatch("loadOrganizationBySlugIfNotExists", this.slug);
-    await this.refreshPosts();
-    this.notFound = this.organization == null && (this.latestOrganizationPosts || []).length == 0;
-    this.$store.dispatch("loadUserPostActivity");
-    this.$store.dispatch("loadTechnologyTiers");
+    try {
+      this.c = this.$route.query.c;
+      this.$store.commit('latestOrganizationPostsQuery', null);
+      this.initRoute(this.$route.query);
+      await this.$store.dispatch("loadOrganizationBySlugIfNotExists", this.slug);
+      await this.refreshPosts();
+      this.$store.dispatch("loadUserPostActivity");
+      this.$store.dispatch("loadTechnologyTiers");
+    } catch(e) {
+      console.log(e);
+    }
+
+    const notFound = this.organization == null && (this.latestOrganizationPosts || []).length == 0;
+    if (notFound) {
+      try {
+        await this.$store.dispatch('loadTechnologyStackIfNotExists', this.slug);
+      } catch(e) {
+      }
+      const stack = this.$store.getters.getTechnologyStack(this.slug);
+      if (stack != null) {
+        this.$router.push(routes.stack(this.slug));
+        return;
+      }      
+      this.notFound = true;
+    }
     
     window.addEventListener('keyup', this.handleKeyUp);
   },
@@ -314,6 +362,7 @@ export default {
     add: false,
     reportPostId: null,
     notFound: false,
+    addOrganization: false,
   })
 };
 </script>

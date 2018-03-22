@@ -95,14 +95,14 @@ export default {
         const getPreRender = async path =>
           (await fetch(`${prerenderUrl}${path || "/"}`)).text();
 
-        //pages can add <i class="__hasData"></i> to indicate data rendered correctly
+        //pages can add <i class="no-prerender"></i> to indicate pages rendered correctly
         const hasData = () => {
           if (window.__PRERENDERED) {
             if (log) console.log('already prerendered, skipping');
             return true;
           }
-          const ret = document.getElementsByClassName("__hasData")[0] != null;
-          if (ret && log) console.log("hasData, skipping prerendering...");
+          const ret = document.getElementsByClassName("no-prerender")[0] != null;
+          if (ret && log) console.log("no-prerender, skipping...");
           return ret;
         };
 
@@ -133,9 +133,9 @@ export default {
         this.prerenderedHtml = await this.getPrerenderedHtml();
       } else {
         setTimeout(async () => {          
-          //still fetch for non-bots when no __hasData, only happens on initial load
+          //still fetch for non-bots when no no-prerender, only happens on initial load
           this.prerenderedHtml = await this.getPrerenderedHtml();
-        }, 1000);
+        }, 2000);
       }
     } catch(e) {
       console.log('getPrerenderedHtml()', e.message, e.stack);

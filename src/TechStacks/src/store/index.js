@@ -443,6 +443,13 @@ const actions = {
         await doAction(commit, 'technology', async() => (await getTechnology(slug)));
     },
 
+    async loadTechnologyStackIfNotExists({ state, dispatch }, slug) {
+        if (state.techstacksMap[slug])
+            return;
+
+        await dispatch('loadTechnologyStack', slug);
+    },
+
     async loadTechnologyStack({ commit }, slug) {
         await doAction(commit, 'technologyStack', async() => (await getTechnologyStack(slug)).result);
     },

@@ -91,31 +91,28 @@
 
     <v-container v-if="!loading" class="body" grid-list-md>
       <v-layout row>
-        <v-flex v-if="results.length > 0">
-              <i class="__hasData"></i>
-              <v-card>
-                <v-data-table
-                    :headers="headers"
-                    :items="results"
-                    :pagination.sync="pagination"
-                    :loading="loading"
-                    hide-actions
-                    class="elevation-1"
-                  >
-                  <template slot="items" slot-scope="props">
-                    <tr @click="$router.push(routes.tech(props.item.slug))">
-                      <td class="nowrap">{{ props.item.name }}</td>
-                      <td>{{ props.item.description }}</td>
-                      <td class="nowrap" style="text-align:center">
-                        <a :href="routes.tech(props.item.slug)"><img :src="props.item.logoUrl" :alt="props.item.name" style="max-width:220px;max-height:120px;padding:1em 0"></a>
-                        <div>{{ props.item.vendorName }}</div>
-                      </td>
-                    </tr>
-                  </template>
-
-                </v-data-table>
-              </v-card>
-
+        <v-flex v-if="results.length > 0" class="no-prerender">
+          <v-card>
+            <v-data-table
+                :headers="headers"
+                :items="results"
+                :pagination.sync="pagination"
+                :loading="loading"
+                hide-actions
+                class="elevation-1"
+              >
+              <template slot="items" slot-scope="props">
+                <tr @click="$router.push(routes.tech(props.item.slug))">
+                  <td class="nowrap">{{ props.item.name }}</td>
+                  <td>{{ props.item.description }}</td>
+                  <td class="nowrap" style="text-align:center">
+                    <a :href="routes.tech(props.item.slug)"><img :src="props.item.logoUrl" :alt="props.item.name" style="max-width:220px;max-height:120px;padding:1em 0"></a>
+                    <div>{{ props.item.vendorName }}</div>
+                  </td>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-card>
         </v-flex>
         <v-flex v-else-if="!loading">
           <v-alert outline v-if="!querying" :value="true" color="info" icon="info">

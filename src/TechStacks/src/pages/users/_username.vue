@@ -18,7 +18,7 @@
 
                   <h2 v-if="!user && !loading"><v-icon color="red">error_outline</v-icon> User '{{userName}}' was not found</h2>
 
-                  <v-container v-else-if="user" fluid>
+                  <v-container v-else-if="user" fluid class="no-prerender">
                     <v-layout column align-center>
                       <v-flex if="user.avatarUrl">
                         <div class="avatarbox">

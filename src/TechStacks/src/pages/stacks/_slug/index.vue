@@ -16,7 +16,11 @@
 
                   <h2 v-if="!techstack && loading" class="svg-icon loading">Loading Technology Stack {{slug}} ...</h2>
 
-                  <h2 v-if="!techstack && !loading"><v-icon color="red">error_outline</v-icon> Technology Stack '{{slug}}' was not found</h2>
+                  <div v-if="!techstack && !loading" class="no-prerender">
+                    <h2><v-icon color="red">error_outline</v-icon> Technology Stack '{{slug}}' was not found</h2>
+
+                    <v-btn large :to="routes.newStack">Add New TechStack</v-btn>
+                  </div>
 
                   <v-layout v-else-if="techstack">
                     <v-flex>
@@ -34,7 +38,7 @@
 
                 </v-card-title>
 
-                <v-card-actions v-if="techstack" style="min-height:52px">
+                <v-card-actions v-if="techstack" class="no-prerender" style="min-height:52px">
                   <v-flex xs11 class="viewcounts">
                     <div v-if="pageStats && pageStats.viewCount > 1">
                       <span>

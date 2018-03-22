@@ -69,6 +69,8 @@ export default {
     ...mapGetters(["loading", "isAuthenticated"])
   },
 
+  props: ['initialValues'],
+
   watch: {
     name(name) {
       this.slug = toSlug(name);
@@ -100,6 +102,12 @@ export default {
     },
 
     errorResponse,
+  },
+
+  mounted(){
+    if (this.initialValues) {
+      Object.assign(this, this.initialValues);
+    }
   },
 
   data: () => ({

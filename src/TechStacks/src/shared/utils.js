@@ -128,3 +128,7 @@ export const timeDifference = (current, previous) => {
 }
 
 export const fromNow = (date) => timeDifference(new Date(), new Date(date));
+
+export const slugToName = (slug) => slug && (slug[0].toUpperCase() + slug.substring(1)).replace(/-/g,' ');
+
+export const noPrerender = () => window.__PRERENDERED = "NONE";

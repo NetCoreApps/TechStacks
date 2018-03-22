@@ -16,9 +16,12 @@
 
                   <h2 v-if="!technology && loading" class="svg-icon loading">Loading Technology {{slug}} ...</h2>
 
-                  <h2 v-if="!technology && !loading"><v-icon color="red">error_outline</v-icon> Technology '{{slug}}' was not found</h2>
+                  <div v-if="!technology && !loading" class="no-prerender">
+                    <h2><v-icon color="red">error_outline</v-icon> Technology '{{slug}}' was not found</h2>
+                    <v-btn large :to="routes.newTech">Add Technology</v-btn>
+                  </div>
 
-                  <v-layout v-else-if="technology">
+                  <v-layout v-else-if="technology" class="no-prerender">
                     <v-flex>
                       <h1>{{technology.name}}</h1>
                       <div class="subheading">

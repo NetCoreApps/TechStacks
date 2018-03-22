@@ -1,8 +1,7 @@
 <template>
 <div>
 
-  <div v-if="post">
-      <i class="__hasData"></i>
+  <div v-if="post" class="no-prerender">
       <v-layout @click="handleCtrlClick">
           <v-card :class="['post', votedClass(post.id), { deleted: post.deleted }]">
               <v-card-title>
