@@ -22,6 +22,10 @@ namespace TechStacks.ServiceInterface.Validations
                 RuleFor(x => x.OrganizationId)
                     .GreaterThan(0)
                     .When(x => x.OrganizationId == 0);
+
+                RuleFor(x => x.TechnologyIds)
+                    .Must(x => x == null || x.Length <= 5)
+                    .WithMessage("Maximum of 5 technologies exceeded");
             });
         }
     }
@@ -44,6 +48,10 @@ namespace TechStacks.ServiceInterface.Validations
                 RuleFor(x => x.OrganizationId)
                     .GreaterThan(0)
                     .When(x => x.OrganizationId == 0);
+
+                RuleFor(x => x.TechnologyIds)
+                    .Must(x => x == null || x.Length <= 5)
+                    .WithMessage("Maximum of 5 technologies exceeded");
             });
         }
     }

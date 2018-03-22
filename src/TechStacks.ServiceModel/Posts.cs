@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ServiceStack;
+using ServiceStack.DataAnnotations;
 using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceModel
@@ -33,6 +34,7 @@ namespace TechStacks.ServiceModel
 
         public string Title { get; set; }
 
+        [Index]
         public string Url { get; set; }
 
         public string ImageUrl { get; set; }

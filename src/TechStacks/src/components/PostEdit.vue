@@ -69,6 +69,7 @@
                         :items="technologySelectItems"
                         :rules="[v => !v || v.length <= 5 || 'Maximum exceeded']"
                         v-model="technologyIds"
+                        :error-messages="errorResponse('technologyIds')"
                         ></v-select>
 
                     <v-flex v-if="edit && isOrganizationModerator" style="text-align:right">

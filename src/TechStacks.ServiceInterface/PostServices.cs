@@ -24,6 +24,13 @@ namespace TechStacks.ServiceInterface
             AssertCanPostToOrganization(Db, request.OrganizationId, user, out var org, out var orgMember);
             AssertCanPostTypeToOrganization(request.Type, org, orgMember, user);
 
+            var existingPost = request.Url != null
+                ? await Db.SingleAsync<Post>(x => x.Url == request.Url && x.Deleted == null && x.Hidden == null && !x.Archived)
+                : null;
+
+            if (existingPost != null)
+                throw new ArgumentException($"URL already used in unarchived /posts/{existingPost.Id}/{existingPost.Slug}", nameof(request.Url));
+            
             var post = request.ConvertTo<Post>();
             post.Slug = request.Title.GenerateSlug();
             post.Created = post.Modified = DateTime.Now;
