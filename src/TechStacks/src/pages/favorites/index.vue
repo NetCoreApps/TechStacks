@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%">
+  <div style="width:100%" class="no-prerender">
 
     <div class="hero">
       <v-parallax :src="heroUrl" >

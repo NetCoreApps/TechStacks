@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="no-prerender">
       <TechnologyEdit v-if="technology" :technology="technology" />
       
       <v-card v-if="!technology && !loading">

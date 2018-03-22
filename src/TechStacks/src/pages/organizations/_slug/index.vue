@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="no-prerender">
     <OrganizationEdit :orgSlug="$route.params.slug" />
   </div>
 </template>

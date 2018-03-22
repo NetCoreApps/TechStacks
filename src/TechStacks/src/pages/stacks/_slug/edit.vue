@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="no-prerender">
       <TechStackEdit v-if="techstack" :techstack="techstack" />
       
       <v-card v-if="!techstack && !loading">

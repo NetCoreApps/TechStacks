@@ -55,7 +55,7 @@
         </v-card>
       </v-flex>
 
-      <v-flex v-if="latestNewsPosts.length > 0" style="margin:1em 0">
+      <v-flex v-if="latestNewsPosts.length > 0" style="margin:1em 0" class="no-prerender">
         <v-layout>
           <PostsList :posts="latestNewsPosts" :page="page" />
 

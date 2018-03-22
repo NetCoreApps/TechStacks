@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div v-if="post && comment">
+  <div v-if="post && comment" class="no-prerender">
     <PostAlerts :organization="organization" :post="post"></PostAlerts>
 
     <div class="comments-info">
