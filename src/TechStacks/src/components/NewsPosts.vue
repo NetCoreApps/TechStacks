@@ -59,9 +59,9 @@
                     <v-spacer></v-spacer>
                     
                     <span class="org-links">
-                      <nuxt-link v-if="organization.refSource == 'TechnologyStack'" :to="routes.stack(organization.slug)">{{ organization.name }}'s TechStack</nuxt-link>                      
-                      <nuxt-link v-if="organization.refSource == 'Technology'" :to="routes.tech(getTechnologySlug(organization.refId))">TechStacks using {{ organization.name }}</nuxt-link>                      
-                      <nuxt-link v-if="canManageOrganization()" :to="routes.organization(organization.slug)" title="Manage Organization (M)">manage</nuxt-link>
+                      <v-btn v-if="canManageOrganization()" outline color="primary" :to="routes.organization(organization.slug)" title="Manage Organization (M)">Manage {{ organization.name }}</v-btn>
+                      <v-btn v-if="organization.refSource == 'Technology'" outline color="primary" :to="routes.tech(getTechnologySlug(organization.refId))">TechStacks using {{ organization.name }}</v-btn>
+                      <v-btn v-if="organization.refSource == 'TechnologyStack'" outline color="primary" :to="routes.stack(organization.slug)">{{ organization.name }}'s TechStack</v-btn>
                     </span>
 
                     <v-btn-toggle v-model="all" style="margin-right:5px">
@@ -382,10 +382,10 @@ export default {
   max-width: 200px;
   max-height: 200px;
 }
-.org-links a {
-  font-size: 16px;
-  line-height: 36px;
-  vertical-align: middle;
-  margin-right: 20px;
+.org-links a.btn {
+  margin-top: 1px;
+}
+.org-links a.btn:last-child {
+  margin-right: 15px;
 }
 </style>
