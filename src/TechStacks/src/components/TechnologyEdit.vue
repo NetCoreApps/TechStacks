@@ -199,6 +199,7 @@ export default {
                 ? await createTechnology(fields, this.logo)
                 : await updateTechnology({ ...fields, id:this.id }, this.logo);
             
+            this.$store.dispatch('loadTechnology', this.slug);
             this.$router.push(routes.tech(this.slug));
 
           } catch(e) {

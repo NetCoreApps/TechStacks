@@ -209,6 +209,7 @@ export default {
                 ? await createTechStack(fields, this.screenshot)
                 : await updateTechStack({ ...fields, id:this.id }, this.screenshot);
             
+            this.$store.dispatch('loadTechnologyStack', this.slug);
             this.$router.push(routes.stack(stack.slug));
 
           } catch(e) {
