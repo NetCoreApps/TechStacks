@@ -252,6 +252,9 @@ namespace TechStacks.ServiceInterface
 
         public object Get(GetTechnologyStack request)
         {
+            if (string.IsNullOrEmpty(request.Slug))
+                throw new ArgumentNullException(nameof(request.Slug));
+            
             var techStack = int.TryParse(request.Slug, out var id)
                 ? Db.SingleById<TechnologyStack>(id)
                 : Db.Single<TechnologyStack>(x => x.Slug == request.Slug.ToLower());

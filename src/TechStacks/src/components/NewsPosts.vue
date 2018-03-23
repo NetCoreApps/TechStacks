@@ -135,6 +135,7 @@ import { ignoreKeyPress, fromNow, slugToName } from "~/shared/utils";
 import { POSTS_PER_PAGE, canManageOrganization, canPostToOrganization } from "~/shared/post";
 import { appendQueryString } from "@servicestack/client";
 import nuxtErrorVue from '../../.nuxt/components/nuxt-error.vue';
+import nuxtLoadingVue from '../../.nuxt/components/nuxt-loading.vue';
 
 export default {
   components: { PostEdit, PostsList, MembersInfo, OrganizationAdd, DebugInfo },
@@ -334,9 +335,18 @@ export default {
     const notFound = this.organization == null && (this.latestOrganizationPosts || []).length == 0;
     if (notFound) {
       try {
-        await this.$store.dispatch('loadTechnologyStackIfNotExists', this.slug);
-      } catch(e) {
+        await Promise.all([
+          this.$store.dispatch('loadTechnologyIfNotExists', this.slug),
+          this.$store.dispatch('loadTechnologyStackIfNotExists', this.slug)
+        ]);
+      } catch(e) {}
+
+      const tech = this.$store.getters.getTechnology(this.slug);
+      if (tech != null) {
+        this.$router.push(routes.tech(this.slug));
+        return;
       }
+
       const stack = this.$store.getters.getTechnologyStack(this.slug);
       if (stack != null) {
         this.$router.push(routes.stack(this.slug));

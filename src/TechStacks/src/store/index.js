@@ -439,6 +439,13 @@ const actions = {
         await doAction(commit, 'allTechStacks', async() => (await getAllTechStacks()));
     },
 
+    async loadTechnologyIfNotExists({ state, dispatch }, slug) {
+        if (state.technologyMap[slug])
+            return;
+
+        await dispatch('loadTechnology', slug);
+    },
+
     async loadTechnology({ commit }, slug) {
         await doAction(commit, 'technology', async() => (await getTechnology(slug)));
     },

@@ -16,7 +16,7 @@
 
                   <h2 v-if="!techstack && loading" class="svg-icon loading">Loading Technology Stack {{slug}} ...</h2>
 
-                  <div v-if="!techstack && !loading" class="no-prerender">
+                  <div v-if="notFound" class="no-prerender">
                     <h2><v-icon color="red">error_outline</v-icon> Technology Stack '{{slug}}' was not found</h2>
 
                     <v-btn large :to="routes.newStack">Add New TechStack</v-btn>
@@ -139,6 +139,7 @@ import { dateFmt } from '@servicestack/client';
 import { heroes } from "@servicestack/images";
 import { ignoreKeyPress } from '~/shared/utils';
 import { routes } from "~/shared/routes";
+import nuxtErrorVue from '../../../../.nuxt/components/nuxt-error.vue';
 
 export default {
   components: { TechnologyPost, TechnologyComments },
@@ -221,7 +222,8 @@ export default {
   },
   
   async mounted() {
-    await this.loadTechStack();
+    await this.$store.dispatch('loadTechnologyStackIfNotExists', this.slug);
+    this.notFound = this.techstack == null;
     this.refreshPageStats();
 
     window.addEventListener('keyup', this.handleKeyUp);
@@ -233,6 +235,7 @@ export default {
 
   data: () => ({
     routes,
+    notFound: false,
   }),
 };
 </script>

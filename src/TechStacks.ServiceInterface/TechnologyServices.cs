@@ -52,6 +52,9 @@ namespace TechStacks.ServiceInterface
 
         public object Get(GetTechnology request)
         {
+            if (string.IsNullOrEmpty(request.Slug))
+                throw new ArgumentNullException(nameof(request.Slug));
+            
             var tech = int.TryParse(request.Slug, out var id)
                 ? Db.SingleById<Technology>(id)
                 : Db.Single<Technology>(x => x.Slug == request.Slug.ToLower());

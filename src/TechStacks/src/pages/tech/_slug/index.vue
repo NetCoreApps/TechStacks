@@ -16,7 +16,7 @@
 
                   <h2 v-if="!technology && loading" class="svg-icon loading">Loading Technology {{slug}} ...</h2>
 
-                  <div v-if="!technology && !loading" class="no-prerender">
+                  <div v-if="notFound" class="no-prerender">
                     <h2><v-icon color="red">error_outline</v-icon> Technology '{{slug}}' was not found</h2>
                     <v-btn large :to="routes.newTech">Add Technology</v-btn>
                   </div>
@@ -140,16 +140,16 @@ export default {
       return heroes.static(this.slug); 
     },
     technology(){
-      return this.getTechnology(this.slug);
+      return this.slug && this.getTechnology(this.slug);
     },
     canChange(){
-      return this.canChangeTechnology(this.technology);
+      return this.technology && this.canChangeTechnology(this.technology);
     },
     hasFavorited(){
-      return this.isFavoriteTechnology(this.slug);
+      return this.slug && this.isFavoriteTechnology(this.slug);
     },
     pageStats(){
-      return this.getPageStats("tech", this.slug);
+      return this.slug && this.getPageStats("tech", this.slug);
     },
     ...mapGetters(['loading','canChangeTechnology','getTechnology','getPageStats','isFavoriteTechnology','isAuthenticated','getOrganizationSlug'])
   },
@@ -201,7 +201,8 @@ export default {
   },
 
   async mounted() {
-    await this.loadTechnology();
+    await this.$store.dispatch('loadTechnologyIfNotExists', this.slug);
+    this.notFound = this.technology == null;
     this.refreshPageStats();
 
     window.addEventListener('keyup', this.handleKeyUp);
@@ -213,6 +214,7 @@ export default {
 
   data: () => ({
     routes,
+    notFound: false,
   })
 };
 </script>
