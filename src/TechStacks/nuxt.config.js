@@ -10,6 +10,9 @@ module.exports = {
     { src: '~plugins/ga.js', ssr: false },
     { src: '~/plugins/nuxt-client-init.js', ssr: false }
   ],
+  router: {
+    middleware: 'routes'
+  },
   modules: ['@nuxtjs/proxy'],
   proxy: {
     '/json': 'http://localhost:16325/',
@@ -22,7 +25,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'TechStacks',
+    title: 'techstacks.io',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
