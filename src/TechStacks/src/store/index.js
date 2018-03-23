@@ -447,7 +447,11 @@ const actions = {
     },
 
     async loadTechnology({ commit }, slug) {
-        await doAction(commit, 'technology', async() => (await getTechnology(slug)));
+        try {
+            await doAction(commit, 'technology', async() => (await getTechnology(slug)));
+        } catch(e){
+            console.log(`loadTechnology ${slug}: ${e.message}`, e.stack);
+        }
     },
 
     async loadTechnologyStackIfNotExists({ state, dispatch }, slug) {
@@ -458,7 +462,11 @@ const actions = {
     },
 
     async loadTechnologyStack({ commit }, slug) {
-        await doAction(commit, 'technologyStack', async() => (await getTechnologyStack(slug)).result);
+        try {
+            await doAction(commit, 'technologyStack', async() => (await getTechnologyStack(slug)).result);
+        } catch(e){
+            console.log(`loadTechnologyStack ${slug}: ${e.message}`, e.stack);
+        }
     },
 
     async getPageStats({ commit }, { type, slug, id }) {
@@ -508,7 +516,11 @@ const actions = {
     },
     
     async loadOrganizationById({ commit, dispatch }, orgId) {
-        await doAction(commit, 'organization', async() => await getOrganizationById(orgId));
+        try {
+            await doAction(commit, 'organization', async() => await getOrganizationById(orgId));
+        } catch(e){
+            console.log(`loadOrganizationById ${slug}: ${e.message}`, e.stack);
+        }
     },
 
     async loadOrganizationBySlugIfNotExists({ commit, getters, dispatch }, slug) {
@@ -518,7 +530,11 @@ const actions = {
     },
     
     async loadOrganizationBySlug({ commit, getters, state, dispatch }, slug) {
-        await doAction(commit, 'organization', async() => await getOrganizationBySlug(slug));
+        try {
+            await doAction(commit, 'organization', async() => await getOrganizationBySlug(slug));
+        } catch(e){
+            console.log(`loadOrganizationBySlug ${slug}: ${e.message}`, e.stack);
+        }
     },
 
     async latestNewsPosts({ commit, getters, state }, query) {
