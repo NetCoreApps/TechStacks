@@ -59,8 +59,12 @@
                     <v-spacer></v-spacer>
                     
                     <span class="org-links">
-                      <v-btn v-if="canManageOrganization()" outline color="primary" :to="routes.organization(organization.slug)" title="Manage Organization (M)">Manage {{ organization.name }}</v-btn>
-                      <v-btn v-if="organization.refSource == 'Technology'" outline color="primary" :to="routes.tech(getTechnologySlug(organization.refId))">TechStacks using {{ organization.name }}</v-btn>
+                      <v-btn v-if="canManageOrganization()" outline color="primary" :to="routes.organization(organization.slug)" title="Manage Organization (M)">
+                        {{ `Manage${organization.name.length &lt;= 20 ? ' ' + organization.name :''}` }}
+                      </v-btn>
+                      <v-btn v-if="organization.refSource == 'Technology'" outline color="primary" :to="routes.tech(getTechnologySlug(organization.refId))">
+                        {{ organization.name.length &lt;= 20 ? 'TechStacks using  ' + organization.name : organization.name + ' TechStack' }}
+                      </v-btn>
                       <v-btn v-if="organization.refSource == 'TechnologyStack'" outline color="primary" :to="routes.stack(organization.slug)">{{ organization.name }}'s TechStack</v-btn>
                     </span>
 
