@@ -40,7 +40,7 @@
                         </v-btn>
                       </div>
                       <div v-else>
-                        <v-btn fab dark small color="grey" title="You are not permitted to submit posts">
+                        <v-btn fab dark small color="grey" title="You are not permitted to submit posts" :href="routes.authGitHub">
                           <v-icon dark>add</v-icon>
                         </v-btn>
                       </div>

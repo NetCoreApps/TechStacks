@@ -72,7 +72,7 @@
 
             <CommentEdit ref="txtComment" v-if="canCommentPost(post)" :post="post" @done="commentDone"></CommentEdit>    
             
-            <div v-if="!isAuthenticated">Please Sign In to comment</div>
+            <div v-if="!isAuthenticated" class="comments-signin">Please <a :href="routes.authGitHub">Sign In</a> to comment</div>
 
         </v-flex>
         <v-flex class="post-comments">
@@ -108,7 +108,8 @@ import {
   contentRules,
   fromNow,
 } from "~/shared/utils";
-import { postKarma, sortComments, canUpdatePost, canFavoritePost, canReportPost, canCommentPost, organizationMember,
+import { routes } from "~/shared/routes";
+import { sortComments, canUpdatePost, canFavoritePost, canReportPost, canCommentPost, organizationMember,
          favoritePost, favoriteLabel, votedClass, votePost, votePostComment, votedCommentClass, canVotePost } from "~/shared/post";
 import { errorResponse, splitOnFirst, combinePaths } from "@servicestack/client";
 
@@ -203,7 +204,6 @@ export default {
       }      
     },
 
-    postKarma, 
     organizationMember,
     canUpdatePost, 
     canFavoritePost,
@@ -239,6 +239,7 @@ export default {
   },
 
   data: () => ({
+    routes,
     valid: true,
     edit: false,
     notFound: false,

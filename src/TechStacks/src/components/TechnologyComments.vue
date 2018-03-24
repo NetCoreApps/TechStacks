@@ -5,7 +5,8 @@
         <v-flex class="post-features">
 
             <h2 v-if="post.comments.length > 1" class="comments-title">All {{post.comments.length || ''}} comments</h2>
-            <h2 v-else class="comments-title">Leave a comment</h2>
+            <div v-else-if="!isAuthenticated" class="comments-signin">Please <a :href="routes.authGitHub">Sign In</a> to comment</div>
+            <div v-else class="comments-title">Leave a comment</div>
 
             <CommentEdit ref="txtComments" v-if="canCommentPost(post)" :post="post" @done="commentDone"></CommentEdit>    
             
@@ -15,32 +16,35 @@
         </v-flex>
     </v-flex>
     <v-flex v-else-if="!loading && !notFound" class="post-features">
-      <h2 class="comments-title">Leave a comment</h2>
+      <div v-if="!isAuthenticated" class="comments-signin">Please <a :href="routes.authGitHub">Sign In</a> to comment</div>
+      <div v-else>
+        <h2 class="comments-title">Leave a comment</h2>
 
-      <v-form v-model="valid" ref="form" lazy-validation>
-          <v-card style="margin-top:.5em">
-              <v-card-text style="padding-top:0">
-                  <v-alert outline color="error" icon="warning" :value="errorSummary">{{ errorSummary }}</v-alert>                  
+        <v-form v-model="valid" ref="form" lazy-validation>
+            <v-card style="margin-top:.5em">
+                <v-card-text style="padding-top:0">
+                    <v-alert outline color="error" icon="warning" :value="errorSummary">{{ errorSummary }}</v-alert>                  
 
-                  <Editor ref="editor"
-                      style="padding-top:10px"
-                      label="Comment"
-                      v-model="content"
-                      :rows="6"
-                      :counter="contentCounter"
-                      :rules="contentRules"
-                      :error-messages="errorResponse('content')"
-                      @save="submit"
-                      />
+                    <Editor ref="editor"
+                        style="padding-top:10px"
+                        label="Comment"
+                        v-model="content"
+                        :rows="6"
+                        :counter="contentCounter"
+                        :rules="contentRules"
+                        :error-messages="errorResponse('content')"
+                        @save="submit"
+                        />
 
-              </v-card-text>
-              <v-card-actions>
-                  <v-layout>
-                      <v-btn flat @click="submit">Submit</v-btn>
-                  </v-layout>
-              </v-card-actions>
-          </v-card>
-      </v-form>
+                </v-card-text>
+                <v-card-actions>
+                    <v-layout>
+                        <v-btn flat @click="submit">Submit</v-btn>
+                    </v-layout>
+                </v-card-actions>
+            </v-card>
+        </v-form>
+      </div>
     </v-flex>
   </v-layout>
 </template>
@@ -53,6 +57,7 @@ import PostAlerts from "~/components/PostAlerts.vue";
 import Editor from "~/components/Editor.vue";
 
 import { mapGetters } from "vuex";
+import { routes } from "~/shared/routes";
 import { toObject, errorResponse, errorResponseExcept } from "@servicestack/client";
 import { createOrganizationForTechnology, createOrganizationForTechStack, createPostComment } from "~/shared/gateway";
 import { canCommentPost, sortComments } from "~/shared/post";
@@ -151,6 +156,7 @@ export default {
   },
 
   data: () => ({
+    routes,
     ...comment,
     postId: null,
     valid: true,

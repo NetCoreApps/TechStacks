@@ -14,7 +14,7 @@
                 </v-btn>
               </div>
               <div v-else>
-                <v-btn fab dark small color="grey" title="Sign in to post">
+                <v-btn fab dark small color="grey" title="Sign in to post" :href="routes.authGitHub">
                   <v-icon dark>add</v-icon>
                 </v-btn>
               </div>

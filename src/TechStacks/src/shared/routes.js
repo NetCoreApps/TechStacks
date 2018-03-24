@@ -8,6 +8,8 @@ const appendQuery = (route,qs) => hasQuery(qs)
 
 export const routes = {
     formattingHelp: 'https://guides.github.com/features/mastering-markdown/',
+    authGitHub: '/auth/github',
+    authTwitter: '/auth/twitter',
     homeNews: '/',
     homeTop: '/top/',
     homeFavorites: '/favorites/',

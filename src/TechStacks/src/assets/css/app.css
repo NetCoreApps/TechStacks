@@ -694,8 +694,11 @@ blockquote {
     margin-left: 35px;
   }
 
-  .comments-title {
+  .comments-title, .comments-signin {
     margin-left: 15px;
+  }
+  .comments-signin {
+    margin-bottom: 10px;
   }
   .post-content, .post-image {
     border: none;
