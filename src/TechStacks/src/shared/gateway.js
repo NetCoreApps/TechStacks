@@ -120,7 +120,7 @@ export const queryTechnology = async (query) => await client.get(new QueryTechno
 export const queryTechStacks = async (query) => await client.get(new QueryTechStacks(), { include: 'total', ...query });
 
 export const queryPosts = async (query) => await client.get(new QueryPosts(), 
-    { take:50, ...query, fields: "id,organizationId,userId,type,categoryId,slug,title,imageUrl,technologyIds,upVotes,downVotes,commentsCount,created,createdBy" });
+    { take:50, ...query, fields: "id,organizationId,userId,type,categoryId,slug,title,imageUrl,technologyIds,upVotes,downVotes,points,commentsCount,created,createdBy" });
 
 export const queryPostComments = async(query) => await client.get(new QueryPostComments(), { take:50, ...query });
 

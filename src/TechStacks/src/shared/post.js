@@ -35,7 +35,7 @@ export const LANG_CODES = {
 
 export const getLangCode = (name) => name ? (LANG_CODES[name.toLowerCase()] || name.toLowerCase()) : null;
 
-export const postKarma = (post) =>  Math.max(1 + post.upVotes - post.downVotes, 0);
+export const postKarma = (post) =>  post.points;
 
 export const commentKarma = (comment) => 1 + comment.upVotes - comment.downVotes;
 
