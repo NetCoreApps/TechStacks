@@ -223,7 +223,7 @@ section.block {
 .post-image img {
   max-width: 1070px;
   max-height: 1070px;
-  margin-top: 5px;
+  margin-top: 8px;
 }
 .post-comments > .comment {
   margin-top: 1em;
@@ -582,6 +582,9 @@ blockquote {
   .org-types {
     margin-top: 5px;
   }  
+  .post-image img {
+    max-width: 100%;
+  }
   .tech-results td:nth-child(2), .tech-results th:nth-child(2) {
     display: none;
   }
