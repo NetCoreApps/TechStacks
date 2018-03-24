@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="comments-page">
   <div v-if="post && comment" class="no-prerender">
     <PostAlerts :organization="organization" :post="post"></PostAlerts>
 

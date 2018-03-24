@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%">
+  <div class="tech-page" style="width:100%">
 
     <div class="hero">
       <v-parallax :src="heroUrl" >
@@ -11,7 +11,7 @@
               style="min-height: 0"
               grid-list-lg
             >
-              <v-card style="max-width:1200px">
+              <v-card>
                 <v-card-title primary-title style="justify-content:center;min-height:220px;min-width:800px">
 
                   <h2 v-if="!technology && loading" class="svg-icon loading">Loading Technology {{slug}} ...</h2>
@@ -71,7 +71,7 @@
       </v-parallax>
     </div>
 
-    <v-container v-if="technology" class="body" grid-list-md>
+    <v-container v-if="technology" class="techstacks body" grid-list-md>
       <v-layout class="body" fluid column>
 
         <TechnologyPost type="Announcement" :technology="technology" @organizationCreated="loadTechnology" />

@@ -58,6 +58,8 @@ div.white--text a {
 }
 .hero .card {
   opacity: .94;
+  min-width: 900px;
+  max-width: 1200px;
 }
 .body {
   max-width: 1400px;
@@ -204,6 +206,9 @@ section.block {
 }
 .post-body {
   margin: 0 0 0 1.5em;
+}
+.post-page .post-body {
+  margin: 1em .5em .5em .5em;
 }
 .post-content {
   border: 1px solid #eee;
@@ -541,6 +546,19 @@ blockquote {
 
 /* iPad in portrait: 768x1024 */
 @media only screen and (max-width: 768px) {
+  .container {
+    padding: 0;
+  }
+  .card, .hero .card, .post, .post-content {
+    max-width: 768px;
+    min-width: auto;
+  }
+  p, pre, .description {
+    max-width: 728px;
+  }
+  .news .parent-organization {
+    display: block;
+  }
   .parent-organization {
     display: none;
   }
@@ -556,16 +574,90 @@ blockquote {
   .btn-stack b:before {
     content: "TechStack"
   }
+  .parallax {
+    height: 350px !important;
+  }
+
+  /* News Posts */
+  .org-types {
+    margin-top: 5px;
+  }  
+  .tech-results td:nth-child(2), .tech-results th:nth-child(2) {
+    display: none;
+  }
+  .stacks-page .hero .card .flex.xs3, .stacks-page .hero .card .flex.xs3 {
+    flex-basis: 33%;
+    max-width: 33%;
+  }
+  .hero .card .btn {
+    height: 36px;
+  }
+  .hero .card .btn__content {
+    padding: 0 14px;
+  }
+  .btn-reset {
+    min-width: 60px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .btn-add {
+    min-width: 80px;
+  }
+
+  .techstacks .flex.xs3, .top-page .flex.xs8, .top-page .flex.xs4 {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+  .favorites-page .flex.xs9, .favorites-page .flex.xs3, 
+  .top-page .flex.xs6 {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+  .favorites-page .techstack-card .flex.xs3 {
+    flex-basis: 25%;
+    max-width: 25%;
+  }
+  .description {
+    font-size: 16px;
+    line-height: 22px;
+  }
 }
 
 /* iPhone 8 Plus 414x736 */
 @media only screen and (max-width: 414px) {
-  .org-links {
-    /* background: green; */
+  .card {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: 0;
+    border: .1px solid rgba(0,0,0,.2);
+    border-top: none;
   }
-  .container {
-    padding: 0;
+  .toolbar {
+    -webkit-box-shadow: none;
+    box-shadow: none;
   }
+  .card, .hero .card, .post, .post-content {
+    max-width: 414px;
+  }
+  p, pre, .description {
+    max-width: 395px;
+  }
+  .logo {
+    margin-left: 10px !important;
+  }
+  .parallax .parallax__content {
+    height: auto !important;
+  }
+  .top-page .parallax, .techs-page .parallax {
+    height: 377px !important;
+  }
+  .favorites-page .parallax {
+    height: 220px !important;
+  }
+  .parent-organization, .news .parent-organization {
+    display: none;
+  }
+  /* News Posts */
   .post-rank {
     display: none;
   }
@@ -579,12 +671,91 @@ blockquote {
     font-size: 16px;
     line-height: 22px;
   }
+  .post-info {
+    min-width: 315px;
+  }
+  .post-info a {
+    white-space: normal;
+  }
+  /* Post Page */
+  .post-page .page-votes {
+    position: absolute;
+    transform: scale(0.7);
+    margin-top: -5px;
+    margin-left: -5px;
+  }
+  .post-page .page-votes .btn {
+    height: 28px;
+  }
+  .post-page .post-title, .post-page .post-info {
+    margin-left: 35px;
+  }
+
+  .comments-title {
+    margin-left: 15px;
+  }
+  .post-content, .post-image {
+    border: none;
+    padding: 5px 0 0 0;
+  }
+  .post-content p, .post-content .continue, .gfm {
+    font-size: 14px;
+  }
+
+  .stacks-page .hero .card .flex.xs4, .techs-page .hero .card .flex.xs3 {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+  .techs-page .hero .card .flex.xs5 {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+  .stacks-page .title, .techs-page .title {
+    margin-top: 10px;
+  }
+  .techstacks .flex.xs3, 
+  .top-page .flex.xs8, .top-page .flex.xs6, .top-page .flex.xs4 {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+  .favorites-page .techstack-card .flex.xs3 {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+  .tech-page .container.grid-list-md .layout .flex {
+    padding: 0;
+  }
+  .comment-child {
+    margin: 0;
+  }
+  .comment-actions {
+    flex-wrap: wrap;
+  }
+
+  .btn-toggle {
+    flex-wrap: wrap;
+  }
+  .hero .card .btn-toggle .btn__content, .btn-toggle .btn__content {
+    padding: 0;
+  }
+  .tech-results table.datatable tbody td {
+    padding: 0 8px;
+  }
+  .tech-results table.datatable tbody td:first-child {
+    white-space: normal;
+  }
 }
 
 /* iPhone X 375x812 */
 /* iPhone 8 375x667 */
-@media only screen and (max-width: 375px) {
-  .org-links {
-    /* background: red; */
+@media only screen and (max-width: 376px) {
+  .card, .hero .card, .post, .post-content {
+    max-width: 375px;
+  }
+  p, pre, .description {
+    max-width: 360px;
+  }
+  .btn-toggle .btn {
+    padding: 0 5px;
   }
 }

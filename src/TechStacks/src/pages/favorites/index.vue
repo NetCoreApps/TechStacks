@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%" class="no-prerender">
+  <div class="favorites-page no-prerender" style="width:100%">
 
     <div class="hero">
       <v-parallax :src="heroUrl" >
@@ -11,8 +11,8 @@
               style="min-height: 0"
               grid-list-lg
             >
-              <v-card style="max-width:1200px">
-                <v-card-title primary-title style="justify-content:center;min-height:250px;min-width:800px">
+              <v-card>
+                <v-card-title primary-title>
 
                   <h2 v-if="!user && loading" class="svg-icon loading">Loading My Feed...</h2>
 
@@ -56,7 +56,7 @@
         </v-flex>
       </v-layout>
 
-      <v-layout row>
+      <v-layout row wrap>
 
         <v-flex v-if="tab == 0" xs9>
           <PostsList :posts="latestNewsPosts" :page="page" />
@@ -94,7 +94,7 @@
                   </v-toolbar-title>
                 </v-toolbar>
               </nuxt-link>
-              <v-card>
+              <v-card class="techstack-card">
                 <v-card-title>
                   <v-container fluid grid-list-sm>
                     <v-layout row>

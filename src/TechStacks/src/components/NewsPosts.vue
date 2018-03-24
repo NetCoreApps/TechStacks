@@ -86,7 +86,7 @@
                         <v-btn v-for="(label,index) in visibleTypeLabels" :key="label" :title="`${label} (ALT+${index+2})`">{{ label }}</v-btn>
                       </v-btn-toggle>
                     </v-layout>
-                    </v-flex>
+                  </v-flex>
                 </v-layout>
             </v-flex>
 

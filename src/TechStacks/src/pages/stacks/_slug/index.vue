@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%">
+  <div class="stack-page" style="width:100%">
 
     <div class="hero">
       <v-parallax :src="heroUrl" >
@@ -11,8 +11,8 @@
               style="min-height: 0"
               grid-list-lg
             >
-              <v-card style="max-width:1200px">
-                <v-card-title primary-title style="justify-content:center;min-height:300px;min-width:800px">
+              <v-card>
+                <v-card-title primary-title>
 
                   <h2 v-if="!techstack && loading" class="svg-icon loading">Loading Technology Stack {{slug}} ...</h2>
 
@@ -23,14 +23,14 @@
                   </div>
 
                   <v-layout v-else-if="techstack">
-                    <v-flex>
+                    <v-flex class="stack-description">
                       <h1>{{techstack.name}}</h1>
                       <div v-if="techstack.vendorName != techstack.name" class="vendor">{{ techstack.vendorName }}</div>
                       <div v-if="techstack" class="description">{{ techstack.description }}</div>          
                     </v-flex>
-                    <v-flex v-if="techstack.screenshotUrl && techstack.appUrl" style="text-align:center">
+                    <v-flex class="stack-screenshot" v-if="techstack.screenshotUrl && techstack.appUrl">
                       <a :href="techstack.appUrl">
-                        <img :src="techstack.screenshotUrl" style="max-width:400px;max-height:300px">
+                        <img :src="techstack.screenshotUrl">
                         <div>{{ techstack.appUrl }}</div>
                       </a>
                     </v-flex>
@@ -255,5 +255,32 @@ export default {
   font-size: 24px;
   color: gray;
 }
+.stack-page .stack-description {
+  flex-grow:1;
+  flex-shrink:1;
+}
+.stack-page .stack-screenshot {
+  text-align:center;
+}
+.stack-page .stack-screenshot img {
+  max-width:400px;
+  max-height:300px;
+}
+
+/* iPad in portrait: 768x1024 */
+@media only screen and (max-width: 768px) {
+  .stack-page .hero .card .layout {
+    flex-wrap: wrap;
+  }
+  .stack-page .stack-description {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+  .stack-page .stack-screenshot img {
+    max-height: 200px;
+    padding-top: 10px;
+  }
+}
+
 
 </style>

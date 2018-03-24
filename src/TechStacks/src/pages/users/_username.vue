@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%">
+  <div class="user-page" style="width:100%">
 
     <div class="hero">
       <v-parallax :src="heroUrl" >
@@ -11,8 +11,8 @@
               style="min-height: 0"
               grid-list-lg
             >
-              <v-card style="max-width:1200px">
-                <v-card-title primary-title style="justify-content:center;min-height:250px;min-width:800px">
+              <v-card>
+                <v-card-title primary-title>
 
                   <h2 v-if="!user && loading" class="svg-icon loading">Loading User {{userName}} ...</h2>
 
@@ -60,7 +60,7 @@
     </div>
 
     <v-container v-if="user && tab == 0" class="body" grid-list-md>
-      <v-layout class="body" fluid>
+      <v-layout class="body techstacks" fluid>
         <v-flex v-if="user.techStacks.length > 0" xs12 sm12>
           <v-toolbar dark>
             <v-toolbar-title class="headline white--text">TechStacks created by @{{ user.userName }}</v-toolbar-title>
@@ -103,7 +103,7 @@
                 :pagination.sync="pagination"
                 :items="user.favoriteTechnologies"
                 hide-actions
-                class="elevation-1"
+                class="elevation-1 tech-results"
               >
               <template slot="items" slot-scope="props">
                 <tr @click="$router.push(`/tech/${props.item.slug}`)">
@@ -128,7 +128,7 @@
     </v-container>
 
     <v-container v-if="user && tab == 2" class="body" grid-list-md>
-      <v-layout class="body" fluid>
+      <v-layout class="body techstacks" fluid>
         <v-flex v-if="user.favoriteTechStacks.length > 0" xs12 sm12>
           <v-toolbar dark>
             <v-toolbar-title class="headline white--text">@{{ user.userName }} favorite TechStacks</v-toolbar-title>

@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%">
+  <div class="techs-page" style="width:100%">
 
     <div class="hero">
       <v-parallax :src="heroUrl" >
@@ -11,8 +11,8 @@
               style="min-height: 0"
               grid-list-lg
             >
-              <v-card style="max-width:1200px">
-                <v-card-title primary-title style="justify-content:center;min-height:220px;min-width:900px">
+              <v-card>
+                <v-card-title primary-title>
 
                   <v-form style="width:100%">
 
@@ -64,8 +64,8 @@
                         </v-flex>
 
                         <v-flex xs5>
-                          <v-btn large @click="reset()">reset</v-btn>
-                          <v-btn large :disabled="!isAuthenticated" :to="routes.newTech" primary>Add Technology</v-btn>
+                          <v-btn large class="btn-reset" @click="reset()">reset</v-btn>
+                          <v-btn large class="btn-add" :disabled="!isAuthenticated" :to="routes.newTech" primary>Add Technology</v-btn>
                         </v-flex>
                         
                       </v-layout>
@@ -99,7 +99,7 @@
                 :pagination.sync="pagination"
                 :loading="loading"
                 hide-actions
-                class="elevation-1"
+                class="elevation-1 tech-results"
               >
               <template slot="items" slot-scope="props">
                 <tr @click="$router.push(routes.tech(props.item.slug))">

@@ -1,5 +1,5 @@
 <template>
-  <div class="no-prerender">
+  <div class="organizations-page no-prerender">
     <OrganizationEdit :orgSlug="$route.params.slug" />
   </div>
 </template>
@@ -11,3 +11,4 @@ export default {
   components: { OrganizationEdit },
 }
 </script>
+ 

@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%" class="no-prerender">
+  <div class="top-page no-prerender" style="width:100%">
 
     <div class="hero">
       <v-parallax :src="heroUrl">
@@ -70,7 +70,7 @@
     </div>
 
     <v-container class="body" grid-list-md>
-      <v-layout row>
+      <v-layout row wrap>
         
         <v-flex xs8>
           <v-layout row wrap>

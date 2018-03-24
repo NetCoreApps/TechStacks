@@ -1,5 +1,5 @@
 <template>
-<v-container>
+<v-container class="organizations-page">
   <v-layout fluid>
     <v-flex sm10 offset-sm1 :class="loading ? 'loading-body' : ''">
       <i v-if="allOrganizations.length > 0" class="no-prerender"></i>

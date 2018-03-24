@@ -1,29 +1,29 @@
 <template>
 <div>
 
-  <div v-if="post" class="no-prerender">
+  <div v-if="post" class="post-page no-prerender">
       <v-layout @click="handleCtrlClick">
           <v-card :class="['post', votedClass(post.id), { deleted: post.deleted }]">
               <v-card-title>
                   <v-container fluid grid-list-sm>
                       <v-layout row>
-                          <v-flex style="max-width:52px">
+                          <v-flex class="page-votes" style="max-width:52px">
                               <v-layout column style="text-align:center">
                                 <v-btn icon class="vote-btn up" @click="votePost(post,1)" :disabled="!canVotePost(post)">
                                   <v-icon>arrow_drop_up</v-icon>
                                 </v-btn>
-                                <h4 class="votes">{{postKarma(post)}}</h4>
+                                <h4 class="votes">{{ post.points }}</h4>
                                 <v-btn icon class="vote-btn down" @click="votePost(post,-1)" :disabled="!canVotePost(post)">
                                   <v-icon>arrow_drop_down</v-icon>
                                 </v-btn>
                               </v-layout>                                        
                           </v-flex>
 
-                          <v-flex class="post-body" style="margin:1em">
+                          <v-flex class="post-body">
                             <v-layout column>
                               <h2 v-if="!post.url" class="post-title">{{ post.title }}</h2>
 
-                              <a v-if="post.url" class="post-link external" :href="post.url">{{ post.title }}</a>
+                              <a v-if="post.url" class="post-title post-link external" :href="post.url">{{ post.title }}</a>
 
                               <PostInfo :organization="organization" :post="post"/>
 

@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%">
+  <div class="stacks-page" style="width:100%">
 
     <div class="hero">
       <v-parallax :src="heroUrl" >
@@ -11,8 +11,8 @@
               style="min-height: 0"
               grid-list-lg
             >
-              <v-card style="max-width:1200px">
-                <v-card-title primary-title style="justify-content:center;min-height:220px;min-width:900px">
+              <v-card>
+                <v-card-title primary-title>
 
                   <v-form style="width:100%">
 
@@ -82,7 +82,7 @@
       </v-parallax>
     </div>
 
-    <v-container v-if="!loading" class="body" grid-list-md>
+    <v-container v-if="!loading" class="techstacks body" grid-list-md>
       <v-layout class="body" fluid>
         <v-flex v-if="results.length > 0" xs12 sm12 class="no-prerender">
           <v-card>

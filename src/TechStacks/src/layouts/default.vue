@@ -6,7 +6,7 @@
       <span v-if="$store.getters.mounted" id="__mounted"></span>
 
       <v-toolbar fixed app :clipped-left="clipped" style="background:#24292e" dark>
-        <nuxt-link :to="routes.homeNews" exact>
+        <nuxt-link class="logo" :to="routes.homeNews" exact>
           <img src="../static/img/logo-white.svg" width="42" height="42" />
         </nuxt-link>
         <nuxt-link :to="routes.homeNews" exact style="color:#fff;text-decoration:none">

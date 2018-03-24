@@ -1,37 +1,45 @@
 <template>
-  <div class="news">
+  <div class="news-page news">
     <v-layout column>
       <v-flex>
-          <v-layout>
-            <div v-if="isAuthenticated">
-              <v-btn v-if="!add" fab dark small color="pink" @click="add=true" title="Submit New Post">
-                <v-icon dark>add</v-icon>
-              </v-btn>
-              <v-btn v-if="add" fab dark small color="pink" @click="add=false" title="Hide">
-                <v-icon dark>remove</v-icon>
-              </v-btn>
-            </div>
-            <div v-else>
-              <v-btn fab dark small color="grey" title="Sign in to post">
-                <v-icon dark>add</v-icon>
-              </v-btn>
-            </div>
+        <v-layout id="news-nav" wrap>
+          <v-flex class="org-title" style="flex-grow:1">
+            <v-layout>
+              <div v-if="isAuthenticated">
+                <v-btn v-if="!add" fab dark small color="pink" @click="add=true" title="Submit New Post">
+                  <v-icon dark>add</v-icon>
+                </v-btn>
+                <v-btn v-if="add" fab dark small color="pink" @click="add=false" title="Hide">
+                  <v-icon dark>remove</v-icon>
+                </v-btn>
+              </div>
+              <div v-else>
+                <v-btn fab dark small color="grey" title="Sign in to post">
+                  <v-icon dark>add</v-icon>
+                </v-btn>
+              </div>
 
-            <h1>
-              <span class="parent-organization">
-                <nuxt-link :to="routes.homeNews" style="color:#333">news </nuxt-link>
-              </span>
-            </h1>
-            <v-spacer></v-spacer>
+              <h1>
+                <span class="parent-organization">
+                  <nuxt-link :to="routes.homeNews" style="color:#333">news </nuxt-link>
+                </span>
+              </h1>
+            </v-layout>
+          </v-flex>
+          <v-spacer></v-spacer>
 
-            <v-btn-toggle v-model="all" style="margin-right:5px">
-              <v-btn title="show ALL (ALT+1)">all</v-btn>
-            </v-btn-toggle>
+          <v-flex class="org-types" style="flex-grow:0">
+            <v-layout>
+              <v-btn-toggle v-model="all" style="margin-right:5px">
+                <v-btn title="show ALL (ALT+1)">all</v-btn>
+              </v-btn-toggle>
 
-            <v-btn-toggle multiple v-if="allPostTypes.length > 0" v-model="filterTypes">
-              <v-btn v-for="(postType,index) in allPostTypes" :key="postType.name" :title="`${postType.title} (ALT+${index+2})`">{{ postType.title }}</v-btn>
-            </v-btn-toggle>
-          </v-layout>
+              <v-btn-toggle multiple v-if="allPostTypes.length > 0" v-model="filterTypes">
+                <v-btn v-for="(postType,index) in allPostTypes" :key="postType.name" :title="`${postType.title} (ALT+${index+2})`">{{ postType.title }}</v-btn>
+              </v-btn-toggle>
+            </v-layout>
+          </v-flex>
+        </v-layout>
       </v-flex>
 
       <v-flex v-if="add">
@@ -56,7 +64,7 @@
       </v-flex>
 
       <v-flex v-if="latestNewsPosts.length > 0" style="margin:1em 0" class="no-prerender">
-        <v-layout>
+        <v-layout wrap>
           <PostsList :posts="latestNewsPosts" :page="page" />
 
           <v-flex class="tech-organizations">
@@ -103,19 +111,19 @@
               </v-card-actions>
             </v-card>
           </v-flex>
-
         </v-layout>
 
-          <v-flex style="margin-top:5px;">
-            <v-btn v-if="page > 0" color="primary" :to="getPageUrl(page-1)" title="View Previous (←)">
-              <v-icon>chevron_left</v-icon>
-              prev
-            </v-btn>
-            <v-btn v-if="hasMore" color="primary" :to="getPageUrl(page+1)" title="View Next (→)">
-              more
-              <v-icon>chevron_right</v-icon>
-            </v-btn>
-          </v-flex>
+        <v-flex style="margin-top:5px;">
+          <v-btn v-if="page > 0" color="primary" :to="getPageUrl(page-1)" title="View Previous (←)">
+            <v-icon>chevron_left</v-icon>
+            prev
+          </v-btn>
+          <v-btn v-if="hasMore" color="primary" :to="getPageUrl(page+1)" title="View Next (→)">
+            more
+            <v-icon>chevron_right</v-icon>
+          </v-btn>
+        </v-flex>
+
       </v-flex>
       <v-flex v-else-if="!loading">
         <v-alert color="info" outline :value="true" style="margin-top:1em">
@@ -348,4 +356,10 @@ export default {
 .news .organization-add {
  min-width: 300px;
 }
+@media only screen and (max-width: 1024px) {
+  .tech-organizations {
+    margin-left: 0;
+  }
+}
+
 </style>

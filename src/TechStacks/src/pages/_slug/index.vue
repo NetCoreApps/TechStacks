@@ -1,5 +1,5 @@
 <template>
-  <NewsPosts :slug="$route.params.slug" :query="$route.query"></NewsPosts>
+  <NewsPosts class="news-page" :slug="$route.params.slug" :query="$route.query"></NewsPosts>
 </template>
 
 <script>
