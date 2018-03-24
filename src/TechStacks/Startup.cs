@@ -110,7 +110,9 @@ namespace TechStacks
                 AppSettings.GetString("WebStacks.ConsumerKey"),
                 AppSettings.GetString("WebStacks.ConsumerSecret"),
                 AppSettings.GetString("WebStacks.AccessToken"),
-                AppSettings.GetString("WebStacks.AccessSecret")));
+                AppSettings.GetString("WebStacks.AccessSecret")) {
+                    BaseUrl = AppSettings.GetString("PublicBaseUrl"),
+                });
 
             var authRepo = new OrmLiteAuthRepository<CustomUserAuth, UserAuthDetails>(dbFactory);
             container.Register<IUserAuthRepository>(authRepo);

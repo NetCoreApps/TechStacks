@@ -102,7 +102,7 @@ namespace TechStacks.ServiceInterface
             var postUpdate = AppSettings.EnableTwitterUpdates();
             if (postUpdate)
             {
-                var url = new ClientTechnology { Slug = tech.Slug }.ToAbsoluteUri();
+                var url = TwitterUpdates.BaseUrl.CombineWith(new ClientTechnology { Slug = tech.Slug }.ToUrl());
                 var twitterSlug = tech.Slug.Replace("-", "");
                 PostTwitterUpdate(
                     $"Who's using #{twitterSlug}? {url}",
@@ -169,7 +169,7 @@ namespace TechStacks.ServiceInterface
 
             if (postUpdate)
             {
-                var url = new ClientTechnology { Slug = tech.Slug }.ToAbsoluteUri();
+                var url = TwitterUpdates.BaseUrl.CombineWith(new ClientTechnology { Slug = tech.Slug }.ToUrl());
                 var twitterSlug = tech.Slug.Replace("-", "");
 
                 response.ResponseStatus = new ResponseStatus

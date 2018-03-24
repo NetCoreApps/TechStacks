@@ -12,9 +12,11 @@ namespace TechStacks.ServiceInterface
 {
     public class TwitterUpdates
     {
-        private TwitterGateway gateway;
+        private readonly TwitterGateway gateway;
         private readonly string accessToken;
         private readonly string accessTokenSecret;
+        
+        public string BaseUrl { get; set; }
 
         public TwitterUpdates(
             string consumerKey, string consumerSecret,

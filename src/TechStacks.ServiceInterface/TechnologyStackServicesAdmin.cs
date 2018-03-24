@@ -119,7 +119,7 @@ namespace TechStacks.ServiceInterface
 
             if (postUpdate)
             {
-                var url = new ClientTechnologyStack { Slug = techStack.Slug }.ToAbsoluteUri();
+                var url = TwitterUpdates.BaseUrl.CombineWith(new ClientTechnologyStack { Slug = techStack.Slug }.ToUrl());
                 PostTwitterUpdate(
                     $"{techStack.Name}'s Stack! {url} ",
                     request.TechnologyIds,
@@ -222,7 +222,7 @@ namespace TechStacks.ServiceInterface
 
             if (postUpdate)
             {
-                var url = new ClientTechnologyStack { Slug = techStack.Slug }.ToAbsoluteUri();
+                var url = TwitterUpdates.BaseUrl.CombineWith(new ClientTechnologyStack { Slug = techStack.Slug }.ToUrl());
                 response.ResponseStatus = new ResponseStatus
                 {
                     Message = PostTwitterUpdate(
