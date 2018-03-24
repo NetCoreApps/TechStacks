@@ -698,10 +698,11 @@ blockquote {
     border: none;
     padding: 5px 0 0 0;
   }
-  .post-content p, .post-content .continue, .gfm {
+  .post-content p, .post-content .continue,
+  .gfm p, .gfm blockquote, .gfm ul, .gfm ol, .gfm dl, .gfm table {
     font-size: 14px;
   }
-
+  
   .stacks-page .hero .card .flex.xs4, .techs-page .hero .card .flex.xs3 {
     flex-basis: 50%;
     max-width: 50%;
