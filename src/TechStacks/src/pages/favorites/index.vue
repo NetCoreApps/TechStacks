@@ -66,6 +66,7 @@
               <v-icon>chevron_left</v-icon>
               prev
             </v-btn>
+            <span class="page-num" v-if="page > 0">{{ page }}</span>
             <v-btn v-if="hasMore" color="primary" :to="getPageUrl(page+1)" title="View Next (→)">
               more
               <v-icon>chevron_right</v-icon>
@@ -128,6 +129,7 @@
               <v-icon>chevron_left</v-icon>
               prev
             </v-btn>
+            <span class="page-num" v-if="page > 0">{{ page }}</span>
             <v-btn v-if="hasMore" color="primary" :to="getPageUrl(page+1)" title="View Next (→)">
               more
               <v-icon>chevron_right</v-icon>

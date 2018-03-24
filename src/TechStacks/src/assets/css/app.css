@@ -259,7 +259,19 @@ section.block {
   margin: -18px 0 0 0;
   position: absolute;
 }
-
+.page-num {
+  font-size: 20px;
+  padding: 0 .5em;
+}
+.sort-links {
+  margin: -15px 0 10px 60px;
+}
+.sort-links a {
+  margin-right: .5em;
+}
+.sort-links a.active {
+  color: #333;
+}
 .post-edit {
   width: 900px;
 }
