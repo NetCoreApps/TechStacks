@@ -84,6 +84,8 @@ namespace TechStacks.ServiceInterface
         public string Notes { get; set; }
 
         public DateTime? DisableEmails { get; set; }
+
+        public string CreatedBy { get; set; }
     }
 }
 

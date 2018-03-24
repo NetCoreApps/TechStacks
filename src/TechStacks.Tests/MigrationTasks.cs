@@ -2,13 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using ServiceStack;
 using ServiceStack.Logging;
 using ServiceStack.OrmLite;
 using TechStacks.ServiceModel.Types;
 using ServiceStack.Text;
+using ServiceStack.Text.Json;
 using TechStacks.ServiceInterface;
 using TechStacks.ServiceInterface.DataModel;
+using TechStacks.ServiceModel;
 
 namespace TechStacks.Tests
 {
@@ -37,7 +40,7 @@ namespace TechStacks.Tests
             }
         }
 
-        [Test]
+//        [Test]
         public void Create_GroupMember_schema()
         {
             using (var db = dbFactory.Open())
@@ -150,6 +153,10 @@ namespace TechStacks.Tests
         {
             using (var db = dbFactory.Open())
             {
+//                db.AddColumn<CustomUserAuth>(x => x.CreatedBy);
+//                db.DropAndCreateTable<PreRender>();
+//                db.AddColumn<Post>(x => x.Labels);
+
                 //db.AddColumn<Organization>(x => x.Lang);
                 //db.DropAndCreateTable<Subscription>();
 
@@ -296,6 +303,155 @@ namespace TechStacks.Tests
                 }
 
             }
+        }
+        
+        [Test]
+        public void Import_from_UserVoice()
+        {
+            string oauthKey = Environment.GetEnvironmentVariable("USERVOICE_KEY"); //required to get emails
+            const int resultsPerPage = 20;
+            var i = 0;
+            List<object> suggestions = null;
+
+            var client = new JsonServiceClient("http://localhost:16325") {
+                BearerToken = Environment.GetEnvironmentVariable("TECHSTACKS_DEVELOPMENT_TOKEN")
+            };
+
+            do
+            {
+                var url = $"https://servicestack.uservoice.com/api/v1/forums/176786/suggestions.json?per_page={resultsPerPage}&page={++i}&oauth_consumer_key={oauthKey}";
+                var json = url.GetJsonFromUrl(req => req.AddBearerToken(oauthKey));
+                var response = (Dictionary<string, object>) JSON.parse(json);
+                suggestions = (List<object>) response["suggestions"];
+
+                var userVoiceUsers = new Dictionary<string, UserVoiceUser>(StringComparer.OrdinalIgnoreCase);
+                var techstacksUsers = new Dictionary<string, UserRef>(StringComparer.OrdinalIgnoreCase);
+
+                UserVoiceUser toUser(object oUser)
+                {
+                    if (!(oUser is Dictionary<string, object> user))
+                        return null;
+
+                    if (!user.TryGetValue("email", out var oEmail))
+                    {
+                        "EMAIL NOT FOUND:".Print();
+                        user.PrintDump();
+                        return null;
+                    }
+
+                    var email = (string) oEmail;
+                    if (!userVoiceUsers.ContainsKey("user"))
+                    {
+                        return new UserVoiceUser {
+                            Id = (int) user["id"],
+                            Name = (string) user["name"],
+                            Email = email,
+                            AvatarUrl = (string) user["avatar_url"],         
+                            CreatedAt = user["created_at"].ToString().ConvertTo<DateTime>(),
+                            UpdatedAt = user["updated_at"].ToString().ConvertTo<DateTime>(),
+                        };
+                    }
+
+                    return null;
+                }
+                
+                foreach (var oSuggestion in suggestions)
+                {
+                    var request = new ImportUserVoiceSuggestion {
+                        OrganizationId = 1,                            
+                    };
+    
+                    try
+                    {
+                        if (oSuggestion is Dictionary<string, object> suggestion)
+                        {
+                            request.Url = (string)suggestion["url"];
+                            request.Id = (int)suggestion["id"];
+                            request.State = (string)suggestion["state"];
+                            request.Title = (string)suggestion["title"];
+                            
+                            //Can be null and just have title
+                            request.Text = suggestion["text"] as string;
+                            if (request.Text != null)
+                                request.Text = JsonTypeSerializer.Unescape(request.Text);
+                        
+                            request.FormattedText = suggestion["formatted_text"] as string;
+                            if (request.FormattedText!= null)
+                                request.FormattedText = JsonTypeSerializer.Unescape(request.FormattedText);
+                            
+                            request.VoteCount = (int) suggestion["vote_count"];
+                            request.CreatedAt = suggestion["created_at"].ToString().ConvertTo<DateTime>();
+                            request.UpdatedAt = suggestion["updated_at"].ToString().ConvertTo<DateTime>();
+ 
+                            if (suggestion.TryGetValue("category", out var category))
+                            {
+                                request.Category = category as string;
+                            }
+
+                            if (suggestion.TryGetValue("topic", out var oTopic) 
+                                && oTopic is Dictionary<string,object> topic)
+                            {
+                                request.TopicId = (int) topic["id"];
+                            }
+                            
+                            if (suggestion.TryGetValue("creator", out var creator))
+                            {
+                                request.Creator = toUser(creator);
+                            }
+    
+                            if (suggestion.TryGetValue("closed_at", out var oClosedAt) 
+                                && oClosedAt is string closeAt)
+                            {
+                                request.ClosedAt = oClosedAt.ConvertTo<DateTime>();
+                            }
+
+                            if (suggestion.TryGetValue("status_changed_by", out var statusUser))
+                            {
+                                request.StatusChangedBy = toUser(statusUser);
+                            }
+                            
+                            if (suggestion.TryGetValue("status", out var oStatus) && oStatus is Dictionary<string, object> status)
+                            {
+                                request.StatusName = (string)status["name"];
+                            }
+                            
+                            if (suggestion.TryGetValue("response", out var statusResponse) 
+                                && statusResponse is Dictionary<string, object> oStatusResponse)
+                            {
+                                request.Response = new UserVoiceComment {
+                                    Text = (string)oStatusResponse["text"],
+                                    FormattedText = (string)oStatusResponse["formatted_text"],
+                                    CreatedAt = oStatusResponse["created_at"].ToString().ConvertTo<DateTime>(),
+                                };
+                                if (request.Response.Text != null)
+                                    request.Response.Text = JsonTypeSerializer.Unescape(request.Response.Text);
+                                
+                                if (request.Response.FormattedText!= null)
+                                    request.Response.FormattedText = JsonTypeSerializer.Unescape(request.Response.FormattedText);
+
+                                if (oStatusResponse.TryGetValue("creator", out var responseCreator))
+                                {
+                                    request.Response.Creator = toUser(responseCreator);
+                                }
+                            }
+
+                            $"Importing Suggestion {request.Id}: {request.Title}".Print();
+
+                            var newPost = client.Post(request);
+                        
+                            $"Imported Post {newPost.PostId}: {newPost.PostSlug}".Print();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        $"Could not import suggestion: {ex.Message}\n{ex.StackTrace}".Print();
+                        oSuggestion.PrintDump();
+                    }
+                }
+
+            } while (suggestions.Count >= resultsPerPage);
+
+
         }
 
    }

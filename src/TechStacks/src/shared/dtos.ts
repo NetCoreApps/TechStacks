@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-19 21:14:35
+Date: 2018-03-24 00:10:39
 Version: 5.03
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -254,7 +254,7 @@ export class Post
     approved: boolean;
     upVotes: number;
     downVotes: number;
-    votesModifier: number;
+    points: number;
     views: number;
     favorites: number;
     subscribers: number;
@@ -496,6 +496,24 @@ export class Option
 
     // @DataMember(Name="value")
     value: TechnologyTier;
+}
+
+export class UserVoiceUser
+{
+    id: number;
+    name: string;
+    email: string;
+    avatarUrl: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export class UserVoiceComment
+{
+    text: string;
+    formattedText: string;
+    createdAt: string;
+    creator: UserVoiceUser;
 }
 
 export class GetOrganizationResponse
@@ -932,6 +950,19 @@ export class LogoUrlApprovalResponse
 
 export class LockStackResponse
 {
+}
+
+export class ImportUserResponse
+{
+    id: number;
+    responseStatus: ResponseStatus;
+}
+
+export class ImportUserVoiceSuggestionResponse
+{
+    postId: number;
+    postSlug: string;
+    responseStatus: ResponseStatus;
 }
 
 // @DataContract
@@ -1852,6 +1883,49 @@ export class LockTech implements IReturn<LockStackResponse>
     isLocked: boolean;
     createResponse() { return new LockStackResponse(); }
     getTypeName() { return "LockTech"; }
+}
+
+export class ImportUser implements IReturn<ImportUserResponse>
+{
+    userName: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    displayName: string;
+    company: string;
+    refSource: string;
+    refId: number;
+    refIdStr: string;
+    refUrn: string;
+    defaultProfileUrl: string;
+    meta: { [index:string]: string; };
+    createResponse() { return new ImportUserResponse(); }
+    getTypeName() { return "ImportUser"; }
+}
+
+// @Route("/import/uservoice/suggestion")
+export class ImportUserVoiceSuggestion implements IReturn<ImportUserVoiceSuggestionResponse>
+{
+    organizationId: number;
+    url: string;
+    id: number;
+    topicId: number;
+    state: string;
+    title: string;
+    slug: string;
+    category: string;
+    text: string;
+    formattedText: string;
+    voteCount: number;
+    closedAt: string;
+    statusName: string;
+    statusChangedBy: UserVoiceUser;
+    creator: UserVoiceUser;
+    response: UserVoiceComment;
+    createdAt: string;
+    updatedAt: string;
+    createResponse() { return new ImportUserVoiceSuggestionResponse(); }
+    getTypeName() { return "ImportUserVoiceSuggestion"; }
 }
 
 // @Route("/auth")

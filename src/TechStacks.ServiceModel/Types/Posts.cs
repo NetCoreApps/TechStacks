@@ -78,7 +78,11 @@ namespace TechStacks.ServiceModel.Types
 
         public long DownVotes { get; set; }
         
-        public long VotesModifier { get; set; }
+        [IgnoreDataMember]
+        public long PointsModifier { get; set; }
+
+        [Index]
+        public long Points { get; set; }
 
         public long Views { get; set; }
 
