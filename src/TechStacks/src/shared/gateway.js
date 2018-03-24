@@ -134,8 +134,10 @@ export const getUsersKarma = async(userIds) => (await client.get(new GetUsersKar
 
 export const getUserPostCommentVotes = async(postId) => await client.get(new GetUserPostCommentVotes(), { postId });
 
-export const queryLatestOrganizationsPosts = async (organizationId, types, categoryId, skip, take) => {
-    const request = { organizationId, orderBy:'rank' };
+export const queryLatestOrganizationsPosts = async (organizationId, types, categoryId, orderBy, skip, take) => {
+    if (!orderBy)
+        orderBy = 'rank';
+    const request = { organizationId, orderBy };
     if (types) 
         request.types = types;
     if (categoryId)

@@ -208,6 +208,7 @@ const mutations = {
         eachPost(state, postId, post => {
             post.upVotes += upVotes;
             post.downVotes += downVotes;
+            post.points += upVotes + downVotes;
         });
     },
     votePostComment(state, { postId, commentId, weight }) {
@@ -549,7 +550,7 @@ const actions = {
         if (!getters.organization) 
             return;
 
-        let { types, page, categoryId } = query;
+        let { types, page, categoryId, orderBy } = query;
 
         const q = state.latestOrganizationPostsQuery;
         const repeatedQuery = q && q.organizationId === organizationId && q.types === types && q.page === page && q.categoryId === categoryId;
@@ -564,7 +565,7 @@ const actions = {
     
         await doAction(commit, 'latestOrganizationPosts', async() => ({ 
             organizationId, 
-            posts: await queryLatestOrganizationsPosts(organizationId, types, categoryId, skip) 
+            posts: await queryLatestOrganizationsPosts(organizationId, types, categoryId, orderBy, skip) 
         }));
     },
 

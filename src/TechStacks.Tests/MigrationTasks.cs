@@ -259,6 +259,19 @@ namespace TechStacks.Tests
             }
         }
 
+        [Test]
+        public void Update_mythz_posts_to_webstacks_and_ServiceStack()
+        {
+            using (var db = dbFactory.Open())
+            {
+                db.UpdateOnly(() => new Post { UserId = 379, CreatedBy = "webstacks" },
+                    where: x => x.OrganizationId != 1 && x.UserId == 17 && x.CreatedBy == "mythz");
+
+                db.UpdateOnly(() => new Post { UserId = 8, CreatedBy = "ServiceStack" },
+                    where: x => x.OrganizationId == 1 && x.UserId == 379 && x.CreatedBy == "webstacks");
+            }
+        }
+
         //[Test]
         public void Create_missing_posts()
         {

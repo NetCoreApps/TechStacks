@@ -1,4 +1,4 @@
-import { appendQueryString } from "@servicestack/client";
+import { appendQueryString, queryString } from "@servicestack/client";
 
 const hasQuery = (qs) => qs && Object.keys(qs).length > 0;
 
@@ -30,4 +30,26 @@ export const routes = {
     post: (postId, postSlug) => `/posts/${postId}/${postSlug}`,
     comment: (postId,commmentId) => `/comments/${postId}/${commmentId}`,
     techTag: (slug,organization) => organization ? `/?t=${slug}` : `/tech/${slug}`,
+    sortOrderByField(url) {
+        return url.indexOf('sort=new') >= 0
+            ? '-id'
+            : url.indexOf('sort=top') >= 0
+                ? '-points'
+                : null;
+    },
+    sort:(sort) => {
+        const qs = queryString(location.href);
+        if (qs['sort'] == sort) {
+            delete qs['sort']; //toggle off
+        } else {
+            qs['sort'] = sort;
+        }
+        return appendQueryString(location.pathname, qs);
+    },
+    sortClass:(sort) => {
+        const qs = queryString(location.href);
+        return qs['sort'] === sort
+            ? 'active'
+            : null;
+    },
 };

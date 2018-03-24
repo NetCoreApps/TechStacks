@@ -95,6 +95,10 @@
             </v-flex>
 
             <v-flex v-if="latestOrganizationPosts && latestOrganizationPosts.length > 0" style="margin:1em 0">
+                <div class="sort-links">
+                  <nuxt-link :class="routes.sortClass('new')" :to="routes.sort('new')">new</nuxt-link>
+                  <nuxt-link :class="routes.sortClass('top')" :to="routes.sort('top')">top</nuxt-link>
+                </div>
                 <v-layout>
                   <PostsList :posts="latestOrganizationPosts" :page="page" />
 
@@ -122,6 +126,7 @@
                     <v-icon>chevron_left</v-icon>
                     prev
                   </v-btn>
+                  <span class="page-num" v-if="page > 0">{{ page }}</span>
                   <v-btn v-if="hasMore" color="primary" :to="getPageUrl(page+1)" title="View Next (→)">
                     more
                     <v-icon>chevron_right</v-icon>
@@ -210,7 +215,8 @@ export default {
         type: "latestOrganizationPosts",
         types: this.types,
         page: this.page,
-        categoryId: this.categoryId
+        categoryId: this.categoryId,
+        orderBy: routes.sortOrderByField(location.search)
       });
     },
     getPageUrl(p) {

@@ -121,7 +121,7 @@ export default {
       }
     },
     async loadLatestPost(){
-      const response = await queryLatestOrganizationsPosts(this.organizationId, this.type, null, 0, 1);
+      const response = await queryLatestOrganizationsPosts(this.organizationId, this.type, null, null, 0, 1);
       this.latestPost = response[0];
     },
 
