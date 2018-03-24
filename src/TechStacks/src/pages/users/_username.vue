@@ -181,7 +181,7 @@
                                     <v-btn icon class="vote-btn up" :disabled="true">
                                         <v-icon>arrow_drop_up</v-icon>
                                     </v-btn>
-                                    <h4 class="votes">{{postKarma(post)}}</h4>
+                                    <h4 class="votes">{{post.points}}</h4>
                                     <v-btn icon class="vote-btn down" :disabled="true">
                                         <v-icon>arrow_drop_down</v-icon>
                                     </v-btn>
@@ -273,7 +273,7 @@ import { heroes } from "@servicestack/images";
 import { routes } from "~/shared/routes";
 import { ignoreKeyPress, prettifyUrl, fromNow } from "~/shared/utils";
 import { queryPosts, queryPostComments } from "~/shared/gateway";
-import { postKarma, votedClass, commentKarmaLabel, votedCommentClass } from "~/shared/post";
+import { votedClass, commentKarmaLabel, votedCommentClass } from "~/shared/post";
 
 export default {  
   computed: {
@@ -303,7 +303,6 @@ export default {
     },
 
     prettifyUrl,
-    postKarma, 
     votedClass, 
     commentKarmaLabel,
     votedCommentClass,

@@ -96,6 +96,10 @@ namespace TechStacks.ServiceInterface
                          down_votes = (select count(*) from post_vote where post_id = @id and weight < 0)
                    where id = @id", new { id = request.Id });
 
+            await Db.ExecuteSqlAsync(@"update post 
+                set points = GREATEST(1 + (up_votes - down_votes) + points_modifier, 0)
+                   where id = @id", new { id = request.Id });
+
             await Db.ExecuteSqlAsync(
                 @"update user_activity set 
                          post_up_votes   = (select count(*) from post_vote v 

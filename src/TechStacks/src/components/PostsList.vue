@@ -12,7 +12,7 @@
                 <v-btn icon class="vote-btn up" @click="votePost(post,1)" :disabled="!canVotePost(post)">
                   <v-icon>arrow_drop_up</v-icon>
                 </v-btn>
-                <h4 class="votes">{{postKarma(post)}}</h4>
+                <h4 class="votes">{{post.points}}</h4>
                 <v-btn icon class="vote-btn down" @click="votePost(post,-1)" :disabled="!canVotePost(post)">
                   <v-icon>arrow_drop_down</v-icon>
                 </v-btn>
@@ -51,7 +51,6 @@ import { routes } from "~/shared/routes";
 
 import {
   POSTS_PER_PAGE,
-  postKarma,
   votedClass,
   votePost,
   favoritePost,
@@ -80,7 +79,6 @@ export default {
       return this.$store.getters.getOrganization(organizationId);
     },
 
-    postKarma,
     votedClass,
     votePost,
     favoritePost,
