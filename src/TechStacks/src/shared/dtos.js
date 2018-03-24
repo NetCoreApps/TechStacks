@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-19 21:14:35
+Date: 2018-03-24 00:10:39
 Version: 5.03
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -219,6 +219,18 @@ var Option = /** @class */ (function () {
     return Option;
 }());
 export { Option };
+var UserVoiceUser = /** @class */ (function () {
+    function UserVoiceUser() {
+    }
+    return UserVoiceUser;
+}());
+export { UserVoiceUser };
+var UserVoiceComment = /** @class */ (function () {
+    function UserVoiceComment() {
+    }
+    return UserVoiceComment;
+}());
+export { UserVoiceComment };
 var GetOrganizationResponse = /** @class */ (function () {
     function GetOrganizationResponse() {
     }
@@ -592,6 +604,18 @@ var LockStackResponse = /** @class */ (function () {
     return LockStackResponse;
 }());
 export { LockStackResponse };
+var ImportUserResponse = /** @class */ (function () {
+    function ImportUserResponse() {
+    }
+    return ImportUserResponse;
+}());
+export { ImportUserResponse };
+var ImportUserVoiceSuggestionResponse = /** @class */ (function () {
+    function ImportUserVoiceSuggestionResponse() {
+    }
+    return ImportUserVoiceSuggestionResponse;
+}());
+export { ImportUserVoiceSuggestionResponse };
 // @DataContract
 var AuthenticateResponse = /** @class */ (function () {
     function AuthenticateResponse() {
@@ -1418,6 +1442,23 @@ var LockTech = /** @class */ (function () {
     return LockTech;
 }());
 export { LockTech };
+var ImportUser = /** @class */ (function () {
+    function ImportUser() {
+    }
+    ImportUser.prototype.createResponse = function () { return new ImportUserResponse(); };
+    ImportUser.prototype.getTypeName = function () { return "ImportUser"; };
+    return ImportUser;
+}());
+export { ImportUser };
+// @Route("/import/uservoice/suggestion")
+var ImportUserVoiceSuggestion = /** @class */ (function () {
+    function ImportUserVoiceSuggestion() {
+    }
+    ImportUserVoiceSuggestion.prototype.createResponse = function () { return new ImportUserVoiceSuggestionResponse(); };
+    ImportUserVoiceSuggestion.prototype.getTypeName = function () { return "ImportUserVoiceSuggestion"; };
+    return ImportUserVoiceSuggestion;
+}());
+export { ImportUserVoiceSuggestion };
 // @Route("/auth")
 // @Route("/auth/{provider}")
 // @Route("/authenticate")

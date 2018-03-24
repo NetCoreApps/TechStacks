@@ -218,6 +218,7 @@ section.block {
 .post-image img {
   max-width: 1070px;
   max-height: 1070px;
+  margin-top: 5px;
 }
 .post-comments > .comment {
   margin-top: 1em;
@@ -531,4 +532,59 @@ blockquote {
   background: none;
   box-shadow: none;
   -webkit-box-shadow: none;
+}
+
+
+/* iPad in landscape: 1024x768 */
+@media only screen and (min-width: 1024px) {
+}
+
+/* iPad in portrait: 768x1024 */
+@media only screen and (max-width: 768px) {
+  .parent-organization {
+    display: none;
+  }
+  .btn-manage span, .btn-stack span, .btn-tech span {
+    display: none;
+  }
+  .btn-manage b:before {
+    content: "Manage"
+  }
+  .btn-tech b:before {
+    content: "TechStacks"
+  }
+  .btn-stack b:before {
+    content: "TechStack"
+  }
+}
+
+/* iPhone 8 Plus 414x736 */
+@media only screen and (max-width: 414px) {
+  .org-links {
+    /* background: green; */
+  }
+  .container {
+    padding: 0;
+  }
+  .post-rank {
+    display: none;
+  }
+  .post .card__title {
+    padding: 0;
+  }
+  .post-body {
+    margin: 0 0 0 5px;
+  }
+  .post-link {
+    font-size: 16px;
+    line-height: 22px;
+  }
+}
+
+/* iPhone X 375x812 */
+/* iPhone 8 375x667 */
+@media only screen and (max-width: 375px) {
+  .org-links {
+    /* background: red; */
+  }
 }

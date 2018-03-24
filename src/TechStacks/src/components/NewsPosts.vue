@@ -26,55 +26,67 @@
           </v-layout>
         </div>
 
-        <v-layout column v-else-if="organization" class="no-prerender">
+        <v-layout column v-else-if="organization" class="no-prerender" wrap>
             <v-flex>
-                <v-layout>
-                    <div v-if="canPostToOrganization()">
-                      <v-btn v-if="!add" fab dark small color="pink" @click="open" title="Submit New Post (N)">
-                        <v-icon dark>add</v-icon>
-                      </v-btn>
-                      <v-btn v-if="add" fab dark small color="pink" @click="close" title="Hide (N)">
-                        <v-icon dark>remove</v-icon>
-                      </v-btn>
-                    </div>
-                    <div v-else>
-                      <v-btn fab dark small color="grey" title="You are not permitted to submit posts">
-                        <v-icon dark>add</v-icon>
-                      </v-btn>
-                    </div>
+                <v-layout id="news-nav" wrap>
+                  <v-flex class="org-title" style="flex-grow:1">
+                    <v-layout>
+                      <div v-if="canPostToOrganization()">
+                        <v-btn v-if="!add" fab dark small color="pink" @click="open" title="Submit New Post (N)">
+                          <v-icon dark>add</v-icon>
+                        </v-btn>
+                        <v-btn v-if="add" fab dark small color="pink" @click="close" title="Hide (N)">
+                          <v-icon dark>remove</v-icon>
+                        </v-btn>
+                      </div>
+                      <div v-else>
+                        <v-btn fab dark small color="grey" title="You are not permitted to submit posts">
+                          <v-icon dark>add</v-icon>
+                        </v-btn>
+                      </div>
 
-                    <h1>
-                      <span class="parent-organization">
-                        <nuxt-link :to="routes.homeNews" style="color:#333">news </nuxt-link>
-                        <em>/</em>
-                      </span>
-                      
-                      <nuxt-link v-if="view == 'category'" :to="routes.organizationNews(organization.slug)" style="color:#333">
-                        {{ organization.name }}
-                      </nuxt-link>
-                      <a v-else @click.prevent="resetQuery()" style="color:#333">
-                        {{ organization.name }}
-                      </a>
-                    </h1>
-                    <v-spacer></v-spacer>
-                    
-                    <span class="org-links">
-                      <v-btn v-if="canManageOrganization()" outline color="primary" :to="routes.organization(organization.slug)" title="Manage Organization (M)">
-                        {{ `Manage${organization.name.length &lt;= 20 ? ' ' + organization.name :''}` }}
+                      <h1>
+                        <span class="parent-organization">
+                          <nuxt-link :to="routes.homeNews" style="color:#333">news </nuxt-link>
+                          <em>/</em>
+                        </span>
+                        
+                        <nuxt-link v-if="view == 'category'" :to="routes.organizationNews(organization.slug)" style="color:#333">
+                          {{ organization.name }}
+                        </nuxt-link>
+                        <a v-else @click.prevent="resetQuery()" style="color:#333">
+                          {{ organization.name }}
+                        </a>
+                      </h1>
+                    </v-layout>
+                  </v-flex>
+                  <v-spacer></v-spacer>
+
+                  <v-flex class="org-links" style="flex-grow:0">
+                    <span>
+                      <v-btn class="btn-manage" v-if="canManageOrganization()" outline color="primary" :to="routes.organization(organization.slug)" title="Manage Organization (M)">
+                        <span>{{ `Manage${organization.name.length &lt;= 20 ? ' ' + organization.name :''}` }}</span><b></b>
                       </v-btn>
-                      <v-btn v-if="organization.refSource == 'Technology'" outline color="primary" :to="routes.tech(getTechnologySlug(organization.refId))">
-                        {{ organization.name.length &lt;= 20 ? 'TechStacks using  ' + organization.name : organization.name + ' TechStack' }}
+                      <v-btn class="btn-tech" v-if="organization.refSource == 'Technology'" outline color="primary" :to="routes.tech(getTechnologySlug(organization.refId))">
+                        <span>{{ organization.name.length &lt;= 20 ? 'TechStacks using  ' + organization.name : organization.name + ' TechStack' }}</span><b></b>
                       </v-btn>
-                      <v-btn v-if="organization.refSource == 'TechnologyStack'" outline color="primary" :to="routes.stack(organization.slug)">{{ organization.name }}'s TechStack</v-btn>
+                      <v-btn class="btn-stack" v-if="organization.refSource == 'TechnologyStack'" outline color="primary" :to="routes.stack(organization.slug)">
+                        <span>{{ organization.name }}'s TechStack</span><b></b>
+                      </v-btn>
                     </span>
+                  </v-flex>
 
-                    <v-btn-toggle v-model="all" style="margin-right:5px">
-                      <v-btn title="show ALL (ALT+1)">all</v-btn>
-                    </v-btn-toggle>
+                  <v-flex class="org-types" style="flex-grow:0">
+                    <v-layout>
+                      <v-btn-toggle v-model="all" style="margin-right:5px">
+                        <v-btn title="show ALL (ALT+1)">all</v-btn>
+                      </v-btn-toggle>
 
-                    <v-btn-toggle multiple v-if="browsablePostTypes.length > 0" v-model="filterTypes">
-                      <v-btn v-for="(label,index) in visibleTypeLabels" :key="label" :title="`${label} (ALT+${index+2})`">{{ label }}</v-btn>
-                    </v-btn-toggle>
+                      <v-btn-toggle multiple v-if="browsablePostTypes.length > 0" v-model="filterTypes">
+                        <v-btn v-for="(label,index) in visibleTypeLabels" :key="label" :title="`${label} (ALT+${index+2})`">{{ label }}</v-btn>
+                      </v-btn-toggle>
+                    </v-layout>
+                    </v-flex>
                 </v-layout>
             </v-flex>
 
@@ -385,6 +397,9 @@ export default {
 .image-upload IMG {
   max-width: 200px;
   max-height: 200px;
+}
+.org-links {
+  text-align: right;
 }
 .org-links a.btn {
   margin-top: 1px;
