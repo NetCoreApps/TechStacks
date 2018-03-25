@@ -5,7 +5,12 @@
       <Shortcuts v-if="showDialog == 'Shortcuts'" />
       <span v-if="$store.getters.mounted" id="__mounted"></span>
 
-      <v-toolbar fixed app :clipped-left="clipped" style="background:#24292e" dark @click="click">
+      <v-toolbar fixed app :clipped-left="clipped" style="background:#24292e" dark @click="click"
+        v-touch="{
+          left: () => goNav(-1),
+          right: () => goNav(1)
+        }"            
+        >
         <nuxt-link class="logo" :to="routes.homeNews" exact>
           <img src="../static/img/logo-white.svg" width="42" height="42" />
         </nuxt-link>
@@ -51,12 +56,7 @@
         <v-container fluid>
           <v-slide-y-transition mode="out-in">
 
-            <v-layout column align-center
-              v-touch="{
-                left: () => goNav(-1),
-                right: () => goNav(1)
-              }"            
-              >
+            <v-layout column align-center>
               <nuxt/>
             </v-layout>
 
