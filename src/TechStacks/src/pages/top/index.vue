@@ -3,7 +3,11 @@
 
     <div class="hero">
       <v-parallax :src="heroUrl">
-        <v-layout align-center>
+        <v-layout align-center
+          v-touch="{
+            left: () => goNav(1),
+            right: () => goNav(-1)
+          }">
           <v-flex xs12 sm12>
             <v-container grid-list-md style="max-width:1000px">
 

@@ -1,15 +1,15 @@
 <template>
   <v-app>
     <div v-if="prerenderedHtml" v-html="prerenderedHtml"></div>
-    <v-layout v-else
-      v-touch="{
-        left: () => goNav(1),
-        right: () => goNav(-1)
-      }">
+    <div v-else>
       <Shortcuts v-if="showDialog == 'Shortcuts'" />
       <span v-if="$store.getters.mounted" id="__mounted"></span>
 
-      <v-toolbar fixed app :clipped-left="clipped" style="background:#24292e" dark @click="click">
+      <v-toolbar fixed app :clipped-left="clipped" style="background:#24292e" dark @click="click"
+        v-touch="{
+          left: () => goNav(1),
+          right: () => goNav(-1)
+        }">
         <nuxt-link class="logo" :to="routes.homeNews" exact>
           <img src="../static/img/logo-white.svg" width="42" height="42" />
         </nuxt-link>
@@ -67,7 +67,7 @@
           made with <span>&#10084;</span> by <a target="_blank" href="https://servicestack.net" title="ServiceStack">ServiceStack</a>
         </div>
       </v-footer>
-    </v-layout>
+    </div>
   </v-app>
 </template>
 

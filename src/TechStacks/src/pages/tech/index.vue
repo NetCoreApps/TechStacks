@@ -2,8 +2,12 @@
   <div class="techs-page" style="width:100%">
 
     <div class="hero">
-      <v-parallax :src="heroUrl" >
-        <v-layout align-center>
+      <v-parallax :src="heroUrl">
+        <v-layout align-center
+          v-touch="{
+            left: () => goNav(1),
+            right: () => goNav(-1)
+          }">
 
           <v-layout column align-center>
             <v-flex
