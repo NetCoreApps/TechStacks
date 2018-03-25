@@ -28,11 +28,7 @@
 
         <v-layout column v-else-if="organization" class="no-prerender" wrap>
             <v-flex>
-                <v-layout id="news-nav" wrap
-                  v-touch="{
-                    left: () => goNav(1),
-                    right: () => goNav(-1)
-                  }">
+                <v-layout id="news-nav" wrap>
                   <v-flex class="org-title" style="flex-grow:1">
                     <v-layout>
                       <div v-if="canPostToOrganization()">

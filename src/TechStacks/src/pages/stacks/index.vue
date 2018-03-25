@@ -3,11 +3,7 @@
 
     <div class="hero">
       <v-parallax :src="heroUrl" >
-        <v-layout align-center
-          v-touch="{
-            left: () => goNav(1),
-            right: () => goNav(-1)
-          }">
+        <v-layout align-center>
 
           <v-layout column align-center>
             <v-flex
