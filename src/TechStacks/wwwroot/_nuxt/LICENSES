@@ -1,6 +1,6 @@
 /*!
- * Vue.js v2.5.13
- * (c) 2014-2017 Evan You
+ * Vue.js v2.5.16
+ * (c) 2014-2018 Evan You
  * Released under the MIT License.
  */
 
@@ -9,6 +9,12 @@
  *
  * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
  * @license  MIT
+ */
+
+/**
+ * vuex v3.0.1
+ * (c) 2017 Evan You
+ * @license MIT
  */
 
 /*!
@@ -20,13 +26,7 @@
  */
 
 /**
- * vuex v3.0.1
- * (c) 2017 Evan You
- * @license MIT
- */
-
-/**
- * vue-meta v1.4.2
+ * vue-meta v1.5.0
  * (c) 2018 Declan de Wet & Atinux
  * @license MIT
  */
