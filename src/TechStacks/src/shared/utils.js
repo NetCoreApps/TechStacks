@@ -1,3 +1,4 @@
+import { routes } from "~/shared/routes";
 import { sanitize, toDate } from "@servicestack/client";
 
 export const log = (o,msg) => { console.log(msg||"",o); return o };
@@ -13,6 +14,16 @@ export const ignoreKeyPress = (e) => {
   return e.shiftKey || e.ctrlKey || inInputField();
 }
 
+const PAGE_NAV_INDEX = [
+  routes.welcome,
+  routes.homeNews,
+  routes.homeTop,
+  routes.homeStacks,
+  routes.homeTech,
+  (store) => store.getters.isAuthenticated ? routes.homeFavorites : null,
+  (store) => store.getters.isAuthenticated ? routes.user(store.getters.userName) : null,
+];
+
 export function globalNavShortcuts(e) {
   if (inInputField()) return;
 
@@ -22,28 +33,63 @@ export function globalNavShortcuts(e) {
   }
   if (e.shiftKey || e.ctrlKey || e.altKey) return;
   const c = String.fromCharCode(e.keyCode).toLowerCase();
-  if ((c === '1' || c === 'h')) {
+  if (c === 'h') {
     this.$router.push(this.routes.homeNews);
+    return true;
   }
-  if ((c === '2')) {
-    this.$router.push(this.routes.homeTop);
+
+  const pageIndex = parseInt(c);
+  if (!isNaN(pageIndex)) {
+    const route = PAGE_NAV_INDEX[pageIndex];
+    if (route) {
+      const path = typeof route == 'function'
+        ? route(this.$store)
+        : route;
+      if (path) {
+        this.$router.push(path);
+        return true;
+      }
+    }
   }
-  else if ((c === '3')) {
-    this.$router.push(this.routes.homeStacks);
+  return false;
+}
+
+export function getPageIndex(path) {
+  if (!path) return null;
+  for (let i=0; i<PAGE_NAV_INDEX.length; i++) {
+    const route = PAGE_NAV_INDEX[i];
+    const navPath = typeof route == 'function'
+      ? route(this.$store)
+      : route;
+    if (!navPath)
+      continue;
+
+    if (path === "/" || navPath === "/")
+    {
+      if (navPath === path)
+        return i;
+      continue;
+    }
+    if (path.startsWith(navPath)) 
+      return i;
   }
-  else if ((c === '4')) {
-    this.$router.push(this.routes.homeTech);
+  return null;
+}
+
+export function goNav(modifier) {
+  const currentIndex = getPageIndex.call(this, location.pathname);
+  if (!isNaN(currentIndex)) {
+    const newIndex = currentIndex + modifier;
+    const route = PAGE_NAV_INDEX[newIndex];
+    const newPath = typeof route == 'function'
+      ? route(this.$store)
+      : route;
+    if (newPath) {
+      this.$router.push(newPath);
+      return newPath;
+    }
   }
-  else if ((c === '5') && this.isAuthenticated) {
-    this.$router.push(this.routes.homeFavorites);
-  }
-  else if ((c === '6') && this.isAuthenticated) {
-    this.$router.push(this.routes.user(this.$store.getters.userName));
-  } 
-  else {
-    return false;
-  }
-  return true;
+  return null;
 }
 
 export const slugCounter = 50;

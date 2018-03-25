@@ -5,7 +5,7 @@
       <Shortcuts v-if="showDialog == 'Shortcuts'" />
       <span v-if="$store.getters.mounted" id="__mounted"></span>
 
-      <v-toolbar fixed app :clipped-left="clipped" style="background:#24292e" dark>
+      <v-toolbar fixed app :clipped-left="clipped" style="background:#24292e" dark @click="click">
         <nuxt-link class="logo" :to="routes.homeNews" exact>
           <img src="../static/img/logo-white.svg" width="42" height="42" />
         </nuxt-link>
@@ -51,7 +51,12 @@
         <v-container fluid>
           <v-slide-y-transition mode="out-in">
 
-            <v-layout column align-center>
+            <v-layout column align-center
+              v-touch="{
+                left: () => goNav(-1),
+                right: () => goNav(1)
+              }"            
+              >
               <nuxt/>
             </v-layout>
 
@@ -72,7 +77,7 @@ import Shortcuts from "~/components/Shortcuts.vue";
 
 import { mapGetters } from "vuex";
 import { routes } from "~/shared/routes";
-import { globalNavShortcuts } from "~/shared/utils";
+import { globalNavShortcuts, goNav } from "~/shared/utils";
 
 export default {
   components: { Shortcuts },
@@ -124,6 +129,12 @@ export default {
         return null;        
       }
     },
+
+    click(e) {
+      // this.goNav(e.ctrlKey ? -1 : 1);
+    },
+
+    goNav,
   },
 
   async mounted(){
