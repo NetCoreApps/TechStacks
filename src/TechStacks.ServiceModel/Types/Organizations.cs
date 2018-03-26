@@ -34,6 +34,8 @@ namespace TechStacks.ServiceModel.Types
 
         public string Lang { get; set; }
 
+        public string DefaultPostType { get; set; }
+
         [PgSqlTextArray]
         public string[] PostTypes { get; set; }
 
@@ -42,6 +44,8 @@ namespace TechStacks.ServiceModel.Types
 
         [Default(5)]
         public int DeletePostsWithReportCount { get; set; }
+        
+        public bool? DisableInvites { get; set; }
 
         public long UpVotes { get; set; }
 

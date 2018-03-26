@@ -242,6 +242,7 @@ namespace TechStacks.ServiceModel
         public long? DownVotes { get; set; }
         public long MembersCount { get; set; }
         public int Rank { get; set; }
+        public bool? DisableInvites { get; set; }
         public string Lang { get; set; }
         public string[] PostTypes { get; set; }
         public string[] ModeratorPostTypes { get; set; }

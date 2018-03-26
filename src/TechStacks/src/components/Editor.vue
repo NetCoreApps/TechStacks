@@ -1,6 +1,6 @@
 <template>
   <div class="editor">
-      <div class="editor-toolbar">
+      <div v-if="!disabled" class="editor-toolbar">
         <v-btn small icon @click="bold" title="Bold text (CTRL+B)"><v-icon>format_bold</v-icon></v-btn>
         <v-btn small icon @click="italic" title="Italics (CTRL+I)"><v-icon>format_italic</v-icon></v-btn>
         <v-btn small icon @click="link" title="Insert Link (CTRL+L)"><v-icon>insert_link</v-icon></v-btn>
@@ -26,6 +26,7 @@
         multi-line
         auto-grow
         :rows="rows || 6"
+        :disabled="disabled"
         :rules="rules"
         :error-messages="errorMessages"    
         @input="v => $emit('input',v)"
@@ -299,7 +300,7 @@ var ops = {
 }
 
 export default {
-  props: ['label','value','counter','rows','rules','errorMessages','lang','autofocus'],
+  props: ['label','value','counter','rows','rules','errorMessages','lang','autofocus','disabled'],
 
   methods: {
     save(){
