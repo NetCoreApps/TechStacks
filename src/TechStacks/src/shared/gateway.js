@@ -70,6 +70,9 @@ import {
     GetUserOrganizations,
     HidePost,
     GetPreRender,
+    AddOrganizationLabel,
+    UpdateOrganizationLabel,
+    RemoveOrganizationLabel,
 } from "./dtos";
 
 const usingProxy = location.host == "techstacks.io";
@@ -305,6 +308,12 @@ export const lockOrganization = async(id, lock, reason) => {
     request.reason = reason;
     await client.put(request);
 }
+
+export const addLabel = async(args) => await client.post(Object.assign(new AddOrganizationLabel(), args));
+
+export const updateLabel = async(args) => await client.put(Object.assign(new UpdateOrganizationLabel(), args));
+
+export const removeLabel = async(organizationId, slug) => await client.delete(new RemoveOrganizationLabel(), { organizationId, slug });
 
 export const addCategory = async(args) => await client.post(Object.assign(new AddOrganizationCategory(), args));
 

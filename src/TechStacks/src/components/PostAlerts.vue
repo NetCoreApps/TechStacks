@@ -1,5 +1,10 @@
 <template>
     <div v-if="organization && post" class="post-alerts">
+        <div v-if="post.labels && post.labels.length > 0" class="post-labels">
+            <em v-if="post.status" :class="`label ${post.status}`">{{ post.status }}</em> 
+            <em class="label" :style="labelStyle(label,organization)" v-for="label in post.labels" :key="label">{{ label }}</em>
+        </div>
+
         <v-alert v-if="post.archived" outline color="grey" icon="archive" :value="true">
             This is an archived post. You won't be able to vote or comment. Posts are automatically archived after 6 months.
         </v-alert>
@@ -20,7 +25,7 @@
 
 <script>
 import { fromNow } from "~/shared/utils";
-import { isOrganizationModerator, isOrganizationMember, memberCannotComment, organizationMember, userId } from "~/shared/post";
+import { isOrganizationModerator, isOrganizationMember, memberCannotComment, organizationMember, userId, labelStyle } from "~/shared/post";
 
 export default {
   props: ["organization", "post"],
@@ -28,7 +33,9 @@ export default {
     isOrganizationModerator,
     isOrganizationMember,
     memberCannotComment,
-    organizationMember, getUserId:userId,
+    organizationMember, 
+    getUserId:userId,
+    labelStyle,
     fromNow,
   }
 };

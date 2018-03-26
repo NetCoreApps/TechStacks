@@ -45,6 +45,8 @@ namespace TechStacks.ServiceModel
 
         public int[] TechnologyIds { get; set; }
 
+        public string[] Labels { get; set; }
+
         public DateTime? FromDate { get; set; }
 
         public DateTime? ToDate { get; set; }
@@ -88,6 +90,8 @@ namespace TechStacks.ServiceModel
         public bool? Lock { get; set; }
 
         public int[] TechnologyIds { get; set; }
+
+        public string[] Labels { get; set; }
 
         public DateTime? FromDate { get; set; }
 

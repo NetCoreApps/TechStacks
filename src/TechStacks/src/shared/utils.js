@@ -152,6 +152,11 @@ export const contentRulesOptional = [
   v => !v || v.length <= 60000 || 'Max 60000 characters'
 ];
 
+export const colorRules = [
+  v => !!v || 'Required',
+  v => v.startsWith('#') && (v.length == 4 || v.length == 7) || 'Invalid Hex Color, e.g. #FFFFFF',  
+];
+
 
 const periodFmt = (count,period) => `${count} ${period}${count > 1 ? 's ago' : ' ago'}`;
 export const timeDifference = (current, previous) => {

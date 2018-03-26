@@ -21,9 +21,11 @@
 
                           <v-flex class="post-body">
                             <v-layout column>
-                              <h2 v-if="!post.url" class="post-title">{{ post.title }}</h2>
 
-                              <a v-if="post.url" class="post-title post-link external" :href="post.url">{{ post.title }}</a>
+                              <div>
+                                <a v-if="post.url" class="post-title post-link external" :href="post.url">{{ post.title }}</a>
+                                <h2 v-else class="post-title">{{ post.title }}</h2>
+                              </div>
 
                               <PostInfo :organization="organization" :post="post"/>
 
@@ -110,7 +112,7 @@ import {
 } from "~/shared/utils";
 import { routes } from "~/shared/routes";
 import { sortComments, canUpdatePost, canFavoritePost, canReportPost, canCommentPost, organizationMember,
-         favoritePost, favoriteLabel, votedClass, votePost, votePostComment, votedCommentClass, canVotePost } from "~/shared/post";
+         favoritePost, favoriteLabel, votedClass, votePost, votePostComment, votedCommentClass, canVotePost, labelStyle } from "~/shared/post";
 import { errorResponse, splitOnFirst, combinePaths } from "@servicestack/client";
 
 const post = {
@@ -216,6 +218,7 @@ export default {
     votePostComment, 
     votedCommentClass, 
     canVotePost,
+    labelStyle,
     fromNow,
     errorResponse,
   },

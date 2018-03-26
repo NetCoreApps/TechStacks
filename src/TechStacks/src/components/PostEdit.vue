@@ -72,6 +72,15 @@
                         :error-messages="errorResponse('technologyIds')"
                         ></v-select>
 
+                    <v-select v-if="isOrganizationModerator"
+                        label="Labels"
+                        multiple
+                        chips
+                        :items="labelsSelectItems"
+                        v-model="labels"
+                        :error-messages="errorResponse('labels')"
+                        ></v-select>
+
                     <v-flex v-if="edit && isOrganizationModerator" style="text-align:right">
                         <v-layout>
                             <v-btn small @click="lockPost(!locked)" class="white--text" :color="locked ? 'green' : 'red'">
@@ -137,6 +146,7 @@ const post = {
     hidden: null,
     hiddenBy: null,
     technologyIds: [],
+    labels: [],
 };
 
 export default {
@@ -144,7 +154,7 @@ export default {
 
   props: [
     'org','initialTypes','initialCategoryId', //add
-    'post'                                   //edit
+    'post'                                    //edit
   ],
 
   computed: {
@@ -152,7 +162,7 @@ export default {
       return !!this.post;
     },
     ...mapGetters(["loading", "isAuthenticated", "isOrganizationModerator", "allowablePostTypes", "getLangByOrganizationId",
-                   "allowablePostTypeSelectItems", "technologySelectItems", "categorySelectItems"])
+                   "allowablePostTypeSelectItems", "technologySelectItems", "categorySelectItems", "labelsSelectItems"])
   },
 
   methods: {
@@ -219,7 +229,8 @@ export default {
   },
 
   async mounted() {
-    const types = [...(this.initialTypes || '').split(','), 'Post'];
+    const defaultPostType = this.org && this.org.defaultPostType || 'Post';
+    const types = [...(this.initialTypes || '').split(','), defaultPostType];
     this.type = types.filter(x => x && this.allowablePostTypes.indexOf(x) >= 0)[0];
 
     if (this.initialCategoryId)

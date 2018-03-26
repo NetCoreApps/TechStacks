@@ -381,6 +381,20 @@ p>code, li>code {
   background: #FFF8DC;
   color: #666;
 }
+.label, .label a {
+  color: #fff;
+  background: #aaa;
+  font-size: 16px;
+}
+.label {
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin: 0 2px;
+}
+.label.closed { background: #d32f2f }
+.post-labels {
+  margin: 1em 0 0 0;
+}
 
 .comment-vote {
   margin: 2px 5px 0 -8px; 
@@ -549,6 +563,14 @@ blockquote {
   background: none;
   box-shadow: none;
   -webkit-box-shadow: none;
+}
+
+
+.org-description {
+  margin-bottom: .5em;
+}
+.org-description .gfm, .org-description .gfm p, .org-description .gfm blockquote, .org-description .gfm ul, .org-description .gfm ol, .org-description .gfm dl, .org-description .gfm table {
+  font-size: 14px !important;
 }
 
 

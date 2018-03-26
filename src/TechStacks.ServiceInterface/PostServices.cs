@@ -37,8 +37,14 @@ namespace TechStacks.ServiceInterface
             post.CreatedBy = post.ModifiedBy = user.UserName;
             post.UserId = user.UserAuthId.ToInt();
             post.UpVotes = 0;
+            post.Points = 1;
             post.ContentHtml = await Markdown.TransformAsync(post.Content, user.GetGitHubToken());
             post.Rank = 0;
+
+            if (!user.IsOrganizationModerator(orgMember))
+            {
+                post.Labels = null;
+            }
 
             if (string.IsNullOrEmpty(post.ImageUrl) && Request.Files.Length > 0)
             {
@@ -71,6 +77,11 @@ namespace TechStacks.ServiceInterface
             if (post.Content != request.Content)
             {
                 post.ContentHtml = await Markdown.TransformAsync(request.Content, user.GetGitHubToken());
+            }
+
+            if (!user.IsOrganizationModerator(orgMember))
+            {
+                request.Labels = post.Labels;
             }
 
             post.PopulateWith(request);
@@ -142,9 +153,10 @@ namespace TechStacks.ServiceInterface
             if (!user.IsOrganizationModerator(orgMember))
                 throw HttpError.Forbidden("Access Denied");
 
+            var now = DateTime.Now;
             if (request.Lock)
             {
-                post.Locked = DateTime.Now;
+                post.Locked = now;
                 post.LockedBy = user.UserName;
                 if (!string.IsNullOrEmpty(request.Reason))
                 {

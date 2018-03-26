@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-24 00:10:39
+Date: 2018-03-26 06:37:58
 Version: 5.03
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -30,6 +30,12 @@ var Organization = /** @class */ (function () {
     return Organization;
 }());
 export { Organization };
+var OrganizationLabel = /** @class */ (function () {
+    function OrganizationLabel() {
+    }
+    return OrganizationLabel;
+}());
+export { OrganizationLabel };
 var Category = /** @class */ (function () {
     function Category() {
     }
@@ -200,6 +206,12 @@ var TechStackDetails = /** @class */ (function (_super) {
     return TechStackDetails;
 }(TechnologyStackBase));
 export { TechStackDetails };
+var LabelInfo = /** @class */ (function () {
+    function LabelInfo() {
+    }
+    return LabelInfo;
+}());
+export { LabelInfo };
 var CategoryInfo = /** @class */ (function () {
     function CategoryInfo() {
     }
@@ -267,6 +279,12 @@ var UpdateOrganizationResponse = /** @class */ (function () {
     return UpdateOrganizationResponse;
 }());
 export { UpdateOrganizationResponse };
+var OrganizationLabelResponse = /** @class */ (function () {
+    function OrganizationLabelResponse() {
+    }
+    return OrganizationLabelResponse;
+}());
+export { OrganizationLabelResponse };
 var AddCategoryResponse = /** @class */ (function () {
     function AddCategoryResponse() {
     }
@@ -739,6 +757,33 @@ var LockOrganization = /** @class */ (function () {
     return LockOrganization;
 }());
 export { LockOrganization };
+// @Route("/orgs/{OrganizationId}/labels", "POST")
+var AddOrganizationLabel = /** @class */ (function () {
+    function AddOrganizationLabel() {
+    }
+    AddOrganizationLabel.prototype.createResponse = function () { return new OrganizationLabelResponse(); };
+    AddOrganizationLabel.prototype.getTypeName = function () { return "AddOrganizationLabel"; };
+    return AddOrganizationLabel;
+}());
+export { AddOrganizationLabel };
+// @Route("/orgs/{OrganizationId}/members/{Slug}", "PUT")
+var UpdateOrganizationLabel = /** @class */ (function () {
+    function UpdateOrganizationLabel() {
+    }
+    UpdateOrganizationLabel.prototype.createResponse = function () { return new OrganizationLabelResponse(); };
+    UpdateOrganizationLabel.prototype.getTypeName = function () { return "UpdateOrganizationLabel"; };
+    return UpdateOrganizationLabel;
+}());
+export { UpdateOrganizationLabel };
+// @Route("/orgs/{OrganizationId}/labels/{Slug}", "DELETE")
+var RemoveOrganizationLabel = /** @class */ (function () {
+    function RemoveOrganizationLabel() {
+    }
+    RemoveOrganizationLabel.prototype.createResponse = function () { };
+    RemoveOrganizationLabel.prototype.getTypeName = function () { return "RemoveOrganizationLabel"; };
+    return RemoveOrganizationLabel;
+}());
+export { RemoveOrganizationLabel };
 // @Route("/orgs/{OrganizationId}/categories", "POST")
 var AddOrganizationCategory = /** @class */ (function () {
     function AddOrganizationCategory() {
@@ -894,6 +939,15 @@ var HidePost = /** @class */ (function () {
     return HidePost;
 }());
 export { HidePost };
+// @Route("/posts/{Id}/status/{Status}", "PUT")
+var ChangeStatusPost = /** @class */ (function () {
+    function ChangeStatusPost() {
+    }
+    ChangeStatusPost.prototype.createResponse = function () { };
+    ChangeStatusPost.prototype.getTypeName = function () { return "ChangeStatusPost"; };
+    return ChangeStatusPost;
+}());
+export { ChangeStatusPost };
 // @Route("/posts/{PostId}/report/{Id}", "POST")
 var ActionPostReport = /** @class */ (function () {
     function ActionPostReport() {

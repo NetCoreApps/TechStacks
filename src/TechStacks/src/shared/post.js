@@ -42,6 +42,36 @@ export const commentKarmaLabel = (comment) => {
   return `${commentKarma(comment)} point${points != 1 ? 's' : ''}`;
 };
 
+
+const rgbToHex = (r, g, b) =>
+    "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+
+const hexToRgb = (hex) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+};
+
+const luminance = (color) => {
+  const rgb = hexToRgb(color);
+  return Math.round(((parseInt(rgb.r) * 299) + (parseInt(rgb.g) * 587) + (parseInt(rgb.b) * 114)) / 1000);
+};
+
+export const textColor = (background) => luminance(background) > 150
+  ? "#333"
+  : "#f1f1f1";
+
+export function labelStyle(slug,org) {
+  const o = organization.call(this,org);
+  const label = (o && o.labels || []).find(x => x.slug === slug);
+  return label
+    ? `background:${label.color};color:${textColor(label.color)}`
+    : '';
+}
+
 export function votedClass(postId) {
   const postActivity = userPostActivity.call(this);
   if (postActivity != null) {

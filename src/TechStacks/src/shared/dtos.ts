@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-24 00:10:39
+Date: 2018-03-26 06:37:58
 Version: 5.03
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -41,6 +41,7 @@ export class Organization
     name: string;
     slug: string;
     description: string;
+    descriptionHtml: string;
     color: string;
     textColor: string;
     linkColor: string;
@@ -49,9 +50,11 @@ export class Organization
     logoUrl: string;
     heroUrl: string;
     lang: string;
+    defaultPostType: string;
     postTypes: string[];
     moderatorPostTypes: string[];
     deletePostsWithReportCount: number;
+    disableInvites: boolean;
     upVotes: number;
     downVotes: number;
     views: number;
@@ -73,6 +76,14 @@ export class Organization
     createdBy: string;
     modified: string;
     modifiedBy: string;
+}
+
+export class OrganizationLabel
+{
+    slug: string;
+    organizationId: number;
+    description: string;
+    color: string;
 }
 
 export class Category
@@ -279,6 +290,9 @@ export class Post
     lockedBy: string;
     hidden: string;
     hiddenBy: string;
+    status: string;
+    statusDate: string;
+    statusBy: string;
     archived: boolean;
     bumped: string;
     created: string;
@@ -461,6 +475,12 @@ export class TechStackDetails extends TechnologyStackBase
     technologyChoices: TechnologyInStack[];
 }
 
+export class LabelInfo
+{
+    slug: string;
+    color: string;
+}
+
 export class CategoryInfo
 {
     id: number;
@@ -477,11 +497,14 @@ export class OrganizationInfo
     refSource: string;
     upVotes: number;
     downVotes: number;
+    membersCount: number;
     rank: number;
+    disableInvites: boolean;
     lang: string;
     postTypes: string[];
     moderatorPostTypes: string[];
     locked: string;
+    labels: LabelInfo[];
     categories: CategoryInfo[];
 }
 
@@ -522,10 +545,11 @@ export class GetOrganizationResponse
     id: number;
     slug: string;
     organization: Organization;
+    labels: OrganizationLabel[];
     categories: Category[];
     owners: OrganizationMember[];
     moderators: OrganizationMember[];
-    membersTotal: number;
+    membersCount: number;
     responseStatus: ResponseStatus;
 }
 
@@ -538,6 +562,7 @@ export class GetOrganizationMembersResponse
 
 export class GetOrganizationAdminResponse
 {
+    labels: OrganizationLabel[];
     members: OrganizationMember[];
     memberInvites: OrganizationMemberInvite[];
     reportedPosts: PostReportInfo[];
@@ -562,6 +587,11 @@ export class CreateOrganizationResponse
 }
 
 export class UpdateOrganizationResponse
+{
+    responseStatus: ResponseStatus;
+}
+
+export class OrganizationLabelResponse
 {
     responseStatus: ResponseStatus;
 }
@@ -1120,6 +1150,8 @@ export class UpdateOrganization implements IReturn<UpdateOrganizationResponse>
     heroUrl: string;
     lang: string;
     deletePostsWithReportCount: number;
+    disableInvites: boolean;
+    defaultPostType: string;
     postTypes: string[];
     moderatorPostTypes: string[];
     technologyIds: number[];
@@ -1143,6 +1175,37 @@ export class LockOrganization implements IReturnVoid
     reason: string;
     createResponse() {}
     getTypeName() { return "LockOrganization"; }
+}
+
+// @Route("/orgs/{OrganizationId}/labels", "POST")
+export class AddOrganizationLabel implements IReturn<OrganizationLabelResponse>
+{
+    organizationId: number;
+    slug: string;
+    description: string;
+    color: string;
+    createResponse() { return new OrganizationLabelResponse(); }
+    getTypeName() { return "AddOrganizationLabel"; }
+}
+
+// @Route("/orgs/{OrganizationId}/members/{Slug}", "PUT")
+export class UpdateOrganizationLabel implements IReturn<OrganizationLabelResponse>
+{
+    organizationId: number;
+    slug: string;
+    description: string;
+    color: string;
+    createResponse() { return new OrganizationLabelResponse(); }
+    getTypeName() { return "UpdateOrganizationLabel"; }
+}
+
+// @Route("/orgs/{OrganizationId}/labels/{Slug}", "DELETE")
+export class RemoveOrganizationLabel implements IReturnVoid
+{
+    organizationId: number;
+    slug: string;
+    createResponse() {}
+    getTypeName() { return "RemoveOrganizationLabel"; }
 }
 
 // @Route("/orgs/{OrganizationId}/categories", "POST")
@@ -1295,6 +1358,7 @@ export class CreatePost implements IReturn<CreatePostResponse>
     content: string;
     lock: boolean;
     technologyIds: number[];
+    labels: string[];
     fromDate: string;
     toDate: string;
     metaType: string;
@@ -1319,6 +1383,7 @@ export class UpdatePost implements IReturn<UpdatePostResponse>
     content: string;
     lock: boolean;
     technologyIds: number[];
+    labels: string[];
     fromDate: string;
     toDate: string;
     metaType: string;
@@ -1353,6 +1418,16 @@ export class HidePost implements IReturnVoid
     reason: string;
     createResponse() {}
     getTypeName() { return "HidePost"; }
+}
+
+// @Route("/posts/{Id}/status/{Status}", "PUT")
+export class ChangeStatusPost implements IReturnVoid
+{
+    id: number;
+    status: string;
+    reason: string;
+    createResponse() {}
+    getTypeName() { return "ChangeStatusPost"; }
 }
 
 // @Route("/posts/{PostId}/report/{Id}", "POST")
@@ -1918,7 +1993,8 @@ export class ImportUserVoiceSuggestion implements IReturn<ImportUserVoiceSuggest
     formattedText: string;
     voteCount: number;
     closedAt: string;
-    statusName: string;
+    statusKey: string;
+    statusHexColor: string;
     statusChangedBy: UserVoiceUser;
     creator: UserVoiceUser;
     response: UserVoiceComment;

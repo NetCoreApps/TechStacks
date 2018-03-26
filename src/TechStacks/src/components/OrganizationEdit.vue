@@ -5,10 +5,15 @@
           Organization was not found
         </v-alert>                  
       </v-layout>
+      <v-layout v-else-if="forbidden">
+        <v-alert outline color="error" icon="warning" :value="true">
+          Access is limited to Organization Owners and Moderators
+        </v-alert>                  
+      </v-layout>
       <v-layout v-else-if="!isOrganizationModerator">
         <v-alert outline color="error" icon="warning" :value="true">
           You must be a moderator to be able to manage this Organization
-        </v-alert>                  
+        </v-alert>
       </v-layout>
       <v-layout v-else-if="id" class="body" fluid column>
         <v-flex>
@@ -45,21 +50,23 @@
                       :error-messages="errorResponse('slug')"
                       ></v-text-field>
 
-                    <v-text-field
-                      label="Summary"
-                      v-model="description"
-                      :counter="summaryCounter"
-                      multi-line
-                      :rows="2"
-                      :disabled="!isOrganizationOwner"
-                      :rules="summaryRulesOptional"
-                      :error-messages="errorResponse('description')"
-                      ></v-text-field>
+
+                    <Editor ref="editor"
+                        style="padding-top:10px"
+                        label="Description"
+                        v-model="description"
+                        :counter="descriptionCounter"
+                        :rules="descriptionRulesOptional"
+                        :error-messages="errorResponse('description')"
+                        :lang="getLangByOrganizationId(id)"
+                        :disabled="!isOrganizationOwner"
+                        @save="submit"
+                        @close="reset()"
+                        />
 
                     <v-select
                       label="Allowed Post Types"
                       autocomplete
-                      :loading="loading"
                       multiple
                       chips
                       :disabled="!isOrganizationOwner"
@@ -70,7 +77,6 @@
                     <v-select
                       label="Moderator Post Types (inherits above if unspecified)"
                       autocomplete
-                      :loading="loading"
                       multiple
                       chips
                       :disabled="!isOrganizationOwner"
@@ -78,21 +84,36 @@
                       v-model="moderatorPostTypes"
                       ></v-select>
 
+                    <v-layout>
+                        <v-select style="margin-right:5px"
+                          label="Default Post Type"
+                          :disabled="!isOrganizationOwner"
+                          :items="allPostTypeSelectItems"
+                          v-model="defaultPostType"
+                          ></v-select>
+
+                        <v-select
+                          label="Primary Language"
+                          autocomplete
+                          :items="langSelectItems"
+                          v-model="lang"
+                          :error-messages="errorResponse('lang')"
+                          ></v-select>
+
+                        <v-checkbox
+                          style="margin: 10px 0 0 10px"
+                          label="Don't allow Member Invites"
+                          v-model="disableInvites"
+                        ></v-checkbox>
+                    </v-layout>
+
                     <v-text-field
-                      label="Automatically delete Posts and Comments when number of Reports reaches"
+                      label="Automatically delete Posts and Comments when number of reports reaches"
                       v-model="deletePostsWithReportCount"
                       :disabled="!isOrganizationOwner"
                       :rules="[v => parseInt(v) > 0 || 'must be a number > 0']"
                       :error-messages="errorResponse('deletePostsWithReportCount')"
                       ></v-text-field>
-
-                    <v-select
-                        label="Primary Language"
-                        autocomplete
-                        :items="langSelectItems"
-                        v-model="lang"
-                        :error-messages="errorResponse('lang')"
-                        ></v-select>
 
                     <v-layout>
                         <v-btn :disabled="!isOrganizationOwner" small @click="lockOrganization(!locked)" class="white--text"
@@ -172,7 +193,7 @@
                             <v-icon dark>edit</v-icon>
                           </v-btn>
 
-                          <em class="label" :style="`background:${label.color}`">{{ label.slug }}</em>
+                          <em class="label" :style="labelStyle(label.slug)">{{ label.slug }}</em>
 
                           {{ label.description }}
                           
@@ -395,6 +416,7 @@
 import CategoryEdit from "~/components/CategoryEdit.vue";
 import MemberEdit from "~/components/MemberEdit.vue";
 import LabelEdit from "~/components/LabelEdit.vue";
+import Editor from "~/components/Editor.vue";
 
 import { mapGetters } from "vuex";
 import { toObject, errorResponse, errorResponseExcept } from "@servicestack/client";
@@ -402,6 +424,7 @@ import { routes } from "~/shared/routes";
 import { getOrganizationBySlug, getOrganizationAdmin, updateOrganization, createCategory, deleteOrganization, lockOrganization, updateMemberInvite,
          actionPostReport, actionPostCommentReport } from "~/shared/gateway";
 import { ignoreKeyPress, nameCounter, nameRules, slugCounter, slugRules, descriptionCounter, descriptionRulesOptional } from "~/shared/utils";
+import { labelStyle } from "~/shared/post";
 
 const organization = {
   id: null,
@@ -411,6 +434,7 @@ const organization = {
   locked: null,
   lockedBy: null,
   disableInvites: false,
+  defaultPostType: "",
   postTypes: [],
   moderatorPostTypes: [],
   technologyIds: [],
@@ -560,6 +584,7 @@ export default {
         this.$store.dispatch('loadUserOrganizations');
         this.responseStatus = null;
       } catch(e) {
+        this.forbidden = e.responseStatus && e.responseStatus.errorCode === "Forbidden";
         this.responseStatus = e.responseStatus || e;
       }
     },
@@ -578,6 +603,7 @@ export default {
       }
     },
 
+    labelStyle,
     errorResponse,
   },
 
@@ -594,6 +620,7 @@ export default {
   },
 
   data: () => ({
+    forbidden:false,
     routes,
     ...organization,
     labels: [],

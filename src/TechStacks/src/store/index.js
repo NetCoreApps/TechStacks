@@ -193,6 +193,7 @@ const mutations = {
         const organization = organizationResponse.organization;
         organization.owners = organizationResponse.owners;
         organization.moderators = organizationResponse.moderators;
+        organization.labels = organizationResponse.labels;
         organization.categories = organizationResponse.categories;
         organization.membersCount = organizationResponse.membersCount;
         organization.full = true;
@@ -353,6 +354,8 @@ const getters = {
     allOrganizations: state => state.allOrganizations,
     categorySelectItems: (state,getters) => (getters.organization && getters.organization.categories || [])
         .sort((a,b) => a.slug.localeCompare(b.slug)).map(x => ({ text:x.name, value:x.id })),
+    labelsSelectItems: (state,getters) => (getters.organization && getters.organization.labels || [])
+        .map(x => ({ text:x.slug + ': ' + x.description, value:x.slug })),
     allowablePostTypeSelectItems: (state,getters) => getters.allowablePostTypes.map(x => ({ text:x, value:x })),
     browsablePostTypeSelectItems: (state,getters) => getters.browsablePostTypes.map(x => ({ text:x, value:x })),
     allPostTypeSelectItems: state => state.allPostTypes.map(x => ({ text:x.name, value:x.name })),
@@ -554,7 +557,7 @@ const actions = {
         let { types, page, categoryId, orderBy } = query;
 
         const q = state.latestOrganizationPostsQuery;
-        const repeatedQuery = q && q.organizationId === organizationId && q.types === types && q.page === page && q.categoryId === categoryId;
+        const repeatedQuery = q && q.organizationId === organizationId && q.types === types && q.page === page && q.categoryId === categoryId && q.orderBy == orderBy;
         if (repeatedQuery) return;
         commit('latestOrganizationPostsQuery', { organizationId, ...query });
 
