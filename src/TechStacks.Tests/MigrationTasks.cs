@@ -153,6 +153,13 @@ namespace TechStacks.Tests
         {
             using (var db = dbFactory.Open())
             {
+                db.DropAndCreateTable<PostChangeHistory>();
+                
+//                db.AddColumn<Organization>(x => x.DefaultPostType);
+//                db.DropAndCreateTable<OrganizationLabel>();
+//                db.AddColumn<Post>(x => x.Status);
+//                db.AddColumn<Post>(x => x.StatusDate);
+//                db.AddColumn<Post>(x => x.StatusBy);
 //                db.AddColumn<CustomUserAuth>(x => x.CreatedBy);
 //                db.DropAndCreateTable<PreRender>();
 //                db.AddColumn<Post>(x => x.Labels);
@@ -425,7 +432,8 @@ namespace TechStacks.Tests
                             
                             if (suggestion.TryGetValue("status", out var oStatus) && oStatus is Dictionary<string, object> status)
                             {
-                                request.StatusName = (string)status["name"];
+                                request.StatusKey = (string)status["key"];
+                                request.StatusHexColor = (string)status["hex_color"];
                             }
                             
                             if (suggestion.TryGetValue("response", out var statusResponse) 

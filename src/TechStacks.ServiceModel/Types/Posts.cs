@@ -134,6 +134,10 @@ namespace TechStacks.ServiceModel.Types
         public DateTime? Hidden { get; set; }
         public string HiddenBy { get; set; }
 
+        public string Status { get; set; }
+        public DateTime? StatusDate { get; set; }
+        public string StatusBy { get; set; }
+
         public bool Archived { get; set; }
 
         [IgnoreDataMember] public string Notes { get; set; }
@@ -149,6 +153,24 @@ namespace TechStacks.ServiceModel.Types
         public long? RefId { get; set; }
         public string RefSource { get; set; }
         public string RefUrn { get; set; }
+    }
+
+    public class PostChangeHistory
+    {
+        [AutoIncrement]
+        public long Id { get; set; }
+
+        [Index]
+        public long PostId { get; set; }
+        
+        public string ChangedName { get; set; }
+        
+        public string ChangedValue { get; set; }
+        
+        public string ChangedReason { get; set; }
+        
+        public DateTime Created { get; set; }
+        public string CreatedBy { get; set; }
     }
 
     [UniqueConstraint(nameof(PostId), nameof(UserId))]

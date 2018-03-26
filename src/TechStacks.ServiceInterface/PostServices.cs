@@ -159,6 +159,14 @@ namespace TechStacks.ServiceInterface
 
             Db.Update(post);
 
+            Db.Insert(new PostChangeHistory {
+                ChangedName = nameof(post.Locked),
+                ChangedValue = request.Lock.ToString(),
+                ChangedReason = request.Reason,
+                Created = now,
+                CreatedBy = user.UserName,
+            });
+
             ClearPostCaches();
         }
 
@@ -171,9 +179,10 @@ namespace TechStacks.ServiceInterface
             if (!user.IsOrganizationModerator(orgMember))
                 throw HttpError.Forbidden("Access Denied");
 
+            var now = DateTime.Now;
             if (request.Hide)
             {
-                post.Hidden = DateTime.Now;
+                post.Hidden = now;
                 post.HiddenBy = user.UserName;
                 if (!string.IsNullOrEmpty(request.Reason))
                 {
@@ -187,6 +196,44 @@ namespace TechStacks.ServiceInterface
             }
 
             Db.Update(post);
+            
+            Db.Insert(new PostChangeHistory {
+                ChangedName = nameof(post.Hidden),
+                ChangedValue = request.Hide.ToString(),
+                ChangedReason = request.Reason,
+                Created = now,
+                CreatedBy = user.UserName,
+            });
+
+            ClearPostCaches();
+        }
+
+        public void Put(ChangeStatusPost request)
+        {
+            var user = GetUser();
+            var post = AssertPost(request.Id);
+            AssertCanPostToOrganization(Db, post.OrganizationId, user, out var org, out var orgMember);
+
+            if (!user.IsOrganizationModerator(orgMember))
+                throw HttpError.Forbidden("Access Denied");
+
+            if (string.IsNullOrEmpty(request.Status))
+                throw new ArgumentNullException(nameof(request.Status));
+            
+            var now = DateTime.Now;
+            post.Status = request.Status;
+            post.StatusBy = user.UserName;
+            post.StatusDate = now;
+
+            Db.Update(post);
+            
+            Db.Insert(new PostChangeHistory {
+                ChangedName = nameof(post.Status),
+                ChangedValue = request.Status,
+                ChangedReason = request.Reason,
+                Created = now,
+                CreatedBy = user.UserName,
+            });
 
             ClearPostCaches();
         }
