@@ -100,6 +100,11 @@ namespace TechStacks.ServiceInterface
             return orgMembersLookup[organizationId].ToList();
         }
 
+        public static int GetOrganizationMembersCount(int organizationId)
+        {
+            return orgMembersLookup?[organizationId].Count() ?? 0;
+        }
+
         public static void AssertOrganizationOwner(IDbConnection db, int orgId, AuthUserSession user,
             out Organization organization, out OrganizationMember orgMember)
         {

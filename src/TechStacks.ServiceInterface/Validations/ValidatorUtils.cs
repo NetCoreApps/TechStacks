@@ -52,6 +52,12 @@ namespace TechStacks.ServiceInterface.Validations
                 .Length(0, DescriptionMaxLength);
         }
 
+        public static IRuleBuilderOptions<T, string> OptionalDescription<T>(this IRuleBuilderInitial<T, string> propertyRule)
+        {
+            return propertyRule
+                .Length(0, DescriptionMaxLength);
+        }
+
         public static IRuleBuilderOptions<T, string> RequiredSummary<T>(this IRuleBuilderInitial<T, string> propertyRule)
         {
             return propertyRule

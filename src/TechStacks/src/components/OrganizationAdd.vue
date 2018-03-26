@@ -24,16 +24,6 @@
               :error-messages="errorResponse('slug')"
               ></v-text-field>
 
-          <v-text-field
-            label="Summary"
-            v-model="description"
-            :counter="summaryCounter"
-            multi-line
-            :rows="3"
-            :rules="summaryRulesOptional"
-            :error-messages="errorResponse('description')"
-            ></v-text-field>
-
         </v-layout>
       </v-container>              
     </v-form>
@@ -58,7 +48,6 @@ const organization = {
   id: null,
   name: "",
   slug: "",
-  description: "",
 };
 
 export default {
@@ -79,7 +68,7 @@ export default {
 
   methods: {
     reset(createdSlug){
-        this.responseStatus = this.id = this.name = this.slug = this.description = null;
+        this.responseStatus = this.id = this.name = this.slug;
         this.valid = true;
         this.$emit('done', createdSlug);
     },
@@ -89,7 +78,7 @@ export default {
           try {
             this.$store.commit('loading', true);
             
-            const response = await createOrganization(this.name, this.slug, this.description);
+            const response = await createOrganization(this.name, this.slug);
 
             this.reset(response.slug);
 

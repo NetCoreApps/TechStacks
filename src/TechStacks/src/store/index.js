@@ -194,6 +194,7 @@ const mutations = {
         organization.owners = organizationResponse.owners;
         organization.moderators = organizationResponse.moderators;
         organization.categories = organizationResponse.categories;
+        organization.membersCount = organizationResponse.membersCount;
         organization.full = true;
 
         state.organization = organization;

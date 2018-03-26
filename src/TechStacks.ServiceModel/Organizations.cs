@@ -35,7 +35,7 @@ namespace TechStacks.ServiceModel
 
         public List<OrganizationMember> Moderators { get; set; }
 
-        public long MembersTotal { get; set; }
+        public long MembersCount { get; set; }
 
         public ResponseStatus ResponseStatus { get; set; }
     }

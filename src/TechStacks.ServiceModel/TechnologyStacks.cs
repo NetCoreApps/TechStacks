@@ -240,6 +240,7 @@ namespace TechStacks.ServiceModel
         public string RefSource { get; set; }
         public long? UpVotes { get; set; }
         public long? DownVotes { get; set; }
+        public long MembersCount { get; set; }
         public int Rank { get; set; }
         public string Lang { get; set; }
         public string[] PostTypes { get; set; }

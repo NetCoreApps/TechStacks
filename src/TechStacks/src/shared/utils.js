@@ -139,6 +139,9 @@ export const descriptionRules = [
   v => v.length >= 50 || 'Min 50 characters', 
   v => v.length <= 740 || 'Max 740 characters'
 ];
+export const descriptionRulesOptional = [
+  v => !v || v.length <= descriptionCounter || `Max ${descriptionCounter} characters`
+];
 
 export const contentCounter = 60000;
 export const contentRules = [

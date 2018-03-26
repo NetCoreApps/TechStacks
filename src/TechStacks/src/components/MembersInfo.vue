@@ -16,7 +16,7 @@
             <em class="tag">member</em>
         </v-flex>
 
-        <v-flex v-if="!member && isAuthenticated" style="margin-top:1em;text-align:center">
+        <v-flex v-if="!member && isAuthenticated && !organization.disableInvites" style="margin-top:1em;text-align:center">
           <v-btn v-if="pendingInvite && pendingInvite.dismissed == null" :disabled="true" color="primary">Request Pending</v-btn>
           <div v-else-if="!pendingInvite">
             <div v-if="owners.length == 0 && moderators.length == 0" class="invite-message">
@@ -31,7 +31,7 @@
           </div>
         </v-flex>
 
-        <v-flex style="text-align:center;margin-top:1em" v-if="membersTotal > 1">{{membersTotal}} members</v-flex>
+        <v-flex style="text-align:center;margin-top:1em" v-if="membersCount > 1">{{membersCount}} members</v-flex>
       </v-layout>
 
     </v-card-title>
@@ -58,8 +58,8 @@ export default {
     moderators(){
       return this.organization.moderators;
     },
-    membersTotal(){
-      return this.organization.membersTotal;
+    membersCount(){
+      return this.organization.membersCount;
     },
     member(){
       return this.userOrganizations && this.userOrganizations.members.find(x => x.organizationId == this.organization.id);

@@ -12,7 +12,7 @@ namespace TechStacks.ServiceInterface.Validations
             {
                 RuleFor(x => x.Name).RequiredName();
                 RuleFor(x => x.Slug).RequiredSlug();
-                RuleFor(x => x.Description).OptionalSummary();
+                RuleFor(x => x.Description).OptionalDescription();
             });
         }
     }
@@ -25,7 +25,7 @@ namespace TechStacks.ServiceInterface.Validations
             {
                 RuleFor(x => x.Name).RequiredName();
                 RuleFor(x => x.Slug).RequiredSlug();
-                RuleFor(x => x.Description).OptionalSummary();
+                RuleFor(x => x.Description).OptionalDescription();
                 RuleFor(x => x.DeletePostsWithReportCount).GreaterThan(0);
             });
         }

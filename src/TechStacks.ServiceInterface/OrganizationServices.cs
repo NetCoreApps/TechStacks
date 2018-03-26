@@ -45,7 +45,7 @@ namespace TechStacks.ServiceInterface
                 Categories = (await Db.SelectAsync<Category>(x => x.OrganizationId == organization.Id && x.Deleted == null)).OrderBy(x => x.Name).ToList(),
                 Owners = members.Where(x => x.IsOwner).ToList(),
                 Moderators = members.Where(x => x.IsModerator).ToList(),
-                MembersTotal = PostServicesBase.GetOrganizationMembers(organization.Id).Count, //display only, can be stale
+                MembersCount = PostServicesBase.GetOrganizationMembersCount(organization.Id), //display only, can be stale
             };
         }
 
@@ -243,23 +243,28 @@ namespace TechStacks.ServiceInterface
             };
         }
 
-        public object Put(UpdateOrganization request)
+        public async Task<UpdateOrganizationResponse> Put(UpdateOrganization request)
         {
             var user = GetUser();
             AssertOrganizationOwner(Db, request.Id, user, out var organization, out var orgMember);
 
             var slug = request.Slug;
 
-            var slugExists = Db.Exists<Organization>(x => x.Slug == slug && x.Id != request.Id);
+            var slugExists = await Db.ExistsAsync<Organization>(x => x.Slug == slug && x.Id != request.Id);
             if (slugExists)
                 throw new ArgumentException("Slug already exists", nameof(request.Slug));
+
+            if (organization.Description != request.Description)
+            {
+                organization.DescriptionHtml = await Markdown.TransformAsync(request.Description, user.GetGitHubToken());
+            }
 
             organization.PopulateWith(request);
             organization.Slug = slug;
             organization.Modified = DateTime.Now;
             organization.ModifiedBy = user.UserName;
 
-            Db.Update(organization);
+            await Db.UpdateAsync(organization);
 
             ClearOrganizationCaches();
 

@@ -162,7 +162,9 @@ namespace TechStacks.ServiceInterface
 
             foreach (var entry in allOrgsMap)
             {
-                entry.Value.Categories?.Sort((x,y) => string.Compare(x.Name, y.Name, StringComparison.Ordinal));
+                var org = entry.Value;
+                org.MembersCount = PostServicesBase.GetOrganizationMembersCount(org.Id);
+                org.Categories?.Sort((x,y) => string.Compare(x.Name, y.Name, StringComparison.Ordinal));
             }
 
             var response = new OverviewResponse

@@ -104,6 +104,10 @@
 
                   <v-flex style="max-width:300px;margin-left:1em">
 
+                    <v-card class="org-description" v-if="organization.descriptionHtml">
+                      <v-card-title v-html="organization.descriptionHtml"></v-card-title>
+                    </v-card>
+
                     <MembersInfo :organization="organization" @done="memberDone" />
 
                     <div v-if="view != 'category' && organization.categories.length > 1">
