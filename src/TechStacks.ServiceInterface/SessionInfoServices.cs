@@ -6,7 +6,7 @@ using TechStacks.ServiceModel;
 namespace TechStacks.ServiceInterface
 {
     [Authenticate]
-    [CacheResponse(Duration = 3600)]
+    [CacheResponse(Duration = 3600, VaryByUser = true)]
     public class SessionInfoServices : Service
     {
         public async Task<SessionInfoResponse> Any(SessionInfo request)

@@ -33,7 +33,7 @@ export const routes = {
     techTag: (slug,organization) => organization ? `/?t=${slug}` : `/tech/${slug}`,
     sortOrderByField(url) {
         return url.indexOf('sort=new') >= 0
-            ? '-id'
+            ? '-created'
             : url.indexOf('sort=top') >= 0
                 ? '-points'
                 : null;
