@@ -174,10 +174,28 @@ namespace TechStacks.ServiceInterface.Admin
                            ?? user.UserName;
 
             var labels = new List<string>();
-            if (request.State != null)
+            if (request.State != null && request.State != "closed")
+            {
                 labels.Add(request.State.GenerateSlug());
-            if (request.StatusName != null)
-                labels.Add(request.StatusName.GenerateSlug());
+            }
+            
+            if (request.StatusKey != null)
+            {
+                labels.Add(request.StatusKey);
+
+                var orgLabelExists = await Db.ExistsAsync<OrganizationLabel>(x =>
+                    x.OrganizationId == request.OrganizationId && x.Slug == request.StatusKey);
+                
+                if (!orgLabelExists)
+                {
+                    await Db.InsertAsync(new OrganizationLabel {
+                        OrganizationId = request.OrganizationId,
+                        Slug = request.StatusKey,
+                        Description = $"UserVoice Suggestion",
+                        Color = request.StatusHexColor,
+                    });
+                }
+            }
 
             Post newPost = null;
 
@@ -204,10 +222,17 @@ namespace TechStacks.ServiceInterface.Admin
                     HiddenBy = statusBy,
                     Content = request.Text,
                     ContentHtml = request.FormattedText,
-                    Labels = labels.Count > 0 ? labels.ToArray() : null,                     
+                    Labels = labels.Count > 0 ? labels.ToArray() : null,
                 };
 
-                newPost.Id = await Db.InsertAsync(newPost);
+                if (request.State == "closed")
+                {
+                    newPost.Status = request.State;
+                    newPost.StatusBy = statusBy;
+                    newPost.StatusDate = request.StatusChangedBy?.UpdatedAt;
+                }
+
+                newPost.Id = await Db.InsertAsync(newPost, selectIdentity:true);
 
                 if (request.Response != null)
                 {

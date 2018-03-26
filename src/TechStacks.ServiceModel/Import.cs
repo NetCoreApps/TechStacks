@@ -78,7 +78,8 @@ namespace TechStacks.ServiceModel
         /// <summary>
         /// Optional
         /// </summary>
-        public string StatusName { get; set; } //= null, completed, declined, started, under review
+        public string StatusKey { get; set; } //= null, completed, declined, started, under review
+        public string StatusHexColor { get; set; }
         public UserVoiceUser StatusChangedBy { get; set; }
         public UserVoiceUser Creator { get; set; }
         public UserVoiceComment Response { get; set; }
