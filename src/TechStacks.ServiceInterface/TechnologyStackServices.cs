@@ -140,6 +140,16 @@ namespace TechStacks.ServiceInterface
 
             var allOrgsMap = allOrgs.ToDictionary(x => x.Id);
 
+            var orgLabels = Db.Select<OrganizationLabel>();
+            foreach (var orgLabel in orgLabels)
+            {
+                if (allOrgsMap.TryGetValue(orgLabel.OrganizationId, out var org))
+                {
+                    (org.Labels ?? (org.Labels = new List<LabelInfo>()))
+                        .Add(orgLabel.ConvertTo<LabelInfo>());
+                }
+            }
+
             var orgCategories = Db.Select<Category>(x => x.Deleted == null);
             foreach (var category in orgCategories)
             {

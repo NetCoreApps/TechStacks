@@ -137,25 +137,68 @@
 
         <v-flex style="text-align:center;margin-top:2em">
           <v-btn-toggle mandatory v-model="tab">
-            <v-btn title="Categories (ALT+1)">
+            <v-btn title="Labels (ALT+1)">
+              Labels ({{ labels.length }})
+            </v-btn>
+            <v-btn title="Categories (ALT+2)">
               Categories ({{ categories.length }})
             </v-btn>
-            <v-btn title="Members (ALT+2)">
+            <v-btn title="Members (ALT+3)">
               Members ({{ members.length }})
             </v-btn>
-            <v-btn title="Member Invite Requests (ALT+3)">
+            <v-btn title="Member Invite Requests (ALT+4)">
               Invite Requests ({{ memberInvites.length }})
             </v-btn>
-            <v-btn title="Reported Posts (ALT+4)">
+            <v-btn title="Reported Posts (ALT+5)">
               Reported Posts ({{ reportedPosts.length }})
             </v-btn>
-            <v-btn title="Reported Comments (ALT+5)">
+            <v-btn title="Reported Comments (ALT+6)">
               Reported Comments ({{ reportedPostComments.length }})
             </v-btn>
           </v-btn-toggle>
         </v-flex>
 
         <v-flex v-if="tab==0">
+          <v-card>
+            <v-card-title>
+              <v-layout column>
+                <v-flex>
+                  <v-card flat v-for="label in labels" :key="label.label">
+                    <v-card-title style="margin:0;padding:0">
+                      <v-layout>
+                        <v-flex v-if="editLabel != label.slug">
+
+                          <v-btn small fab dark color="pink" @click="editLabel = label.slug" title="Edit Label">
+                            <v-icon dark>edit</v-icon>
+                          </v-btn>
+
+                          <em class="label" :style="`background:${label.color}`">{{ label.slug }}</em>
+
+                          {{ label.description }}
+                          
+                        </v-flex>
+                        <v-flex v-if="editLabel == label.slug">
+                          <LabelEdit :label="label" @done="labelDone" />
+                        </v-flex>
+                      </v-layout>
+                    </v-card-title>
+                  </v-card>
+                </v-flex>
+                <v-flex v-if="addLabel">
+                  <LabelEdit :orgId="id" @done="labelDone" />
+                </v-flex>
+              </v-layout>
+            </v-card-title>
+
+            <v-card-actions>
+              <v-flex v-if="!addLabel && editLabel == null">
+                <v-btn color="primary" @click="addLabel=true">Add Label</v-btn>
+              </v-flex>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
+
+        <v-flex v-if="tab==1">
           <v-card>
             <v-card-title>
               <v-layout column>
@@ -194,7 +237,7 @@
           </v-card>
         </v-flex>
 
-        <v-flex v-if="tab==1">
+        <v-flex v-if="tab==2">
           <v-card>
             <v-card-title>
               <v-layout column>
@@ -238,7 +281,7 @@
           </v-card>
         </v-flex>
 
-        <v-flex v-if="tab==2">
+        <v-flex v-if="tab==3">
           <v-card>
             <v-card-title>
               <v-layout column>
@@ -268,7 +311,7 @@
           </v-card>
         </v-flex>        
 
-        <v-flex v-if="tab==3">
+        <v-flex v-if="tab==4">
           <v-card>
             <v-card-title>
               <v-layout column>
@@ -305,7 +348,7 @@
           </v-card>
         </v-flex>        
 
-        <v-flex v-if="tab==4">
+        <v-flex v-if="tab==5">
           <v-card>
             <v-card-title>
               <v-layout column>
@@ -351,13 +394,14 @@
 <script>
 import CategoryEdit from "~/components/CategoryEdit.vue";
 import MemberEdit from "~/components/MemberEdit.vue";
+import LabelEdit from "~/components/LabelEdit.vue";
 
 import { mapGetters } from "vuex";
 import { toObject, errorResponse, errorResponseExcept } from "@servicestack/client";
 import { routes } from "~/shared/routes";
 import { getOrganizationBySlug, getOrganizationAdmin, updateOrganization, createCategory, deleteOrganization, lockOrganization, updateMemberInvite,
          actionPostReport, actionPostCommentReport } from "~/shared/gateway";
-import { ignoreKeyPress, nameCounter, nameRules, slugCounter, slugRules, summaryCounter, summaryRulesOptional } from "~/shared/utils";
+import { ignoreKeyPress, nameCounter, nameRules, slugCounter, slugRules, descriptionCounter, descriptionRulesOptional } from "~/shared/utils";
 
 const organization = {
   id: null,
@@ -366,6 +410,7 @@ const organization = {
   description: "",
   locked: null,
   lockedBy: null,
+  disableInvites: false,
   postTypes: [],
   moderatorPostTypes: [],
   technologyIds: [],
@@ -374,14 +419,14 @@ const organization = {
 };
 
 export default {
-  components: { CategoryEdit, MemberEdit },
+  components: { CategoryEdit, MemberEdit, LabelEdit, Editor },
   props: ['orgSlug'],
   computed: {
     errorSummary(){ 
       return errorResponseExcept.call(this,Object.keys(organization));
     },
     member() {
-      return this.userOrganizations.members.find(x => x.organizationId == organization.id);
+      return this.userOrganizations && this.userOrganizations.members.find(x => x.organizationId == this.id);
     },
     isOrganizationOwner(){
       return this.isAdmin || (this.member && this.member.isOwner);
@@ -392,10 +437,18 @@ export default {
     langSelectItems(){
       return this.technologyTiers.filter(x => x.tier == 'ProgrammingLanguage').map(x => ({ text:x.name, value:x.name }))
     },
-    ...mapGetters(["loading", "isAuthenticated", "isAdmin", "user", "organization", "userOrganizations", "technologyTiers", "allPostTypeSelectItems"])
+    ...mapGetters(["loading", "isAuthenticated", "isAdmin", "user", "organization", "userOrganizations", "technologyTiers", "allPostTypeSelectItems",
+                   "getLangByOrganizationId"])
   },
 
   methods: {
+    labelDone(changed) {
+      this.editLabel = null;
+      this.addLabel = false;
+      if (changed) {
+        this.loadOrgnaization();
+      }
+    },
     categoryDone(changed) {
       this.editCategory = null;
       this.addCategory = false;
@@ -499,6 +552,7 @@ export default {
         Object.assign(this, this.organization);
         this.categories = this.organization.categories.filter(x => x.deleted == null);
         const response = await getOrganizationAdmin(this.id);
+        this.labels = response.labels;
         this.members = response.members;
         this.memberInvites = response.memberInvites;
         this.reportedPosts = response.reportedPosts;
@@ -542,19 +596,22 @@ export default {
   data: () => ({
     routes,
     ...organization,
+    labels: [],
     categories: [],
     members: [],
     memberInvites: [],
     reportedPosts: [],
     reportedPostComments: [],
     tab: 0,
+    addLabel: false,
+    editLabel: null,
     addCategory: false,
     editCategory: null,
     addMember: false,
     editMember: null,
     valid: true,
     allowDelete: false,
-    nameCounter, nameRules, slugCounter, slugRules, summaryCounter, summaryRulesOptional,
+    nameCounter, nameRules, slugCounter, slugRules, descriptionCounter, descriptionRulesOptional,
     responseStatus: null,
   }),
 

@@ -245,6 +245,7 @@ namespace TechStacks.ServiceModel
         public string[] PostTypes { get; set; }
         public string[] ModeratorPostTypes { get; set; }
         public DateTime? Locked { get; set; }
+        public List<LabelInfo> Labels { get; set; }
         public List<CategoryInfo> Categories { get; set; }
     }
 
@@ -253,5 +254,11 @@ namespace TechStacks.ServiceModel
         public int Id { get; set; }
         public string Name { get; set; }
         public string Slug { get; set; }
+    }
+
+    public class LabelInfo
+    {
+        public string Slug { get; set; }
+        public string Color { get; set; }
     }
 }

@@ -41,6 +41,7 @@ namespace TechStacks.ServiceInterface
                 Id = organization.Id,
                 Slug = organization.Slug,
                 Organization = organization,
+                Labels = await Db.SelectAsync<OrganizationLabel>(x => x.OrganizationId == organization.Id),
                 Categories = (await Db.SelectAsync<Category>(x => x.OrganizationId == organization.Id && x.Deleted == null)).OrderBy(x => x.Name).ToList(),
                 Owners = members.Where(x => x.IsOwner).ToList(),
                 Moderators = members.Where(x => x.IsModerator).ToList(),
@@ -75,6 +76,8 @@ namespace TechStacks.ServiceInterface
 
             return new GetOrganizationAdminResponse
             {
+                Labels = await Db.SelectAsync(Db.From<OrganizationLabel>().Where(x => x.OrganizationId == org.Id)),
+
                 Members = await Db.SelectAsync(Db.From<OrganizationMember>().Where(x => x.OrganizationId == org.Id).OrderByDescending(x => new{ x.IsOwner, x.IsModerator })),
                 MemberInvites = await Db.SelectAsync<OrganizationMemberInvite>(x => x.OrganizationId == org.Id && x.Approved == null && x.OrganizationMemberId == null),
 
@@ -302,6 +305,73 @@ namespace TechStacks.ServiceInterface
 
             ClearOrganizationCaches();
         }
+        
+        
+        public object Post(AddOrganizationLabel request)
+        {
+            var user = GetUser();
+            AssertOrganizationModerator(Db, request.OrganizationId, user, out var org, out var orgMember);
+
+            if (string.IsNullOrEmpty(request.Slug))
+                throw new ArgumentNullException(nameof(request.Slug));
+            
+            if (string.IsNullOrEmpty(request.Color))
+                throw new ArgumentNullException(nameof(request.Color));
+            
+            var existingLabel = Db.Exists<OrganizationLabel>(x =>
+                x.OrganizationId == request.OrganizationId && x.Slug == request.Slug);
+            if (existingLabel)
+                throw new ArgumentException("Label has already been added", nameof(request.Slug));
+
+            var label = request.ConvertTo<OrganizationLabel>();
+            label.Created = label.Modified = DateTime.Now;
+            label.CreatedBy = label.ModifiedBy = user.UserName;
+            Db.Insert(label);
+
+            ClearOrganizationCaches();
+
+            return new AddOrganizationMemberResponse();
+        }
+
+        public object Put(UpdateOrganizationLabel request)
+        {
+            var user = GetUser();
+            AssertOrganizationModerator(Db, request.OrganizationId, user, out var org, out var orgMember);
+
+            if (string.IsNullOrEmpty(request.Slug))
+                throw new ArgumentNullException(nameof(request.Slug));
+            
+            if (string.IsNullOrEmpty(request.Color))
+                throw new ArgumentNullException(nameof(request.Color));
+            
+            var label = Db.Single<OrganizationLabel>(x =>
+                x.OrganizationId == request.OrganizationId && x.Slug == request.Slug);
+
+            if (label == null)
+                throw HttpError.NotFound("Label does not exist");
+
+            label.PopulateWith(request);
+            label.Modified = DateTime.Now;
+            label.ModifiedBy = user.UserName;
+
+            Db.Update(label);
+
+            ClearOrganizationCaches();
+
+            return new UpdateOrganizationMemberResponse();
+        }
+
+        public void Delete(RemoveOrganizationLabel request)
+        {
+            var user = GetUser();
+            AssertOrganizationModerator(Db, request.OrganizationId, user, out var org, out var orgMember);
+
+            Db.Delete<OrganizationLabel>(x => 
+                x.OrganizationId == request.OrganizationId && x.Slug == request.Slug);
+
+            ClearOrganizationCaches();
+        }
+
 
         public object Post(AddOrganizationCategory request)
         {

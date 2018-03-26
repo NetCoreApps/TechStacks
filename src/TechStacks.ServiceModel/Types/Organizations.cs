@@ -128,6 +128,22 @@ namespace TechStacks.ServiceModel.Types
         [IgnoreDataMember] public string ModifiedBy { get; set; }
     }
 
+    public class OrganizationLabel
+    {
+        [PrimaryKey]
+        public string Slug { get; set; }
+        [Index]
+        public int OrganizationId { get; set; }
+        public string Description { get; set; }
+        public string Color { get; set; }
+
+        [IgnoreDataMember] public DateTime Created { get; set; }
+        [IgnoreDataMember] public string CreatedBy { get; set; }
+
+        [IgnoreDataMember] public DateTime Modified { get; set; }
+        [IgnoreDataMember] public string ModifiedBy { get; set; }
+    }
+
     [UniqueConstraint(nameof(OrganizationId), nameof(UserId))]
     public class OrganizationMember
     {

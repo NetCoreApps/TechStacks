@@ -27,6 +27,8 @@ namespace TechStacks.ServiceModel
 
         public Organization Organization { get; set; }
 
+        public List<OrganizationLabel> Labels { get; set; }
+
         public List<Category> Categories { get; set; }
 
         public List<OrganizationMember> Owners { get; set; }
@@ -46,6 +48,8 @@ namespace TechStacks.ServiceModel
 
     public class GetOrganizationAdminResponse
     {
+        public List<OrganizationLabel> Labels { get; set; }
+
         public List<OrganizationMember> Members { get; set; }
 
         public List<OrganizationMemberInvite> MemberInvites { get; set; }
@@ -129,6 +133,7 @@ namespace TechStacks.ServiceModel
         public string HeroUrl { get; set; }
         public string Lang { get; set; }
         public int DeletePostsWithReportCount { get; set; }
+        public bool? DisableInvites { get; set; }
         public string[] PostTypes { get; set; }
         public string[] ModeratorPostTypes { get; set; }
         public int[] TechnologyIds { get; set; }
@@ -220,6 +225,36 @@ namespace TechStacks.ServiceModel
         public ResponseStatus ResponseStatus { get; set; }
     }
 
+
+    [Route("/orgs/{OrganizationId}/labels", "POST")]
+    public class AddOrganizationLabel : IReturn<OrganizationLabelResponse>
+    {
+        public int OrganizationId { get; set; }
+        public string Slug { get; set; }
+        public string Description { get; set; }
+        public string Color { get; set; }
+    }
+
+    [Route("/orgs/{OrganizationId}/members/{Slug}", "PUT")]
+    public class UpdateOrganizationLabel : IReturn<OrganizationLabelResponse>
+    {
+        public int OrganizationId { get; set; }
+        public string Slug { get; set; }
+        public string Description { get; set; }
+        public string Color { get; set; }
+    }
+
+    [Route("/orgs/{OrganizationId}/labels/{Slug}", "DELETE")]
+    public class RemoveOrganizationLabel : IReturnVoid
+    {
+        public int OrganizationId { get; set; }
+        public string Slug { get; set; }
+    }
+
+    public class OrganizationLabelResponse
+    {
+        public ResponseStatus ResponseStatus { get; set; }
+    }
 
     [Route("/orgs/{OrganizationId}/members", "POST")]
     public class AddOrganizationMember : IReturn<AddOrganizationMemberResponse>
