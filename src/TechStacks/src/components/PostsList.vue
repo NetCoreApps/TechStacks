@@ -24,10 +24,10 @@
                   <nuxt-link v-if="!post.url" class="post-link" :to="routes.post(post.id,post.slug)">{{ post.title }}</nuxt-link>
                   <a v-if="post.url" class="post-link external" :href="post.url">{{ post.title }}</a>
 
-                  <span v-if="post.labels && post.labels.length > 0" class="list-labels">
-                    <nuxt-link v-if="post.status" :class="`label ${post.status}`" :to="toUrl({ is: post.status })">{{ post.status }}</nuxt-link>
-                    <nuxt-link class="label" :style="labelStyle(label,getOrganization(post.organizationId))" :to="toUrl({ is: label })" 
-                               v-for="label in post.labels" :key="label">{{ label }}</nuxt-link>
+                  <span v-if="$route.path != routes.homeNews && post.labels && post.labels.length > 0" class="list-labels">
+                     <nuxt-link v-if="post.status" :class="`label ${post.status}`" :to="toUrl({ is: post.status })">{{ post.status }}</nuxt-link>
+                     <nuxt-link class="label" :style="labelStyle(label,getOrganization(post.organizationId))" :to="toUrl({ is: label })" 
+                                v-for="label in post.labels" :key="label">{{ label }}</nuxt-link>
                   </span>
                 </div>
                 
