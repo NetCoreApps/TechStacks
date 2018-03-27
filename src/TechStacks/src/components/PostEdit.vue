@@ -72,28 +72,36 @@
                         :error-messages="errorResponse('technologyIds')"
                         ></v-select>
 
-                    <v-select v-if="isOrganizationModerator"
-                        label="Labels"
-                        multiple
-                        chips
-                        :items="labelsSelectItems"
-                        v-model="labels"
-                        :error-messages="errorResponse('labels')"
-                        ></v-select>
+                    <div v-if="isOrganizationModerator" class="moderator-section">
+                        <span>moderators section</span>
 
-                    <v-flex v-if="edit && isOrganizationModerator" style="text-align:right">
-                        <v-layout>
-                            <v-btn small @click="lockPost(!locked)" class="white--text" :color="locked ? 'green' : 'red'">
-                                {{ locked ? 'Unlock' : 'Lock' }}
-                            </v-btn>
-                            <span v-if="lockedBy" style="line-height:40px;padding-right:10px;color:#999">locked By @{{lockedBy}}</span>
+                        <v-select
+                            label="Labels"
+                            multiple
+                            chips
+                            :items="labelsSelectItems"
+                            v-model="labels"
+                            :error-messages="errorResponse('labels')"
+                            ></v-select>
 
-                            <v-btn small @click="hidePost(!hidden)" class="white--text" :color="hidden ? 'green' : 'red'">
-                                {{ hidden ? 'Un-hide' : 'Hide' }}
-                            </v-btn>
-                            <span v-if="hiddenBy" style="line-height:40px;padding-right:10px;color:#999">hidden By @{{hiddenBy}}</span>
-                        </v-layout>
-                    </v-flex>
+                        <div v-if="labelsSelectItems.length <= 2" style="text-align:center">
+                            Add more post labels for the <nuxt-link :to="routes.organization(org.slug)">{{ org.name }} Organization</nuxt-link>
+                        </div>
+
+                        <v-flex v-if="edit" style="text-align:right">
+                            <v-layout>
+                                <v-btn small @click="lockPost(!locked)" class="white--text" :color="locked ? 'green' : 'red'">
+                                    {{ locked ? 'Unlock' : 'Lock' }}
+                                </v-btn>
+                                <span v-if="lockedBy" style="line-height:40px;padding-right:10px;color:#999">locked By @{{lockedBy}}</span>
+
+                                <v-btn small @click="hidePost(!hidden)" class="white--text" :color="hidden ? 'green' : 'red'">
+                                    {{ hidden ? 'Un-hide' : 'Hide' }}
+                                </v-btn>
+                                <span v-if="hiddenBy" style="line-height:40px;padding-right:10px;color:#999">hidden By @{{hiddenBy}}</span>
+                            </v-layout>
+                        </v-flex>
+                    </div>
                 </v-flex>
 
             </v-layout>
@@ -132,6 +140,7 @@ import { toObject, errorResponse } from "@servicestack/client";
 import { createPost, updatePost, deletePost, lockPost, hidePost } from "~/shared/gateway";
 import { ignoreKeyPress, titleCounter, titleRules, urlCounter, urlRulesOptional, contentCounter, contentRules } from "~/shared/utils";
 import { canUpdatePost } from "~/shared/post";
+import { routes } from "~/shared/routes";
 
 const post = {
     organizationId: null,
@@ -253,6 +262,7 @@ export default {
   },
 
   data: () => ({
+    routes,
     valid: true,
     allowDelete: false,
     disposing: false,
