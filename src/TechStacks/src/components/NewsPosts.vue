@@ -220,7 +220,7 @@ export default {
         types: this.types,
         page: this.page,
         categoryId: this.categoryId,
-        orderBy: routes.sortOrderByField(location.search)
+        orderBy: routes.sortOrderByField(this.sort)
       });
     },
     getPageUrl(p) {
@@ -234,6 +234,7 @@ export default {
     initRoute(qs) {
       this.c = qs.c;
       this.p = qs.p;
+      this.sort = qs.sort;
       this.add = !!qs.add;
       this.types = qs.add || qs.types;
       const types = (this.types || "").split(",");
@@ -253,7 +254,7 @@ export default {
       this.refreshPosts();
     },
     resetQuery(){
-      this.c = undefined;
+      this.c = this.sort = undefined;
       this.changeTypes({});
     },
     changeCategory(cateogry) {
@@ -266,12 +267,12 @@ export default {
       if (Object.keys(types).length == 0) {
         this.initRoute({ types:null });
         this.stageChanges({ all: 0, filterTypes: [] });
-        this.updateUrl({ types: undefined, c:this.c });
+        this.updateUrl({ types: undefined, c:this.c, sort:this.sort });
       } else {
         this.stageChanges({ all: null });
         if (types !== this.$route.query.types) {
           this.initRoute({ types });
-          this.updateUrl({ types, c:this.c });
+          this.updateUrl({ types, c:this.c, sort:this.sort });
         }
       }
     },
@@ -392,6 +393,8 @@ export default {
     routes,
     types: null,
     c: null,
+    p: null,
+    sort: null,
     staging: null,
     filterTypes: [],
     all: null,

@@ -31,10 +31,10 @@ export const routes = {
     post: (postId, postSlug) => `/posts/${postId}/${postSlug}`,
     comment: (postId,commmentId) => `/comments/${postId}/${commmentId}`,
     techTag: (slug,organization) => organization ? `/?t=${slug}` : `/tech/${slug}`,
-    sortOrderByField(url) {
-        return url.indexOf('sort=new') >= 0
+    sortOrderByField(sort) {
+        return sort == 'new'
             ? '-created'
-            : url.indexOf('sort=top') >= 0
+            : sort == 'top'
                 ? '-points'
                 : null;
     },
