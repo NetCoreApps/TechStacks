@@ -123,7 +123,7 @@ export const queryTechnology = async (query) => await client.get(new QueryTechno
 export const queryTechStacks = async (query) => await client.get(new QueryTechStacks(), { include: 'total', ...query });
 
 export const queryPosts = async (query) => await client.get(new QueryPosts(), 
-    { take:50, ...query, fields: "id,organizationId,userId,type,categoryId,slug,title,imageUrl,technologyIds,upVotes,downVotes,points,commentsCount,created,createdBy" });
+    { take:50, ...query, fields: "id,organizationId,userId,type,categoryId,slug,title,imageUrl,labels,technologyIds,upVotes,downVotes,points,commentsCount,created,createdBy" });
 
 export const queryPostComments = async(query) => await client.get(new QueryPostComments(), { take:50, ...query });
 
@@ -137,7 +137,7 @@ export const getUsersKarma = async(userIds) => (await client.get(new GetUsersKar
 
 export const getUserPostCommentVotes = async(postId) => await client.get(new GetUserPostCommentVotes(), { postId });
 
-export const queryLatestOrganizationsPosts = async (organizationId, types, categoryId, orderBy, skip, take) => {
+export const queryLatestOrganizationsPosts = async ({ organizationId, types, categoryId, is, orderBy, skip, take }) => {
     if (!orderBy)
         orderBy = 'rank';
     const request = { organizationId, orderBy };
@@ -145,6 +145,8 @@ export const queryLatestOrganizationsPosts = async (organizationId, types, categ
         request.types = types;
     if (categoryId)
         request.categoryId = categoryId;
+    if (is) 
+        request.is = is;
     if (skip > 0)
         request.skip = skip;
     if (take > 0)

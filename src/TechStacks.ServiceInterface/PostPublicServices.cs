@@ -17,7 +17,21 @@ namespace TechStacks.ServiceInterface
         public object Any(QueryPosts request)
         {
             var q = AutoQuery.CreateQuery(request, Request.GetRequestParams());
-            q.Where(x => x.Deleted == null && x.Hidden == null);
+            q.Where(x => x.Deleted == null);
+            
+            var states = request.Is ?? TypeConstants.EmptyStringArray;
+            if (states.Contains("closed") || states.Contains("completed") || states.Contains("declined"))
+                q.And(x => x.Status == "closed");
+            else
+                q.And(x => x.Hidden == null && (x.Status == null || x.Status != "closed"));
+
+            if (states.Length > 0)
+            {
+                var labelSlugs = states.Where(x => x != "closed" && x != "open")
+                    .Map(x => x.GenerateSlug());
+                if (labelSlugs.Count > 0)
+                    q.And($"ARRAY[{new SqlInValues(labelSlugs).ToSqlInString()}] && labels");
+            }
 
             if (!request.AnyTechnologyIds.IsEmpty())
             {

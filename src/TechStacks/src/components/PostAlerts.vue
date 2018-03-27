@@ -1,8 +1,15 @@
 <template>
     <div v-if="organization && post" class="post-alerts">
         <div v-if="post.labels && post.labels.length > 0" class="post-labels">
-            <em v-if="post.status" :class="`label ${post.status}`">{{ post.status }}</em> 
-            <em class="label" :style="labelStyle(label,organization)" v-for="label in post.labels" :key="label">{{ label }}</em>
+
+            <nuxt-link v-if="post.status" :class="`label ${post.status}`" :to="toUrl({ is: post.status })">
+                {{ post.status }}
+            </nuxt-link>
+
+            <nuxt-link class="label" :style="labelStyle(label,organization)" :to="toUrl({ is: label })" v-for="label in post.labels" :key="label">
+                {{ label }}
+            </nuxt-link>
+
         </div>
 
         <v-alert v-if="post.archived" outline color="grey" icon="archive" :value="true">
@@ -24,12 +31,23 @@
 </template>
 
 <script>
+import { routes } from "~/shared/routes";
 import { fromNow } from "~/shared/utils";
 import { isOrganizationModerator, isOrganizationMember, memberCannotComment, organizationMember, userId, labelStyle } from "~/shared/post";
 
 export default {
   props: ["organization", "post"],
   methods: {
+    toUrl(args) {
+      const qs = { types: this.post.type };
+      if (this.category)
+        qs.c = this.category.slug;
+      if (args)
+        Object.assign(qs, args);
+
+      return routes.organizationNews(this.organization.slug, qs);
+    },
+
     isOrganizationModerator,
     isOrganizationMember,
     memberCannotComment,
@@ -37,6 +55,10 @@ export default {
     getUserId:userId,
     labelStyle,
     fromNow,
-  }
+  },
+
+  data: () => ({
+    routes
+  })
 };
 </script>

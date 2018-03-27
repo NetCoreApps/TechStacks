@@ -381,21 +381,30 @@ p>code, li>code {
   background: #FFF8DC;
   color: #666;
 }
-.label, .label a {
+.label, a.label {
   color: #fff;
-  background: #aaa;
   font-size: 16px;
 }
 .label {
+  background: #aaa;
   border-radius: 4px;
   padding: 4px 8px;
   margin: 0 2px;
 }
-.label.closed { background: #d32f2f }
+a.label.closed { 
+  background: #d32f2f;
+}
 .post-labels {
   margin: 1em 0 0 0;
 }
-
+.list-labels {
+  vertical-align: 2px;
+  margin: 0 0 0 .5em;
+}
+.list-labels .label {
+  font-size: 14px;
+  padding: 2px 5px;
+}
 .moderator-section
 {
   border-top: dashed 2px rgba(0,0,0,.3);

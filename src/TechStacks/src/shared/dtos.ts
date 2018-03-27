@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-26 06:37:58
+Date: 2018-03-27 05:07:27
 Version: 5.03
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -1333,6 +1333,7 @@ export class QueryPosts extends QueryDb<Post> implements IReturn<QueryResponse<P
     organizationIds: number[];
     types: string[];
     anyTechnologyIds: number[];
+    is: string[];
     createResponse() { return new QueryResponse<Post>(); }
     getTypeName() { return "QueryPosts"; }
 }

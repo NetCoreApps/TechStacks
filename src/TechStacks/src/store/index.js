@@ -355,7 +355,7 @@ const getters = {
     categorySelectItems: (state,getters) => (getters.organization && getters.organization.categories || [])
         .sort((a,b) => a.slug.localeCompare(b.slug)).map(x => ({ text:x.name, value:x.id })),
     labelsSelectItems: (state,getters) => (getters.organization && getters.organization.labels || [])
-        .map(x => ({ text:x.slug + ': ' + x.description, value:x.slug })),
+        .map(x => ({ text:x.slug + (x.description ? ': ' + x.description : ''), value:x.slug })),
     allowablePostTypeSelectItems: (state,getters) => getters.allowablePostTypes.map(x => ({ text:x, value:x })),
     browsablePostTypeSelectItems: (state,getters) => getters.browsablePostTypes.map(x => ({ text:x, value:x })),
     allPostTypeSelectItems: state => state.allPostTypes.map(x => ({ text:x.name, value:x.name })),
@@ -554,10 +554,11 @@ const actions = {
         if (!getters.organization) 
             return;
 
-        let { types, page, categoryId, orderBy } = query;
+        let { types, page, categoryId, orderBy, is } = query;
 
         const q = state.latestOrganizationPostsQuery;
-        const repeatedQuery = q && q.organizationId === organizationId && q.types === types && q.page === page && q.categoryId === categoryId && q.orderBy == orderBy;
+        const repeatedQuery = q && q.organizationId === organizationId && q.types === types && q.page === page && 
+                              q.categoryId === categoryId && q.orderBy == orderBy && q.is == is;
         if (repeatedQuery) return;
         commit('latestOrganizationPostsQuery', { organizationId, ...query });
 
@@ -569,7 +570,7 @@ const actions = {
     
         await doAction(commit, 'latestOrganizationPosts', async() => ({ 
             organizationId, 
-            posts: await queryLatestOrganizationsPosts(organizationId, types, categoryId, orderBy, skip) 
+            posts: await queryLatestOrganizationsPosts({ organizationId, types, categoryId, is, orderBy, skip }) 
         }));
     },
 

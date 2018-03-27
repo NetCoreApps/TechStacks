@@ -166,7 +166,7 @@ namespace TechStacks.ServiceInterface.Admin
             var categoryId = await GetOrCreateCategory(request.OrganizationId, request.Category);
 
             var now = DateTime.Now;
-            var hidden = request.ClosedAt != null || request.State == "closed" || request.State == "completed"
+            var hidden = request.StatusKey == "declined" || request.StatusKey == "completed"
                 ? now
                 : (DateTime?) null;
 

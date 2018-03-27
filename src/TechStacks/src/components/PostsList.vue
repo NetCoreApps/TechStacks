@@ -20,8 +20,16 @@
             </v-flex>
             <v-flex class="post-body">
               <v-layout column>
-                <nuxt-link v-if="!post.url" class="post-link" :to="routes.post(post.id,post.slug)">{{ post.title }}</nuxt-link>
-                <a v-if="post.url" class="post-link external" :href="post.url">{{ post.title }}</a>
+                <div>
+                  <nuxt-link v-if="!post.url" class="post-link" :to="routes.post(post.id,post.slug)">{{ post.title }}</nuxt-link>
+                  <a v-if="post.url" class="post-link external" :href="post.url">{{ post.title }}</a>
+
+                  <span v-if="post.labels && post.labels.length > 0" class="list-labels">
+                    <nuxt-link v-if="post.status" :class="`label ${post.status}`" :to="toUrl({ is: post.status })">{{ post.status }}</nuxt-link>
+                    <nuxt-link class="label" :style="labelStyle(label,getOrganization(post.organizationId))" :to="toUrl({ is: label })" 
+                               v-for="label in post.labels" :key="label">{{ label }}</nuxt-link>
+                  </span>
+                </div>
                 
                 <PostInfo :organization="getOrganization(post.organizationId)" :post="post" />
 
@@ -48,6 +56,7 @@ import ReportDialog from "~/components/ReportDialog.vue";
 
 import { mapGetters } from "vuex";
 import { routes } from "~/shared/routes";
+import { appendQueryString } from "@servicestack/client";
 
 import {
   POSTS_PER_PAGE,
@@ -59,6 +68,7 @@ import {
   canVotePost,
   canFavoritePost,
   canReportPost,
+  labelStyle,
 } from "~/shared/post";
 
 export default {
@@ -79,6 +89,12 @@ export default {
       return this.$store.getters.getOrganization(organizationId);
     },
 
+    toUrl(args) {
+      const qs = Object.assign({}, this.$route.query, args);
+      delete qs.p;
+      return appendQueryString(this.$route.path, qs);
+    },
+
     votedClass,
     votePost,
     favoritePost,
@@ -87,6 +103,7 @@ export default {
     canVotePost,
     canFavoritePost,
     canReportPost,
+    labelStyle,
   },
 
   data: () => ({

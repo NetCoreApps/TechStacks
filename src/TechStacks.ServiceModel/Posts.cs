@@ -14,6 +14,7 @@ namespace TechStacks.ServiceModel
         public int[] OrganizationIds { get; set; }
         public string[] Types { get; set; }        
         public int[] AnyTechnologyIds { get; set; }
+        public string[] Is { get; set; } //Labels or Status        
     }
 
     [Route("/posts/comment", "GET")]
