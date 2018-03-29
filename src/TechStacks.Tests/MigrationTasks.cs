@@ -432,8 +432,12 @@ namespace TechStacks.Tests
                             
                             if (suggestion.TryGetValue("status", out var oStatus) && oStatus is Dictionary<string, object> status)
                             {
-                                request.StatusKey = (string)status["key"];
-                                request.StatusHexColor = (string)status["hex_color"];
+                                var statusKey = (string)status["key"];
+                                if (statusKey != "published")
+                                {
+                                    request.StatusKey = statusKey;
+                                    request.StatusHexColor = (string)status["hex_color"];
+                                }
                             }
                             
                             if (suggestion.TryGetValue("response", out var statusResponse) 

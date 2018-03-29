@@ -84,7 +84,7 @@
                             :error-messages="errorResponse('labels')"
                             ></v-select>
 
-                        <div v-if="labelsSelectItems.length <= 2" style="text-align:center">
+                        <div v-if="org && labelsSelectItems.length <= 2" style="text-align:center">
                             Add more post labels for the <nuxt-link :to="routes.organization(org.slug)">{{ org.name }} Organization</nuxt-link>
                         </div>
 

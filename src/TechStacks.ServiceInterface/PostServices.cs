@@ -49,7 +49,7 @@ namespace TechStacks.ServiceInterface
             if (string.IsNullOrEmpty(post.ImageUrl) && Request.Files.Length > 0)
             {
                 post.ImageUrl = Request.Files[0].UploadToImgur(AppSettings.GetString("oauth.imgur.ClientId"),
-                    nameof(post.ImageUrl), minWidth: 200, minHeight: 200, maxWidth: 2560, maxHeight: 2560);
+                    nameof(post.ImageUrl), minWidth: 200, minHeight: 200, maxWidth: 4000, maxHeight: 4000);
             }
 
             var id = await Db.InsertAsync(post, selectIdentity: true);
@@ -92,7 +92,7 @@ namespace TechStacks.ServiceInterface
             if (Request.Files.Length > 0)
             {
                 post.ImageUrl = Request.Files[0].UploadToImgur(AppSettings.GetString("oauth.imgur.ClientId"),
-                    nameof(post.ImageUrl), minWidth: 200, minHeight: 200, maxWidth: 2560, maxHeight: 2560);
+                    nameof(post.ImageUrl), minWidth: 200, minHeight: 200, maxWidth: 4000, maxHeight: 4000);
             }
 
             await Db.UpdateAsync(post);

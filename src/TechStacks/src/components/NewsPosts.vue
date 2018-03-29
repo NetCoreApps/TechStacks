@@ -104,9 +104,7 @@
 
                   <v-flex style="max-width:300px;margin-left:1em">
 
-                    <v-card class="org-description" v-if="organization.descriptionHtml">
-                      <v-card-title v-html="organization.descriptionHtml"></v-card-title>
-                    </v-card>
+                    <OrganizationInfo :organization="organization" />
 
                     <MembersInfo :organization="organization" @done="memberDone" />
 
@@ -152,6 +150,7 @@ import PostEdit from "~/components/PostEdit.vue";
 import PostsList from "~/components/PostsList.vue";
 import MembersInfo from "~/components/MembersInfo.vue";
 import OrganizationAdd from "~/components/OrganizationAdd.vue";
+import OrganizationInfo from "~/components/OrganizationInfo.vue";
 import DebugInfo from "~/components/DebugInfo.vue";
 
 import { mapGetters } from "vuex";
@@ -163,7 +162,7 @@ import nuxtErrorVue from '../../.nuxt/components/nuxt-error.vue';
 import nuxtLoadingVue from '../../.nuxt/components/nuxt-loading.vue';
 
 export default {
-  components: { PostEdit, PostsList, MembersInfo, OrganizationAdd, DebugInfo },
+  components: { PostEdit, PostsList, MembersInfo, OrganizationAdd, OrganizationInfo, DebugInfo },
   props: ["slug","query","view"],
   computed: {
     page() {

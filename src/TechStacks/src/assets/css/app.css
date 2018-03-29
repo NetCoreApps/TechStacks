@@ -592,14 +592,6 @@ blockquote {
 }
 
 
-.org-description {
-  margin-bottom: .5em;
-}
-.org-description .gfm, .org-description .gfm p, .org-description .gfm blockquote, .org-description .gfm ul, .org-description .gfm ol, .org-description .gfm dl, .org-description .gfm table {
-  font-size: 14px !important;
-}
-
-
 /* iPad in landscape: 1024x768 */
 @media only screen and (min-width: 1024px) {
 }
