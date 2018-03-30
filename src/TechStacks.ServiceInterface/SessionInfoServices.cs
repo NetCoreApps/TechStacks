@@ -26,6 +26,7 @@ namespace TechStacks.ServiceInterface
             var userOrg = await userOrgTask;
             response.Members = userOrg.Members;
             response.MemberInvites = userOrg.MemberInvites;
+            response.Subscriptions = userOrg.Subscriptions;
 
             return response;
         }

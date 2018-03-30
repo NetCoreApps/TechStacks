@@ -73,6 +73,7 @@ import {
     AddOrganizationLabel,
     UpdateOrganizationLabel,
     RemoveOrganizationLabel,
+    SubscribeToOrganization,
 } from "./dtos";
 
 const usingProxy = location.host == "techstacks.io";
@@ -460,5 +461,12 @@ export const updateMemberInvite = async(organizationId, userName, approve) => {
     request.userName = userName;
     request.approve = approve;
     request.dismiss = !approve;
-    return client.put(request);
+    return await client.put(request);
+}
+
+export const subscribeToOrganization = async(organizationId, postTypes) => {
+    const request = new SubscribeToOrganization();
+    request.organizationId = organizationId;
+    request.postTypes = postTypes;
+    await client.put(request);
 }

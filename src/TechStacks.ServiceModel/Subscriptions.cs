@@ -18,7 +18,7 @@ namespace TechStacks.ServiceModel
 
         public PostType[] PostTypes { get; set; }
 
-        public Frequency Frequency { get; set; }
+        public Frequency? Frequency { get; set; }
     }
 
     [Route("/posts/{PostId}/subscribe", "PUT")]

@@ -63,6 +63,7 @@ namespace TechStacks.ServiceInterface
             {
                 Members = await Db.SelectAsync<OrganizationMember>(x => x.UserId == userId),
                 MemberInvites = await Db.SelectAsync<OrganizationMemberInvite>(x => x.UserId == userId && x.Approved == null && x.Dismissed == null),
+                Subscriptions = await Db.SelectAsync<OrganizationSubscription>(x => x.UserId == userId),
             };
         }
 

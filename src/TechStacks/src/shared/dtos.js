@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-27 05:07:27
+Date: 2018-03-30 01:51:40
 Version: 5.03
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -128,6 +128,12 @@ var UserRef = /** @class */ (function () {
     return UserRef;
 }());
 export { UserRef };
+var OrganizationSubscription = /** @class */ (function () {
+    function OrganizationSubscription() {
+    }
+    return OrganizationSubscription;
+}());
+export { OrganizationSubscription };
 var TechnologyStackBase = /** @class */ (function () {
     function TechnologyStackBase() {
     }

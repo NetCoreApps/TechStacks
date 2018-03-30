@@ -21,17 +21,17 @@ namespace TechStacks.ServiceInterface
 
             AssertCanViewOrganization(Db, request.OrganizationId, user);
 
-            var rowsDeleted = Db.Delete<SubscribeOrganization>(x =>
+            var rowsDeleted = Db.Delete<OrganizationSubscription>(x =>
                 x.OrganizationId == request.OrganizationId && x.UserId == userId);
 
             var now = DateTime.Now;
-            var sub = new SubscribeOrganization
+            var sub = new OrganizationSubscription
             {
                 OrganizationId = request.OrganizationId,
                 UserId = userId,
                 UserName = user.UserName,
                 PostTypes = request.PostTypes.Select(x => x.ToString()).ToArray(),
-                FrequencyDays = (int)request.Frequency,
+                FrequencyDays = request.Frequency != null ? (int)request.Frequency.Value : (int?)null,
                 Created = now,                 
             };
 
@@ -78,7 +78,7 @@ namespace TechStacks.ServiceInterface
 
             var userId = GetUserId();
 
-            var rowsDeleted = Db.Delete<SubscribeOrganization>(x =>
+            var rowsDeleted = Db.Delete<OrganizationSubscription>(x =>
                 x.OrganizationId == request.OrganizationId && x.UserId == userId);
 
             ClearOrganizationCaches();

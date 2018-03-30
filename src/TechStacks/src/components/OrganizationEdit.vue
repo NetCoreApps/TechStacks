@@ -84,6 +84,16 @@
                       v-model="moderatorPostTypes"
                       ></v-select>
 
+                    <v-select
+                      label="Pre-selected Post Types for new Subscriptions"
+                      autocomplete
+                      multiple
+                      chips
+                      :disabled="!isOrganizationOwner"
+                      :items="allPostTypeSelectItems"
+                      v-model="defaultSubscriptionPostTypes"
+                      ></v-select>
+
                     <v-layout>
                         <v-select style="margin-right:5px"
                           label="Default Post Type"
@@ -435,6 +445,7 @@ const organization = {
   lockedBy: null,
   disableInvites: false,
   defaultPostType: "",
+  defaultSubscriptionPostTypes: [],
   postTypes: [],
   moderatorPostTypes: [],
   technologyIds: [],

@@ -135,6 +135,7 @@ namespace TechStacks.ServiceModel
         public int DeletePostsWithReportCount { get; set; }
         public bool? DisableInvites { get; set; }
         public string DefaultPostType { get; set; }
+        public string[] DefaultSubscriptionPostTypes { get; set; }
         public string[] PostTypes { get; set; }
         public string[] ModeratorPostTypes { get; set; }
         public int[] TechnologyIds { get; set; }

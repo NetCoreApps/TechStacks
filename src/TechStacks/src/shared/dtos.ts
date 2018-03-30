@@ -1,5 +1,5 @@
 /* Options:
-Date: 2018-03-27 05:07:27
+Date: 2018-03-30 01:51:40
 Version: 5.03
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:16325
@@ -51,6 +51,7 @@ export class Organization
     heroUrl: string;
     lang: string;
     defaultPostType: string;
+    defaultSubscriptionPostTypes: string[];
     postTypes: string[];
     moderatorPostTypes: string[];
     deletePostsWithReportCount: number;
@@ -343,6 +344,19 @@ export class UserRef
     refId: number;
     refSource: string;
     refUrn: string;
+}
+
+export class OrganizationSubscription
+{
+    id: number;
+    organizationId: number;
+    userId: number;
+    userName: string;
+    postTypes: string[];
+    frequencyDays: number;
+    lastSyncedId: number;
+    lastSynced: string;
+    created: string;
 }
 
 export class TechnologyStackBase
@@ -736,6 +750,7 @@ export class GetUserOrganizationsResponse
 {
     members: OrganizationMember[];
     memberInvites: OrganizationMemberInvite[];
+    subscriptions: OrganizationSubscription[];
 }
 
 export class UserPostVoteResponse
@@ -792,6 +807,7 @@ export class SessionInfoResponse
     userActivity: UserActivity;
     members: OrganizationMember[];
     memberInvites: OrganizationMemberInvite[];
+    subscriptions: OrganizationSubscription[];
     responseStatus: ResponseStatus;
 }
 
@@ -1152,6 +1168,7 @@ export class UpdateOrganization implements IReturn<UpdateOrganizationResponse>
     deletePostsWithReportCount: number;
     disableInvites: boolean;
     defaultPostType: string;
+    defaultSubscriptionPostTypes: string[];
     postTypes: string[];
     moderatorPostTypes: string[];
     technologyIds: number[];

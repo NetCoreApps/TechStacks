@@ -41,6 +41,7 @@ namespace TechStacks.ServiceModel
 
         public List<OrganizationMember> Members { get; set; }
         public List<OrganizationMemberInvite> MemberInvites { get; set; }
+        public List<OrganizationSubscription> Subscriptions { get; set; }
         
         public ResponseStatus ResponseStatus { get; set; }
     }
