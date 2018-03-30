@@ -141,10 +141,10 @@ namespace TechStacks.Tests
         {
             using (var db = dbFactory.Open())
             {
-                db.DropAndCreateTable<SubscribeOrganization>();
-                db.DropAndCreateTable<SubscribePost>();
-
-                db.DropAndCreateTable<SubscriptionPost>();
+                db.DropAndCreateTable<OrganizationSubscription>();
+//                db.DropAndCreateTable<SubscribePost>();
+//
+//                db.DropAndCreateTable<SubscriptionPost>();
             }
         }
 
@@ -153,7 +153,7 @@ namespace TechStacks.Tests
         {
             using (var db = dbFactory.Open())
             {
-                db.DropAndCreateTable<PostChangeHistory>();
+                db.AddColumn<Organization>(x => x.DefaultSubscriptionPostTypes);
                 
 //                db.AddColumn<Organization>(x => x.DefaultPostType);
 //                db.DropAndCreateTable<OrganizationLabel>();
@@ -322,6 +322,47 @@ namespace TechStacks.Tests
                         where: x => x.Id == info.Id);
                 }
 
+            }
+        }
+
+        [Test]
+        public void Update_descriptions_for_organizations()
+        {
+            using (var db = dbFactory.Open())
+            {
+                var techMap = db.Select<Technology>().ToDictionary(x => x.Id);
+                var techOrgs = db.Select<Organization>(x => 
+                    x.RefSource == nameof(Technology) && x.RefId != null 
+                    && x.DescriptionHtml == null);
+                
+                foreach (var org in techOrgs)
+                {
+                    if (techMap.TryGetValue(org.RefId.Value, out var tech))
+                    {
+                        db.UpdateOnly(() => new Organization {
+                            Description = tech.Description,
+                            DescriptionHtml = MarkdownConfig.Transform(tech.Description),
+                        },
+                        where:x => x.Id == org.Id);
+                    }
+                }
+                
+                var stackMap = db.Select<TechnologyStack>().ToDictionary(x => x.Id);
+                var stackOrgs = db.Select<Organization>(x => 
+                    x.RefSource == nameof(TechnologyStack) && x.RefId != null 
+                    && x.DescriptionHtml == null);
+                
+                foreach (var org in stackOrgs)
+                {
+                    if (stackMap.TryGetValue(org.RefId.Value, out var tech))
+                    {
+                        db.UpdateOnly(() => new Organization {
+                                Description = tech.Description,
+                                DescriptionHtml = MarkdownConfig.Transform(tech.Description),
+                            },
+                            where:x => x.Id == org.Id);
+                    }
+                }
             }
         }
         

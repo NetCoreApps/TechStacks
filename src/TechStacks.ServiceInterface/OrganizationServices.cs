@@ -134,11 +134,13 @@ namespace TechStacks.ServiceInterface
 
                 if (organization == null)
                 {
+                    var description = technology?.Description ?? techstack?.Description;
                     organization = new Organization
                     {
                         Name = name,
                         Slug = techSlug,
-                        Description = $"{name} {type.Name}",
+                        Description = description,
+                        DescriptionHtml = MarkdownConfig.Transform(description),
                         PostTypes = new []
                         {
                             PostType.Announcement.ToString(),
