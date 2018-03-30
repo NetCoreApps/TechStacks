@@ -169,7 +169,7 @@ export default {
     async runQuery() {
       this.querying = true;
       const query = this.buildAutoQuery();
-      this.$router.replace({ path: '/tech', query })
+      this.$router.replace({ path: '/tech/', query })
       if (query != null) {
         const response = await queryTechnology(query);
         this.results = response.results;

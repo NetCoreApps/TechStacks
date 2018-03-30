@@ -156,7 +156,7 @@ export default {
     async runQuery() {
       this.querying = true;
       const query = this.buildAutoQuery();
-      this.$router.replace({ path: '/stacks', query });
+      this.$router.replace({ path: '/stacks/', query });
       if (query != null) {
         const response = await queryTechStacks(query);
         this.results = response.results;
