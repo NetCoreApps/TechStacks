@@ -1,0 +1,28 @@
+{{ '{0}/comments/{1}/{2}' | fmt(baseUrl,comment.PostId,comment.Id) | assignTo: commentLink }}
+
+<p>
+  <a href="{{ baseUrl }}/users/{{ report.UserName }}">@{{ report.UserName }}</a> reported this post as <b>{{ report.FlagType }}</b>:
+
+  {{ report.ReportNotes | endIfEmpty | select: <blockquote>{ it }</blockquote> }}
+</p>
+
+<table>
+  <tr>
+    <td style="padding: 0 1em; border: 1px solid #cccccc">
+      {{ comment.ContentHtml | raw }}
+    </td>
+  </tr>
+</table>
+
+<p>
+  This comment has been <b>reported {{ comment.ReportCount }} time{{ 's' | if(notEquals(comment.ReportCount,1)) }}</b> and
+  {{ comment.Deleted | onlyIfNull | select: is <b>Not Deleted</b>. }}
+  {{ comment.Deleted | endIfNull  | select: was <b>Deleted by {comment.DeletedBy}</b>. }}
+</p>
+
+<p class="sub-info">
+  —<br>
+  You are receiving this because you are a moderator for {{ organization.Name }}.<br>
+  You can <a href="{{ commentLink }}">view this comment on techstacks.io</a>, or
+  <a href="{{ baseUrl }}/organizations/{{ organization.Slug }}">update your {{ organization.Name }} membership</a>.
+</p>

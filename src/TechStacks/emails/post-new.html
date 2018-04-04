@@ -1,0 +1,14 @@
+{{ '{0}/posts/{1}/{2}' | fmt(baseUrl,post.Id,post.Slug) | assignTo: postLink }}
+
+{{ post.ImageUrl | endIfEmpty | select: <a href="{postLink}"><img src="{it}" /></a> }}
+
+{{ post.ContentHtml | raw }}
+
+{{ post.Url | endIfEmpty | select: <p><a href="{it}">continue reading...</a></p> }}
+
+<p class="sub-info">
+  —<br>
+  You are receiving this because you are subscribed to {{ organization.Name }}.<br>
+  You can <a href="{{ postLink }}">view this on techstacks.io</a>, or
+  <a href="{{ baseUrl }}/{{ organization.Slug }}?show=subscription">update your {{ organization.Name }} subscription</a>.
+</p>

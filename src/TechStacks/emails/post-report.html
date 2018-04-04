@@ -1,0 +1,32 @@
+{{ '{0}/posts/{1}/{2}' | fmt(baseUrl,post.Id,post.Slug) | assignTo: postLink }}
+
+<p>
+  <a href="{{ baseUrl }}/users/{{ report.UserName }}">@{{ report.UserName }}</a> reported this post as <b>{{ report.FlagType }}</b>:
+
+  {{ report.ReportNotes | endIfEmpty | select: <blockquote>{ it }</blockquote> }}
+</p>
+
+<table>
+  <tr>
+    <td style="padding: 0 1em; border: 1px solid #cccccc">
+      {{ post.ImageUrl | endIfEmpty | select: <a href="{postLink}"><img src="{it}" /></a> }}
+
+      {{ post.ContentHtml | raw }}
+
+      {{ post.Url | endIfEmpty | select: <p><a href="{it}">continue reading...</a></p> }}
+    </td>
+  </tr>
+</table>
+
+<p>
+  This post has been <b>reported {{ post.ReportCount }} time{{ 's' | if(notEquals(post.ReportCount,1)) }}</b> and
+  {{ post.Deleted | onlyIfNull | select: is <b>Not Deleted</b>. }}
+  {{ post.Deleted | endIfNull  | select: was <b>Deleted by {post.DeletedBy}</b>. }}
+</p>
+
+<p class="sub-info">
+  —<br>
+  You are receiving this because you are a moderator for {{ organization.name }}.<br>
+  You can <a href="{{ postLink }}">view this post on techstacks.io</a>, or
+  <a href="{{ baseUrl }}/organizations/{{ organization.Slug }}">update your {{ organization.Name }} membership</a>.
+</p>
