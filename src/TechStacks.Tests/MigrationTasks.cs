@@ -141,7 +141,9 @@ namespace TechStacks.Tests
         {
             using (var db = dbFactory.Open())
             {
-                db.DropAndCreateTable<OrganizationSubscription>();
+//                db.DropAndCreateTable<OrganizationSubscription>();
+                db.DropAndCreateTable<Notification>();
+                db.DropAndCreateTable<EmailTemplate>();
 //                db.DropAndCreateTable<SubscribePost>();
 //
 //                db.DropAndCreateTable<SubscriptionPost>();
