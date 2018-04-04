@@ -11,6 +11,7 @@ using ServiceStack.Text;
 using TechStacks.ServiceInterface;
 using TechStacks.ServiceModel.Types;
 using System;
+using TechStacks.ServiceInterface.Notifications;
 
 namespace TechStacks.Tests
 {

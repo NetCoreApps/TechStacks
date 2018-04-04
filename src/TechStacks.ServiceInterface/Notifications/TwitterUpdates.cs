@@ -8,7 +8,7 @@ using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.Configuration;
 
-namespace TechStacks.ServiceInterface
+namespace TechStacks.ServiceInterface.Notifications
 {
     public class TwitterUpdates
     {

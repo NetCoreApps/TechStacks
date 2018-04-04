@@ -8,6 +8,7 @@ using ServiceStack;
 using ServiceStack.OrmLite;
 using ServiceStack.Logging;
 using ServiceStack.Configuration;
+using TechStacks.ServiceInterface.Notifications;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 
