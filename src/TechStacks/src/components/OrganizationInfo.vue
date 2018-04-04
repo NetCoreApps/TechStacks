@@ -8,23 +8,23 @@
     <v-card v-if="isAuthenticated" class="org-subscribe">
       <v-card-title>
 
-        <v-layout v-if="!showOptions" justify-center>
-          <v-btn v-if="subscribedPostTypes.length == 0" @click="showOptions=true" color="primary">
+        <v-layout v-if="!showSubscription" justify-center>
+          <v-btn v-if="subscribedPostTypes.length == 0" @click="showSubscription=true" color="primary">
             Subscribe to {{ organization.name.length > 15 ? 'Organization' : organization.name }}
           </v-btn>
-          <v-btn v-else @click="showOptions=true">
+          <v-btn v-else @click="showSubscription=true">
             Subscribed
           </v-btn>
         </v-layout>
 
-        <v-layout v-if="showOptions" column>
+        <v-layout v-if="showSubscription" column>
           <p>
             Receive notifications for new:
           </p>
           <v-checkbox v-model="postTypes" v-for="postType in browsablePostTypes" :key="postType"
                       :label="postTypeLabel(postType)" :value="postType"></v-checkbox>
 
-          <v-btn v-if="showOptions" @click="submit()" :disabled="loading">Update Subscription</v-btn>
+          <v-btn v-if="showSubscription" @click="submit()" :disabled="loading">Update Subscription</v-btn>
         </v-layout>
 
       </v-card-title>
@@ -37,7 +37,7 @@ import { mapGetters } from "vuex";
 import { subscribeToOrganization } from "~/shared/gateway";
 
 export default {
-  props: ['organization'],
+  props: ['organization','show'],
   computed: {
     subscribedPostTypes() {
       const orgSub = this.getOrganizationSubscription(this.organization.id);
@@ -59,10 +59,16 @@ export default {
       try {
         this.$store.commit('loading', true);
 
-        await subscribeToOrganization(this.organization.id, this.postTypes);
-        this.$store.dispatch('loadUserOrganizations');
+        const unmodified = this.postTypes.length == this.originalPostTypes.length && 
+                           this.postTypes.every(x => this.originalPostTypes.indexOf(x) >= 0);
+        if (!unmodified)
+        {
+          await subscribeToOrganization(this.organization.id, this.postTypes);
+          this.$store.dispatch('loadUserOrganizations');
+          this.originalPostTypes = Array.from(this.postTypes);
+        }
 
-        this.showOptions = false;
+        this.showSubscription = false;
       } catch(e) {
         this.responseStatus = e.responseStatus || e;
       } finally {
@@ -79,12 +85,15 @@ export default {
     const orgSub = this.getOrganizationSubscription(this.organization.id);
     this.postTypes = (orgSub
       ? orgSub.postTypes
-      : this.organization.defaultSubscriptionPostTypes) || []
+      : this.organization.defaultSubscriptionPostTypes) || [];
+    this.originalPostTypes = Array.from(this.postTypes);
+    this.showSubscription = this.show === 'subscription';
   },
   
   data: () => ({
-    showOptions: false,
-    postTypes: []
+    showSubscription: false,
+    postTypes: [],
+    originalPostTypes: [],
   })
 }
 </script>

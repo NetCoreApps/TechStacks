@@ -104,7 +104,7 @@
 
                   <v-flex style="max-width:300px;margin-left:1em">
 
-                    <OrganizationInfo :organization="organization" />
+                    <OrganizationInfo :organization="organization" :show="show" />
 
                     <MembersInfo :organization="organization" @done="memberDone" />
 
@@ -236,6 +236,7 @@ export default {
       this.p = qs.p;
       this.is = qs.is;
       this.sort = qs.sort;
+      this.show = qs.show;
       this.add = !!qs.add;
       this.types = qs.add || qs.types;
       const types = (this.types || "").split(",");
@@ -245,7 +246,7 @@ export default {
       this.stageChanges({ filterTypes: filterIndexes, all: filterIndexes.length == 0 ? 0 : null });
     },
     updateUrl(args) {
-      let { p, add, ...qs } = this.$route.query; //strip ?p=&add=
+      let { p, add, show, ...qs } = this.$route.query; //strip ?p=&add=
       for (let k in args) {
         qs[k] = args[k];
         if (qs[k] === undefined) delete qs[k];
@@ -397,6 +398,7 @@ export default {
     p: null,
     is: null,
     sort: null,
+    show: null,
     staging: null,
     filterTypes: [],
     all: null,
