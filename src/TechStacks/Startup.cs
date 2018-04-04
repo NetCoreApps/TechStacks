@@ -114,6 +114,15 @@ namespace TechStacks
                     BaseUrl = AppSettings.GetString("PublicBaseUrl"),
                 });
 
+            container.Register(new EmailProvider {
+              UserName = Environment.GetEnvironmentVariable("TECHSTACKS_SMTP_USER") ?? AppSettings.GetString("smtp.UserName"),
+              Password = Environment.GetEnvironmentVariable("TECHSTACKS_SMTP_PASS") ?? AppSettings.GetString("smtp.Password"),
+              EnableSsl = true,
+              Host = AppSettings.GetString("smtp.Host"),
+              Port = AppSettings.Get<int>("smtp.Port"),
+              Bcc = AppSettings.GetString("smtp.Bcc"),
+            });
+
             var authRepo = new OrmLiteAuthRepository<CustomUserAuth, UserAuthDetails>(dbFactory);
             container.Register<IUserAuthRepository>(authRepo);
             authRepo.InitSchema();
