@@ -15,12 +15,18 @@ using ServiceStack.Caching;
 using ServiceStack.Configuration;
 using ServiceStack.Data;
 using ServiceStack.Host.Handlers;
+using ServiceStack.Logging;
+using ServiceStack.Messaging;
 using ServiceStack.OrmLite;
 using ServiceStack.Text;
 using ServiceStack.Validation;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 using TechStacks.ServiceInterface;
+using TechStacks.ServiceInterface.Admin;
+using TechStacks.ServiceInterface.DataModel;
+using TechStacks.ServiceInterface.Messaging;
+using TechStacks.ServiceInterface.Notifications;
 
 namespace TechStacks
 {
@@ -55,9 +61,14 @@ namespace TechStacks
         public AppHost()
             : base("TechStacks", typeof(TechnologyServices).Assembly) {}
 
+        private static ILog log;
+
         // Configure your AppHost with the necessary configuration and dependencies your App needs
         public override void Configure(Container container)
         {
+//            LogManager.LogFactory = new ConsoleLogFactory(debugEnabled:true);
+            log = LogManager.GetLogger(typeof(AppHost));
+
             // enable server-side rendering, see: http://templates.servicestack.net
             Plugins.Add(new TemplatePagesFeature {});
 
@@ -243,6 +254,41 @@ namespace TechStacks
             Plugins.Add(new CorsFeature(
                 allowOriginWhitelist: new[] { "http://localhost:3000", "http://localhost:16325", "https://techstacks.io", "https://www.techstacks.io", "http://null.jsbin.com" },
                 allowCredentials: true,
-                allowedHeaders: "Content-Type, Allow, Authorization"));        }
+                allowedHeaders: "Content-Type, Allow, Authorization"));
+
+            container.Register<IMessageService>(c => new BackgroundMqService());
+            var mqServer = container.Resolve<IMessageService>();
+
+            mqServer.RegisterHandler<SendNotification>(ExecuteMessage, 4);
+            mqServer.RegisterHandler<SendSystemEmail>(ExecuteMessage);
+
+            mqServer.Start();
+
+            AfterInitCallbacks.Add(host => ResendPendingNotifications(dbFactory, mqServer));
+        }
+
+        private static void ResendPendingNotifications(IDbConnectionFactory dbFactory, IMessageService mqServer)
+        {
+            using (var db = dbFactory.OpenDbConnection())
+            {
+                var pendingNotificationIds = db.Column<int>(db.From<Notification>()
+                  .Where(x => x.Completed == null && x.Failed == null)
+                  .Select(x => x.Id))
+                  .ToArray();
+
+                if (pendingNotificationIds.Length > 0)
+                {
+                    log.Info($"Resending {pendingNotificationIds.Length} pending notifications: {pendingNotificationIds}");
+
+                    using (var mqClient = mqServer.MessageFactory.CreateMessageQueueClient())
+                    {
+                        foreach (var notificationId in pendingNotificationIds)
+                        {
+                            mqClient.Publish(new SendNotification { Id = notificationId });
+                        }
+                    }
+                }
+            }
+        }
     }
 }
