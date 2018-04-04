@@ -1,4 +1,3 @@
-/*.xml          http://techstacks.netcore.io/:splat.xml           200
 /json/*         http://techstacks.netcore.io/json/:splat          200
 /auth/*         http://techstacks.netcore.io/auth/:splat          200
 /users/*/avatar http://techstacks.netcore.io/users/:splat/avatar  200
@@ -7,4 +6,5 @@
 /ss_admin/*     http://techstacks.netcore.io/ss_admin/:splat      200
 /swagger-ui/*   http://techstacks.netcore.io/swagger-ui/:splat    200
 /prerender/*    http://prerender.netcore.io/:splat                200
+/sitemap.xml    http://techstacks.netcore.io/sitemap.xml          200
 /*              /index.html                                       200
