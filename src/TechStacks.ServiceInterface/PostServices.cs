@@ -6,6 +6,8 @@ using ServiceStack.Configuration;
 using ServiceStack.Logging;
 using ServiceStack.OrmLite;
 using ServiceStack.Text;
+using TechStacks.ServiceInterface.Admin;
+using TechStacks.ServiceInterface.DataModel;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 
@@ -56,6 +58,8 @@ namespace TechStacks.ServiceInterface
 
             await Db.UpdateAddAsync(() => new UserActivity { PostsCount = 1 },
                 where: x => x.Id == post.UserId);
+
+            await SendNotificationAsync(nameof(CreatePost), nameof(Post), id);
 
             ClearPostCaches();
 

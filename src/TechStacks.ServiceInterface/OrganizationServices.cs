@@ -200,6 +200,9 @@ namespace TechStacks.ServiceInterface
 
                 trans.Commit();
 
+                SendSystemEmail(nameof(CreateOrganizationForTechnology), 
+                    $"New {name} {type.Name} Organization was created by {user.UserName} at /{techSlug}");
+
                 ClearOrganizationCaches();
                 ClearPostCaches();
 
@@ -235,6 +238,9 @@ namespace TechStacks.ServiceInterface
             orgMember.OrganizationId = (int)Db.Insert(org, selectIdentity: true);
 
             Db.Insert(orgMember);
+
+            SendSystemEmail(nameof(CreateOrganization), 
+                $"New {request.Name} Organization was created by {user.UserName} at /{request.Slug}");
 
             ClearOrganizationCaches();
 
@@ -511,6 +517,9 @@ namespace TechStacks.ServiceInterface
             Db.Delete<OrganizationMember>(x => x.UserId == request.UserId && x.OrganizationId == request.OrganizationId);
             Db.Delete<OrganizationMemberInvite>(x => x.UserId == request.UserId && x.OrganizationId == request.OrganizationId);
 
+            SendSystemEmail(nameof(RemoveOrganizationMember), 
+                $"@{member.UserName} was removed from {org.Name} by {user.UserName}");
+
             ClearOrganizationCaches();
         }
 
@@ -622,6 +631,9 @@ namespace TechStacks.ServiceInterface
                 OrganizationId = request.OrganizationId,
                 Created = DateTime.Now,
             });
+            
+            SendSystemEmail(nameof(RequestOrganizationMemberInvite), 
+                $"@{user.UserName} requested member invite for {request.OrganizationId}");
 
             ClearOrganizationCaches();
 
@@ -674,6 +686,10 @@ namespace TechStacks.ServiceInterface
                         OrganizationMemberId = (int)id,
                     },
                     where: x => x.UserId == userId && x.OrganizationId == request.OrganizationId);
+
+                SendSystemEmail(nameof(UpdateOrganizationMemberInvite), 
+                    $"@{request.UserName} invitation for {org.Name} was approved by {user.UserName}");
+
             }
             else if (request.Dismiss)
             {
@@ -683,6 +699,9 @@ namespace TechStacks.ServiceInterface
                         DismissedBy = user.UserName,
                     }, 
                 where: x => x.UserId == userId && x.OrganizationId == request.OrganizationId);
+
+                SendSystemEmail(nameof(UpdateOrganizationMemberInvite), 
+                    $"@{request.UserName} invitation for {org.Name} was dismissed by {user.UserName}");
             }
             else
             {

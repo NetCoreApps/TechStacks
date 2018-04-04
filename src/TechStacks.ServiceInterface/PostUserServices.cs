@@ -162,7 +162,7 @@ namespace TechStacks.ServiceInterface
             var userId = GetUserId();
 
             Db.Delete<PostReport>(x => x.UserId == userId && x.PostId == request.Id);
-            Db.Insert(new PostReport
+            var reportId = Db.Insert(new PostReport
             {
                 UserId = userId,
                 UserName = user.UserName,
@@ -171,14 +171,16 @@ namespace TechStacks.ServiceInterface
                 FlagType = request.FlagType,
                 ReportNotes = request.ReportNotes,
                 Created = DateTime.Now,
-            });
+            }, selectIdentity:true);
 
             var reportsCount = Db.Count<PostReport>(x => x.OrganizationId == org.Id && x.PostId == request.Id);
             if (reportsCount >= org.DeletePostsWithReportCount)
             {
-                Db.UpdateOnly(() => new Post { Deleted = DateTime.Now, DeletedBy = nameof(PostReport) },
+                Db.UpdateOnly(() => new Post { Deleted = DateTime.Now, DeletedBy = nameof(Organization.DeletePostsWithReportCount) },
                     @where: x => x.Id == request.Id);
             }
+
+            SendNotification(nameof(UserPostReport), nameof(PostReport), reportId);
 
             Db.ExecuteSql(
                 @"update post set 
@@ -252,7 +254,7 @@ namespace TechStacks.ServiceInterface
 
             var userId = user.GetUserId();
             Db.Delete<PostCommentReport>(x => x.UserId == userId && x.PostCommentId == request.Id);
-            Db.Insert(new PostCommentReport
+            var reportId = Db.Insert(new PostCommentReport
             {
                 UserId = userId,
                 UserName = user.UserName,
@@ -262,14 +264,16 @@ namespace TechStacks.ServiceInterface
                 FlagType = request.FlagType,
                 ReportNotes = request.ReportNotes,
                 Created = DateTime.Now,
-            });
+            }, selectIdentity:true);
 
             var reportsCount = Db.Count<PostCommentReport>(x => x.OrganizationId == org.Id && x.PostCommentId == request.Id);
             if (reportsCount >= org.DeletePostsWithReportCount)
             {
-                Db.UpdateOnly(() => new PostComment { Deleted = DateTime.Now, DeletedBy = nameof(PostCommentReport) },
+                Db.UpdateOnly(() => new PostComment { Deleted = DateTime.Now, DeletedBy = nameof(Organization.DeletePostsWithReportCount) },
                     where: x => x.Id == request.Id);
             }
+
+            SendNotification(nameof(UserPostCommentReport), nameof(PostCommentReport), reportId);
 
             Db.ExecuteSql(
                 @"update post_comment set 

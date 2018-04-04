@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using ServiceStack;
 using ServiceStack.OrmLite;
+using TechStacks.ServiceInterface.Admin;
+using TechStacks.ServiceInterface.DataModel;
 using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface
@@ -252,6 +254,34 @@ namespace TechStacks.ServiceInterface
 
             if (post.UserId != session.GetUserId() && !session.IsOrganizationModerator(organizationMember))
                 throw HttpError.Unauthorized("Access Denied");
+        }
+
+        Notification ToNotification(string eventName, string refType, long refId) => new Notification {
+            Event = eventName,
+            RefId = refId,
+            RefType = refType,
+            RefUrn = $"urn:{refType}:{refId}",
+            Created = DateTime.Now,
+        }; 
+        
+        public async Task SendNotificationAsync(string eventName, string refType, long refId)
+        {
+            var notificationId = await Db.InsertAsync(ToNotification(eventName, refType, refId), selectIdentity:true);
+            PublishMessage(new SendNotification { Id = notificationId });
+        }
+        
+        public void SendNotification(string eventName, string refType, long refId)
+        {
+            var notificationId = Db.Insert(ToNotification(eventName, refType, refId), selectIdentity:true);
+            PublishMessage(new SendNotification { Id = notificationId });
+        }
+
+        public void SendSystemEmail(string subject, string body)
+        {
+            PublishMessage(new SendSystemEmail {
+                Subject = subject,
+                Body = body,
+            });
         }
     }
 }
