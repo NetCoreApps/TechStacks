@@ -4,7 +4,8 @@
 
 {{ post.ContentHtml | raw }}
 
-{{ post.Url | endIfEmpty | select: <p><a href="{it}">continue reading...</a></p> }}
+{{ post.Content | endIfEmpty  | use(post.Url) | endIfEmpty | select: <p><a href="{it}">continue reading...</a></p> }}
+{{ post.Content | onlyIfEmpty | select: <p>New {post.Type} in {organization.Name}:</p><h3><a href="{post.Url}">{post.Title}</a></h3> }}
 
 <p class="sub-info">
   —<br>

@@ -29,6 +29,7 @@ namespace TechStacks.ServiceInterface.Admin
         public string Body { get; set; }
     }
     
+    [ExcludeMetadata]
     [Route("/notifications/retry-pending")]
     public class RetryPendingNotifications {}
 

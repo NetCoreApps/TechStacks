@@ -264,7 +264,7 @@ namespace TechStacks
 
             mqServer.Start();
 
-            AfterInitCallbacks.Add(host => ExecuteService(new RetryPendingNotifications())); 
+            AfterInitCallbacks.Add(host => ExecuteService(new RetryPendingNotifications()));
         }
     }
 }
