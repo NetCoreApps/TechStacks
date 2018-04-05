@@ -146,7 +146,7 @@
 
 <script>
 import FileInput from "~/components/FileInput.vue";
-import Editor from "~/components/Editor.vue";
+import Editor from "@servicestack/editor";
 
 import { mapGetters } from "vuex";
 import { log, ignoreKeyPress, nameCounter, nameRules, slugCounter, slugRules, toSlug, urlCounter, urlRules, descriptionCounter, descriptionRules } from "~/shared/utils";

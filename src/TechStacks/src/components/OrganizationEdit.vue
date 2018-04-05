@@ -426,7 +426,7 @@
 import CategoryEdit from "~/components/CategoryEdit.vue";
 import MemberEdit from "~/components/MemberEdit.vue";
 import LabelEdit from "~/components/LabelEdit.vue";
-import Editor from "~/components/Editor.vue";
+import Editor from "@servicestack/editor";
 
 import { mapGetters } from "vuex";
 import { toObject, errorResponse, errorResponseExcept } from "@servicestack/client";

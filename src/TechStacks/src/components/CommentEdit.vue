@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import Editor from "~/components/Editor.vue";
+import Editor from "@servicestack/editor";
 import { errorResponse } from "@servicestack/client";
 import { mapGetters } from "vuex";
 import { createPostComment, updatePostComment } from "~/shared/gateway";
@@ -98,8 +98,8 @@ export default {
         ...comment,
         commentRows: 6,
         valid: true,
-        allowDelete: false,
-        contentCounter, contentRulesOptional,
+        contentCounter, 
+        contentRulesOptional,
         responseStatus: null,
     }),
 }

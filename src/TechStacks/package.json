@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@servicestack/client": "^1.0.8",
+    "@servicestack/editor": "0.0.1",
     "@servicestack/images": "^1.0.0",
     "npm": "^5.8.0",
     "nuxt": "^1.4.0",

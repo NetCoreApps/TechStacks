@@ -54,7 +54,7 @@ import ReportDialog from "~/components/ReportDialog.vue";
 import PostComment from "~/components/PostComment.vue";
 import CommentEdit from "~/components/CommentEdit.vue";
 import PostAlerts from "~/components/PostAlerts.vue";
-import Editor from "~/components/Editor.vue";
+import Editor from "@servicestack/editor";
 
 import { mapGetters } from "vuex";
 import { routes } from "~/shared/routes";
