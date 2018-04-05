@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ServiceStack;
 using ServiceStack.Configuration;
@@ -27,6 +28,15 @@ namespace TechStacks.ServiceInterface.Admin
         public string Subject { get; set; }
         public string Body { get; set; }
     }
+    
+    [Route("/notifications/retry-pending")]
+    public class RetryPendingNotifications {}
+
+    public class RetryPendingNotificationsResponse
+    {
+        public long[] ResentIds { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
 
     [RequiredRole("Admin")]
     public partial class NotificationServices : Service
@@ -36,6 +46,28 @@ namespace TechStacks.ServiceInterface.Admin
         public EmailProvider Email { get; set; } 
         
         public IAppSettings AppSettings { get; set; }
+
+        public object Any(RetryPendingNotifications request)
+        {
+            var pendingNotificationIds = Db.Column<long>(Db.From<Notification>()
+                    .Where(x => x.Completed == null && x.Failed == null)
+                    .Select(x => x.Id))
+                .ToArray();
+
+            if (pendingNotificationIds.Length > 0)
+            {
+                log.Info($"Resending {pendingNotificationIds.Length} pending notifications: {pendingNotificationIds}");
+
+                foreach (var notificationId in pendingNotificationIds)
+                {
+                    PublishMessage(new SendNotification { Id = notificationId });
+                }
+            }
+            
+            return new RetryPendingNotificationsResponse {
+                ResentIds = pendingNotificationIds
+            };
+        }
 
         Func<Notification, Task> GetEventHandler(string eventName)
         {

@@ -264,31 +264,7 @@ namespace TechStacks
 
             mqServer.Start();
 
-            AfterInitCallbacks.Add(host => ResendPendingNotifications(dbFactory, mqServer));
-        }
-
-        private static void ResendPendingNotifications(IDbConnectionFactory dbFactory, IMessageService mqServer)
-        {
-            using (var db = dbFactory.OpenDbConnection())
-            {
-                var pendingNotificationIds = db.Column<int>(db.From<Notification>()
-                  .Where(x => x.Completed == null && x.Failed == null)
-                  .Select(x => x.Id))
-                  .ToArray();
-
-                if (pendingNotificationIds.Length > 0)
-                {
-                    log.Info($"Resending {pendingNotificationIds.Length} pending notifications: {pendingNotificationIds}");
-
-                    using (var mqClient = mqServer.MessageFactory.CreateMessageQueueClient())
-                    {
-                        foreach (var notificationId in pendingNotificationIds)
-                        {
-                            mqClient.Publish(new SendNotification { Id = notificationId });
-                        }
-                    }
-                }
-            }
+            AfterInitCallbacks.Add(host => ExecuteService(new RetryPendingNotifications())); 
         }
     }
 }
