@@ -3,6 +3,7 @@
 /users/*/avatar http://techstacks.netcore.io/users/:splat/avatar  200
 /metadata       http://techstacks.netcore.io/metadata             200
 /metadata/*     http://techstacks.netcore.io/metadata/:splat      200
+/types/*        http://techstacks.netcore.io/types/:splat         200
 /ss_admin/*     http://techstacks.netcore.io/ss_admin/:splat      200
 /swagger-ui/*   http://techstacks.netcore.io/swagger-ui/:splat    200
 /prerender/*    http://prerender.netcore.io/:splat                200
