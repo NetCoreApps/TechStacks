@@ -71,6 +71,7 @@ namespace TechStacks
 
             // enable server-side rendering, see: http://templates.servicestack.net
             Plugins.Add(new TemplatePagesFeature {});
+            GetPlugin<NativeTypesFeature>().MetadataTypesConfig.BaseUrl = "https://www.techstacks.io";
 
             var debugMode = AppSettings.Get(nameof(HostConfig.DebugMode), false);
             SetConfig(new HostConfig
@@ -252,7 +253,8 @@ namespace TechStacks
                 dbFactory.RegisterPageView(dto.GetStatsId()));
 
             Plugins.Add(new CorsFeature(
-                allowOriginWhitelist: new[] { "http://localhost:3000", "http://localhost:16325", "https://techstacks.io", "https://www.techstacks.io", "http://null.jsbin.com" },
+                allowOriginWhitelist: new[] { "https://techstacks.io", "https://www.techstacks.io", 
+                    "http://localhost:3000", "http://localhost:16325", "http://localhost:8080", "http://null.jsbin.com", "http://run.plnkr.co" },
                 allowCredentials: true,
                 allowedHeaders: "Content-Type, Allow, Authorization"));
 
