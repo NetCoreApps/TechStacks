@@ -61,8 +61,30 @@ namespace TechStacks.ServiceModel
         public ResponseStatus ResponseStatus { get; set; }
     }
 
-    public class PostReportInfo : PostReport
+    public class PostReportInfo // inheriting non abstract PostReport causes Swift build error 
     {
+        public long Id { get; set; }
+
+        public int OrganizationId { get; set; }
+
+        public long PostId { get; set; }
+
+        public int UserId { get; set; }
+
+        public string UserName { get; set; }
+
+        public FlagType FlagType { get; set; }
+
+        public string ReportNotes { get; set; }
+
+        public DateTime Created { get; set; }
+
+        public DateTime? Acknowledged { get; set; }
+        public string AcknowledgedBy { get; set; }
+
+        public DateTime? Dismissed { get; set; }
+        public string DismissedBy { get; set; }
+
         public string Title { get; set; }
 
         public int ReportCount { get; set; }
@@ -70,8 +92,32 @@ namespace TechStacks.ServiceModel
         public string CreatedBy { get; set; } //Post
     }
 
-    public class PostCommentReportInfo : PostCommentReport
+    public class PostCommentReportInfo // inheriting non abstract PostCommentReport causes Swift build error 
     {
+        public long Id { get; set; }
+
+        public int OrganizationId { get; set; }
+
+        public long PostId { get; set; }
+
+        public long PostCommentId { get; set; }
+
+        public int UserId { get; set; }
+
+        public string UserName { get; set; }
+
+        public FlagType FlagType { get; set; }
+
+        public string ReportNotes { get; set; }
+
+        public DateTime Created { get; set; }
+
+        public DateTime? Acknowledged { get; set; }
+        public string AcknowledgedBy { get; set; }
+
+        public DateTime? Dismissed { get; set; }
+        public string DismissedBy { get; set; }
+
         public string ContentHtml { get; set; }
 
         public int ReportCount { get; set; }
