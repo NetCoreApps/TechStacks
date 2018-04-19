@@ -256,7 +256,8 @@ namespace TechStacks
                 allowOriginWhitelist: new[] { "https://techstacks.io", "https://www.techstacks.io", 
                     "http://localhost:3000", "http://localhost:16325", "http://localhost:8080", "http://null.jsbin.com", "http://run.plnkr.co" },
                 allowCredentials: true,
-                allowedHeaders: "Content-Type, Allow, Authorization"));
+                allowedHeaders: "Content-Type, Allow, Authorization",
+                maxAge: 60 * 60)); //Cache OPTIONS permissions
 
             container.Register<IMessageService>(c => new BackgroundMqService());
             var mqServer = container.Resolve<IMessageService>();
