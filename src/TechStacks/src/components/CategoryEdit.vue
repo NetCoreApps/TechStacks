@@ -42,6 +42,7 @@
                       :loading="loading"
                       multiple
                       chips
+                      :error-messages="errorResponse('technologyIds')"
                       :items="technologySelectItems"
                       v-model="technologyIds"
                       ></v-select>
