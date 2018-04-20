@@ -4,7 +4,7 @@ The New TechStacks WebSite created from the [Nuxt + Vuetify .NET Core Template](
 
 [![](https://raw.githubusercontent.com/ServiceStack/docs/master/docs/images/release-notes/techstacks-new.png)](https://techstacks.io)
 
-TechStacks on Netlify CDN https://techstacks.io - .NET Core App on Ubuntu/Nginx https://www.techstacks.io
+TechStacks running from Netlify CDN https://techstacks.io or directly from nginx/.NET Core/Ubuntu https://www.techstacks.io
 
 ## Technology Stack
 
