@@ -95,7 +95,7 @@ export function goNav(modifier) {
 export const slugCounter = 50;
 export const slugRules = [
   v => !!v || "Required",
-  v => (v && v.length <= slugCounter) || `Max ${nameCounter} characters`,
+  v => (v && v.length <= slugCounter) || `Max ${slugCounter} characters`,
   v => (v && /^[a-z0-9\-]+$/.test(v)) || `Only lowercase letters, numbers or hyphens allowed`,
 ];
 
@@ -110,13 +110,13 @@ export const nameRules = [
 export const titleCounter = 140;
 export const titleRules = [
   v => !!v || "Required",
-  v => (v && v.length <= urlCounter) || `Max ${titleCounter} characters`
+  v => (v && v.length <= titleCounter) || `Max ${titleCounter} characters`
 ];
 
 export const summaryCounter = 140;
 export const summaryRules = [
   v => !!v || "Required",
-  v => (v && v.length <= urlCounter) || `Max ${summaryCounter} characters`
+  v => (v && v.length <= summaryCounter) || `Max ${summaryCounter} characters`
 ];
 export const summaryRulesOptional = [
   v => !v || v.length <= summaryCounter || `Max ${summaryCounter} characters`
