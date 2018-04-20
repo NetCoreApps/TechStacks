@@ -79,11 +79,11 @@ import {
 const usingProxy = location.host == "techstacks.io";
 
 const BaseUrl = usingProxy
-    ? "https://www.techstacks.io/"
+    ? "https://www.techstacks.io/"  // .NET Core App Server on AWS LightSail
     : "/";
 
 const AuthBaseUrl = usingProxy
-    ? "https://techstacks.io/"
+    ? "https://techstacks.io/"      // Netlify
     : "/";
 
 export const client = new JsonServiceClient(BaseUrl);
@@ -100,7 +100,7 @@ export const getSessionInfo = async() => {
             client.post(new ConvertSessionToToken()),
         ]);
 
-        //Remove JWT from HTTP Headers
+        //Remove unnecessary JWT from HTTP Headers so only JWT Cookie is used
         client.bearerToken = authClient.bearerToken = null;
         client.headers.delete('Authorization');
         authClient.headers.delete('Authorization');
