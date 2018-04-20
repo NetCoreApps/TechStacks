@@ -403,7 +403,7 @@ namespace TechStacks.ServiceInterface
 
             ClearOrganizationCaches();
 
-            return new AddCategoryResponse
+            return new AddOrganizationCategoryResponse
             {
                 Id = id,
                 Slug = request.Slug,
@@ -427,7 +427,7 @@ namespace TechStacks.ServiceInterface
 
             ClearOrganizationCaches();
 
-            return new UpdateCategoryResponse();
+            return new UpdateOrganizationCategoryResponse();
         }
 
         public void Delete(DeleteOrganizationCategory request)

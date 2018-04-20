@@ -30,4 +30,20 @@ namespace TechStacks.ServiceInterface.Validations
             });
         }
     }
+
+    public class AddOrganizationCategoryValidator : AbstractValidator<AddOrganizationCategory>
+    {
+        public AddOrganizationCategoryValidator() => RuleSet(ApplyTo.Post, () => {
+            RuleFor(x => x.Name).RequiredName();
+            RuleFor(x => x.Slug).RequiredSlug();
+        });
+    }
+
+    public class UpdateOrganizationCategoryValidator : AbstractValidator<UpdateOrganizationCategory>
+    {
+        public UpdateOrganizationCategoryValidator() => RuleSet(ApplyTo.Put, () => {
+            RuleFor(x => x.Name).RequiredName();
+            RuleFor(x => x.Slug).RequiredSlug();
+        });
+    }
 }

@@ -218,7 +218,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/categories", "POST")]
-    public class AddOrganizationCategory : IReturn<AddCategoryResponse>
+    public class AddOrganizationCategory : IReturn<AddOrganizationCategoryResponse>
     {
         public int OrganizationId { get; set; }
         public string Slug { get; set; }
@@ -227,7 +227,7 @@ namespace TechStacks.ServiceModel
         public int[] TechnologyIds { get; set; }
     }
 
-    public class AddCategoryResponse
+    public class AddOrganizationCategoryResponse
     {
         public int Id { get; set; }
         public string Slug { get; set; }
@@ -236,7 +236,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/categories/{Id}", "PUT")]
-    public class UpdateOrganizationCategory : IReturn<UpdateCategoryResponse>
+    public class UpdateOrganizationCategory : IReturn<UpdateOrganizationCategoryResponse>
     {
         public int OrganizationId { get; set; }
         public int Id { get; set; }
@@ -246,7 +246,7 @@ namespace TechStacks.ServiceModel
         public int[] TechnologyIds { get; set; }
     }
 
-    public class UpdateCategoryResponse
+    public class UpdateOrganizationCategoryResponse
     {
         public ResponseStatus ResponseStatus { get; set; }
     }
