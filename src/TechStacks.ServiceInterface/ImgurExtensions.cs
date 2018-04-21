@@ -30,7 +30,7 @@ namespace TechStacks.ServiceInterface
                         {
                             if (jsonObj["data"] is Dictionary<string, object> data)
                             {
-                                if (minWidth != null || maxWidth != null || minHeight != null || maxWidth != null)
+                                if (minWidth != null || maxWidth != null || minHeight != null || maxHeight != null)
                                 {
                                     var width = (int) data["width"];
                                     var height = (int) data["height"];
