@@ -17,8 +17,7 @@ namespace TechStacks.ServiceInterface
             {
                 var imgurReq = WebRequest.Create("https://api.imgur.com/3/image");
                 imgurReq.Headers[HttpHeaders.Authorization] = $"Client-ID {imgurClientId}";
-                UploadFile(imgurReq, image.InputStream, image.FileName, MimeTypes.GetMimeType(image.FileName),
-                    field: "image");
+                imgurReq.UploadFile(image.InputStream, image.FileName, MimeTypes.GetMimeType(image.FileName), field: "image");
 
                 try
                 {
@@ -103,46 +102,6 @@ namespace TechStacks.ServiceInterface
             catch (Exception) { }
 
             return null;
-        }
-
-        public static void UploadFile(WebRequest webRequest, Stream fileStream, string fileName, string mimeType,
-            string accept = null, Action<HttpWebRequest> requestFilter = null, string method = "POST",
-            string field = "file")
-        {
-            var httpReq = (HttpWebRequest) webRequest;
-            httpReq.Method = method;
-
-            if (accept != null)
-                httpReq.Accept = accept;
-
-            requestFilter?.Invoke(httpReq);
-
-            var boundary = Guid.NewGuid().ToString("N");
-
-            httpReq.ContentType = "multipart/form-data; boundary=\"" + boundary + "\"";
-
-            var boundarybytes = ("\r\n--" + boundary + "--\r\n").ToAsciiBytes();
-
-            var header = "\r\n--" + boundary +
-                         $"\r\nContent-Disposition: form-data; name=\"{field}\"; filename=\"{fileName}\"\r\nContent-Type: {mimeType}\r\n\r\n";
-
-            var headerbytes = header.ToAsciiBytes();
-
-            var contentLength = fileStream.Length + headerbytes.Length + boundarybytes.Length;
-            PclExport.Instance.InitHttpWebRequest(httpReq,
-                contentLength: contentLength, allowAutoRedirect: false, keepAlive: false);
-
-            using (var outputStream = PclExport.Instance.GetRequestStream(httpReq))
-            {
-                outputStream.Write(headerbytes, 0, headerbytes.Length);
-
-                fileStream.CopyTo(outputStream, 4096);
-
-                outputStream.Write(boundarybytes, 0, boundarybytes.Length);
-
-                PclExport.Instance.CloseStream(outputStream);
-            }
-        }
-        
+        }        
     }
 }
