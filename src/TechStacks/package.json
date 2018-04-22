@@ -7,7 +7,7 @@
     "dev": "nuxt",
     "dtos": "cd src/shared && typescript-ref && tsc -m ES6 dtos.ts",
     "build": "nuxt build",
-    "publish": "npm run build && dotnet publish -c Release",
+    "publish": "nuxt build && dotnet publish -c Release",
     "deploy": "npm run publish && bash deploy.sh",
     "lint": "eslint --ext .js,.vue .",
     "precommit": "npm run lint"
