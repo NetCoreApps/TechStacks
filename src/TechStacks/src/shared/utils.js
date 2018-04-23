@@ -146,10 +146,10 @@ export const descriptionRulesOptional = [
 export const contentCounter = 60000;
 export const contentRules = [
   v => !v || v.length >= 25   || 'Min 25 characters', 
-  v => !v || v.length <= 60000 || 'Max 60,000 characters'
+  v => !v || v.length <= contentCounter || `Max ${contentCounter} characters`
 ];
 export const contentRulesOptional = [
-  v => !v || v.length <= 60000 || 'Max 60000 characters'
+  v => !v || v.length <= contentCounter || `Max ${contentCounter} characters`
 ];
 
 export const colorRules = [

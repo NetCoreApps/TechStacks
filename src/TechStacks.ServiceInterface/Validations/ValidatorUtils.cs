@@ -11,7 +11,7 @@ namespace TechStacks.ServiceInterface.Validations
         public static int TitleMaxLength = 140;
         public static int SummaryMaxLength = 140;
         public static int DescriptionMaxLength = 740;
-        public static int ContentMaxLength = 60000;
+        public static int ContentMaxLength = 128000;
 
         public static string NotOnlyNumbersPattern = "(?!^\\d+$)^.+$"; //http://stackoverflow.com/a/3831442/670151
         public static string AllowedNameCharsPattern = "[a-zA-Z0-9,.;:_!/'\\s\\-\\,]";
