@@ -22,6 +22,8 @@ namespace TechStacks.ServiceInterface
 
             var userInfo = await userInfoTask;
             response.PopulateWith(userInfo);
+            if (response.ProfileUrl == null)
+                response.ProfileUrl = response.AvatarUrl;
 
             var userOrg = await userOrgTask;
             response.Members = userOrg.Members;

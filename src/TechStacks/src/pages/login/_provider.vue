@@ -2,7 +2,7 @@
   <div class="no-prerender form-sm" style="margin:1em 0 0 0">
       <v-toolbar color="pink">
       <v-toolbar-side-icon></v-toolbar-side-icon>
-      <v-toolbar-title class="white--text" style="margin-right:2em">Login to {{ provider }}</v-toolbar-title>
+      <v-toolbar-title class="white--text" style="margin-right:2em">login to {{ provider }}</v-toolbar-title>
     </v-toolbar>
     <v-card>
       <v-form v-model="valid" ref="form" lazy-validation @keyup.native.enter="submit">
