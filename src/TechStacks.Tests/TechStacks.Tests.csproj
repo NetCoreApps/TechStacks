@@ -1,27 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <DebugType>portable</DebugType>
     <OutputType>Library</OutputType>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\TechStacks.ServiceInterface\TechStacks.ServiceInterface.csproj" />
     <ProjectReference Include="..\TechStacks.ServiceModel\TechStacks.ServiceModel.csproj" />
-
     <PackageReference Include="NUnit" Version="3.9.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.9.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="Npgsql" Version="3.2.7" />
-
-    <PackageReference Include="ServiceStack" Version="5.0.3" />
-    <PackageReference Include="ServiceStack.Server" Version="5.0.3" />
-    <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="5.0.3" />
-    <PackageReference Include="ServiceStack.OrmLite.Sqlite" Version="5.0.3" />
-    <PackageReference Include="ServiceStack.Kestrel" Version="5.0.3" />
-
-<!--
+    <PackageReference Include="ServiceStack" Version="5.1.0" />
+    <PackageReference Include="ServiceStack.Server" Version="5.1.0" />
+    <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="5.1.0" />
+    <PackageReference Include="ServiceStack.OrmLite.Sqlite" Version="5.1.0" />
+    <PackageReference Include="ServiceStack.Kestrel" Version="5.1.0" />
+    <!--
     <Reference Include="ServiceStack.Text">
       <HintPath>..\..\..\..\ServiceStack.Text\src\ServiceStack.Text\bin\Debug\netstandard2.0\ServiceStack.Text.dll</HintPath>
     </Reference>
@@ -56,7 +51,5 @@
       <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Kestrel\bin\Debug\netstandard2.0\ServiceStack.Kestrel.dll</HintPath>
     </Reference>
 -->
-
   </ItemGroup>
-
 </Project>
