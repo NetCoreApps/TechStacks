@@ -24,6 +24,7 @@ using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 using TechStacks.ServiceInterface;
 using TechStacks.ServiceInterface.Admin;
+using TechStacks.ServiceInterface.Auth;
 using TechStacks.ServiceInterface.DataModel;
 using TechStacks.ServiceInterface.Messaging;
 using TechStacks.ServiceInterface.Notifications;
@@ -110,6 +111,10 @@ namespace TechStacks
                             new AuthTokens { Provider = "github", AccessTokenSecret = obj["ats"] }
                         };
                     }
+                },
+                new DiscourseAuthProvider {
+                    Provider = "servicestack",
+                    DiscourseUrl = "https://forums.servicestack.net",
                 },
             }){
                 HtmlRedirect = "/"
@@ -253,7 +258,7 @@ namespace TechStacks
                 dbFactory.RegisterPageView(dto.GetStatsId()));
 
             Plugins.Add(new CorsFeature(
-                allowOriginWhitelist: new[] { "https://techstacks.io", "https://www.techstacks.io", 
+                allowOriginWhitelist: new[] { "https://techstacks.io", "https://www.techstacks.io",
                     "http://localhost:3000", "http://localhost:16325", "http://localhost:8080", "http://null.jsbin.com", "http://run.plnkr.co" },
                 allowCredentials: true,
                 allowedHeaders: "Content-Type, Allow, Authorization",

@@ -74,6 +74,7 @@ import {
     UpdateOrganizationLabel,
     RemoveOrganizationLabel,
     SubscribeToOrganization,
+    Authenticate,
 } from "./dtos";
 
 const usingProxy = location.host == "techstacks.io";
@@ -469,4 +470,15 @@ export const subscribeToOrganization = async(organizationId, postTypes) => {
     request.organizationId = organizationId;
     request.postTypes = postTypes;
     await client.put(request);
+}
+
+export const login = async(provider, userName, password) => {
+    const request = new Authenticate();
+    request.provider = provider;
+    request.userName = userName;
+    request.password = password;
+
+    var response = await client.post(request);
+    await client.post(new ConvertSessionToToken());
+    return `/${provider}`;
 }

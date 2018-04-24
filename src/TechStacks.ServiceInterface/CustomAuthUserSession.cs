@@ -29,7 +29,7 @@ namespace TechStacks.ServiceInterface
             {
                 if (authTokens.Provider.ToLower() == "github")
                 {
-                    if (authInfo.TryGetValue("avatar_url", out var avatarUrl))
+                    if (authInfo != null && authInfo.TryGetValue("avatar_url", out var avatarUrl))
                     {
                         GithubProfileUrl = avatarUrl;
                     }
@@ -40,6 +40,7 @@ namespace TechStacks.ServiceInterface
                 }
 
                 ProfileUrl = GithubProfileUrl ?? TwitterProfileUrl;
+                
                 using (var db = dbFactory.OpenDbConnection())
                 {
                     var userAuthInstance = db.Single<CustomUserAuth>(x => x.Id == userId);
