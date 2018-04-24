@@ -594,6 +594,9 @@ blockquote {
 
 /* iPad in landscape: 1024x768 */
 @media only screen and (min-width: 1024px) {
+  .form-sm {
+    min-width: 500px;
+  }
 }
 
 /* iPad in portrait: 768x1024 */
