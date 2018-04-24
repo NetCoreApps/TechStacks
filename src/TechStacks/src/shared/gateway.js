@@ -478,7 +478,7 @@ export const login = async(provider, userName, password) => {
     request.userName = userName;
     request.password = password;
 
-    var response = await client.post(request);
-    await client.post(new ConvertSessionToToken());
+    var response = await authClient.post(request);
+    await getSessionInfo();
     return `/${provider}`;
 }
