@@ -472,7 +472,15 @@ export const subscribeToOrganization = async(organizationId, postTypes) => {
     await client.put(request);
 }
 
+export const logout = async() => {
+    const request = new Authenticate();
+    request.provider = "logout";
+    await client.post(request);
+};
+
 export const login = async(provider, userName, password) => {
+    await logout();    
+
     const request = new Authenticate();
     request.provider = provider;
     request.userName = userName;
