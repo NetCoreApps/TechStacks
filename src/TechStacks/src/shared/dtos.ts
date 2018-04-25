@@ -1,8 +1,8 @@
 /* Options:
-Date: 2018-03-30 01:51:40
-Version: 5.03
+Date: 2018-04-24 20:09:24
+Version: 5.10
 Tip: To override a DTO option, remove "//" prefix before updating
-BaseUrl: http://localhost:16325
+BaseUrl: https://www.techstacks.io
 
 //GlobalNamespace: 
 //MakePropertiesOptional: True
@@ -26,13 +26,76 @@ export interface IReturnVoid
     createResponse() : void;
 }
 
-export interface IMeta
-{
-    meta?: { [index:string]: string; };
-}
-
 export interface IPost
 {
+}
+
+export type PostType = "Announcement" | "Post" | "Showcase" | "Question" | "Request";
+
+export class Post
+{
+    id: number;
+    organizationId: number;
+    userId: number;
+    type: PostType;
+    categoryId: number;
+    title: string;
+    slug: string;
+    url: string;
+    imageUrl: string;
+    // @StringLength(2147483647)
+    content: string;
+
+    // @StringLength(2147483647)
+    contentHtml: string;
+
+    pinCommentId: number;
+    technologyIds: number[];
+    fromDate: string;
+    toDate: string;
+    location: string;
+    metaType: string;
+    meta: string;
+    approved: boolean;
+    upVotes: number;
+    downVotes: number;
+    points: number;
+    views: number;
+    favorites: number;
+    subscribers: number;
+    replyCount: number;
+    commentsCount: number;
+    wordCount: number;
+    reportCount: number;
+    linksCount: number;
+    linkedToCount: number;
+    score: number;
+    rank: number;
+    labels: string[];
+    refUserIds: number[];
+    refLinks: string[];
+    muteUserIds: number[];
+    lastCommentDate: string;
+    lastCommentId: number;
+    lastCommentUserId: number;
+    deleted: string;
+    deletedBy: string;
+    locked: string;
+    lockedBy: string;
+    hidden: string;
+    hiddenBy: string;
+    status: string;
+    statusDate: string;
+    statusBy: string;
+    archived: boolean;
+    bumped: string;
+    created: string;
+    createdBy: string;
+    modified: string;
+    modifiedBy: string;
+    refId: number;
+    refSource: string;
+    refUrn: string;
 }
 
 export class Organization
@@ -162,7 +225,7 @@ export class OrganizationMemberInvite
 
 export type FlagType = "Violation" | "Spam" | "Abusive" | "Confidential" | "OffTopic" | "Other";
 
-export class PostReport
+export class PostReportInfo
 {
     id: number;
     organizationId: number;
@@ -176,16 +239,12 @@ export class PostReport
     acknowledgedBy: string;
     dismissed: string;
     dismissedBy: string;
-}
-
-export class PostReportInfo extends PostReport
-{
     title: string;
     reportCount: number;
     createdBy: string;
 }
 
-export class PostCommentReport
+export class PostCommentReportInfo
 {
     id: number;
     organizationId: number;
@@ -200,10 +259,6 @@ export class PostCommentReport
     acknowledgedBy: string;
     dismissed: string;
     dismissedBy: string;
-}
-
-export class PostCommentReportInfo extends PostCommentReport
-{
     contentHtml: string;
     reportCount: number;
     createdBy: string;
@@ -235,74 +290,6 @@ export class QueryBase
 
 export class QueryDb<T> extends QueryBase
 {
-}
-
-export type PostType = "Announcement" | "Post" | "Showcase" | "Question" | "Request";
-
-export class Post
-{
-    id: number;
-    organizationId: number;
-    userId: number;
-    type: PostType;
-    categoryId: number;
-    title: string;
-    slug: string;
-    url: string;
-    imageUrl: string;
-    // @StringLength(2147483647)
-    content: string;
-
-    // @StringLength(2147483647)
-    contentHtml: string;
-
-    pinCommentId: number;
-    technologyIds: number[];
-    fromDate: string;
-    toDate: string;
-    location: string;
-    metaType: string;
-    meta: string;
-    approved: boolean;
-    upVotes: number;
-    downVotes: number;
-    points: number;
-    views: number;
-    favorites: number;
-    subscribers: number;
-    replyCount: number;
-    commentsCount: number;
-    wordCount: number;
-    reportCount: number;
-    linksCount: number;
-    linkedToCount: number;
-    score: number;
-    rank: number;
-    labels: string[];
-    refUserIds: number[];
-    refLinks: string[];
-    muteUserIds: number[];
-    lastCommentDate: string;
-    lastCommentId: number;
-    lastCommentUserId: number;
-    deleted: string;
-    deletedBy: string;
-    locked: string;
-    lockedBy: string;
-    hidden: string;
-    hiddenBy: string;
-    status: string;
-    statusDate: string;
-    statusBy: string;
-    archived: boolean;
-    bumped: string;
-    created: string;
-    createdBy: string;
-    modified: string;
-    modifiedBy: string;
-    refId: number;
-    refSource: string;
-    refUrn: string;
 }
 
 export class PostComment
@@ -610,14 +597,14 @@ export class OrganizationLabelResponse
     responseStatus: ResponseStatus;
 }
 
-export class AddCategoryResponse
+export class AddOrganizationCategoryResponse
 {
     id: number;
     slug: string;
     responseStatus: ResponseStatus;
 }
 
-export class UpdateCategoryResponse
+export class UpdateOrganizationCategoryResponse
 {
     responseStatus: ResponseStatus;
 }
@@ -998,6 +985,11 @@ export class LockStackResponse
 {
 }
 
+export class EmailTestRespoonse
+{
+    responseStatus: ResponseStatus;
+}
+
 export class ImportUserResponse
 {
     id: number;
@@ -1094,6 +1086,11 @@ export class GetAccessTokenResponse
 // @Route("/ping")
 export class Ping
 {
+}
+
+export class DummyTypes
+{
+    post: Post[];
 }
 
 // @Route("/orgs/{Id}", "GET")
@@ -1226,19 +1223,19 @@ export class RemoveOrganizationLabel implements IReturnVoid
 }
 
 // @Route("/orgs/{OrganizationId}/categories", "POST")
-export class AddOrganizationCategory implements IReturn<AddCategoryResponse>
+export class AddOrganizationCategory implements IReturn<AddOrganizationCategoryResponse>
 {
     organizationId: number;
     slug: string;
     name: string;
     description: string;
     technologyIds: number[];
-    createResponse() { return new AddCategoryResponse(); }
+    createResponse() { return new AddOrganizationCategoryResponse(); }
     getTypeName() { return "AddOrganizationCategory"; }
 }
 
 // @Route("/orgs/{OrganizationId}/categories/{Id}", "PUT")
-export class UpdateOrganizationCategory implements IReturn<UpdateCategoryResponse>
+export class UpdateOrganizationCategory implements IReturn<UpdateOrganizationCategoryResponse>
 {
     organizationId: number;
     id: number;
@@ -1246,7 +1243,7 @@ export class UpdateOrganizationCategory implements IReturn<UpdateCategoryRespons
     slug: string;
     description: string;
     technologyIds: number[];
-    createResponse() { return new UpdateCategoryResponse(); }
+    createResponse() { return new UpdateOrganizationCategoryResponse(); }
     getTypeName() { return "UpdateOrganizationCategory"; }
 }
 
@@ -1343,7 +1340,7 @@ export class UpdateOrganizationMemberInvite implements IReturn<UpdateOrganizatio
 }
 
 // @Route("/posts", "GET")
-export class QueryPosts extends QueryDb<Post> implements IReturn<QueryResponse<Post>>, IMeta
+export class QueryPosts extends QueryDb<Post> implements IReturn<QueryResponse<Post>>
 {
     ids: number[];
     organizationId: number;
@@ -1660,7 +1657,7 @@ export class GetAllTechnologies implements IReturn<GetAllTechnologiesResponse>
 
 // @Route("/technology/search")
 // @AutoQueryViewer(DefaultSearchField="Tier", DefaultSearchText="Data", DefaultSearchType="=", Description="Explore different Technologies", IconUrl="octicon:database", Title="Find Technologies")
-export class FindTechnologies extends QueryDb<Technology> implements IReturn<QueryResponse<Technology>>, IMeta
+export class FindTechnologies extends QueryDb<Technology> implements IReturn<QueryResponse<Technology>>
 {
     name: string;
     nameContains: string;
@@ -1669,7 +1666,7 @@ export class FindTechnologies extends QueryDb<Technology> implements IReturn<Que
 }
 
 // @Route("/technology/query")
-export class QueryTechnology extends QueryDb<Technology> implements IReturn<QueryResponse<Technology>>, IMeta
+export class QueryTechnology extends QueryDb<Technology> implements IReturn<QueryResponse<Technology>>
 {
     createResponse() { return new QueryResponse<Technology>(); }
     getTypeName() { return "QueryTechnology"; }
@@ -1766,7 +1763,7 @@ export class HourlyTask implements IReturn<HourlyTaskResponse>
 
 // @Route("/techstacks/search")
 // @AutoQueryViewer(DefaultSearchField="Description", DefaultSearchText="ServiceStack", DefaultSearchType="Contains", Description="Explore different Technology Stacks", IconUrl="material-icons:cloud", Title="Find Technology Stacks")
-export class FindTechStacks extends QueryDb<TechnologyStack> implements IReturn<QueryResponse<TechnologyStack>>, IMeta
+export class FindTechStacks extends QueryDb<TechnologyStack> implements IReturn<QueryResponse<TechnologyStack>>
 {
     nameContains: string;
     createResponse() { return new QueryResponse<TechnologyStack>(); }
@@ -1774,7 +1771,7 @@ export class FindTechStacks extends QueryDb<TechnologyStack> implements IReturn<
 }
 
 // @Route("/techstacks/query")
-export class QueryTechStacks extends QueryDb<TechnologyStack> implements IReturn<QueryResponse<TechnologyStack>>, IMeta
+export class QueryTechStacks extends QueryDb<TechnologyStack> implements IReturn<QueryResponse<TechnologyStack>>
 {
     createResponse() { return new QueryResponse<TechnologyStack>(); }
     getTypeName() { return "QueryTechStacks"; }
@@ -1943,6 +1940,34 @@ export class UserAvatar
     userName: string;
 }
 
+// @Route("/mq/start")
+export class MqStart implements IReturn<string>
+{
+    createResponse() { return ""; }
+    getTypeName() { return "MqStart"; }
+}
+
+// @Route("/mq/stop")
+export class MqStop implements IReturn<string>
+{
+    createResponse() { return ""; }
+    getTypeName() { return "MqStop"; }
+}
+
+// @Route("/mq/stats")
+export class MqStats implements IReturn<string>
+{
+    createResponse() { return ""; }
+    getTypeName() { return "MqStats"; }
+}
+
+// @Route("/mq/status")
+export class MqStatus implements IReturn<string>
+{
+    createResponse() { return ""; }
+    getTypeName() { return "MqStatus"; }
+}
+
 // @Route("/sync/discourse/{Site}")
 export class SyncDiscourseSite implements IReturn<SyncDiscourseSiteResponse>
 {
@@ -1976,6 +2001,14 @@ export class LockTech implements IReturn<LockStackResponse>
     isLocked: boolean;
     createResponse() { return new LockStackResponse(); }
     getTypeName() { return "LockTech"; }
+}
+
+// @Route("/email/post/{PostId}")
+export class EmailTest implements IReturn<EmailTestRespoonse>
+{
+    postId: number;
+    createResponse() { return new EmailTestRespoonse(); }
+    getTypeName() { return "EmailTest"; }
 }
 
 export class ImportUser implements IReturn<ImportUserResponse>
@@ -2027,7 +2060,7 @@ export class ImportUserVoiceSuggestion implements IReturn<ImportUserVoiceSuggest
 // @Route("/authenticate")
 // @Route("/authenticate/{provider}")
 // @DataContract
-export class Authenticate implements IReturn<AuthenticateResponse>, IPost, IMeta
+export class Authenticate implements IReturn<AuthenticateResponse>, IPost
 {
     // @DataMember(Order=1)
     provider: string;
@@ -2139,7 +2172,7 @@ export class GetAccessToken implements IReturn<GetAccessTokenResponse>, IPost
 }
 
 // @Route("/posts/comment", "GET")
-export class QueryPostComments extends QueryDb<PostComment> implements IReturn<QueryResponse<PostComment>>, IMeta
+export class QueryPostComments extends QueryDb<PostComment> implements IReturn<QueryResponse<PostComment>>
 {
     userId: number;
     postId: number;
@@ -2149,7 +2182,7 @@ export class QueryPostComments extends QueryDb<PostComment> implements IReturn<Q
 
 // @Route("/admin/technology/search")
 // @AutoQueryViewer(DefaultSearchField="Tier", DefaultSearchText="Data", DefaultSearchType="=", Description="Explore different Technologies", IconUrl="octicon:database", Title="Find Technologies Admin")
-export class FindTechnologiesAdmin extends QueryDb<Technology> implements IReturn<QueryResponse<Technology>>, IMeta
+export class FindTechnologiesAdmin extends QueryDb<Technology> implements IReturn<QueryResponse<Technology>>
 {
     name: string;
     createResponse() { return new QueryResponse<Technology>(); }

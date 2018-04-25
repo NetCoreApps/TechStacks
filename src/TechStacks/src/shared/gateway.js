@@ -477,6 +477,7 @@ export const login = async(provider, userName, password) => {
     request.provider = provider;
     request.userName = userName;
     request.password = password;
+    request.useTokenCookie = true;
 
     var response = await authClient.post(request);
     await getSessionInfo();

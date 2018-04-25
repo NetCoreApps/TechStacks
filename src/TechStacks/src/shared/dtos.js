@@ -1,8 +1,8 @@
 /* Options:
-Date: 2018-03-30 01:51:40
-Version: 5.03
+Date: 2018-04-24 20:09:24
+Version: 5.10
 Tip: To override a DTO option, remove "//" prefix before updating
-BaseUrl: http://localhost:16325
+BaseUrl: https://www.techstacks.io
 
 //GlobalNamespace:
 //MakePropertiesOptional: True
@@ -24,6 +24,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var Post = /** @class */ (function () {
+    function Post() {
+    }
+    return Post;
+}());
+export { Post };
 var Organization = /** @class */ (function () {
     function Organization() {
     }
@@ -68,33 +74,17 @@ var OrganizationMemberInvite = /** @class */ (function () {
     return OrganizationMemberInvite;
 }());
 export { OrganizationMemberInvite };
-var PostReport = /** @class */ (function () {
-    function PostReport() {
-    }
-    return PostReport;
-}());
-export { PostReport };
-var PostReportInfo = /** @class */ (function (_super) {
-    __extends(PostReportInfo, _super);
+var PostReportInfo = /** @class */ (function () {
     function PostReportInfo() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
     return PostReportInfo;
-}(PostReport));
-export { PostReportInfo };
-var PostCommentReport = /** @class */ (function () {
-    function PostCommentReport() {
-    }
-    return PostCommentReport;
 }());
-export { PostCommentReport };
-var PostCommentReportInfo = /** @class */ (function (_super) {
-    __extends(PostCommentReportInfo, _super);
+export { PostReportInfo };
+var PostCommentReportInfo = /** @class */ (function () {
     function PostCommentReportInfo() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
     return PostCommentReportInfo;
-}(PostCommentReport));
+}());
 export { PostCommentReportInfo };
 var QueryBase = /** @class */ (function () {
     function QueryBase() {
@@ -110,12 +100,6 @@ var QueryDb = /** @class */ (function (_super) {
     return QueryDb;
 }(QueryBase));
 export { QueryDb };
-var Post = /** @class */ (function () {
-    function Post() {
-    }
-    return Post;
-}());
-export { Post };
 var PostComment = /** @class */ (function () {
     function PostComment() {
     }
@@ -291,18 +275,18 @@ var OrganizationLabelResponse = /** @class */ (function () {
     return OrganizationLabelResponse;
 }());
 export { OrganizationLabelResponse };
-var AddCategoryResponse = /** @class */ (function () {
-    function AddCategoryResponse() {
+var AddOrganizationCategoryResponse = /** @class */ (function () {
+    function AddOrganizationCategoryResponse() {
     }
-    return AddCategoryResponse;
+    return AddOrganizationCategoryResponse;
 }());
-export { AddCategoryResponse };
-var UpdateCategoryResponse = /** @class */ (function () {
-    function UpdateCategoryResponse() {
+export { AddOrganizationCategoryResponse };
+var UpdateOrganizationCategoryResponse = /** @class */ (function () {
+    function UpdateOrganizationCategoryResponse() {
     }
-    return UpdateCategoryResponse;
+    return UpdateOrganizationCategoryResponse;
 }());
-export { UpdateCategoryResponse };
+export { UpdateOrganizationCategoryResponse };
 var AddOrganizationMemberResponse = /** @class */ (function () {
     function AddOrganizationMemberResponse() {
     }
@@ -628,6 +612,12 @@ var LockStackResponse = /** @class */ (function () {
     return LockStackResponse;
 }());
 export { LockStackResponse };
+var EmailTestRespoonse = /** @class */ (function () {
+    function EmailTestRespoonse() {
+    }
+    return EmailTestRespoonse;
+}());
+export { EmailTestRespoonse };
 var ImportUserResponse = /** @class */ (function () {
     function ImportUserResponse() {
     }
@@ -682,6 +672,12 @@ var Ping = /** @class */ (function () {
     return Ping;
 }());
 export { Ping };
+var DummyTypes = /** @class */ (function () {
+    function DummyTypes() {
+    }
+    return DummyTypes;
+}());
+export { DummyTypes };
 // @Route("/orgs/{Id}", "GET")
 var GetOrganization = /** @class */ (function () {
     function GetOrganization() {
@@ -794,7 +790,7 @@ export { RemoveOrganizationLabel };
 var AddOrganizationCategory = /** @class */ (function () {
     function AddOrganizationCategory() {
     }
-    AddOrganizationCategory.prototype.createResponse = function () { return new AddCategoryResponse(); };
+    AddOrganizationCategory.prototype.createResponse = function () { return new AddOrganizationCategoryResponse(); };
     AddOrganizationCategory.prototype.getTypeName = function () { return "AddOrganizationCategory"; };
     return AddOrganizationCategory;
 }());
@@ -803,7 +799,7 @@ export { AddOrganizationCategory };
 var UpdateOrganizationCategory = /** @class */ (function () {
     function UpdateOrganizationCategory() {
     }
-    UpdateOrganizationCategory.prototype.createResponse = function () { return new UpdateCategoryResponse(); };
+    UpdateOrganizationCategory.prototype.createResponse = function () { return new UpdateOrganizationCategoryResponse(); };
     UpdateOrganizationCategory.prototype.getTypeName = function () { return "UpdateOrganizationCategory"; };
     return UpdateOrganizationCategory;
 }());
@@ -1466,6 +1462,42 @@ var UserAvatar = /** @class */ (function () {
     return UserAvatar;
 }());
 export { UserAvatar };
+// @Route("/mq/start")
+var MqStart = /** @class */ (function () {
+    function MqStart() {
+    }
+    MqStart.prototype.createResponse = function () { return ""; };
+    MqStart.prototype.getTypeName = function () { return "MqStart"; };
+    return MqStart;
+}());
+export { MqStart };
+// @Route("/mq/stop")
+var MqStop = /** @class */ (function () {
+    function MqStop() {
+    }
+    MqStop.prototype.createResponse = function () { return ""; };
+    MqStop.prototype.getTypeName = function () { return "MqStop"; };
+    return MqStop;
+}());
+export { MqStop };
+// @Route("/mq/stats")
+var MqStats = /** @class */ (function () {
+    function MqStats() {
+    }
+    MqStats.prototype.createResponse = function () { return ""; };
+    MqStats.prototype.getTypeName = function () { return "MqStats"; };
+    return MqStats;
+}());
+export { MqStats };
+// @Route("/mq/status")
+var MqStatus = /** @class */ (function () {
+    function MqStatus() {
+    }
+    MqStatus.prototype.createResponse = function () { return ""; };
+    MqStatus.prototype.getTypeName = function () { return "MqStatus"; };
+    return MqStatus;
+}());
+export { MqStatus };
 // @Route("/sync/discourse/{Site}")
 var SyncDiscourseSite = /** @class */ (function () {
     function SyncDiscourseSite() {
@@ -1502,6 +1534,15 @@ var LockTech = /** @class */ (function () {
     return LockTech;
 }());
 export { LockTech };
+// @Route("/email/post/{PostId}")
+var EmailTest = /** @class */ (function () {
+    function EmailTest() {
+    }
+    EmailTest.prototype.createResponse = function () { return new EmailTestRespoonse(); };
+    EmailTest.prototype.getTypeName = function () { return "EmailTest"; };
+    return EmailTest;
+}());
+export { EmailTest };
 var ImportUser = /** @class */ (function () {
     function ImportUser() {
     }
