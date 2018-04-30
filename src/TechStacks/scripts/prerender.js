@@ -8,6 +8,7 @@ const port = 9000;
 
 const AllowOrigins = ["localhost:16325","localhost:3000","techstacks.io","www.techstacks.io"];
 const ProxyUrl = 'https://www.techstacks.io';
+// const ProxyUrl = 'http://localhost:16325';
 const elementSelector = '#app';
 
 const EnableCors = false;
@@ -15,6 +16,8 @@ const ExpiredCacheIntervalMs = 30000;
 const RefreshEntriesAfterMs = 10 * 60 * 1000;
 const RemoveEntriesWithViewsLowerThan = 2;
 const IgnoreExtensions = ['.svg','.png','.jpg','.jpeg','.gif','.ico','.js','.css'];
+const ResourceWhiteList = ['document', 'script', 'xhr', 'fetch']; // 2. Ignore resources that don't produce DOM
+const ValidPageSelector = '.no-prerender';
 const TimeoutMs = 10000;
 const log = true;
 const logErrors = true;
@@ -28,6 +31,15 @@ let id = 0;
 
     const createPage = async () => {
         page = await browser.newPage();
+        await page.setRequestInterception(true);
+
+        page.on('request', req => {
+          if (!ResourceWhiteList.includes(req.resourceType())) {
+            return req.abort();
+          }
+          req.continue();
+        });
+      
         await page.setUserAgent('puppeteer');
         await page.setViewport({ width: 1366, height: 768 });
         return page;
@@ -92,6 +104,8 @@ let id = 0;
 
         do {
             try {
+                await page.waitForSelector(ValidPageSelector);
+
                 html = elementSelector
                     ? await page.$eval(elementSelector, e => e.innerHTML)
                     : await page.content();
