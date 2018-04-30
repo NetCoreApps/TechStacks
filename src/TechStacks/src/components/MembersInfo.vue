@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="organization" style="margin-bottom:1em">
+  <v-card v-if="organization && (organization.owners > 0 || organization.membersCount > 0)" style="margin-bottom:1em">
     <v-card-title>
       <v-layout column>
         <v-alert outline color="error" icon="warning" :value="errorSummary">{{ errorSummary }}</v-alert>

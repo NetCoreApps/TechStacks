@@ -38,7 +38,7 @@ let id = 0;
         if (new Date() - lastFlushed > lastFlushedTimeoutMs) {
             try {
                 await browser.close();
-                browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+                browser = await puppeteer.launch({ args: ['--no-sandbox','--disable-dev-shm-usage'] });
                 pagePool.flush();
                 lastFlushed = new Date();
             } catch(e){}
