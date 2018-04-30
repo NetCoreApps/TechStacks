@@ -34,7 +34,7 @@ let id = 0;
 
     var browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 
-    const createPage = async () => {
+    async function createPage () {
         if (new Date() - lastFlushed > lastFlushedTimeoutMs) {
             try {
                 await browser.close();
@@ -57,7 +57,7 @@ let id = 0;
         await page.setUserAgent('puppeteer');
         await page.setViewport({ width: 1366, height: 768 });
         return page;
-    };
+    }
 
     async function refreshExpiredCaches()
     {
