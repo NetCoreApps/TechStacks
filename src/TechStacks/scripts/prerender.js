@@ -22,14 +22,28 @@ const TimeoutMs = 10000;
 const log = true;
 const logErrors = true;
 
+var lastFlushed = new Date(); 
+const lastFlushedTimeoutMs = 24 * 60 * 60 * 1000;
+
 let CACHE = {};
 let PENDING = {};
 let id = 0;
 
 (async () => {
-    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+    const pagePool = new ObjectPool(10, createPage);
+
+    var browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 
     const createPage = async () => {
+        if (new Date() - lastFlushed > lastFlushedTimeoutMs) {
+            try {
+                await browser.close();
+                browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+                pagePool.flush();
+                lastFlushed = new Date();
+            } catch(e){}
+        }
+
         page = await browser.newPage();
         await page.setRequestInterception(true);
 
@@ -44,8 +58,6 @@ let id = 0;
         await page.setViewport({ width: 1366, height: 768 });
         return page;
     };
-
-    const pagePool = new ObjectPool(10, createPage);
 
     async function refreshExpiredCaches()
     {
@@ -234,10 +246,9 @@ function ObjectPool(iLimit, fnConstructor) {
     this._idCounter = 0;
  
     this.obtain = async function() {
-        var oTemp;
         if (this._iSize > 0) {
             this._iSize--;
-            oTemp = this._aObjects[this._iSize];
+            var oTemp = this._aObjects[this._iSize];
             this._aObjects[this._iSize] = null;
             return oTemp;
         }
@@ -253,7 +264,6 @@ function ObjectPool(iLimit, fnConstructor) {
         }
  
         if (this._iSize < this._iLimit) {
-            // oRecyclable.recycle();
             this._aObjects[this._iSize] = oRecyclable;
             this._iSize++;
         } else {
@@ -266,5 +276,18 @@ function ObjectPool(iLimit, fnConstructor) {
  
     this.getSize = function() {
         return this._iSize;
+    };
+
+    this.flush = function() {
+        for (var i=0; i<this._iSize; i++) {
+            var oTemp = this._aObjects[i];
+            try {
+                if (oTemp != null && oTemp.close) {
+                    oTemp.close();
+                }
+            } catch(e){}
+        }
+
+        this._iSize = 0;
     };
 }
