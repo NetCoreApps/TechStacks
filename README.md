@@ -6,12 +6,14 @@ Given the impressive development velocity enabled by the [Nuxt](http://docs.serv
 
 A lot has changed since then, in both the JavaScript and .NET Server ecosystems. [Angular 1.x](https://angularjs.org) was surpassed by a complete rewrite of Angular 2+ in TypeScript in its [latest version](https://angular.io). During that time both have since been eclipsed in popularity by [React](https://github.com/facebook/react) and [Vue](https://github.com/vuejs/vue) with nearly 3x the popularity by stars on GitHub. We like React for true Single Page Apps like IDEs and what we used to [develop Gistlyn](https://github.com/ServiceStack/Gistlyn). But for multi-page Apps we prefer Vue which has a higher fidelity and better encapsulation of HTML pages with its [Single File Components](https://vuejs.org/v2/guide/single-file-components.html).
 
+## Recommended .NET SPA Stack
+
 Nuxt further enhances Vue with an opinionated convention-based framework that combines the most popular Vue libraries into a unified solution, perfect for multi-page Web Apps like TechStacks. 
 Nuxt provides the prescribed architecture, development model and core functionality whilst Vuetify provides the UI Layout and comprehensive suite of UI Components - combining into an elegant solution that dramatically reduces the development and design effort to develop a Single Page Apps like TechStacks.
 
 On the .NET side, .NET Core became the future platform for hosting .NET Apps with its leaner, faster and cross-platform runtime. It's ability to run flawlessly on Linux makes it our default choice for new projects where we readily take advantage of its superior automation and ecosystem.
 
-#### Before and After
+### Before and After
 
 So given the current ecosystem we ported TechStacks to what we consider is the state-of-the-art Technology Stack for developing .NET Apps in **2018**, starting from the .NET Core [vuetify-nuxt](https://github.com/NetCoreTemplates/vuetify-nuxt) Template. Visually the before/after Technology Stack for TechStacks is:
 
