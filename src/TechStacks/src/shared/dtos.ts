@@ -1,440 +1,507 @@
 /* Options:
-Date: 2018-04-24 20:09:24
-Version: 5.10
+Date: 2019-02-16 04:08:00
+Version: 5.41
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://www.techstacks.io
 
 //GlobalNamespace: 
-//MakePropertiesOptional: True
 //AddServiceStackTypes: True
 //AddResponseStatus: False
 //AddImplicitVersion: 
 //AddDescriptionAsComments: True
 //IncludeTypes: 
 //ExcludeTypes: 
-//DefaultImports: 
+DefaultImports: * as Zip from './ZipCodeValidator'
 */
 
+import * as Zip from './ZipCodeValidator';
 
 export interface IReturn<T>
 {
-    createResponse() : T;
+    createResponse(): T;
 }
 
 export interface IReturnVoid
 {
-    createResponse() : void;
+    createResponse(): void;
+}
+
+export interface IHasSessionId
+{
+    sessionId: string;
+}
+
+export interface IHasBearerToken
+{
+    bearerToken: string;
 }
 
 export interface IPost
 {
 }
 
-export type PostType = "Announcement" | "Post" | "Showcase" | "Question" | "Request";
+export enum PostType
+{
+    Announcement = 'Announcement',
+    Post = 'Post',
+    Showcase = 'Showcase',
+    Question = 'Question',
+    Request = 'Request',
+}
 
 export class Post
 {
-    id: number;
-    organizationId: number;
-    userId: number;
-    type: PostType;
-    categoryId: number;
-    title: string;
-    slug: string;
-    url: string;
-    imageUrl: string;
+    public constructor(init?:Partial<Post>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public organizationId: number;
+    public userId: number;
+    public type: PostType;
+    public categoryId: number;
+    public title: string;
+    public slug: string;
+    public url: string;
+    public imageUrl: string;
     // @StringLength(2147483647)
-    content: string;
+    public content: string;
 
     // @StringLength(2147483647)
-    contentHtml: string;
+    public contentHtml: string;
 
-    pinCommentId: number;
-    technologyIds: number[];
-    fromDate: string;
-    toDate: string;
-    location: string;
-    metaType: string;
-    meta: string;
-    approved: boolean;
-    upVotes: number;
-    downVotes: number;
-    points: number;
-    views: number;
-    favorites: number;
-    subscribers: number;
-    replyCount: number;
-    commentsCount: number;
-    wordCount: number;
-    reportCount: number;
-    linksCount: number;
-    linkedToCount: number;
-    score: number;
-    rank: number;
-    labels: string[];
-    refUserIds: number[];
-    refLinks: string[];
-    muteUserIds: number[];
-    lastCommentDate: string;
-    lastCommentId: number;
-    lastCommentUserId: number;
-    deleted: string;
-    deletedBy: string;
-    locked: string;
-    lockedBy: string;
-    hidden: string;
-    hiddenBy: string;
-    status: string;
-    statusDate: string;
-    statusBy: string;
-    archived: boolean;
-    bumped: string;
-    created: string;
-    createdBy: string;
-    modified: string;
-    modifiedBy: string;
-    refId: number;
-    refSource: string;
-    refUrn: string;
+    public pinCommentId: number;
+    public technologyIds: number[];
+    public fromDate: string;
+    public toDate: string;
+    public location: string;
+    public metaType: string;
+    public meta: string;
+    public approved: boolean;
+    public upVotes: number;
+    public downVotes: number;
+    public points: number;
+    public views: number;
+    public favorites: number;
+    public subscribers: number;
+    public replyCount: number;
+    public commentsCount: number;
+    public wordCount: number;
+    public reportCount: number;
+    public linksCount: number;
+    public linkedToCount: number;
+    public score: number;
+    public rank: number;
+    public labels: string[];
+    public refUserIds: number[];
+    public refLinks: string[];
+    public muteUserIds: number[];
+    public lastCommentDate: string;
+    public lastCommentId: number;
+    public lastCommentUserId: number;
+    public deleted: string;
+    public deletedBy: string;
+    public locked: string;
+    public lockedBy: string;
+    public hidden: string;
+    public hiddenBy: string;
+    public status: string;
+    public statusDate: string;
+    public statusBy: string;
+    public archived: boolean;
+    public bumped: string;
+    public created: string;
+    public createdBy: string;
+    public modified: string;
+    public modifiedBy: string;
+    public refId: number;
+    public refSource: string;
+    public refUrn: string;
 }
 
 export class Organization
 {
-    id: number;
-    name: string;
-    slug: string;
-    description: string;
-    descriptionHtml: string;
-    color: string;
-    textColor: string;
-    linkColor: string;
-    backgroundColor: string;
-    backgroundUrl: string;
-    logoUrl: string;
-    heroUrl: string;
-    lang: string;
-    defaultPostType: string;
-    defaultSubscriptionPostTypes: string[];
-    postTypes: string[];
-    moderatorPostTypes: string[];
-    deletePostsWithReportCount: number;
-    disableInvites: boolean;
-    upVotes: number;
-    downVotes: number;
-    views: number;
-    favorites: number;
-    subscribers: number;
-    commentsCount: number;
-    postsCount: number;
-    score: number;
-    rank: number;
-    refId: number;
-    refSource: string;
-    hidden: string;
-    hiddenBy: string;
-    locked: string;
-    lockedBy: string;
-    deleted: string;
-    deletedBy: string;
-    created: string;
-    createdBy: string;
-    modified: string;
-    modifiedBy: string;
+    public constructor(init?:Partial<Organization>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public name: string;
+    public slug: string;
+    public description: string;
+    public descriptionHtml: string;
+    public color: string;
+    public textColor: string;
+    public linkColor: string;
+    public backgroundColor: string;
+    public backgroundUrl: string;
+    public logoUrl: string;
+    public heroUrl: string;
+    public lang: string;
+    public defaultPostType: string;
+    public defaultSubscriptionPostTypes: string[];
+    public postTypes: string[];
+    public moderatorPostTypes: string[];
+    public deletePostsWithReportCount: number;
+    public disableInvites: boolean;
+    public upVotes: number;
+    public downVotes: number;
+    public views: number;
+    public favorites: number;
+    public subscribers: number;
+    public commentsCount: number;
+    public postsCount: number;
+    public score: number;
+    public rank: number;
+    public refId: number;
+    public refSource: string;
+    public hidden: string;
+    public hiddenBy: string;
+    public locked: string;
+    public lockedBy: string;
+    public deleted: string;
+    public deletedBy: string;
+    public created: string;
+    public createdBy: string;
+    public modified: string;
+    public modifiedBy: string;
 }
 
 export class OrganizationLabel
 {
-    slug: string;
-    organizationId: number;
-    description: string;
-    color: string;
+    public constructor(init?:Partial<OrganizationLabel>) { (<any>Object).assign(this, init); }
+    public slug: string;
+    public organizationId: number;
+    public description: string;
+    public color: string;
 }
 
 export class Category
 {
-    id: number;
-    organizationId: number;
-    name: string;
-    slug: string;
-    description: string;
-    color: string;
-    technologyIds: number[];
-    commentsCount: number;
-    postsCount: number;
-    score: number;
-    rank: number;
+    public constructor(init?:Partial<Category>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public organizationId: number;
+    public name: string;
+    public slug: string;
+    public description: string;
+    public color: string;
+    public technologyIds: number[];
+    public commentsCount: number;
+    public postsCount: number;
+    public score: number;
+    public rank: number;
 }
 
 export class OrganizationMember
 {
-    id: number;
-    organizationId: number;
-    userId: number;
-    userName: string;
-    isOwner: boolean;
-    isModerator: boolean;
-    denyAll: boolean;
-    denyPosts: boolean;
-    denyComments: boolean;
-    notes: string;
+    public constructor(init?:Partial<OrganizationMember>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public organizationId: number;
+    public userId: number;
+    public userName: string;
+    public isOwner: boolean;
+    public isModerator: boolean;
+    public denyAll: boolean;
+    public denyPosts: boolean;
+    public denyComments: boolean;
+    public notes: string;
 }
 
 // @DataContract
 export class ResponseError
 {
+    public constructor(init?:Partial<ResponseError>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1, EmitDefaultValue=false)
-    errorCode: string;
+    public errorCode: string;
 
     // @DataMember(Order=2, EmitDefaultValue=false)
-    fieldName: string;
+    public fieldName: string;
 
     // @DataMember(Order=3, EmitDefaultValue=false)
-    message: string;
+    public message: string;
 
     // @DataMember(Order=4, EmitDefaultValue=false)
-    meta: { [index:string]: string; };
+    public meta: { [index:string]: string; };
 }
 
 // @DataContract
 export class ResponseStatus
 {
+    public constructor(init?:Partial<ResponseStatus>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    errorCode: string;
+    public errorCode: string;
 
     // @DataMember(Order=2)
-    message: string;
+    public message: string;
 
     // @DataMember(Order=3)
-    stackTrace: string;
+    public stackTrace: string;
 
     // @DataMember(Order=4)
-    errors: ResponseError[];
+    public errors: ResponseError[];
 
     // @DataMember(Order=5)
-    meta: { [index:string]: string; };
+    public meta: { [index:string]: string; };
 }
 
 export class OrganizationMemberInvite
 {
-    id: number;
-    organizationId: number;
-    userId: number;
-    userName: string;
-    dismissed: string;
+    public constructor(init?:Partial<OrganizationMemberInvite>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public organizationId: number;
+    public userId: number;
+    public userName: string;
+    public dismissed: string;
 }
 
-export type FlagType = "Violation" | "Spam" | "Abusive" | "Confidential" | "OffTopic" | "Other";
+export enum FlagType
+{
+    Violation = 'Violation',
+    Spam = 'Spam',
+    Abusive = 'Abusive',
+    Confidential = 'Confidential',
+    OffTopic = 'OffTopic',
+    Other = 'Other',
+}
 
 export class PostReportInfo
 {
-    id: number;
-    organizationId: number;
-    postId: number;
-    userId: number;
-    userName: string;
-    flagType: FlagType;
-    reportNotes: string;
-    created: string;
-    acknowledged: string;
-    acknowledgedBy: string;
-    dismissed: string;
-    dismissedBy: string;
-    title: string;
-    reportCount: number;
-    createdBy: string;
+    public constructor(init?:Partial<PostReportInfo>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public organizationId: number;
+    public postId: number;
+    public userId: number;
+    public userName: string;
+    public flagType: FlagType;
+    public reportNotes: string;
+    public created: string;
+    public acknowledged: string;
+    public acknowledgedBy: string;
+    public dismissed: string;
+    public dismissedBy: string;
+    public title: string;
+    public reportCount: number;
+    public createdBy: string;
 }
 
 export class PostCommentReportInfo
 {
-    id: number;
-    organizationId: number;
-    postId: number;
-    postCommentId: number;
-    userId: number;
-    userName: string;
-    flagType: FlagType;
-    reportNotes: string;
-    created: string;
-    acknowledged: string;
-    acknowledgedBy: string;
-    dismissed: string;
-    dismissedBy: string;
-    contentHtml: string;
-    reportCount: number;
-    createdBy: string;
+    public constructor(init?:Partial<PostCommentReportInfo>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public organizationId: number;
+    public postId: number;
+    public postCommentId: number;
+    public userId: number;
+    public userName: string;
+    public flagType: FlagType;
+    public reportNotes: string;
+    public created: string;
+    public acknowledged: string;
+    public acknowledgedBy: string;
+    public dismissed: string;
+    public dismissedBy: string;
+    public contentHtml: string;
+    public reportCount: number;
+    public createdBy: string;
 }
 
 export class QueryBase
 {
+    public constructor(init?:Partial<QueryBase>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    skip: number;
+    public skip: number;
 
     // @DataMember(Order=2)
-    take: number;
+    public take: number;
 
     // @DataMember(Order=3)
-    orderBy: string;
+    public orderBy: string;
 
     // @DataMember(Order=4)
-    orderByDesc: string;
+    public orderByDesc: string;
 
     // @DataMember(Order=5)
-    include: string;
+    public include: string;
 
     // @DataMember(Order=6)
-    fields: string;
+    public fields: string;
 
     // @DataMember(Order=7)
-    meta: { [index:string]: string; };
+    public meta: { [index:string]: string; };
 }
 
 export class QueryDb<T> extends QueryBase
 {
+    public constructor(init?:Partial<QueryDb<T>>) { super(init); (<any>Object).assign(this, init); }
 }
 
 export class PostComment
 {
-    id: number;
-    postId: number;
-    userId: number;
-    replyId: number;
+    public constructor(init?:Partial<PostComment>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public postId: number;
+    public userId: number;
+    public replyId: number;
     // @StringLength(2147483647)
-    content: string;
+    public content: string;
 
     // @StringLength(2147483647)
-    contentHtml: string;
+    public contentHtml: string;
 
-    score: number;
-    rank: number;
-    upVotes: number;
-    downVotes: number;
-    favorites: number;
-    wordCount: number;
-    reportCount: number;
-    deleted: string;
-    hidden: string;
-    modified: string;
-    created: string;
-    createdBy: string;
-    refId: number;
-    refSource: string;
-    refUrn: string;
+    public score: number;
+    public rank: number;
+    public upVotes: number;
+    public downVotes: number;
+    public favorites: number;
+    public wordCount: number;
+    public reportCount: number;
+    public deleted: string;
+    public hidden: string;
+    public modified: string;
+    public created: string;
+    public createdBy: string;
+    public refId: number;
+    public refSource: string;
+    public refUrn: string;
 }
 
-export type ReportAction = "Dismiss" | "Delete";
+export enum ReportAction
+{
+    Dismiss = 'Dismiss',
+    Delete = 'Delete',
+}
 
 export class UserRef
 {
-    id: number;
-    userName: string;
-    email: string;
-    refId: number;
-    refSource: string;
-    refUrn: string;
+    public constructor(init?:Partial<UserRef>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public userName: string;
+    public email: string;
+    public refId: number;
+    public refSource: string;
+    public refUrn: string;
 }
 
 export class OrganizationSubscription
 {
-    id: number;
-    organizationId: number;
-    userId: number;
-    userName: string;
-    postTypes: string[];
-    frequencyDays: number;
-    lastSyncedId: number;
-    lastSynced: string;
-    created: string;
+    public constructor(init?:Partial<OrganizationSubscription>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public organizationId: number;
+    public userId: number;
+    public userName: string;
+    public postTypes: string[];
+    public frequencyDays: number;
+    public lastSyncedId: number;
+    public lastSynced: string;
+    public created: string;
 }
 
 export class TechnologyStackBase
 {
-    id: number;
-    name: string;
-    vendorName: string;
-    description: string;
-    appUrl: string;
-    screenshotUrl: string;
-    created: string;
-    createdBy: string;
-    lastModified: string;
-    lastModifiedBy: string;
-    isLocked: boolean;
-    ownerId: string;
-    slug: string;
+    public constructor(init?:Partial<TechnologyStackBase>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public name: string;
+    public vendorName: string;
+    public description: string;
+    public appUrl: string;
+    public screenshotUrl: string;
+    public created: string;
+    public createdBy: string;
+    public lastModified: string;
+    public lastModifiedBy: string;
+    public isLocked: boolean;
+    public ownerId: string;
+    public slug: string;
     // @StringLength(2147483647)
-    details: string;
+    public details: string;
 
     // @StringLength(2147483647)
-    detailsHtml: string;
+    public detailsHtml: string;
 
-    lastStatusUpdate: string;
-    organizationId: number;
-    commentsPostId: number;
-    viewCount: number;
-    favCount: number;
+    public lastStatusUpdate: string;
+    public organizationId: number;
+    public commentsPostId: number;
+    public viewCount: number;
+    public favCount: number;
 }
 
 export class TechnologyStack extends TechnologyStackBase
 {
+    public constructor(init?:Partial<TechnologyStack>) { super(init); (<any>Object).assign(this, init); }
 }
 
-export type TechnologyTier = "ProgrammingLanguage" | "Client" | "Http" | "Server" | "Data" | "SoftwareInfrastructure" | "OperatingSystem" | "HardwareInfrastructure" | "ThirdPartyServices";
+export enum TechnologyTier
+{
+    ProgrammingLanguage = 'ProgrammingLanguage',
+    Client = 'Client',
+    Http = 'Http',
+    Server = 'Server',
+    Data = 'Data',
+    SoftwareInfrastructure = 'SoftwareInfrastructure',
+    OperatingSystem = 'OperatingSystem',
+    HardwareInfrastructure = 'HardwareInfrastructure',
+    ThirdPartyServices = 'ThirdPartyServices',
+}
 
 export class TechnologyBase
 {
-    id: number;
-    name: string;
-    vendorName: string;
-    vendorUrl: string;
-    productUrl: string;
-    logoUrl: string;
-    description: string;
-    created: string;
-    createdBy: string;
-    lastModified: string;
-    lastModifiedBy: string;
-    ownerId: string;
-    slug: string;
-    logoApproved: boolean;
-    isLocked: boolean;
-    tier: TechnologyTier;
-    lastStatusUpdate: string;
-    organizationId: number;
-    commentsPostId: number;
-    viewCount: number;
-    favCount: number;
+    public constructor(init?:Partial<TechnologyBase>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public name: string;
+    public vendorName: string;
+    public vendorUrl: string;
+    public productUrl: string;
+    public logoUrl: string;
+    public description: string;
+    public created: string;
+    public createdBy: string;
+    public lastModified: string;
+    public lastModifiedBy: string;
+    public ownerId: string;
+    public slug: string;
+    public logoApproved: boolean;
+    public isLocked: boolean;
+    public tier: TechnologyTier;
+    public lastStatusUpdate: string;
+    public organizationId: number;
+    public commentsPostId: number;
+    public viewCount: number;
+    public favCount: number;
 }
 
 export class Technology extends TechnologyBase
 {
+    public constructor(init?:Partial<Technology>) { super(init); (<any>Object).assign(this, init); }
 }
 
 export class UserActivity
 {
-    id: number;
-    userName: string;
-    karma: number;
-    technologyCount: number;
-    techStacksCount: number;
-    postsCount: number;
-    postUpVotes: number;
-    postDownVotes: number;
-    commentUpVotes: number;
-    commentDownVotes: number;
-    postCommentsCount: number;
-    pinnedCommentCount: number;
-    postReportCount: number;
-    postCommentReportCount: number;
-    created: string;
-    modified: string;
+    public constructor(init?:Partial<UserActivity>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public userName: string;
+    public karma: number;
+    public technologyCount: number;
+    public techStacksCount: number;
+    public postsCount: number;
+    public postUpVotes: number;
+    public postDownVotes: number;
+    public commentUpVotes: number;
+    public commentDownVotes: number;
+    public postCommentsCount: number;
+    public pinnedCommentCount: number;
+    public postReportCount: number;
+    public postCommentReportCount: number;
+    public created: string;
+    public modified: string;
 }
 
-export type Frequency = "Daily" | "Weekly" | "Monthly" | "Quarterly";
+export enum Frequency
+{
+    Daily = '1',
+    Weekly = '7',
+    Monthly = '30',
+    Quarterly = '90',
+}
 
 export class TechnologyHistory extends TechnologyBase
 {
-    technologyId: number;
-    operation: string;
+    public constructor(init?:Partial<TechnologyHistory>) { super(init); (<any>Object).assign(this, init); }
+    public technologyId: number;
+    public operation: string;
 }
 
 export interface IRegisterStats
@@ -443,1616 +510,1797 @@ export interface IRegisterStats
 
 export class TechnologyStackHistory extends TechnologyStackBase
 {
-    technologyStackId: number;
-    operation: string;
-    technologyIds: number[];
+    public constructor(init?:Partial<TechnologyStackHistory>) { super(init); (<any>Object).assign(this, init); }
+    public technologyStackId: number;
+    public operation: string;
+    public technologyIds: number[];
 }
 
 export class UserInfo
 {
-    userName: string;
-    avatarUrl: string;
-    stacksCount: number;
+    public constructor(init?:Partial<UserInfo>) { (<any>Object).assign(this, init); }
+    public userName: string;
+    public avatarUrl: string;
+    public stacksCount: number;
 }
 
 export class TechnologyInfo
 {
-    tier: TechnologyTier;
-    slug: string;
-    name: string;
-    logoUrl: string;
-    stacksCount: number;
+    public constructor(init?:Partial<TechnologyInfo>) { (<any>Object).assign(this, init); }
+    public tier: TechnologyTier;
+    public slug: string;
+    public name: string;
+    public logoUrl: string;
+    public stacksCount: number;
 }
 
 export class TechnologyInStack extends TechnologyBase
 {
-    technologyId: number;
-    technologyStackId: number;
-    justification: string;
+    public constructor(init?:Partial<TechnologyInStack>) { super(init); (<any>Object).assign(this, init); }
+    public technologyId: number;
+    public technologyStackId: number;
+    public justification: string;
 }
 
 export class TechStackDetails extends TechnologyStackBase
 {
-    technologyChoices: TechnologyInStack[];
+    public constructor(init?:Partial<TechStackDetails>) { super(init); (<any>Object).assign(this, init); }
+    public technologyChoices: TechnologyInStack[];
 }
 
 export class LabelInfo
 {
-    slug: string;
-    color: string;
+    public constructor(init?:Partial<LabelInfo>) { (<any>Object).assign(this, init); }
+    public slug: string;
+    public color: string;
 }
 
 export class CategoryInfo
 {
-    id: number;
-    name: string;
-    slug: string;
+    public constructor(init?:Partial<CategoryInfo>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public name: string;
+    public slug: string;
 }
 
 export class OrganizationInfo
 {
-    id: number;
-    name: string;
-    slug: string;
-    refId: number;
-    refSource: string;
-    upVotes: number;
-    downVotes: number;
-    membersCount: number;
-    rank: number;
-    disableInvites: boolean;
-    lang: string;
-    postTypes: string[];
-    moderatorPostTypes: string[];
-    locked: string;
-    labels: LabelInfo[];
-    categories: CategoryInfo[];
+    public constructor(init?:Partial<OrganizationInfo>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public name: string;
+    public slug: string;
+    public refId: number;
+    public refSource: string;
+    public upVotes: number;
+    public downVotes: number;
+    public membersCount: number;
+    public rank: number;
+    public disableInvites: boolean;
+    public lang: string;
+    public postTypes: string[];
+    public moderatorPostTypes: string[];
+    public locked: string;
+    public labels: LabelInfo[];
+    public categories: CategoryInfo[];
 }
 
 // @DataContract
 export class Option
 {
+    public constructor(init?:Partial<Option>) { (<any>Object).assign(this, init); }
     // @DataMember(Name="name")
-    name: string;
+    public name: string;
 
     // @DataMember(Name="title")
-    title: string;
+    public title: string;
 
     // @DataMember(Name="value")
-    value: TechnologyTier;
+    public value: TechnologyTier;
 }
 
 export class UserVoiceUser
 {
-    id: number;
-    name: string;
-    email: string;
-    avatarUrl: string;
-    createdAt: string;
-    updatedAt: string;
+    public constructor(init?:Partial<UserVoiceUser>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public name: string;
+    public email: string;
+    public avatarUrl: string;
+    public createdAt: string;
+    public updatedAt: string;
 }
 
 export class UserVoiceComment
 {
-    text: string;
-    formattedText: string;
-    createdAt: string;
-    creator: UserVoiceUser;
+    public constructor(init?:Partial<UserVoiceComment>) { (<any>Object).assign(this, init); }
+    public text: string;
+    public formattedText: string;
+    public createdAt: string;
+    public creator: UserVoiceUser;
 }
 
 export class GetOrganizationResponse
 {
-    cache: number;
-    id: number;
-    slug: string;
-    organization: Organization;
-    labels: OrganizationLabel[];
-    categories: Category[];
-    owners: OrganizationMember[];
-    moderators: OrganizationMember[];
-    membersCount: number;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<GetOrganizationResponse>) { (<any>Object).assign(this, init); }
+    public cache: number;
+    public id: number;
+    public slug: string;
+    public organization: Organization;
+    public labels: OrganizationLabel[];
+    public categories: Category[];
+    public owners: OrganizationMember[];
+    public moderators: OrganizationMember[];
+    public membersCount: number;
+    public responseStatus: ResponseStatus;
 }
 
 export class GetOrganizationMembersResponse
 {
-    organizationId: number;
-    results: OrganizationMember[];
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<GetOrganizationMembersResponse>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public results: OrganizationMember[];
+    public responseStatus: ResponseStatus;
 }
 
 export class GetOrganizationAdminResponse
 {
-    labels: OrganizationLabel[];
-    members: OrganizationMember[];
-    memberInvites: OrganizationMemberInvite[];
-    reportedPosts: PostReportInfo[];
-    reportedPostComments: PostCommentReportInfo[];
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<GetOrganizationAdminResponse>) { (<any>Object).assign(this, init); }
+    public labels: OrganizationLabel[];
+    public members: OrganizationMember[];
+    public memberInvites: OrganizationMemberInvite[];
+    public reportedPosts: PostReportInfo[];
+    public reportedPostComments: PostCommentReportInfo[];
+    public responseStatus: ResponseStatus;
 }
 
 export class CreateOrganizationForTechnologyResponse
 {
-    organizationId: number;
-    organizationSlug: string;
-    commentsPostId: number;
-    commentsPostSlug: string;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<CreateOrganizationForTechnologyResponse>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public organizationSlug: string;
+    public commentsPostId: number;
+    public commentsPostSlug: string;
+    public responseStatus: ResponseStatus;
 }
 
 export class CreateOrganizationResponse
 {
-    id: number;
-    slug: string;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<CreateOrganizationResponse>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public slug: string;
+    public responseStatus: ResponseStatus;
 }
 
 export class UpdateOrganizationResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UpdateOrganizationResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class OrganizationLabelResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<OrganizationLabelResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class AddOrganizationCategoryResponse
 {
-    id: number;
-    slug: string;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<AddOrganizationCategoryResponse>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public slug: string;
+    public responseStatus: ResponseStatus;
 }
 
 export class UpdateOrganizationCategoryResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UpdateOrganizationCategoryResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class AddOrganizationMemberResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<AddOrganizationMemberResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class UpdateOrganizationMemberResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UpdateOrganizationMemberResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class SetOrganizationMembersResponse
 {
-    userIdsAdded: number[];
-    userIdsRemoved: number[];
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<SetOrganizationMembersResponse>) { (<any>Object).assign(this, init); }
+    public userIdsAdded: number[];
+    public userIdsRemoved: number[];
+    public responseStatus: ResponseStatus;
 }
 
 export class GetOrganizationMemberInvitesResponse
 {
-    results: OrganizationMemberInvite[];
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<GetOrganizationMemberInvitesResponse>) { (<any>Object).assign(this, init); }
+    public results: OrganizationMemberInvite[];
+    public responseStatus: ResponseStatus;
 }
 
 export class RequestOrganizationMemberInviteResponse
 {
-    organizationId: number;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<RequestOrganizationMemberInviteResponse>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public responseStatus: ResponseStatus;
 }
 
 export class UpdateOrganizationMemberInviteResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UpdateOrganizationMemberInviteResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 // @DataContract
 export class QueryResponse<T>
 {
+    public constructor(init?:Partial<QueryResponse<T>>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    offset: number;
+    public offset: number;
 
     // @DataMember(Order=2)
-    total: number;
+    public total: number;
 
     // @DataMember(Order=3)
-    results: T[];
+    public results: T[];
 
     // @DataMember(Order=4)
-    meta: { [index:string]: string; };
+    public meta: { [index:string]: string; };
 
     // @DataMember(Order=5)
-    responseStatus: ResponseStatus;
+    public responseStatus: ResponseStatus;
 }
 
 export class GetPostResponse
 {
-    cache: number;
-    post: Post;
-    comments: PostComment[];
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<GetPostResponse>) { (<any>Object).assign(this, init); }
+    public cache: number;
+    public post: Post;
+    public comments: PostComment[];
+    public responseStatus: ResponseStatus;
 }
 
 export class CreatePostResponse
 {
-    id: number;
-    slug: string;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<CreatePostResponse>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public slug: string;
+    public responseStatus: ResponseStatus;
 }
 
 export class UpdatePostResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UpdatePostResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class DeletePostResponse
 {
-    id: number;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<DeletePostResponse>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public responseStatus: ResponseStatus;
 }
 
 export class CreatePostCommentResponse
 {
-    id: number;
-    postId: number;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<CreatePostCommentResponse>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public postId: number;
+    public responseStatus: ResponseStatus;
 }
 
 export class UpdatePostCommentResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UpdatePostCommentResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class DeletePostCommentResponse
 {
-    id: number;
-    postId: number;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<DeletePostCommentResponse>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public postId: number;
+    public responseStatus: ResponseStatus;
 }
 
 export class GetUserPostCommentVotesResponse
 {
-    postId: number;
-    upVotedCommentIds: number[];
-    downVotedCommentIds: number[];
+    public constructor(init?:Partial<GetUserPostCommentVotesResponse>) { (<any>Object).assign(this, init); }
+    public postId: number;
+    public upVotedCommentIds: number[];
+    public downVotedCommentIds: number[];
 }
 
 export class PinPostCommentResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<PinPostCommentResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class GetUsersByEmailsResponse
 {
-    results: UserRef[];
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<GetUsersByEmailsResponse>) { (<any>Object).assign(this, init); }
+    public results: UserRef[];
+    public responseStatus: ResponseStatus;
 }
 
 export class GetUserPostActivityResponse
 {
-    upVotedPostIds: number[];
-    downVotedPostIds: number[];
-    favoritePostIds: number[];
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<GetUserPostActivityResponse>) { (<any>Object).assign(this, init); }
+    public upVotedPostIds: number[];
+    public downVotedPostIds: number[];
+    public favoritePostIds: number[];
+    public responseStatus: ResponseStatus;
 }
 
 export class GetUserOrganizationsResponse
 {
-    members: OrganizationMember[];
-    memberInvites: OrganizationMemberInvite[];
-    subscriptions: OrganizationSubscription[];
+    public constructor(init?:Partial<GetUserOrganizationsResponse>) { (<any>Object).assign(this, init); }
+    public members: OrganizationMember[];
+    public memberInvites: OrganizationMemberInvite[];
+    public subscriptions: OrganizationSubscription[];
 }
 
 export class UserPostVoteResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UserPostVoteResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class UserPostFavoriteResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UserPostFavoriteResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class UserPostReportResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UserPostReportResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class UserPostCommentVoteResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UserPostCommentVoteResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class UserPostCommentReportResponse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UserPostCommentReportResponse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class SessionInfoResponse
 {
-    created: string;
-    id: string;
-    referrerUrl: string;
-    userAuthId: string;
-    userAuthName: string;
-    userName: string;
-    displayName: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    createdAt: string;
-    lastModified: string;
-    roles: string[];
-    permissions: string[];
-    isAuthenticated: boolean;
-    authProvider: string;
-    profileUrl: string;
-    githubProfileUrl: string;
-    twitterProfileUrl: string;
-    accessToken: string;
-    avatarUrl: string;
-    techStacks: TechnologyStack[];
-    favoriteTechStacks: TechnologyStack[];
-    favoriteTechnologies: Technology[];
-    userActivity: UserActivity;
-    members: OrganizationMember[];
-    memberInvites: OrganizationMemberInvite[];
-    subscriptions: OrganizationSubscription[];
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<SessionInfoResponse>) { (<any>Object).assign(this, init); }
+    public created: string;
+    public id: string;
+    public referrerUrl: string;
+    public userAuthId: string;
+    public userAuthName: string;
+    public userName: string;
+    public displayName: string;
+    public firstName: string;
+    public lastName: string;
+    public email: string;
+    public createdAt: string;
+    public lastModified: string;
+    public roles: string[];
+    public permissions: string[];
+    public isAuthenticated: boolean;
+    public authProvider: string;
+    public profileUrl: string;
+    public githubProfileUrl: string;
+    public twitterProfileUrl: string;
+    public accessToken: string;
+    public avatarUrl: string;
+    public techStacks: TechnologyStack[];
+    public favoriteTechStacks: TechnologyStack[];
+    public favoriteTechnologies: Technology[];
+    public userActivity: UserActivity;
+    public members: OrganizationMember[];
+    public memberInvites: OrganizationMemberInvite[];
+    public subscriptions: OrganizationSubscription[];
+    public responseStatus: ResponseStatus;
 }
 
 export class GetTechnologyPreviousVersionsResponse
 {
-    results: TechnologyHistory[];
+    public constructor(init?:Partial<GetTechnologyPreviousVersionsResponse>) { (<any>Object).assign(this, init); }
+    public results: TechnologyHistory[];
 }
 
 export class GetAllTechnologiesResponse
 {
-    results: Technology[];
-    total: number;
+    public constructor(init?:Partial<GetAllTechnologiesResponse>) { (<any>Object).assign(this, init); }
+    public results: Technology[];
+    public total: number;
 }
 
 export class GetTechnologyResponse
 {
-    created: string;
-    technology: Technology;
-    technologyStacks: TechnologyStack[];
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<GetTechnologyResponse>) { (<any>Object).assign(this, init); }
+    public created: string;
+    public technology: Technology;
+    public technologyStacks: TechnologyStack[];
+    public responseStatus: ResponseStatus;
 }
 
 export class GetTechnologyFavoriteDetailsResponse
 {
-    users: string[];
-    favoriteCount: number;
+    public constructor(init?:Partial<GetTechnologyFavoriteDetailsResponse>) { (<any>Object).assign(this, init); }
+    public users: string[];
+    public favoriteCount: number;
 }
 
 export class CreateTechnologyResponse
 {
-    result: Technology;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<CreateTechnologyResponse>) { (<any>Object).assign(this, init); }
+    public result: Technology;
+    public responseStatus: ResponseStatus;
 }
 
 export class UpdateTechnologyResponse
 {
-    result: Technology;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UpdateTechnologyResponse>) { (<any>Object).assign(this, init); }
+    public result: Technology;
+    public responseStatus: ResponseStatus;
 }
 
 export class DeleteTechnologyResponse
 {
-    result: Technology;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<DeleteTechnologyResponse>) { (<any>Object).assign(this, init); }
+    public result: Technology;
+    public responseStatus: ResponseStatus;
 }
 
 export class GetTechnologyStackPreviousVersionsResponse
 {
-    results: TechnologyStackHistory[];
+    public constructor(init?:Partial<GetTechnologyStackPreviousVersionsResponse>) { (<any>Object).assign(this, init); }
+    public results: TechnologyStackHistory[];
 }
 
 export class GetPageStatsResponse
 {
-    type: string;
-    slug: string;
-    viewCount: number;
-    favCount: number;
+    public constructor(init?:Partial<GetPageStatsResponse>) { (<any>Object).assign(this, init); }
+    public type: string;
+    public slug: string;
+    public viewCount: number;
+    public favCount: number;
 }
 
 export class HourlyTaskResponse
 {
-    meta: { [index:string]: string; };
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<HourlyTaskResponse>) { (<any>Object).assign(this, init); }
+    public meta: { [index:string]: string; };
+    public responseStatus: ResponseStatus;
 }
 
 export class OverviewResponse
 {
-    created: string;
-    topUsers: UserInfo[];
-    topTechnologies: TechnologyInfo[];
-    latestTechStacks: TechStackDetails[];
-    popularTechStacks: TechnologyStack[];
-    allOrganizations: OrganizationInfo[];
-    topTechnologiesByTier: { [index:string]: TechnologyInfo[]; };
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<OverviewResponse>) { (<any>Object).assign(this, init); }
+    public created: string;
+    public topUsers: UserInfo[];
+    public topTechnologies: TechnologyInfo[];
+    public latestTechStacks: TechStackDetails[];
+    public popularTechStacks: TechnologyStack[];
+    public allOrganizations: OrganizationInfo[];
+    public topTechnologiesByTier: { [index:string]: TechnologyInfo[]; };
+    public responseStatus: ResponseStatus;
 }
 
 export class AppOverviewResponse
 {
-    created: string;
-    allTiers: Option[];
-    topTechnologies: TechnologyInfo[];
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<AppOverviewResponse>) { (<any>Object).assign(this, init); }
+    public created: string;
+    public allTiers: Option[];
+    public topTechnologies: TechnologyInfo[];
+    public responseStatus: ResponseStatus;
 }
 
 export class GetAllTechnologyStacksResponse
 {
-    results: TechnologyStack[];
-    total: number;
+    public constructor(init?:Partial<GetAllTechnologyStacksResponse>) { (<any>Object).assign(this, init); }
+    public results: TechnologyStack[];
+    public total: number;
 }
 
 export class GetTechnologyStackResponse
 {
-    created: string;
-    result: TechStackDetails;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<GetTechnologyStackResponse>) { (<any>Object).assign(this, init); }
+    public created: string;
+    public result: TechStackDetails;
+    public responseStatus: ResponseStatus;
 }
 
 export class GetTechnologyStackFavoriteDetailsResponse
 {
-    users: string[];
-    favoriteCount: number;
+    public constructor(init?:Partial<GetTechnologyStackFavoriteDetailsResponse>) { (<any>Object).assign(this, init); }
+    public users: string[];
+    public favoriteCount: number;
 }
 
 export class GetConfigResponse
 {
-    allTiers: Option[];
-    allPostTypes: Option[];
-    allFlagTypes: Option[];
+    public constructor(init?:Partial<GetConfigResponse>) { (<any>Object).assign(this, init); }
+    public allTiers: Option[];
+    public allPostTypes: Option[];
+    public allFlagTypes: Option[];
 }
 
 export class CreateTechnologyStackResponse
 {
-    result: TechStackDetails;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<CreateTechnologyStackResponse>) { (<any>Object).assign(this, init); }
+    public result: TechStackDetails;
+    public responseStatus: ResponseStatus;
 }
 
 export class UpdateTechnologyStackResponse
 {
-    result: TechStackDetails;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<UpdateTechnologyStackResponse>) { (<any>Object).assign(this, init); }
+    public result: TechStackDetails;
+    public responseStatus: ResponseStatus;
 }
 
 export class DeleteTechnologyStackResponse
 {
-    result: TechStackDetails;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<DeleteTechnologyStackResponse>) { (<any>Object).assign(this, init); }
+    public result: TechStackDetails;
+    public responseStatus: ResponseStatus;
 }
 
 export class GetFavoriteTechStackResponse
 {
-    results: TechnologyStack[];
+    public constructor(init?:Partial<GetFavoriteTechStackResponse>) { (<any>Object).assign(this, init); }
+    public results: TechnologyStack[];
 }
 
 export class FavoriteTechStackResponse
 {
-    result: TechnologyStack;
+    public constructor(init?:Partial<FavoriteTechStackResponse>) { (<any>Object).assign(this, init); }
+    public result: TechnologyStack;
 }
 
 export class GetFavoriteTechnologiesResponse
 {
-    results: Technology[];
+    public constructor(init?:Partial<GetFavoriteTechnologiesResponse>) { (<any>Object).assign(this, init); }
+    public results: Technology[];
 }
 
 export class FavoriteTechnologyResponse
 {
-    result: Technology;
+    public constructor(init?:Partial<FavoriteTechnologyResponse>) { (<any>Object).assign(this, init); }
+    public result: Technology;
 }
 
 export class GetUserFeedResponse
 {
-    results: TechStackDetails[];
+    public constructor(init?:Partial<GetUserFeedResponse>) { (<any>Object).assign(this, init); }
+    public results: TechStackDetails[];
 }
 
 export class GetUsersKarmaResponse
 {
-    results: { [index:number]: number; };
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<GetUsersKarmaResponse>) { (<any>Object).assign(this, init); }
+    public results: { [index:number]: number; };
+    public responseStatus: ResponseStatus;
 }
 
 export class GetUserInfoResponse
 {
-    id: number;
-    userName: string;
-    created: string;
-    avatarUrl: string;
-    techStacks: TechnologyStack[];
-    favoriteTechStacks: TechnologyStack[];
-    favoriteTechnologies: Technology[];
-    userActivity: UserActivity;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<GetUserInfoResponse>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public userName: string;
+    public created: string;
+    public avatarUrl: string;
+    public techStacks: TechnologyStack[];
+    public favoriteTechStacks: TechnologyStack[];
+    public favoriteTechnologies: Technology[];
+    public userActivity: UserActivity;
+    public responseStatus: ResponseStatus;
 }
 
 export class SyncDiscourseSiteResponse
 {
-    timeTaken: string;
-    userLogs: string[];
-    postsLogs: string[];
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<SyncDiscourseSiteResponse>) { (<any>Object).assign(this, init); }
+    public timeTaken: string;
+    public userLogs: string[];
+    public postsLogs: string[];
+    public responseStatus: ResponseStatus;
 }
 
 export class LogoUrlApprovalResponse
 {
-    result: Technology;
+    public constructor(init?:Partial<LogoUrlApprovalResponse>) { (<any>Object).assign(this, init); }
+    public result: Technology;
 }
 
 export class LockStackResponse
 {
+    public constructor(init?:Partial<LockStackResponse>) { (<any>Object).assign(this, init); }
 }
 
 export class EmailTestRespoonse
 {
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<EmailTestRespoonse>) { (<any>Object).assign(this, init); }
+    public responseStatus: ResponseStatus;
 }
 
 export class ImportUserResponse
 {
-    id: number;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<ImportUserResponse>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public responseStatus: ResponseStatus;
 }
 
 export class ImportUserVoiceSuggestionResponse
 {
-    postId: number;
-    postSlug: string;
-    responseStatus: ResponseStatus;
+    public constructor(init?:Partial<ImportUserVoiceSuggestionResponse>) { (<any>Object).assign(this, init); }
+    public postId: number;
+    public postSlug: string;
+    public responseStatus: ResponseStatus;
 }
 
 // @DataContract
-export class AuthenticateResponse
+export class AuthenticateResponse implements IHasSessionId, IHasBearerToken
 {
+    public constructor(init?:Partial<AuthenticateResponse>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    userId: string;
+    public userId: string;
 
     // @DataMember(Order=2)
-    sessionId: string;
+    public sessionId: string;
 
     // @DataMember(Order=3)
-    userName: string;
+    public userName: string;
 
     // @DataMember(Order=4)
-    displayName: string;
+    public displayName: string;
 
     // @DataMember(Order=5)
-    referrerUrl: string;
+    public referrerUrl: string;
 
     // @DataMember(Order=6)
-    bearerToken: string;
+    public bearerToken: string;
 
     // @DataMember(Order=7)
-    refreshToken: string;
+    public refreshToken: string;
 
     // @DataMember(Order=8)
-    responseStatus: ResponseStatus;
+    public responseStatus: ResponseStatus;
 
     // @DataMember(Order=9)
-    meta: { [index:string]: string; };
+    public meta: { [index:string]: string; };
 }
 
 // @DataContract
 export class AssignRolesResponse
 {
+    public constructor(init?:Partial<AssignRolesResponse>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    allRoles: string[];
+    public allRoles: string[];
 
     // @DataMember(Order=2)
-    allPermissions: string[];
+    public allPermissions: string[];
 
     // @DataMember(Order=3)
-    responseStatus: ResponseStatus;
+    public responseStatus: ResponseStatus;
 }
 
 // @DataContract
 export class UnAssignRolesResponse
 {
+    public constructor(init?:Partial<UnAssignRolesResponse>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    allRoles: string[];
+    public allRoles: string[];
 
     // @DataMember(Order=2)
-    allPermissions: string[];
+    public allPermissions: string[];
 
     // @DataMember(Order=3)
-    responseStatus: ResponseStatus;
+    public responseStatus: ResponseStatus;
 }
 
 // @DataContract
 export class ConvertSessionToTokenResponse
 {
+    public constructor(init?:Partial<ConvertSessionToTokenResponse>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    meta: { [index:string]: string; };
+    public meta: { [index:string]: string; };
 
     // @DataMember(Order=2)
-    accessToken: string;
+    public accessToken: string;
 
     // @DataMember(Order=3)
-    responseStatus: ResponseStatus;
+    public responseStatus: ResponseStatus;
 }
 
 // @DataContract
 export class GetAccessTokenResponse
 {
+    public constructor(init?:Partial<GetAccessTokenResponse>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    accessToken: string;
+    public accessToken: string;
 
     // @DataMember(Order=2)
-    responseStatus: ResponseStatus;
+    public responseStatus: ResponseStatus;
 }
 
 // @Route("/ping")
 export class Ping
 {
+    public constructor(init?:Partial<Ping>) { (<any>Object).assign(this, init); }
 }
 
 export class DummyTypes
 {
-    post: Post[];
+    public constructor(init?:Partial<DummyTypes>) { (<any>Object).assign(this, init); }
+    public post: Post[];
 }
 
 // @Route("/orgs/{Id}", "GET")
 export class GetOrganization implements IReturn<GetOrganizationResponse>
 {
-    id: number;
-    createResponse() { return new GetOrganizationResponse(); }
-    getTypeName() { return "GetOrganization"; }
+    public constructor(init?:Partial<GetOrganization>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public createResponse() { return new GetOrganizationResponse(); }
+    public getTypeName() { return 'GetOrganization'; }
 }
 
 // @Route("/organizations/{Slug}", "GET")
 export class GetOrganizationBySlug implements IReturn<GetOrganizationResponse>
 {
-    slug: string;
-    createResponse() { return new GetOrganizationResponse(); }
-    getTypeName() { return "GetOrganizationBySlug"; }
+    public constructor(init?:Partial<GetOrganizationBySlug>) { (<any>Object).assign(this, init); }
+    public slug: string;
+    public createResponse() { return new GetOrganizationResponse(); }
+    public getTypeName() { return 'GetOrganizationBySlug'; }
 }
 
 // @Route("/orgs/{Id}/members", "GET")
 export class GetOrganizationMembers implements IReturn<GetOrganizationMembersResponse>
 {
-    id: number;
-    createResponse() { return new GetOrganizationMembersResponse(); }
-    getTypeName() { return "GetOrganizationMembers"; }
+    public constructor(init?:Partial<GetOrganizationMembers>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public createResponse() { return new GetOrganizationMembersResponse(); }
+    public getTypeName() { return 'GetOrganizationMembers'; }
 }
 
 // @Route("/orgs/{Id}/admin", "GET")
 export class GetOrganizationAdmin implements IReturn<GetOrganizationAdminResponse>
 {
-    id: number;
-    createResponse() { return new GetOrganizationAdminResponse(); }
-    getTypeName() { return "GetOrganizationAdmin"; }
+    public constructor(init?:Partial<GetOrganizationAdmin>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public createResponse() { return new GetOrganizationAdminResponse(); }
+    public getTypeName() { return 'GetOrganizationAdmin'; }
 }
 
 // @Route("/orgs/posts/new", "POST")
 export class CreateOrganizationForTechnology implements IReturn<CreateOrganizationForTechnologyResponse>
 {
-    technologyId: number;
-    techStackId: number;
-    createResponse() { return new CreateOrganizationForTechnologyResponse(); }
-    getTypeName() { return "CreateOrganizationForTechnology"; }
+    public constructor(init?:Partial<CreateOrganizationForTechnology>) { (<any>Object).assign(this, init); }
+    public technologyId: number;
+    public techStackId: number;
+    public createResponse() { return new CreateOrganizationForTechnologyResponse(); }
+    public getTypeName() { return 'CreateOrganizationForTechnology'; }
 }
 
 // @Route("/orgs", "POST")
 export class CreateOrganization implements IReturn<CreateOrganizationResponse>
 {
-    name: string;
-    slug: string;
-    description: string;
-    refId: number;
-    refSource: string;
-    refUrn: string;
-    createResponse() { return new CreateOrganizationResponse(); }
-    getTypeName() { return "CreateOrganization"; }
+    public constructor(init?:Partial<CreateOrganization>) { (<any>Object).assign(this, init); }
+    public name: string;
+    public slug: string;
+    public description: string;
+    public refId: number;
+    public refSource: string;
+    public refUrn: string;
+    public createResponse() { return new CreateOrganizationResponse(); }
+    public getTypeName() { return 'CreateOrganization'; }
 }
 
 // @Route("/orgs/{Id}", "PUT")
 export class UpdateOrganization implements IReturn<UpdateOrganizationResponse>
 {
-    id: number;
-    slug: string;
-    name: string;
-    description: string;
-    color: string;
-    textColor: string;
-    linkColor: string;
-    backgroundColor: string;
-    backgroundUrl: string;
-    logoUrl: string;
-    heroUrl: string;
-    lang: string;
-    deletePostsWithReportCount: number;
-    disableInvites: boolean;
-    defaultPostType: string;
-    defaultSubscriptionPostTypes: string[];
-    postTypes: string[];
-    moderatorPostTypes: string[];
-    technologyIds: number[];
-    createResponse() { return new UpdateOrganizationResponse(); }
-    getTypeName() { return "UpdateOrganization"; }
+    public constructor(init?:Partial<UpdateOrganization>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public slug: string;
+    public name: string;
+    public description: string;
+    public color: string;
+    public textColor: string;
+    public linkColor: string;
+    public backgroundColor: string;
+    public backgroundUrl: string;
+    public logoUrl: string;
+    public heroUrl: string;
+    public lang: string;
+    public deletePostsWithReportCount: number;
+    public disableInvites: boolean;
+    public defaultPostType: string;
+    public defaultSubscriptionPostTypes: string[];
+    public postTypes: string[];
+    public moderatorPostTypes: string[];
+    public technologyIds: number[];
+    public createResponse() { return new UpdateOrganizationResponse(); }
+    public getTypeName() { return 'UpdateOrganization'; }
 }
 
 // @Route("/orgs/{Id}", "DELETE")
 export class DeleteOrganization implements IReturnVoid
 {
-    id: number;
-    createResponse() {}
-    getTypeName() { return "DeleteOrganization"; }
+    public constructor(init?:Partial<DeleteOrganization>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public createResponse() {}
+    public getTypeName() { return 'DeleteOrganization'; }
 }
 
 // @Route("/orgs/{Id}/lock", "PUT")
 export class LockOrganization implements IReturnVoid
 {
-    id: number;
-    lock: boolean;
-    reason: string;
-    createResponse() {}
-    getTypeName() { return "LockOrganization"; }
+    public constructor(init?:Partial<LockOrganization>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public lock: boolean;
+    public reason: string;
+    public createResponse() {}
+    public getTypeName() { return 'LockOrganization'; }
 }
 
 // @Route("/orgs/{OrganizationId}/labels", "POST")
 export class AddOrganizationLabel implements IReturn<OrganizationLabelResponse>
 {
-    organizationId: number;
-    slug: string;
-    description: string;
-    color: string;
-    createResponse() { return new OrganizationLabelResponse(); }
-    getTypeName() { return "AddOrganizationLabel"; }
+    public constructor(init?:Partial<AddOrganizationLabel>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public slug: string;
+    public description: string;
+    public color: string;
+    public createResponse() { return new OrganizationLabelResponse(); }
+    public getTypeName() { return 'AddOrganizationLabel'; }
 }
 
 // @Route("/orgs/{OrganizationId}/members/{Slug}", "PUT")
 export class UpdateOrganizationLabel implements IReturn<OrganizationLabelResponse>
 {
-    organizationId: number;
-    slug: string;
-    description: string;
-    color: string;
-    createResponse() { return new OrganizationLabelResponse(); }
-    getTypeName() { return "UpdateOrganizationLabel"; }
+    public constructor(init?:Partial<UpdateOrganizationLabel>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public slug: string;
+    public description: string;
+    public color: string;
+    public createResponse() { return new OrganizationLabelResponse(); }
+    public getTypeName() { return 'UpdateOrganizationLabel'; }
 }
 
 // @Route("/orgs/{OrganizationId}/labels/{Slug}", "DELETE")
 export class RemoveOrganizationLabel implements IReturnVoid
 {
-    organizationId: number;
-    slug: string;
-    createResponse() {}
-    getTypeName() { return "RemoveOrganizationLabel"; }
+    public constructor(init?:Partial<RemoveOrganizationLabel>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public slug: string;
+    public createResponse() {}
+    public getTypeName() { return 'RemoveOrganizationLabel'; }
 }
 
 // @Route("/orgs/{OrganizationId}/categories", "POST")
 export class AddOrganizationCategory implements IReturn<AddOrganizationCategoryResponse>
 {
-    organizationId: number;
-    slug: string;
-    name: string;
-    description: string;
-    technologyIds: number[];
-    createResponse() { return new AddOrganizationCategoryResponse(); }
-    getTypeName() { return "AddOrganizationCategory"; }
+    public constructor(init?:Partial<AddOrganizationCategory>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public slug: string;
+    public name: string;
+    public description: string;
+    public technologyIds: number[];
+    public createResponse() { return new AddOrganizationCategoryResponse(); }
+    public getTypeName() { return 'AddOrganizationCategory'; }
 }
 
 // @Route("/orgs/{OrganizationId}/categories/{Id}", "PUT")
 export class UpdateOrganizationCategory implements IReturn<UpdateOrganizationCategoryResponse>
 {
-    organizationId: number;
-    id: number;
-    name: string;
-    slug: string;
-    description: string;
-    technologyIds: number[];
-    createResponse() { return new UpdateOrganizationCategoryResponse(); }
-    getTypeName() { return "UpdateOrganizationCategory"; }
+    public constructor(init?:Partial<UpdateOrganizationCategory>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public id: number;
+    public name: string;
+    public slug: string;
+    public description: string;
+    public technologyIds: number[];
+    public createResponse() { return new UpdateOrganizationCategoryResponse(); }
+    public getTypeName() { return 'UpdateOrganizationCategory'; }
 }
 
 // @Route("/orgs/{OrganizationId}/categories/{Id}", "DELETE")
 export class DeleteOrganizationCategory implements IReturnVoid
 {
-    organizationId: number;
-    id: number;
-    createResponse() {}
-    getTypeName() { return "DeleteOrganizationCategory"; }
+    public constructor(init?:Partial<DeleteOrganizationCategory>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public id: number;
+    public createResponse() {}
+    public getTypeName() { return 'DeleteOrganizationCategory'; }
 }
 
 // @Route("/orgs/{OrganizationId}/members", "POST")
 export class AddOrganizationMember implements IReturn<AddOrganizationMemberResponse>
 {
-    organizationId: number;
-    userName: string;
-    isOwner: boolean;
-    isModerator: boolean;
-    denyPosts: boolean;
-    denyComments: boolean;
-    denyAll: boolean;
-    notes: string;
-    createResponse() { return new AddOrganizationMemberResponse(); }
-    getTypeName() { return "AddOrganizationMember"; }
+    public constructor(init?:Partial<AddOrganizationMember>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public userName: string;
+    public isOwner: boolean;
+    public isModerator: boolean;
+    public denyPosts: boolean;
+    public denyComments: boolean;
+    public denyAll: boolean;
+    public notes: string;
+    public createResponse() { return new AddOrganizationMemberResponse(); }
+    public getTypeName() { return 'AddOrganizationMember'; }
 }
 
 // @Route("/orgs/{OrganizationId}/members/{Id}", "PUT")
 export class UpdateOrganizationMember implements IReturn<UpdateOrganizationMemberResponse>
 {
-    organizationId: number;
-    userId: number;
-    isOwner: boolean;
-    isModerator: boolean;
-    denyPosts: boolean;
-    denyComments: boolean;
-    denyAll: boolean;
-    notes: string;
-    createResponse() { return new UpdateOrganizationMemberResponse(); }
-    getTypeName() { return "UpdateOrganizationMember"; }
+    public constructor(init?:Partial<UpdateOrganizationMember>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public userId: number;
+    public isOwner: boolean;
+    public isModerator: boolean;
+    public denyPosts: boolean;
+    public denyComments: boolean;
+    public denyAll: boolean;
+    public notes: string;
+    public createResponse() { return new UpdateOrganizationMemberResponse(); }
+    public getTypeName() { return 'UpdateOrganizationMember'; }
 }
 
 // @Route("/orgs/{OrganizationId}/members/{UserId}", "DELETE")
 export class RemoveOrganizationMember implements IReturnVoid
 {
-    organizationId: number;
-    userId: number;
-    createResponse() {}
-    getTypeName() { return "RemoveOrganizationMember"; }
+    public constructor(init?:Partial<RemoveOrganizationMember>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public userId: number;
+    public createResponse() {}
+    public getTypeName() { return 'RemoveOrganizationMember'; }
 }
 
 // @Route("/orgs/{OrganizationId}/members/set", "POST")
 export class SetOrganizationMembers implements IReturn<SetOrganizationMembersResponse>
 {
-    organizationId: number;
-    githubUserNames: string[];
-    twitterUserNames: string[];
-    emails: string[];
-    removeUnspecifiedMembers: boolean;
-    isOwner: boolean;
-    isModerator: boolean;
-    denyPosts: boolean;
-    denyComments: boolean;
-    denyAll: boolean;
-    createResponse() { return new SetOrganizationMembersResponse(); }
-    getTypeName() { return "SetOrganizationMembers"; }
+    public constructor(init?:Partial<SetOrganizationMembers>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public githubUserNames: string[];
+    public twitterUserNames: string[];
+    public emails: string[];
+    public removeUnspecifiedMembers: boolean;
+    public isOwner: boolean;
+    public isModerator: boolean;
+    public denyPosts: boolean;
+    public denyComments: boolean;
+    public denyAll: boolean;
+    public createResponse() { return new SetOrganizationMembersResponse(); }
+    public getTypeName() { return 'SetOrganizationMembers'; }
 }
 
 // @Route("/orgs/{OrganizationId}/invites", "GET")
 export class GetOrganizationMemberInvites implements IReturn<GetOrganizationMemberInvitesResponse>
 {
-    organizationId: number;
-    createResponse() { return new GetOrganizationMemberInvitesResponse(); }
-    getTypeName() { return "GetOrganizationMemberInvites"; }
+    public constructor(init?:Partial<GetOrganizationMemberInvites>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public createResponse() { return new GetOrganizationMemberInvitesResponse(); }
+    public getTypeName() { return 'GetOrganizationMemberInvites'; }
 }
 
 // @Route("/orgs/{OrganizationId}/invites", "POST")
 export class RequestOrganizationMemberInvite implements IReturn<RequestOrganizationMemberInviteResponse>
 {
-    organizationId: number;
-    createResponse() { return new RequestOrganizationMemberInviteResponse(); }
-    getTypeName() { return "RequestOrganizationMemberInvite"; }
+    public constructor(init?:Partial<RequestOrganizationMemberInvite>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public createResponse() { return new RequestOrganizationMemberInviteResponse(); }
+    public getTypeName() { return 'RequestOrganizationMemberInvite'; }
 }
 
 // @Route("/orgs/{OrganizationId}/invites/{UserId}", "PUT")
 export class UpdateOrganizationMemberInvite implements IReturn<UpdateOrganizationMemberInviteResponse>
 {
-    organizationId: number;
-    userName: string;
-    approve: boolean;
-    dismiss: boolean;
-    createResponse() { return new UpdateOrganizationMemberInviteResponse(); }
-    getTypeName() { return "UpdateOrganizationMemberInvite"; }
+    public constructor(init?:Partial<UpdateOrganizationMemberInvite>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public userName: string;
+    public approve: boolean;
+    public dismiss: boolean;
+    public createResponse() { return new UpdateOrganizationMemberInviteResponse(); }
+    public getTypeName() { return 'UpdateOrganizationMemberInvite'; }
 }
 
 // @Route("/posts", "GET")
 export class QueryPosts extends QueryDb<Post> implements IReturn<QueryResponse<Post>>
 {
-    ids: number[];
-    organizationId: number;
-    organizationIds: number[];
-    types: string[];
-    anyTechnologyIds: number[];
-    is: string[];
-    createResponse() { return new QueryResponse<Post>(); }
-    getTypeName() { return "QueryPosts"; }
+    public constructor(init?:Partial<QueryPosts>) { super(init); (<any>Object).assign(this, init); }
+    public ids: number[];
+    public organizationId: number;
+    public organizationIds: number[];
+    public types: string[];
+    public anyTechnologyIds: number[];
+    public is: string[];
+    public createResponse() { return new QueryResponse<Post>(); }
+    public getTypeName() { return 'QueryPosts'; }
 }
 
 // @Route("/posts/{Id}", "GET")
 export class GetPost implements IReturn<GetPostResponse>
 {
-    id: number;
-    include: string;
-    createResponse() { return new GetPostResponse(); }
-    getTypeName() { return "GetPost"; }
+    public constructor(init?:Partial<GetPost>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public include: string;
+    public createResponse() { return new GetPostResponse(); }
+    public getTypeName() { return 'GetPost'; }
 }
 
 // @Route("/posts", "POST")
 export class CreatePost implements IReturn<CreatePostResponse>
 {
-    organizationId: number;
-    type: PostType;
-    categoryId: number;
-    title: string;
-    url: string;
-    imageUrl: string;
-    content: string;
-    lock: boolean;
-    technologyIds: number[];
-    labels: string[];
-    fromDate: string;
-    toDate: string;
-    metaType: string;
-    meta: string;
-    refId: number;
-    refSource: string;
-    refUrn: string;
-    createResponse() { return new CreatePostResponse(); }
-    getTypeName() { return "CreatePost"; }
+    public constructor(init?:Partial<CreatePost>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public type: PostType;
+    public categoryId: number;
+    public title: string;
+    public url: string;
+    public imageUrl: string;
+    public content: string;
+    public lock: boolean;
+    public technologyIds: number[];
+    public labels: string[];
+    public fromDate: string;
+    public toDate: string;
+    public metaType: string;
+    public meta: string;
+    public refId: number;
+    public refSource: string;
+    public refUrn: string;
+    public createResponse() { return new CreatePostResponse(); }
+    public getTypeName() { return 'CreatePost'; }
 }
 
 // @Route("/posts/{Id}", "PUT")
 export class UpdatePost implements IReturn<UpdatePostResponse>
 {
-    id: number;
-    organizationId: number;
-    type: PostType;
-    categoryId: number;
-    title: string;
-    url: string;
-    imageUrl: string;
-    content: string;
-    lock: boolean;
-    technologyIds: number[];
-    labels: string[];
-    fromDate: string;
-    toDate: string;
-    metaType: string;
-    meta: string;
-    createResponse() { return new UpdatePostResponse(); }
-    getTypeName() { return "UpdatePost"; }
+    public constructor(init?:Partial<UpdatePost>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public organizationId: number;
+    public type: PostType;
+    public categoryId: number;
+    public title: string;
+    public url: string;
+    public imageUrl: string;
+    public content: string;
+    public lock: boolean;
+    public technologyIds: number[];
+    public labels: string[];
+    public fromDate: string;
+    public toDate: string;
+    public metaType: string;
+    public meta: string;
+    public createResponse() { return new UpdatePostResponse(); }
+    public getTypeName() { return 'UpdatePost'; }
 }
 
 // @Route("/posts/{Id}", "DELETE")
 export class DeletePost implements IReturn<DeletePostResponse>
 {
-    id: number;
-    createResponse() { return new DeletePostResponse(); }
-    getTypeName() { return "DeletePost"; }
+    public constructor(init?:Partial<DeletePost>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public createResponse() { return new DeletePostResponse(); }
+    public getTypeName() { return 'DeletePost'; }
 }
 
 // @Route("/posts/{Id}/lock", "PUT")
 export class LockPost implements IReturnVoid
 {
-    id: number;
-    lock: boolean;
-    reason: string;
-    createResponse() {}
-    getTypeName() { return "LockPost"; }
+    public constructor(init?:Partial<LockPost>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public lock: boolean;
+    public reason: string;
+    public createResponse() {}
+    public getTypeName() { return 'LockPost'; }
 }
 
 // @Route("/posts/{Id}/hide", "PUT")
 export class HidePost implements IReturnVoid
 {
-    id: number;
-    hide: boolean;
-    reason: string;
-    createResponse() {}
-    getTypeName() { return "HidePost"; }
+    public constructor(init?:Partial<HidePost>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public hide: boolean;
+    public reason: string;
+    public createResponse() {}
+    public getTypeName() { return 'HidePost'; }
 }
 
 // @Route("/posts/{Id}/status/{Status}", "PUT")
 export class ChangeStatusPost implements IReturnVoid
 {
-    id: number;
-    status: string;
-    reason: string;
-    createResponse() {}
-    getTypeName() { return "ChangeStatusPost"; }
+    public constructor(init?:Partial<ChangeStatusPost>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public status: string;
+    public reason: string;
+    public createResponse() {}
+    public getTypeName() { return 'ChangeStatusPost'; }
 }
 
 // @Route("/posts/{PostId}/report/{Id}", "POST")
 export class ActionPostReport implements IReturnVoid
 {
-    postId: number;
-    id: number;
-    reportAction: ReportAction;
-    createResponse() {}
-    getTypeName() { return "ActionPostReport"; }
+    public constructor(init?:Partial<ActionPostReport>) { (<any>Object).assign(this, init); }
+    public postId: number;
+    public id: number;
+    public reportAction: ReportAction;
+    public createResponse() {}
+    public getTypeName() { return 'ActionPostReport'; }
 }
 
 // @Route("/posts/{PostId}/comments", "POST")
 export class CreatePostComment implements IReturn<CreatePostCommentResponse>
 {
-    postId: number;
-    replyId: number;
-    content: string;
-    createResponse() { return new CreatePostCommentResponse(); }
-    getTypeName() { return "CreatePostComment"; }
+    public constructor(init?:Partial<CreatePostComment>) { (<any>Object).assign(this, init); }
+    public postId: number;
+    public replyId: number;
+    public content: string;
+    public createResponse() { return new CreatePostCommentResponse(); }
+    public getTypeName() { return 'CreatePostComment'; }
 }
 
 // @Route("/posts/{PostId}/comments/{Id}", "PUT")
 export class UpdatePostComment implements IReturn<UpdatePostCommentResponse>
 {
-    id: number;
-    postId: number;
-    content: string;
-    createResponse() { return new UpdatePostCommentResponse(); }
-    getTypeName() { return "UpdatePostComment"; }
+    public constructor(init?:Partial<UpdatePostComment>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public postId: number;
+    public content: string;
+    public createResponse() { return new UpdatePostCommentResponse(); }
+    public getTypeName() { return 'UpdatePostComment'; }
 }
 
 // @Route("/posts/{PostId}/comments/{Id}", "DELETE")
 export class DeletePostComment implements IReturn<DeletePostCommentResponse>
 {
-    id: number;
-    postId: number;
-    createResponse() { return new DeletePostCommentResponse(); }
-    getTypeName() { return "DeletePostComment"; }
+    public constructor(init?:Partial<DeletePostComment>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public postId: number;
+    public createResponse() { return new DeletePostCommentResponse(); }
+    public getTypeName() { return 'DeletePostComment'; }
 }
 
 // @Route("/posts/{PostId}/comments/{PostCommentId}/report/{Id}", "POST")
 export class ActionPostCommentReport implements IReturnVoid
 {
-    id: number;
-    postCommentId: number;
-    postId: number;
-    reportAction: ReportAction;
-    createResponse() {}
-    getTypeName() { return "ActionPostCommentReport"; }
+    public constructor(init?:Partial<ActionPostCommentReport>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public postCommentId: number;
+    public postId: number;
+    public reportAction: ReportAction;
+    public createResponse() {}
+    public getTypeName() { return 'ActionPostCommentReport'; }
 }
 
 // @Route("/user/comments/votes")
 export class GetUserPostCommentVotes implements IReturn<GetUserPostCommentVotesResponse>
 {
-    postId: number;
-    createResponse() { return new GetUserPostCommentVotesResponse(); }
-    getTypeName() { return "GetUserPostCommentVotes"; }
+    public constructor(init?:Partial<GetUserPostCommentVotes>) { (<any>Object).assign(this, init); }
+    public postId: number;
+    public createResponse() { return new GetUserPostCommentVotesResponse(); }
+    public getTypeName() { return 'GetUserPostCommentVotes'; }
 }
 
 // @Route("/posts/{PostId}/comments/{Id}/pin", "UPDATE")
 export class PinPostComment implements IReturn<PinPostCommentResponse>
 {
-    id: number;
-    postId: number;
-    pin: boolean;
-    createResponse() { return new PinPostCommentResponse(); }
-    getTypeName() { return "PinPostComment"; }
+    public constructor(init?:Partial<PinPostComment>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public postId: number;
+    public pin: boolean;
+    public createResponse() { return new PinPostCommentResponse(); }
+    public getTypeName() { return 'PinPostComment'; }
 }
 
 // @Route("/users/by-email")
 export class GetUsersByEmails implements IReturn<GetUsersByEmailsResponse>
 {
-    emails: string[];
-    createResponse() { return new GetUsersByEmailsResponse(); }
-    getTypeName() { return "GetUsersByEmails"; }
+    public constructor(init?:Partial<GetUsersByEmails>) { (<any>Object).assign(this, init); }
+    public emails: string[];
+    public createResponse() { return new GetUsersByEmailsResponse(); }
+    public getTypeName() { return 'GetUsersByEmails'; }
 }
 
 // @Route("/user/posts/activity")
 export class GetUserPostActivity implements IReturn<GetUserPostActivityResponse>
 {
-    createResponse() { return new GetUserPostActivityResponse(); }
-    getTypeName() { return "GetUserPostActivity"; }
+    public constructor(init?:Partial<GetUserPostActivity>) { (<any>Object).assign(this, init); }
+    public createResponse() { return new GetUserPostActivityResponse(); }
+    public getTypeName() { return 'GetUserPostActivity'; }
 }
 
 // @Route("/user/organizations")
 export class GetUserOrganizations implements IReturn<GetUserOrganizationsResponse>
 {
-    createResponse() { return new GetUserOrganizationsResponse(); }
-    getTypeName() { return "GetUserOrganizations"; }
+    public constructor(init?:Partial<GetUserOrganizations>) { (<any>Object).assign(this, init); }
+    public createResponse() { return new GetUserOrganizationsResponse(); }
+    public getTypeName() { return 'GetUserOrganizations'; }
 }
 
 // @Route("/posts/{Id}/vote", "PUT")
 export class UserPostVote implements IReturn<UserPostVoteResponse>
 {
-    id: number;
-    weight: number;
-    createResponse() { return new UserPostVoteResponse(); }
-    getTypeName() { return "UserPostVote"; }
+    public constructor(init?:Partial<UserPostVote>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public weight: number;
+    public createResponse() { return new UserPostVoteResponse(); }
+    public getTypeName() { return 'UserPostVote'; }
 }
 
 // @Route("/posts/{Id}/favorite", "PUT")
 export class UserPostFavorite implements IReturn<UserPostFavoriteResponse>
 {
-    id: number;
-    createResponse() { return new UserPostFavoriteResponse(); }
-    getTypeName() { return "UserPostFavorite"; }
+    public constructor(init?:Partial<UserPostFavorite>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public createResponse() { return new UserPostFavoriteResponse(); }
+    public getTypeName() { return 'UserPostFavorite'; }
 }
 
 // @Route("/posts/{Id}/report", "PUT")
 export class UserPostReport implements IReturn<UserPostReportResponse>
 {
-    id: number;
-    flagType: FlagType;
-    reportNotes: string;
-    createResponse() { return new UserPostReportResponse(); }
-    getTypeName() { return "UserPostReport"; }
+    public constructor(init?:Partial<UserPostReport>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public flagType: FlagType;
+    public reportNotes: string;
+    public createResponse() { return new UserPostReportResponse(); }
+    public getTypeName() { return 'UserPostReport'; }
 }
 
 // @Route("/posts/{PostId}/comments/{Id}", "GET")
 export class UserPostCommentVote implements IReturn<UserPostCommentVoteResponse>
 {
-    id: number;
-    postId: number;
-    weight: number;
-    createResponse() { return new UserPostCommentVoteResponse(); }
-    getTypeName() { return "UserPostCommentVote"; }
+    public constructor(init?:Partial<UserPostCommentVote>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public postId: number;
+    public weight: number;
+    public createResponse() { return new UserPostCommentVoteResponse(); }
+    public getTypeName() { return 'UserPostCommentVote'; }
 }
 
 // @Route("/posts/{PostId}/comments/{Id}/report", "PUT")
 export class UserPostCommentReport implements IReturn<UserPostCommentReportResponse>
 {
-    id: number;
-    postId: number;
-    flagType: FlagType;
-    reportNotes: string;
-    createResponse() { return new UserPostCommentReportResponse(); }
-    getTypeName() { return "UserPostCommentReport"; }
+    public constructor(init?:Partial<UserPostCommentReport>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public postId: number;
+    public flagType: FlagType;
+    public reportNotes: string;
+    public createResponse() { return new UserPostCommentReportResponse(); }
+    public getTypeName() { return 'UserPostCommentReport'; }
 }
 
 // @Route("/prerender/{Path*}", "PUT")
 export class StorePreRender implements IReturnVoid
 {
-    path: string;
-    createResponse() {}
-    getTypeName() { return "StorePreRender"; }
+    public constructor(init?:Partial<StorePreRender>) { (<any>Object).assign(this, init); }
+    public path: string;
+    public createResponse() {}
+    public getTypeName() { return 'StorePreRender'; }
 }
 
 // @Route("/prerender/{Path*}", "GET")
 export class GetPreRender implements IReturn<string>
 {
-    path: string;
-    createResponse() { return ""; }
-    getTypeName() { return "GetPreRender"; }
+    public constructor(init?:Partial<GetPreRender>) { (<any>Object).assign(this, init); }
+    public path: string;
+    public createResponse() { return ''; }
+    public getTypeName() { return 'GetPreRender'; }
 }
 
 // @Route("/my-session")
 export class SessionInfo implements IReturn<SessionInfoResponse>
 {
-    createResponse() { return new SessionInfoResponse(); }
-    getTypeName() { return "SessionInfo"; }
+    public constructor(init?:Partial<SessionInfo>) { (<any>Object).assign(this, init); }
+    public createResponse() { return new SessionInfoResponse(); }
+    public getTypeName() { return 'SessionInfo'; }
 }
 
 // @Route("/orgs/{OrganizationId}/subscribe", "PUT")
 export class SubscribeToOrganization implements IReturnVoid
 {
-    organizationId: number;
-    postTypes: PostType[];
-    frequency: Frequency;
-    createResponse() {}
-    getTypeName() { return "SubscribeToOrganization"; }
+    public constructor(init?:Partial<SubscribeToOrganization>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public postTypes: PostType[];
+    public frequency: Frequency;
+    public createResponse() {}
+    public getTypeName() { return 'SubscribeToOrganization'; }
 }
 
 // @Route("/posts/{PostId}/subscribe", "PUT")
 export class SubscribeToPost implements IReturnVoid
 {
-    postId: number;
-    createResponse() {}
-    getTypeName() { return "SubscribeToPost"; }
+    public constructor(init?:Partial<SubscribeToPost>) { (<any>Object).assign(this, init); }
+    public postId: number;
+    public createResponse() {}
+    public getTypeName() { return 'SubscribeToPost'; }
 }
 
 // @Route("/orgs/{OrganizationId}/subscribe", "DELETE")
 export class DeleteOrganizationSubscription implements IReturnVoid
 {
-    organizationId: number;
-    createResponse() {}
-    getTypeName() { return "DeleteOrganizationSubscription"; }
+    public constructor(init?:Partial<DeleteOrganizationSubscription>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public createResponse() {}
+    public getTypeName() { return 'DeleteOrganizationSubscription'; }
 }
 
 // @Route("/posts/{PostId}/subscribe", "DELETE")
 export class DeletePostSubscription implements IReturnVoid
 {
-    postId: number;
-    createResponse() {}
-    getTypeName() { return "DeletePostSubscription"; }
+    public constructor(init?:Partial<DeletePostSubscription>) { (<any>Object).assign(this, init); }
+    public postId: number;
+    public createResponse() {}
+    public getTypeName() { return 'DeletePostSubscription'; }
 }
 
 // @Route("/technology/{Slug}/previous-versions", "GET")
 export class GetTechnologyPreviousVersions implements IReturn<GetTechnologyPreviousVersionsResponse>
 {
-    slug: string;
-    createResponse() { return new GetTechnologyPreviousVersionsResponse(); }
-    getTypeName() { return "GetTechnologyPreviousVersions"; }
+    public constructor(init?:Partial<GetTechnologyPreviousVersions>) { (<any>Object).assign(this, init); }
+    public slug: string;
+    public createResponse() { return new GetTechnologyPreviousVersionsResponse(); }
+    public getTypeName() { return 'GetTechnologyPreviousVersions'; }
 }
 
 // @Route("/technology", "GET")
 export class GetAllTechnologies implements IReturn<GetAllTechnologiesResponse>
 {
-    createResponse() { return new GetAllTechnologiesResponse(); }
-    getTypeName() { return "GetAllTechnologies"; }
+    public constructor(init?:Partial<GetAllTechnologies>) { (<any>Object).assign(this, init); }
+    public createResponse() { return new GetAllTechnologiesResponse(); }
+    public getTypeName() { return 'GetAllTechnologies'; }
 }
 
 // @Route("/technology/search")
 // @AutoQueryViewer(DefaultSearchField="Tier", DefaultSearchText="Data", DefaultSearchType="=", Description="Explore different Technologies", IconUrl="octicon:database", Title="Find Technologies")
 export class FindTechnologies extends QueryDb<Technology> implements IReturn<QueryResponse<Technology>>
 {
-    name: string;
-    nameContains: string;
-    createResponse() { return new QueryResponse<Technology>(); }
-    getTypeName() { return "FindTechnologies"; }
+    public constructor(init?:Partial<FindTechnologies>) { super(init); (<any>Object).assign(this, init); }
+    public name: string;
+    public nameContains: string;
+    public createResponse() { return new QueryResponse<Technology>(); }
+    public getTypeName() { return 'FindTechnologies'; }
 }
 
 // @Route("/technology/query")
 export class QueryTechnology extends QueryDb<Technology> implements IReturn<QueryResponse<Technology>>
 {
-    createResponse() { return new QueryResponse<Technology>(); }
-    getTypeName() { return "QueryTechnology"; }
+    public constructor(init?:Partial<QueryTechnology>) { super(init); (<any>Object).assign(this, init); }
+    public createResponse() { return new QueryResponse<Technology>(); }
+    public getTypeName() { return 'QueryTechnology'; }
 }
 
 // @Route("/technology/{Slug}")
 export class GetTechnology implements IReturn<GetTechnologyResponse>, IRegisterStats
 {
-    slug: string;
-    createResponse() { return new GetTechnologyResponse(); }
-    getTypeName() { return "GetTechnology"; }
+    public constructor(init?:Partial<GetTechnology>) { (<any>Object).assign(this, init); }
+    public slug: string;
+    public createResponse() { return new GetTechnologyResponse(); }
+    public getTypeName() { return 'GetTechnology'; }
 }
 
 // @Route("/technology/{Slug}/favorites")
 export class GetTechnologyFavoriteDetails implements IReturn<GetTechnologyFavoriteDetailsResponse>
 {
-    slug: string;
-    createResponse() { return new GetTechnologyFavoriteDetailsResponse(); }
-    getTypeName() { return "GetTechnologyFavoriteDetails"; }
+    public constructor(init?:Partial<GetTechnologyFavoriteDetails>) { (<any>Object).assign(this, init); }
+    public slug: string;
+    public createResponse() { return new GetTechnologyFavoriteDetailsResponse(); }
+    public getTypeName() { return 'GetTechnologyFavoriteDetails'; }
 }
 
 // @Route("/technology", "POST")
 export class CreateTechnology implements IReturn<CreateTechnologyResponse>
 {
-    name: string;
-    slug: string;
-    vendorName: string;
-    vendorUrl: string;
-    productUrl: string;
-    logoUrl: string;
-    description: string;
-    isLocked: boolean;
-    tier: TechnologyTier;
-    createResponse() { return new CreateTechnologyResponse(); }
-    getTypeName() { return "CreateTechnology"; }
+    public constructor(init?:Partial<CreateTechnology>) { (<any>Object).assign(this, init); }
+    public name: string;
+    public slug: string;
+    public vendorName: string;
+    public vendorUrl: string;
+    public productUrl: string;
+    public logoUrl: string;
+    public description: string;
+    public isLocked: boolean;
+    public tier: TechnologyTier;
+    public createResponse() { return new CreateTechnologyResponse(); }
+    public getTypeName() { return 'CreateTechnology'; }
 }
 
 // @Route("/technology/{Id}", "PUT")
 export class UpdateTechnology implements IReturn<UpdateTechnologyResponse>
 {
-    id: number;
-    name: string;
-    vendorName: string;
-    vendorUrl: string;
-    productUrl: string;
-    logoUrl: string;
-    description: string;
-    isLocked: boolean;
-    tier: TechnologyTier;
-    createResponse() { return new UpdateTechnologyResponse(); }
-    getTypeName() { return "UpdateTechnology"; }
+    public constructor(init?:Partial<UpdateTechnology>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public name: string;
+    public vendorName: string;
+    public vendorUrl: string;
+    public productUrl: string;
+    public logoUrl: string;
+    public description: string;
+    public isLocked: boolean;
+    public tier: TechnologyTier;
+    public createResponse() { return new UpdateTechnologyResponse(); }
+    public getTypeName() { return 'UpdateTechnology'; }
 }
 
 // @Route("/technology/{Id}", "DELETE")
 export class DeleteTechnology implements IReturn<DeleteTechnologyResponse>
 {
-    id: number;
-    createResponse() { return new DeleteTechnologyResponse(); }
-    getTypeName() { return "DeleteTechnology"; }
+    public constructor(init?:Partial<DeleteTechnology>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public createResponse() { return new DeleteTechnologyResponse(); }
+    public getTypeName() { return 'DeleteTechnology'; }
 }
 
 // @Route("/techstacks/{Slug}/previous-versions", "GET")
 export class GetTechnologyStackPreviousVersions implements IReturn<GetTechnologyStackPreviousVersionsResponse>
 {
-    slug: string;
-    createResponse() { return new GetTechnologyStackPreviousVersionsResponse(); }
-    getTypeName() { return "GetTechnologyStackPreviousVersions"; }
+    public constructor(init?:Partial<GetTechnologyStackPreviousVersions>) { (<any>Object).assign(this, init); }
+    public slug: string;
+    public createResponse() { return new GetTechnologyStackPreviousVersionsResponse(); }
+    public getTypeName() { return 'GetTechnologyStackPreviousVersions'; }
 }
 
 // @Route("/pagestats/{Type}/{Slug}")
 export class GetPageStats implements IReturn<GetPageStatsResponse>
 {
-    type: string;
-    slug: string;
-    id: number;
-    createResponse() { return new GetPageStatsResponse(); }
-    getTypeName() { return "GetPageStats"; }
+    public constructor(init?:Partial<GetPageStats>) { (<any>Object).assign(this, init); }
+    public type: string;
+    public slug: string;
+    public id: number;
+    public createResponse() { return new GetPageStatsResponse(); }
+    public getTypeName() { return 'GetPageStats'; }
 }
 
 // @Route("/cache/clear")
 export class ClearCache implements IReturn<string>
 {
-    createResponse() { return ""; }
-    getTypeName() { return "ClearCache"; }
+    public constructor(init?:Partial<ClearCache>) { (<any>Object).assign(this, init); }
+    public createResponse() { return ''; }
+    public getTypeName() { return 'ClearCache'; }
 }
 
 // @Route("/tasks/hourly")
 export class HourlyTask implements IReturn<HourlyTaskResponse>
 {
-    force: boolean;
-    createResponse() { return new HourlyTaskResponse(); }
-    getTypeName() { return "HourlyTask"; }
+    public constructor(init?:Partial<HourlyTask>) { (<any>Object).assign(this, init); }
+    public force: boolean;
+    public createResponse() { return new HourlyTaskResponse(); }
+    public getTypeName() { return 'HourlyTask'; }
 }
 
 // @Route("/techstacks/search")
 // @AutoQueryViewer(DefaultSearchField="Description", DefaultSearchText="ServiceStack", DefaultSearchType="Contains", Description="Explore different Technology Stacks", IconUrl="material-icons:cloud", Title="Find Technology Stacks")
 export class FindTechStacks extends QueryDb<TechnologyStack> implements IReturn<QueryResponse<TechnologyStack>>
 {
-    nameContains: string;
-    createResponse() { return new QueryResponse<TechnologyStack>(); }
-    getTypeName() { return "FindTechStacks"; }
+    public constructor(init?:Partial<FindTechStacks>) { super(init); (<any>Object).assign(this, init); }
+    public nameContains: string;
+    public createResponse() { return new QueryResponse<TechnologyStack>(); }
+    public getTypeName() { return 'FindTechStacks'; }
 }
 
 // @Route("/techstacks/query")
 export class QueryTechStacks extends QueryDb<TechnologyStack> implements IReturn<QueryResponse<TechnologyStack>>
 {
-    createResponse() { return new QueryResponse<TechnologyStack>(); }
-    getTypeName() { return "QueryTechStacks"; }
+    public constructor(init?:Partial<QueryTechStacks>) { super(init); (<any>Object).assign(this, init); }
+    public createResponse() { return new QueryResponse<TechnologyStack>(); }
+    public getTypeName() { return 'QueryTechStacks'; }
 }
 
 // @Route("/overview")
 export class Overview implements IReturn<OverviewResponse>
 {
-    reload: boolean;
-    createResponse() { return new OverviewResponse(); }
-    getTypeName() { return "Overview"; }
+    public constructor(init?:Partial<Overview>) { (<any>Object).assign(this, init); }
+    public reload: boolean;
+    public createResponse() { return new OverviewResponse(); }
+    public getTypeName() { return 'Overview'; }
 }
 
 // @Route("/app-overview")
 export class AppOverview implements IReturn<AppOverviewResponse>
 {
-    reload: boolean;
-    createResponse() { return new AppOverviewResponse(); }
-    getTypeName() { return "AppOverview"; }
+    public constructor(init?:Partial<AppOverview>) { (<any>Object).assign(this, init); }
+    public reload: boolean;
+    public createResponse() { return new AppOverviewResponse(); }
+    public getTypeName() { return 'AppOverview'; }
 }
 
 // @Route("/techstacks", "GET")
 export class GetAllTechnologyStacks implements IReturn<GetAllTechnologyStacksResponse>
 {
-    createResponse() { return new GetAllTechnologyStacksResponse(); }
-    getTypeName() { return "GetAllTechnologyStacks"; }
+    public constructor(init?:Partial<GetAllTechnologyStacks>) { (<any>Object).assign(this, init); }
+    public createResponse() { return new GetAllTechnologyStacksResponse(); }
+    public getTypeName() { return 'GetAllTechnologyStacks'; }
 }
 
 // @Route("/techstacks/{Slug}", "GET")
 export class GetTechnologyStack implements IReturn<GetTechnologyStackResponse>, IRegisterStats
 {
-    slug: string;
-    createResponse() { return new GetTechnologyStackResponse(); }
-    getTypeName() { return "GetTechnologyStack"; }
+    public constructor(init?:Partial<GetTechnologyStack>) { (<any>Object).assign(this, init); }
+    public slug: string;
+    public createResponse() { return new GetTechnologyStackResponse(); }
+    public getTypeName() { return 'GetTechnologyStack'; }
 }
 
 // @Route("/techstacks/{Slug}/favorites")
 export class GetTechnologyStackFavoriteDetails implements IReturn<GetTechnologyStackFavoriteDetailsResponse>
 {
-    slug: string;
-    createResponse() { return new GetTechnologyStackFavoriteDetailsResponse(); }
-    getTypeName() { return "GetTechnologyStackFavoriteDetails"; }
+    public constructor(init?:Partial<GetTechnologyStackFavoriteDetails>) { (<any>Object).assign(this, init); }
+    public slug: string;
+    public createResponse() { return new GetTechnologyStackFavoriteDetailsResponse(); }
+    public getTypeName() { return 'GetTechnologyStackFavoriteDetails'; }
 }
 
 // @Route("/config")
 export class GetConfig implements IReturn<GetConfigResponse>
 {
-    createResponse() { return new GetConfigResponse(); }
-    getTypeName() { return "GetConfig"; }
+    public constructor(init?:Partial<GetConfig>) { (<any>Object).assign(this, init); }
+    public createResponse() { return new GetConfigResponse(); }
+    public getTypeName() { return 'GetConfig'; }
 }
 
 // @Route("/techstacks", "POST")
 export class CreateTechnologyStack implements IReturn<CreateTechnologyStackResponse>
 {
-    name: string;
-    slug: string;
-    vendorName: string;
-    appUrl: string;
-    screenshotUrl: string;
-    description: string;
-    details: string;
-    isLocked: boolean;
-    technologyIds: number[];
-    createResponse() { return new CreateTechnologyStackResponse(); }
-    getTypeName() { return "CreateTechnologyStack"; }
+    public constructor(init?:Partial<CreateTechnologyStack>) { (<any>Object).assign(this, init); }
+    public name: string;
+    public slug: string;
+    public vendorName: string;
+    public appUrl: string;
+    public screenshotUrl: string;
+    public description: string;
+    public details: string;
+    public isLocked: boolean;
+    public technologyIds: number[];
+    public createResponse() { return new CreateTechnologyStackResponse(); }
+    public getTypeName() { return 'CreateTechnologyStack'; }
 }
 
 // @Route("/techstacks/{Id}", "PUT")
 export class UpdateTechnologyStack implements IReturn<UpdateTechnologyStackResponse>
 {
-    id: number;
-    name: string;
-    vendorName: string;
-    appUrl: string;
-    screenshotUrl: string;
-    description: string;
-    details: string;
-    isLocked: boolean;
-    technologyIds: number[];
-    createResponse() { return new UpdateTechnologyStackResponse(); }
-    getTypeName() { return "UpdateTechnologyStack"; }
+    public constructor(init?:Partial<UpdateTechnologyStack>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public name: string;
+    public vendorName: string;
+    public appUrl: string;
+    public screenshotUrl: string;
+    public description: string;
+    public details: string;
+    public isLocked: boolean;
+    public technologyIds: number[];
+    public createResponse() { return new UpdateTechnologyStackResponse(); }
+    public getTypeName() { return 'UpdateTechnologyStack'; }
 }
 
 // @Route("/techstacks/{Id}", "DELETE")
 export class DeleteTechnologyStack implements IReturn<DeleteTechnologyStackResponse>
 {
-    id: number;
-    createResponse() { return new DeleteTechnologyStackResponse(); }
-    getTypeName() { return "DeleteTechnologyStack"; }
+    public constructor(init?:Partial<DeleteTechnologyStack>) { (<any>Object).assign(this, init); }
+    public id: number;
+    public createResponse() { return new DeleteTechnologyStackResponse(); }
+    public getTypeName() { return 'DeleteTechnologyStack'; }
 }
 
 // @Route("/favorites/techtacks", "GET")
 export class GetFavoriteTechStack implements IReturn<GetFavoriteTechStackResponse>
 {
-    technologyStackId: number;
-    createResponse() { return new GetFavoriteTechStackResponse(); }
-    getTypeName() { return "GetFavoriteTechStack"; }
+    public constructor(init?:Partial<GetFavoriteTechStack>) { (<any>Object).assign(this, init); }
+    public technologyStackId: number;
+    public createResponse() { return new GetFavoriteTechStackResponse(); }
+    public getTypeName() { return 'GetFavoriteTechStack'; }
 }
 
 // @Route("/favorites/techtacks/{TechnologyStackId}", "PUT")
 export class AddFavoriteTechStack implements IReturn<FavoriteTechStackResponse>
 {
-    technologyStackId: number;
-    createResponse() { return new FavoriteTechStackResponse(); }
-    getTypeName() { return "AddFavoriteTechStack"; }
+    public constructor(init?:Partial<AddFavoriteTechStack>) { (<any>Object).assign(this, init); }
+    public technologyStackId: number;
+    public createResponse() { return new FavoriteTechStackResponse(); }
+    public getTypeName() { return 'AddFavoriteTechStack'; }
 }
 
 // @Route("/favorites/techtacks/{TechnologyStackId}", "DELETE")
 export class RemoveFavoriteTechStack implements IReturn<FavoriteTechStackResponse>
 {
-    technologyStackId: number;
-    createResponse() { return new FavoriteTechStackResponse(); }
-    getTypeName() { return "RemoveFavoriteTechStack"; }
+    public constructor(init?:Partial<RemoveFavoriteTechStack>) { (<any>Object).assign(this, init); }
+    public technologyStackId: number;
+    public createResponse() { return new FavoriteTechStackResponse(); }
+    public getTypeName() { return 'RemoveFavoriteTechStack'; }
 }
 
 // @Route("/favorites/technology", "GET")
 export class GetFavoriteTechnologies implements IReturn<GetFavoriteTechnologiesResponse>
 {
-    technologyId: number;
-    createResponse() { return new GetFavoriteTechnologiesResponse(); }
-    getTypeName() { return "GetFavoriteTechnologies"; }
+    public constructor(init?:Partial<GetFavoriteTechnologies>) { (<any>Object).assign(this, init); }
+    public technologyId: number;
+    public createResponse() { return new GetFavoriteTechnologiesResponse(); }
+    public getTypeName() { return 'GetFavoriteTechnologies'; }
 }
 
 // @Route("/favorites/technology/{TechnologyId}", "PUT")
 export class AddFavoriteTechnology implements IReturn<FavoriteTechnologyResponse>
 {
-    technologyId: number;
-    createResponse() { return new FavoriteTechnologyResponse(); }
-    getTypeName() { return "AddFavoriteTechnology"; }
+    public constructor(init?:Partial<AddFavoriteTechnology>) { (<any>Object).assign(this, init); }
+    public technologyId: number;
+    public createResponse() { return new FavoriteTechnologyResponse(); }
+    public getTypeName() { return 'AddFavoriteTechnology'; }
 }
 
 // @Route("/favorites/technology/{TechnologyId}", "DELETE")
 export class RemoveFavoriteTechnology implements IReturn<FavoriteTechnologyResponse>
 {
-    technologyId: number;
-    createResponse() { return new FavoriteTechnologyResponse(); }
-    getTypeName() { return "RemoveFavoriteTechnology"; }
+    public constructor(init?:Partial<RemoveFavoriteTechnology>) { (<any>Object).assign(this, init); }
+    public technologyId: number;
+    public createResponse() { return new FavoriteTechnologyResponse(); }
+    public getTypeName() { return 'RemoveFavoriteTechnology'; }
 }
 
 // @Route("/my-feed")
 export class GetUserFeed implements IReturn<GetUserFeedResponse>
 {
-    createResponse() { return new GetUserFeedResponse(); }
-    getTypeName() { return "GetUserFeed"; }
+    public constructor(init?:Partial<GetUserFeed>) { (<any>Object).assign(this, init); }
+    public createResponse() { return new GetUserFeedResponse(); }
+    public getTypeName() { return 'GetUserFeed'; }
 }
 
 // @Route("/users/karma", "GET")
 export class GetUsersKarma implements IReturn<GetUsersKarmaResponse>
 {
-    userIds: number[];
-    createResponse() { return new GetUsersKarmaResponse(); }
-    getTypeName() { return "GetUsersKarma"; }
+    public constructor(init?:Partial<GetUsersKarma>) { (<any>Object).assign(this, init); }
+    public userIds: number[];
+    public createResponse() { return new GetUsersKarmaResponse(); }
+    public getTypeName() { return 'GetUsersKarma'; }
 }
 
 // @Route("/userinfo/{UserName}")
 export class GetUserInfo implements IReturn<GetUserInfoResponse>
 {
-    userName: string;
-    createResponse() { return new GetUserInfoResponse(); }
-    getTypeName() { return "GetUserInfo"; }
+    public constructor(init?:Partial<GetUserInfo>) { (<any>Object).assign(this, init); }
+    public userName: string;
+    public createResponse() { return new GetUserInfoResponse(); }
+    public getTypeName() { return 'GetUserInfo'; }
 }
 
 // @Route("/users/{UserName}/avatar", "GET")
 export class UserAvatar
 {
-    userName: string;
+    public constructor(init?:Partial<UserAvatar>) { (<any>Object).assign(this, init); }
+    public userName: string;
 }
 
 // @Route("/mq/start")
 export class MqStart implements IReturn<string>
 {
-    createResponse() { return ""; }
-    getTypeName() { return "MqStart"; }
+    public constructor(init?:Partial<MqStart>) { (<any>Object).assign(this, init); }
+    public createResponse() { return ''; }
+    public getTypeName() { return 'MqStart'; }
 }
 
 // @Route("/mq/stop")
 export class MqStop implements IReturn<string>
 {
-    createResponse() { return ""; }
-    getTypeName() { return "MqStop"; }
+    public constructor(init?:Partial<MqStop>) { (<any>Object).assign(this, init); }
+    public createResponse() { return ''; }
+    public getTypeName() { return 'MqStop'; }
 }
 
 // @Route("/mq/stats")
 export class MqStats implements IReturn<string>
 {
-    createResponse() { return ""; }
-    getTypeName() { return "MqStats"; }
+    public constructor(init?:Partial<MqStats>) { (<any>Object).assign(this, init); }
+    public createResponse() { return ''; }
+    public getTypeName() { return 'MqStats'; }
 }
 
 // @Route("/mq/status")
 export class MqStatus implements IReturn<string>
 {
-    createResponse() { return ""; }
-    getTypeName() { return "MqStatus"; }
+    public constructor(init?:Partial<MqStatus>) { (<any>Object).assign(this, init); }
+    public createResponse() { return ''; }
+    public getTypeName() { return 'MqStatus'; }
 }
 
 // @Route("/sync/discourse/{Site}")
 export class SyncDiscourseSite implements IReturn<SyncDiscourseSiteResponse>
 {
-    site: string;
-    createResponse() { return new SyncDiscourseSiteResponse(); }
-    getTypeName() { return "SyncDiscourseSite"; }
+    public constructor(init?:Partial<SyncDiscourseSite>) { (<any>Object).assign(this, init); }
+    public site: string;
+    public createResponse() { return new SyncDiscourseSiteResponse(); }
+    public getTypeName() { return 'SyncDiscourseSite'; }
 }
 
 // @Route("/admin/technology/{TechnologyId}/logo")
 export class LogoUrlApproval implements IReturn<LogoUrlApprovalResponse>
 {
-    technologyId: number;
-    approved: boolean;
-    createResponse() { return new LogoUrlApprovalResponse(); }
-    getTypeName() { return "LogoUrlApproval"; }
+    public constructor(init?:Partial<LogoUrlApproval>) { (<any>Object).assign(this, init); }
+    public technologyId: number;
+    public approved: boolean;
+    public createResponse() { return new LogoUrlApprovalResponse(); }
+    public getTypeName() { return 'LogoUrlApproval'; }
 }
 
 // @Route("/admin/techstacks/{TechnologyStackId}/lock")
 export class LockTechStack implements IReturn<LockStackResponse>
 {
-    technologyStackId: number;
-    isLocked: boolean;
-    createResponse() { return new LockStackResponse(); }
-    getTypeName() { return "LockTechStack"; }
+    public constructor(init?:Partial<LockTechStack>) { (<any>Object).assign(this, init); }
+    public technologyStackId: number;
+    public isLocked: boolean;
+    public createResponse() { return new LockStackResponse(); }
+    public getTypeName() { return 'LockTechStack'; }
 }
 
 // @Route("/admin/technology/{TechnologyId}/lock")
 export class LockTech implements IReturn<LockStackResponse>
 {
-    technologyId: number;
-    isLocked: boolean;
-    createResponse() { return new LockStackResponse(); }
-    getTypeName() { return "LockTech"; }
+    public constructor(init?:Partial<LockTech>) { (<any>Object).assign(this, init); }
+    public technologyId: number;
+    public isLocked: boolean;
+    public createResponse() { return new LockStackResponse(); }
+    public getTypeName() { return 'LockTech'; }
 }
 
 // @Route("/email/post/{PostId}")
 export class EmailTest implements IReturn<EmailTestRespoonse>
 {
-    postId: number;
-    createResponse() { return new EmailTestRespoonse(); }
-    getTypeName() { return "EmailTest"; }
+    public constructor(init?:Partial<EmailTest>) { (<any>Object).assign(this, init); }
+    public postId: number;
+    public createResponse() { return new EmailTestRespoonse(); }
+    public getTypeName() { return 'EmailTest'; }
 }
 
 export class ImportUser implements IReturn<ImportUserResponse>
 {
-    userName: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    displayName: string;
-    company: string;
-    refSource: string;
-    refId: number;
-    refIdStr: string;
-    refUrn: string;
-    defaultProfileUrl: string;
-    meta: { [index:string]: string; };
-    createResponse() { return new ImportUserResponse(); }
-    getTypeName() { return "ImportUser"; }
+    public constructor(init?:Partial<ImportUser>) { (<any>Object).assign(this, init); }
+    public userName: string;
+    public email: string;
+    public firstName: string;
+    public lastName: string;
+    public displayName: string;
+    public company: string;
+    public refSource: string;
+    public refId: number;
+    public refIdStr: string;
+    public refUrn: string;
+    public defaultProfileUrl: string;
+    public meta: { [index:string]: string; };
+    public createResponse() { return new ImportUserResponse(); }
+    public getTypeName() { return 'ImportUser'; }
 }
 
 // @Route("/import/uservoice/suggestion")
 export class ImportUserVoiceSuggestion implements IReturn<ImportUserVoiceSuggestionResponse>
 {
-    organizationId: number;
-    url: string;
-    id: number;
-    topicId: number;
-    state: string;
-    title: string;
-    slug: string;
-    category: string;
-    text: string;
-    formattedText: string;
-    voteCount: number;
-    closedAt: string;
-    statusKey: string;
-    statusHexColor: string;
-    statusChangedBy: UserVoiceUser;
-    creator: UserVoiceUser;
-    response: UserVoiceComment;
-    createdAt: string;
-    updatedAt: string;
-    createResponse() { return new ImportUserVoiceSuggestionResponse(); }
-    getTypeName() { return "ImportUserVoiceSuggestion"; }
+    public constructor(init?:Partial<ImportUserVoiceSuggestion>) { (<any>Object).assign(this, init); }
+    public organizationId: number;
+    public url: string;
+    public id: number;
+    public topicId: number;
+    public state: string;
+    public title: string;
+    public slug: string;
+    public category: string;
+    public text: string;
+    public formattedText: string;
+    public voteCount: number;
+    public closedAt: string;
+    public statusKey: string;
+    public statusHexColor: string;
+    public statusChangedBy: UserVoiceUser;
+    public creator: UserVoiceUser;
+    public response: UserVoiceComment;
+    public createdAt: string;
+    public updatedAt: string;
+    public createResponse() { return new ImportUserVoiceSuggestionResponse(); }
+    public getTypeName() { return 'ImportUserVoiceSuggestion'; }
 }
 
 // @Route("/auth")
@@ -2062,129 +2310,140 @@ export class ImportUserVoiceSuggestion implements IReturn<ImportUserVoiceSuggest
 // @DataContract
 export class Authenticate implements IReturn<AuthenticateResponse>, IPost
 {
+    public constructor(init?:Partial<Authenticate>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    provider: string;
+    public provider: string;
 
     // @DataMember(Order=2)
-    state: string;
+    public state: string;
 
     // @DataMember(Order=3)
-    oauth_token: string;
+    public oauth_token: string;
 
     // @DataMember(Order=4)
-    oauth_verifier: string;
+    public oauth_verifier: string;
 
     // @DataMember(Order=5)
-    userName: string;
+    public userName: string;
 
     // @DataMember(Order=6)
-    password: string;
+    public password: string;
 
     // @DataMember(Order=7)
-    rememberMe: boolean;
+    public rememberMe: boolean;
 
     // @DataMember(Order=8)
-    continue: string;
+    public continue: string;
 
     // @DataMember(Order=9)
-    nonce: string;
+    public errorView: string;
 
     // @DataMember(Order=10)
-    uri: string;
+    public nonce: string;
 
     // @DataMember(Order=11)
-    response: string;
+    public uri: string;
 
     // @DataMember(Order=12)
-    qop: string;
+    public response: string;
 
     // @DataMember(Order=13)
-    nc: string;
+    public qop: string;
 
     // @DataMember(Order=14)
-    cnonce: string;
+    public nc: string;
 
     // @DataMember(Order=15)
-    useTokenCookie: boolean;
+    public cnonce: string;
 
     // @DataMember(Order=16)
-    accessToken: string;
+    public useTokenCookie: boolean;
 
     // @DataMember(Order=17)
-    accessTokenSecret: string;
+    public accessToken: string;
 
     // @DataMember(Order=18)
-    meta: { [index:string]: string; };
-    createResponse() { return new AuthenticateResponse(); }
-    getTypeName() { return "Authenticate"; }
+    public accessTokenSecret: string;
+
+    // @DataMember(Order=19)
+    public meta: { [index:string]: string; };
+    public createResponse() { return new AuthenticateResponse(); }
+    public getTypeName() { return 'Authenticate'; }
 }
 
 // @Route("/assignroles")
 // @DataContract
 export class AssignRoles implements IReturn<AssignRolesResponse>, IPost
 {
+    public constructor(init?:Partial<AssignRoles>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    userName: string;
+    public userName: string;
 
     // @DataMember(Order=2)
-    permissions: string[];
+    public permissions: string[];
 
     // @DataMember(Order=3)
-    roles: string[];
-    createResponse() { return new AssignRolesResponse(); }
-    getTypeName() { return "AssignRoles"; }
+    public roles: string[];
+    public createResponse() { return new AssignRolesResponse(); }
+    public getTypeName() { return 'AssignRoles'; }
 }
 
 // @Route("/unassignroles")
 // @DataContract
 export class UnAssignRoles implements IReturn<UnAssignRolesResponse>, IPost
 {
+    public constructor(init?:Partial<UnAssignRoles>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    userName: string;
+    public userName: string;
 
     // @DataMember(Order=2)
-    permissions: string[];
+    public permissions: string[];
 
     // @DataMember(Order=3)
-    roles: string[];
-    createResponse() { return new UnAssignRolesResponse(); }
-    getTypeName() { return "UnAssignRoles"; }
+    public roles: string[];
+    public createResponse() { return new UnAssignRolesResponse(); }
+    public getTypeName() { return 'UnAssignRoles'; }
 }
 
 // @Route("/session-to-token")
 // @DataContract
 export class ConvertSessionToToken implements IReturn<ConvertSessionToTokenResponse>, IPost
 {
+    public constructor(init?:Partial<ConvertSessionToToken>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    preserveSession: boolean;
-    createResponse() { return new ConvertSessionToTokenResponse(); }
-    getTypeName() { return "ConvertSessionToToken"; }
+    public preserveSession: boolean;
+    public createResponse() { return new ConvertSessionToTokenResponse(); }
+    public getTypeName() { return 'ConvertSessionToToken'; }
 }
 
 // @Route("/access-token")
 // @DataContract
 export class GetAccessToken implements IReturn<GetAccessTokenResponse>, IPost
 {
+    public constructor(init?:Partial<GetAccessToken>) { (<any>Object).assign(this, init); }
     // @DataMember(Order=1)
-    refreshToken: string;
-    createResponse() { return new GetAccessTokenResponse(); }
-    getTypeName() { return "GetAccessToken"; }
+    public refreshToken: string;
+    public createResponse() { return new GetAccessTokenResponse(); }
+    public getTypeName() { return 'GetAccessToken'; }
 }
 
 // @Route("/posts/comment", "GET")
 export class QueryPostComments extends QueryDb<PostComment> implements IReturn<QueryResponse<PostComment>>
 {
-    userId: number;
-    postId: number;
-    createResponse() { return new QueryResponse<PostComment>(); }
-    getTypeName() { return "QueryPostComments"; }
+    public constructor(init?:Partial<QueryPostComments>) { super(init); (<any>Object).assign(this, init); }
+    public userId: number;
+    public postId: number;
+    public createResponse() { return new QueryResponse<PostComment>(); }
+    public getTypeName() { return 'QueryPostComments'; }
 }
 
 // @Route("/admin/technology/search")
 // @AutoQueryViewer(DefaultSearchField="Tier", DefaultSearchText="Data", DefaultSearchType="=", Description="Explore different Technologies", IconUrl="octicon:database", Title="Find Technologies Admin")
 export class FindTechnologiesAdmin extends QueryDb<Technology> implements IReturn<QueryResponse<Technology>>
 {
-    name: string;
-    createResponse() { return new QueryResponse<Technology>(); }
-    getTypeName() { return "FindTechnologiesAdmin"; }
+    public constructor(init?:Partial<FindTechnologiesAdmin>) { super(init); (<any>Object).assign(this, init); }
+    public name: string;
+    public createResponse() { return new QueryResponse<Technology>(); }
+    public getTypeName() { return 'FindTechnologiesAdmin'; }
 }
+

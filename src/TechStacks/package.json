@@ -22,7 +22,6 @@
   },
   "devDependencies": {
     "@nuxtjs/proxy": "^1.2.4",
-    "@servicestack/cli": "^1.0.3",
     "babel-eslint": "^8.2.3",
     "eslint": "^4.19.1",
     "eslint-friendly-formatter": "^4.0.1",
