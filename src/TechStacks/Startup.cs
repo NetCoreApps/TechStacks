@@ -70,8 +70,8 @@ namespace TechStacks
 //            LogManager.LogFactory = new ConsoleLogFactory(debugEnabled:true);
             log = LogManager.GetLogger(typeof(AppHost));
 
-            // enable server-side rendering, see: http://templates.servicestack.net
-            Plugins.Add(new TemplatePagesFeature {});
+            // enable server-side rendering, see: https://sharpscript.net
+            Plugins.Add(new SharpPagesFeature {});
             GetPlugin<NativeTypesFeature>().MetadataTypesConfig.BaseUrl = "https://www.techstacks.io";
 
             var debugMode = AppSettings.Get(nameof(HostConfig.DebugMode), false);

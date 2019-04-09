@@ -1,7 +1,6 @@
 ﻿using ServiceStack;
-using ServiceStack.Templates;
 using ServiceStack.DataAnnotations;
-using TechStacks.ServiceModel;
+using ServiceStack.Script;
 
 namespace TechStacks.ServiceInterface
 {

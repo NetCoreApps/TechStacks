@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using ServiceStack;
 using ServiceStack.Configuration;
 using ServiceStack.DataAnnotations;
 using ServiceStack.Logging;
 using ServiceStack.OrmLite;
-using ServiceStack.Templates;
+using ServiceStack.Script;
 using TechStacks.ServiceInterface.DataModel;
 using TechStacks.ServiceInterface.Notifications;
 using TechStacks.ServiceModel;
@@ -146,7 +145,7 @@ namespace TechStacks.ServiceInterface.Admin
                     .Select(x => x.UserId);
                 var postTypeSubscriberUserIds = await Db.ColumnAsync<int>(q);
 
-                var context = CreateEmailTemplateContext();
+                var context = CreateEmailContext();
                 var templatePath = "emails/post-new";
                 var page = context.GetPage(templatePath);
                 var result = new PageResult(page) {
@@ -183,7 +182,7 @@ namespace TechStacks.ServiceInterface.Admin
                 var org = await Db.SingleByIdAsync<Organization>(post.OrganizationId);
                 var moderatorUserIds = await GetOrganizationModeratorIds(org.Id);
                 
-                var context = CreateEmailTemplateContext();
+                var context = CreateEmailContext();
                 var templatePath = "emails/post-report";
                 var page = context.GetPage(templatePath);
                 var result = new PageResult(page) {
@@ -223,7 +222,7 @@ namespace TechStacks.ServiceInterface.Admin
                 var org = await Db.SingleByIdAsync<Organization>(report.OrganizationId);
                 var moderatorUserIds = await GetOrganizationModeratorIds(org.Id);
                 
-                var context = CreateEmailTemplateContext();
+                var context = CreateEmailContext();
                 var templatePath = "emails/comment-report";
                 var page = context.GetPage(templatePath);
                 var result = new PageResult(page) {

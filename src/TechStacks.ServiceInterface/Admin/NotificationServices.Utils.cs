@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ServiceStack;
 using ServiceStack.OrmLite;
+using ServiceStack.Script;
 using ServiceStack.Templates;
 using TechStacks.ServiceInterface.DataModel;
 using TechStacks.ServiceInterface.Notifications;
@@ -42,7 +43,7 @@ namespace TechStacks.ServiceInterface.Admin
             return post;
         }
 
-        private TemplateContext CreateEmailTemplateContext() => new TemplateContext {
+        private ScriptContext CreateEmailContext() => new ScriptContext {
                 VirtualFiles = base.VirtualFiles,
             }.Init();
 

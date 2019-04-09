@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using ServiceStack;
 using ServiceStack.Configuration;
 using ServiceStack.OrmLite;
-using ServiceStack.Templates;
-using TechStacks.ServiceInterface.DataModel;
+using ServiceStack.Script;
 using TechStacks.ServiceInterface.Notifications;
-using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface.Admin
@@ -39,7 +36,7 @@ namespace TechStacks.ServiceInterface.Admin
             var post = Db.SingleById<Post>(request.PostId);
             var org = Db.SingleById<Organization>(post.OrganizationId);
             
-            var context = new TemplateContext {
+            var context = new ScriptContext {
                 VirtualFiles = base.VirtualFiles,                
             }.Init();
 
