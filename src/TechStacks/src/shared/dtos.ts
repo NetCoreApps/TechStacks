@@ -1,6 +1,6 @@
 /* Options:
-Date: 2019-02-16 04:08:00
-Version: 5.41
+Date: 2019-05-14 17:24:06
+Version: 5.51
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://www.techstacks.io
 
@@ -11,10 +11,9 @@ BaseUrl: https://www.techstacks.io
 //AddDescriptionAsComments: True
 //IncludeTypes: 
 //ExcludeTypes: 
-DefaultImports: * as Zip from './ZipCodeValidator'
+//DefaultImports: 
 */
 
-import * as Zip from './ZipCodeValidator';
 
 export interface IReturn<T>
 {
@@ -1218,6 +1217,9 @@ export class ConvertSessionToTokenResponse
     public accessToken: string;
 
     // @DataMember(Order=3)
+    public refreshToken: string;
+
+    // @DataMember(Order=4)
     public responseStatus: ResponseStatus;
 }
 
