@@ -1,2 +1,2 @@
-rsync -avz -e 'ssh' bin/Release/netcoreapp2.2/publish/ ubuntu@lightsail.web-app.io:/home/deploy/apps/techstacks
-ssh ubuntu@lightsail.web-app.io "sudo supervisorctl restart web-techstacks"
+rsync -avz -e 'ssh' bin/Release/netcoreapp2.2/publish/ ubuntu@forums.servicestack.net:/home/ubuntu/apps/techstacks
+ssh ubuntu@forums.servicestack.net "sudo supervisorctl restart app-techstacks"

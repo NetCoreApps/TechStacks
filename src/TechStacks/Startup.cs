@@ -60,7 +60,7 @@ namespace TechStacks
     public class AppHost : AppHostBase
     {
         public AppHost()
-            : base("TechStacks", typeof(TechnologyServices).Assembly) {}
+            : base("TechStacks!", typeof(TechnologyServices).Assembly) {}
 
         private static ILog log;
 
@@ -81,7 +81,7 @@ namespace TechStacks
                 DebugMode = debugMode,
             });
 
-            JsConfig.DateHandler = DateHandler.ISO8601;
+            JsConfig.Init(new ServiceStack.Text.Config { DateHandler = DateHandler.ISO8601 });
 
             var dbFactory = new OrmLiteConnectionFactory(
               Environment.GetEnvironmentVariable("TECHSTACKS_DB") ?? AppSettings.GetString("OrmLite.ConnectionString"),
