@@ -21,47 +21,22 @@
     <PackageReference Include="ServiceStack.Api.OpenApi" Version="5.*" />
     <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="5.*" />
 
-<!--
-    <Reference Include="ServiceStack.Text">
-      <HintPath>..\..\..\..\ServiceStack.Text\src\ServiceStack.Text\bin\Debug\netstandard2.0\ServiceStack.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Interfaces">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Interfaces\bin\Debug\netstandard2.0\ServiceStack.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Client">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Client\bin\Debug\netstandard2.0\ServiceStack.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Common">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Common\bin\Debug\netstandard2.0\ServiceStack.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack\bin\Debug\netstandard2.0\ServiceStack.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Server">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Server\bin\Debug\netstandard2.0\ServiceStack.Server.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Redis">
-      <HintPath>..\..\..\..\ServiceStack.Redis\src\ServiceStack.Redis\bin\Debug\netstandard2.0\ServiceStack.Redis.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.OrmLite">
-      <HintPath>..\..\..\..\ServiceStack.OrmLite\src\ServiceStack.OrmLite\bin\Debug\netstandard2.0\ServiceStack.OrmLite.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.OrmLite.PostgreSQL">
-      <HintPath>..\..\..\..\ServiceStack.OrmLite\src\ServiceStack.OrmLite.PostgreSQL\bin\Debug\netstandard2.0\ServiceStack.OrmLite.PostgreSQL.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Api.OpenApi">
-      <HintPath>..\..\..\..\ServiceStack\src\ServiceStack.Api.OpenApi\bin\Debug\netstandard2.0\ServiceStack.Api.OpenApi.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Admin">
-      <HintPath>..\..\..\..\Admin\src\ServiceStack.Admin\bin\Debug\netstandard2.0\ServiceStack.Admin.dll</HintPath>
-    </Reference>
--->
-
+<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.OrmLite\src\ServiceStack.OrmLite.PostgreSQL\ServiceStack.OrmLite.PostgreSQL.Source.csproj" />-->
+<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.OrmLite\src\ServiceStack.OrmLite\ServiceStack.OrmLite.Source.csproj" />-->
+<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.Redis\src\ServiceStack.Redis\ServiceStack.Redis.Source.csproj" />-->
+<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.Text\src\ServiceStack.Text\ServiceStack.Text.csproj" />-->
+<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack\src\ServiceStack.Client\ServiceStack.Client.Source.csproj" />-->
+<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack\src\ServiceStack.Common\ServiceStack.Common.Source.csproj" />-->
+<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack\src\ServiceStack.Interfaces\ServiceStack.Interfaces.csproj" />-->
+<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack\src\ServiceStack.Server\ServiceStack.Server.Source.csproj" />-->
+<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack\src\ServiceStack\ServiceStack.Source.csproj" />-->
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\TechStacks.ServiceInterface\TechStacks.ServiceInterface.csproj" />
     <ProjectReference Include="..\TechStacks.ServiceModel\TechStacks.ServiceModel.csproj" />
   </ItemGroup>
+
   <Target Name="OnFirstUse" BeforeTargets="Build" Condition=" !Exists('wwwroot\dist') ">
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
