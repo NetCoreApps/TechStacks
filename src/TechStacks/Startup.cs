@@ -11,22 +11,16 @@ using ServiceStack;
 using ServiceStack.Admin;
 using ServiceStack.Api.OpenApi;
 using ServiceStack.Auth;
-using ServiceStack.Caching;
-using ServiceStack.Configuration;
 using ServiceStack.Data;
-using ServiceStack.Host.Handlers;
 using ServiceStack.Logging;
 using ServiceStack.Messaging;
 using ServiceStack.OrmLite;
 using ServiceStack.Text;
 using ServiceStack.Validation;
-using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 using TechStacks.ServiceInterface;
 using TechStacks.ServiceInterface.Admin;
 using TechStacks.ServiceInterface.Auth;
-using TechStacks.ServiceInterface.DataModel;
-using TechStacks.ServiceInterface.Messaging;
 using TechStacks.ServiceInterface.Notifications;
 
 namespace TechStacks
