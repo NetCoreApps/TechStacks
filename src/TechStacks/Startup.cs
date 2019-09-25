@@ -260,6 +260,14 @@ namespace TechStacks
             RegisterTypedRequestFilter<IRegisterStats>((req,res,dto) =>
                 dbFactory.RegisterPageView(dto.GetStatsId()));
 
+            if (Config.DebugMode)
+            {
+                Plugins.Add(new LispReplTcpServer {
+                    ScriptMethods = {
+                        new DbScriptsAsync()
+                    }
+                });
+            }
 
             container.Register<IMessageService>(c => new BackgroundMqService());
             var mqServer = container.Resolve<IMessageService>();
