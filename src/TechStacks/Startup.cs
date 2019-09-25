@@ -65,8 +65,6 @@ namespace TechStacks
 //            LogManager.LogFactory = new ConsoleLogFactory(debugEnabled:true);
             log = LogManager.GetLogger(typeof(AppHost));
 
-            // enable server-side rendering, see: https://sharpscript.net
-            Plugins.Add(new SharpPagesFeature {});
             GetPlugin<NativeTypesFeature>().MetadataTypesConfig.BaseUrl = "https://www.techstacks.io";
 
             var debugMode = AppSettings.Get(nameof(HostConfig.DebugMode), false);
@@ -84,6 +82,9 @@ namespace TechStacks
             dbFactory.RegisterDialectProvider(nameof(PostgreSqlDialect), PostgreSqlDialect.Provider);
 
             container.Register<IDbConnectionFactory>(dbFactory);
+
+            // enable server-side rendering, see: https://sharpscript.net
+            Plugins.Add(new SharpPagesFeature());
 
             Plugins.Add(new AuthFeature(() => new CustomUserSession(), new IAuthProvider[]
             {
@@ -217,7 +218,17 @@ namespace TechStacks
                 });
             }
 
+            Plugins.Add(new CorsFeature(
+                allowOriginWhitelist: new[] { "https://techstacks.io", "https://www.techstacks.io",
+                  "http://localhost:3000", "http://localhost:16325", "http://localhost:8080", "http://null.jsbin.com", "http://run.plnkr.co" },
+                allowCredentials: true,
+                allowedHeaders: "Content-Type, Allow, Authorization",
+                maxAge: 60 * 60)); //Cache OPTIONS permissions
+
             Plugins.Add(new ValidationFeature());
+            container.RegisterValidators(typeof(AppHost).Assembly);
+            container.RegisterValidators(typeof(TechnologyServices).Assembly);
+
             Plugins.Add(new AutoQueryMetadataFeature
             {
                 AutoQueryViewerConfig =
@@ -246,28 +257,21 @@ namespace TechStacks
             Plugins.Add(new AdminFeature());
             Plugins.Add(new OpenApiFeature());
 
-            container.RegisterValidators(typeof(AppHost).Assembly);
-            container.RegisterValidators(typeof(TechnologyServices).Assembly);
-
             RegisterTypedRequestFilter<IRegisterStats>((req,res,dto) =>
                 dbFactory.RegisterPageView(dto.GetStatsId()));
 
-            Plugins.Add(new CorsFeature(
-                allowOriginWhitelist: new[] { "https://techstacks.io", "https://www.techstacks.io",
-                    "http://localhost:3000", "http://localhost:16325", "http://localhost:8080", "http://null.jsbin.com", "http://run.plnkr.co" },
-                allowCredentials: true,
-                allowedHeaders: "Content-Type, Allow, Authorization",
-                maxAge: 60 * 60)); //Cache OPTIONS permissions
 
             container.Register<IMessageService>(c => new BackgroundMqService());
             var mqServer = container.Resolve<IMessageService>();
 
             mqServer.RegisterHandler<SendNotification>(ExecuteMessage, 4);
             mqServer.RegisterHandler<SendSystemEmail>(ExecuteMessage);
+            mqServer.RegisterHandler<SendEmail>(ExecuteMessage);
 
-            mqServer.Start();
-
-            AfterInitCallbacks.Add(host => ExecuteService(new RetryPendingNotifications()));
+            AfterInitCallbacks.Add(host => {
+                mqServer.Start();
+                ExecuteService(new RetryPendingNotifications());
+            });
         }
     }
 }

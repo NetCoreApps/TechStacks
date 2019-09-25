@@ -92,8 +92,8 @@ namespace TechStacks.ServiceInterface.Admin
 
         private async Task RecordEmailSentToUser(long notificationId, int userId)
         {
-            await Db.ExecuteSqlAsync(@"UPDATE notification SET emailed_user_ids = emailed_user_ids || @userId
-                WHERE id = @id", new { userId, id = notificationId });
+            await Db.ExecuteSqlAsync(@"UPDATE notification SET emailed_user_ids = emailed_user_ids || @userId WHERE id = @id", 
+                new { userId, id = notificationId });
         }
 
         private async Task SendEmailsToRemainingUsers(Notification notification, EmailTemplate template)

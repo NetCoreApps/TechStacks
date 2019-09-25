@@ -29,6 +29,15 @@ namespace TechStacks.ServiceInterface.Admin
     }
     
     [ExcludeMetadata]
+    [Route("/email/send")]
+    public class SendEmail : IReturnVoid
+    {
+        public string To { get; set; }
+        public string Subject { get; set; }
+        public string Body { get; set; }
+    }
+    
+    [ExcludeMetadata]
     [Route("/notifications/retry-pending")]
     public class RetryPendingNotifications {}
 
@@ -93,6 +102,20 @@ namespace TechStacks.ServiceInterface.Admin
                     Email = AppSettings.GetString("NotificationsFromEmail"),
                 },
                 Subject = $"[SYSTEM] {request.Subject}",
+                Body = request.Body,
+            });
+        }
+
+        public void Any(SendEmail request)
+        {
+            Email.Send(new EmailMessage {
+                To = new MailTo {
+                    Email = request.To,
+                },
+                From = new MailTo {
+                    Email = AppSettings.GetString("NotificationsFromEmail"),
+                },
+                Subject = request.Subject,
                 Body = request.Body,
             });
         }
