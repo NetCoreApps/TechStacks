@@ -19,7 +19,7 @@ namespace TechStacks.ServiceInterface
 
         public IMarkdownProvider Markdown { get; set; }
 
-        public TwitterUpdates TwitterUpdates { get; set; }
+        public ITwitterUpdates TwitterUpdates { get; set; }
 
         private const int TweetUrlLength = 22;
 

@@ -23,6 +23,7 @@ using TechStacks.ServiceInterface;
 using TechStacks.ServiceInterface.Admin;
 using TechStacks.ServiceInterface.Auth;
 using TechStacks.ServiceInterface.Notifications;
+using TechStacks.ServiceModel;
 
 namespace TechStacks
 {
@@ -111,7 +112,7 @@ namespace TechStacks
             container.Register<IMarkdownProvider>(c =>
                 new GitHubApiMarkdownProvider(Environment.GetEnvironmentVariable("GITHUB_AUTH")));
 
-            container.Register(new TwitterUpdates(
+            container.Register<ITwitterUpdates>(new TwitterUpdates(
                 AppSettings.GetString("WebStacks.ConsumerKey"),
                 AppSettings.GetString("WebStacks.ConsumerSecret"),
                 AppSettings.GetString("WebStacks.AccessToken"),
@@ -253,8 +254,13 @@ namespace TechStacks
             {
                 Plugins.Add(new LispReplTcpServer {
                     ScriptMethods = {
-                        new DbScriptsAsync()
-                    }
+                        new DbScripts()
+                    },
+                    ScriptNamespaces = {
+                        nameof(TechStacks),
+                        $"{nameof(TechStacks)}.{nameof(ServiceInterface)}",
+                        $"{nameof(TechStacks)}.{nameof(ServiceModel)}",
+                    },
                 });
             }
 

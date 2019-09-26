@@ -10,7 +10,7 @@ using ServiceStack.Configuration;
 
 namespace TechStacks.ServiceInterface.Notifications
 {
-    public class TwitterUpdates
+    public class TwitterUpdates : ITwitterUpdates
     {
         private readonly TwitterGateway gateway;
         private readonly string accessToken;

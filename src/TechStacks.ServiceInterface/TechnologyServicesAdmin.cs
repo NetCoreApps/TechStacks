@@ -21,7 +21,7 @@ namespace TechStacks.ServiceInterface
 
         public IAppSettings AppSettings { get; set; }
 
-        public TwitterUpdates TwitterUpdates { get; set; }
+        public ITwitterUpdates TwitterUpdates { get; set; }
 
         private const int TweetUrlLength = 22;
 

@@ -7,6 +7,7 @@ using ServiceStack;
 using ServiceStack.OrmLite;
 using TechStacks.ServiceInterface.Admin;
 using TechStacks.ServiceInterface.DataModel;
+using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface
