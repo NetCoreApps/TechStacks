@@ -16,7 +16,7 @@
     "@servicestack/client": "^1.0.31",
     "@servicestack/editor": "0.0.2",
     "@servicestack/images": "^1.0.0",
-    "npm": "^5.8.0",
+    "npm": "^6.13.4",
     "nuxt": "^1.4.0",
     "vuetify": "^1.0.17"
   },
