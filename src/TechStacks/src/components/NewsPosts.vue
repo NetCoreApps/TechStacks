@@ -50,7 +50,7 @@
                           <nuxt-link :to="routes.homeNews" style="color:#333">news </nuxt-link>
                           <em>/</em>
                         </span>
-                        
+
                         <nuxt-link v-if="view == 'category'" :to="routes.organizationNews(organization.slug)" style="color:#333">
                           {{ organization.name }}
                         </nuxt-link>
@@ -260,13 +260,13 @@ export default {
       this.changeTypes({});
     },
     changeCategory(cateogry) {
-      this.c = this.c != cateogry.slug 
+      this.c = this.c != cateogry.slug
         ? cateogry.slug
         : undefined;
       this.updateUrl({ c:this.c });
     },
     changeTypes(types) {
-      if (Object.keys(types).length == 0) {
+      if (Object.keys(types).length === 0) {
         this.initRoute({ types:null });
         this.stageChanges({ all: 0, filterTypes: [] });
         this.updateUrl({ types: undefined, c:this.c, is:this.is, sort:this.sort });
@@ -293,7 +293,8 @@ export default {
     },
 
     handleKeyUp(e) {
-      if (ignoreKeyPress(e)) return;
+      if (ignoreKeyPress(e))
+          return true;
       const c = String.fromCharCode(e.keyCode).toLowerCase();
       if (c === 'n') {
         this.add = !this.add;
@@ -311,11 +312,11 @@ export default {
         if (num >= 1 && num <= this.browsablePostTypes.length + 1) {
           this.filterTypes = num === 1 ? [] : [parseInt(c) - 2];
         }
-      } else if (e.key == "ArrowLeft" || e.keyCode == 37) {
+      } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
         if (this.page > 0) {
           this.loadPage(this.page-1);
         }
-      } else if (e.key == "ArrowRight" || e.keyCode == 39) {
+      } else if (e.key === "ArrowRight" || e.keyCode === 39) {
         if (this.hasMore) {
           this.loadPage(this.page+1);
         }
@@ -361,7 +362,7 @@ export default {
       console.log(e);
     }
 
-    const notFound = this.organization == null && (this.latestOrganizationPosts || []).length == 0;
+    const notFound = this.organization == null && (this.latestOrganizationPosts || []).length === 0;
     if (notFound) {
       try {
         await Promise.all([
@@ -380,10 +381,10 @@ export default {
       if (stack != null) {
         this.$router.push(routes.stack(this.slug));
         return;
-      }      
+      }
       this.notFound = true;
     }
-    
+
     window.addEventListener('keyup', this.handleKeyUp);
   },
 

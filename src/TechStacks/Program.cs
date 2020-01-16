@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using ServiceStack;
 
 namespace TechStacks
 {
@@ -13,7 +14,7 @@ namespace TechStacks
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
+                .UseModularStartup<Startup>()
                 .ConfigureLogging(c => {
                     c.AddConsole();
                 })

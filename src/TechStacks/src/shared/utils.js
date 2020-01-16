@@ -8,10 +8,11 @@ export const prettifyUrl = (url) => {
     return url && url[url.length-1] === '/' ? url.substring(0, url.length-1) : url;
 }
 
-const ignoreWhenFocused = ['INPUT','TEXTAREA','SELECT'] 
+const ignoreWhenFocused = ['INPUT','TEXTAREA','SELECT']
 export const inInputField = () => ignoreWhenFocused.indexOf(document.activeElement && document.activeElement.tagName) >= 0;
+const browserKeys = [8,33,34,35,36]; // page up/down/home/end/backspace
 export const ignoreKeyPress = (e) => {
-  return e.shiftKey || e.ctrlKey || inInputField();
+    return e.shiftKey || e.ctrlKey || browserKeys.indexOf(e.keyCode) >= 0 || inInputField();
 }
 
 const PAGE_NAV_INDEX = [
@@ -31,7 +32,8 @@ export function globalNavShortcuts(e) {
     this.$store.commit('showDialog', this.$store.getters.showDialog !== 'Shortcuts' && e.key !== 'Escape' ? 'Shortcuts' : null);
     return;
   }
-  if (e.shiftKey || e.ctrlKey || e.altKey) return;
+  if (ignoreKeyPress(e) || e.altKey)
+      return true;
   const c = String.fromCharCode(e.keyCode).toLowerCase();
   if (c === 'h') {
     this.$router.push(this.routes.homeNews);
@@ -70,7 +72,7 @@ export function getPageIndex(path) {
         return i;
       continue;
     }
-    if (path.startsWith(navPath)) 
+    if (path.startsWith(navPath))
       return i;
   }
   return null;
@@ -129,14 +131,14 @@ export const urlRules = [
   v => (v && v.indexOf('://') >= 0)  || 'Invalid URL'
 ];
 export const urlRulesOptional = [
-  v => !v || v.length <= urlCounter || `Max ${urlCounter} characters`, 
+  v => !v || v.length <= urlCounter || `Max ${urlCounter} characters`,
   v => !v || v.indexOf('://') >= 0   || 'Invalid URL'
 ];
 
 export const descriptionCounter = 740;
 export const descriptionRules = [
-  v => !!v || 'Required', 
-  v => v.length >= 50 || 'Min 50 characters', 
+  v => !!v || 'Required',
+  v => v.length >= 50 || 'Min 50 characters',
   v => v.length <= 740 || 'Max 740 characters'
 ];
 export const descriptionRulesOptional = [
@@ -145,7 +147,7 @@ export const descriptionRulesOptional = [
 
 export const contentCounter = 128000;
 export const contentRules = [
-  v => !v || v.length >= 25   || 'Min 25 characters', 
+  v => !v || v.length >= 25   || 'Min 25 characters',
   v => !v || v.length <= contentCounter || `Max ${contentCounter} characters`
 ];
 export const contentRulesOptional = [
@@ -154,7 +156,7 @@ export const contentRulesOptional = [
 
 export const colorRules = [
   v => !!v || 'Required',
-  v => v.startsWith('#') && (v.length == 4 || v.length == 7) || 'Invalid Hex Color, e.g. #FFFFFF',  
+  v => v.startsWith('#') && (v.length == 4 || v.length == 7) || 'Invalid Hex Color, e.g. #FFFFFF',
 ];
 
 

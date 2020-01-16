@@ -86,7 +86,7 @@
                   :spellcheck="false"
                   :items="organizationsSelectItems"
                   v-model="jumpToSlug"
-                  @input="jumpToSlug && $router.push(routes.organizationNews(jumpToSlug))"                  
+                  @input="jumpToSlug && $router.push(routes.organizationNews(jumpToSlug))"
                   ></v-select>
                   <v-btn :disabled="!jumpToSlug" color="primary" :to="routes.organizationNews(jumpToSlug)" title="Jump (J)">
                     Go!
@@ -230,7 +230,7 @@ export default {
       this.updateUrl({ t:this.t });
     },
     changeTypes(types) {
-      if (Object.keys(types).length == 0) {
+      if (Object.keys(types).length === 0) {
         this.initRoute({ types: undefined });
         this.stageChanges({ all: 0, filterTypes: [] });
         this.updateUrl({ types: undefined, c:this.c });
@@ -258,7 +258,9 @@ export default {
     },
 
     handleKeyUp(e) {
-      if (ignoreKeyPress(e)) return;
+      if (ignoreKeyPress(e))
+          return true;
+
       const c = String.fromCharCode(e.keyCode).toLowerCase();
       if (c === 'n') {
         this.add = !this.add;
@@ -274,11 +276,11 @@ export default {
         if (num >= 1 && num <= this.allPostTypes.length + 1) {
           this.filterTypes = num === 1 ? [] : [parseInt(c) - 2];
         }
-      } else if (e.key == "ArrowLeft" || e.keyCode == 37) {
+      } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
         if (this.page > 0) {
           this.loadPage(this.page-1);
         }
-      } else if (e.key == "ArrowRight" || e.keyCode == 39) {
+      } else if (e.key === "ArrowRight" || e.keyCode === 39) {
         if (this.hasMore) {
           this.loadPage(this.page+1);
         }
