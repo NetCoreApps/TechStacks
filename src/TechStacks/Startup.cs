@@ -64,6 +64,7 @@ namespace TechStacks
 
             var debugMode = AppSettings.Get(nameof(HostConfig.DebugMode), false);
             SetConfig(new HostConfig {
+                UseSameSiteCookies = true,
                 AddRedirectParamsToQueryString = true,
                 DebugMode = debugMode,
             });
@@ -251,7 +252,7 @@ namespace TechStacks
             {
                 Plugins.Add(new LispReplTcpServer {
                     ScriptMethods = {
-                        new DbScripts()
+                        new DbScriptsAsync()
                     },
                     ScriptNamespaces = {
                         nameof(TechStacks),
