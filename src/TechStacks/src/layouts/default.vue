@@ -25,11 +25,11 @@
           <v-btn flat :to="routes.homeStacks" title="Technology Stacks (3)">Stacks</v-btn>
           <v-btn flat :to="routes.homeTech" title="Technologies (4)">Technologies</v-btn>
           <v-btn v-if="isAuthenticated" flat :to="routes.homeFavorites" title="Favorites (5)">Favorites</v-btn>
-          <v-btn v-if="!isAuthenticated" @click="href(`/auth/twitter`)" title="User Profile (6)">
-            <img src="../static/img/twitter.svg" width="50" height="50" style="background:#333" />
-          </v-btn>
           <v-btn v-if="!isAuthenticated" @click="href(`/auth/github`)">
             <img src="../static/img/github.svg" width="30" height="30" style="backgroundd:#333" />
+          </v-btn>
+          <v-btn v-if="false && !isAuthenticated" @click="href(`/auth/twitter`)" title="User Profile (6)">
+            <img src="../static/img/twitter.svg" width="50" height="50" style="background:#333" />
           </v-btn>
           <v-menu v-if="isAuthenticated">
             <v-btn flat slot="activator">
@@ -47,7 +47,7 @@
                 </v-list-tile-title>
               </v-list-tile>
             </v-list>
-          </v-menu>        
+          </v-menu>
         </v-toolbar-items>
       </v-toolbar>
 
@@ -125,7 +125,7 @@ export default {
     //     return html;
     //   } catch(e) {
     //     console.log("ERROR getPrerenderedHtml: ", e.message, e.stack);
-    //     return null;        
+    //     return null;
     //   }
     // },
 
@@ -142,7 +142,7 @@ export default {
     //   if (isBot) {
     //     this.prerenderedHtml = await this.getPrerenderedHtml();
     //   } else {
-    //     setTimeout(async () => {          
+    //     setTimeout(async () => {
     //       //still fetch for non-bots when no no-prerender, only happens on initial load
     //       this.prerenderedHtml = await this.getPrerenderedHtml();
     //     }, 2000);
