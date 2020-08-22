@@ -64,7 +64,7 @@ namespace TechStacks
 
             var debugMode = AppSettings.Get(nameof(HostConfig.DebugMode), false);
             SetConfig(new HostConfig {
-                UseSameSiteCookies = true,
+                // UseSameSiteCookies = true,
                 AddRedirectParamsToQueryString = true,
                 DebugMode = debugMode,
             });

@@ -28,7 +28,7 @@
           <v-btn v-if="!isAuthenticated" @click="href(`/auth/github`)">
             <img src="../static/img/github.svg" width="30" height="30" style="backgroundd:#333" />
           </v-btn>
-          <v-btn v-if="false && !isAuthenticated" @click="href(`/auth/twitter`)" title="User Profile (6)">
+          <v-btn v-if="!isAuthenticated" @click="href(`/auth/twitter`)" title="User Profile (6)">
             <img src="../static/img/twitter.svg" width="50" height="50" style="background:#333" />
           </v-btn>
           <v-menu v-if="isAuthenticated">
