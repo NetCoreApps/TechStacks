@@ -99,31 +99,31 @@ export function userName(){ return this.$store.getters.user && this.$store.gette
 export function userPostActivity(){ return this.userPostActivity || this.$store.getters.userPostActivity; }
 export function organization(org){ return org || this.organization || this.$store.getters.organization; }
 export function userOrganizations(){ return this.$store.getters.userOrganizations; }
-export function organizationMember(org) { 
+export function organizationMember(org) {
   const o = organization.call(this,org);
   const userOrgs = o && userOrganizations.call(this);
-  const ret = userOrgs && userOrgs.members.find(x => x.organizationId === o.id);
+  const ret = userOrgs && (userOrgs.members || []).find(x => x.organizationId === o.id);
   return ret;
 }
 export function isOrganizationMember(org) { return organizationMember.call(this,org) != null; }
-export function isOrganizationModerator(org) { 
+export function isOrganizationModerator(org) {
   const member = organizationMember.call(this,org);
   return this.$store.getters.isAdmin || (member && (member.isOwner || member.isModerator));
 }
 export function isOrganizationLocked(org) { return (org || organization.call(this) || {}).locked != null; }
 
-export function memberCannotComment(org){ 
+export function memberCannotComment(org){
   const member = organizationMember.call(this,org);
   const ret = member && (member.denyComments || member.denyAll)
   return ret;
 }
 
-export function memberCannotPost(org){ 
+export function memberCannotPost(org){
   const member = organizationMember.call(this,org);
   return member && (member.denyPosts || member.denyAll)
 }
 
-export function memberDenyAll(org){ 
+export function memberDenyAll(org){
   const member = organizationMember.call(this,org);
   return member && member.denyAll;
 }
@@ -148,19 +148,24 @@ export function canViewOrganization(org) {
 export function canPostToOrganization(org) {
   const ret = canViewOrganization.call(this,org)
     && (!isOrganizationLocked.call(this,org) || isOrganizationMember.call(this,org))
-    && !memberCannotPost.call(this); 
+    && !memberCannotPost.call(this);
   return ret;
 }
 
 export function canAnnotatePost(post,org) {
-  org = org || this.$store.getters.getOrganization(post.organizationId);
-  const ret = canViewOrganization.call(this,org)
-    && !memberDenyAll.call(this,org)
-    && (!isOrganizationLocked.call(this,org) || isOrganizationMember.call(this,org))
-    && post != null 
-    && !post.archived
-    && (post.deleted == null || isOrganizationModerator.call(this,org));
-  return ret;
+    try {
+        org = org || this.$store.getters.getOrganization(post.organizationId);
+        const ret = canViewOrganization.call(this,org)
+            && !memberDenyAll.call(this,org)
+            && (!isOrganizationLocked.call(this,org) || isOrganizationMember.call(this,org))
+            && post != null
+            && !post.archived
+            && (post.deleted == null || isOrganizationModerator.call(this,org));
+        return ret;
+    } catch (e) {
+        console.log('canAnnotatePost',e,post,org);
+        return false;
+    }
 }
 
 export function canContributeToPost(post,org) {
@@ -177,8 +182,13 @@ export function canUpdatePost(post,org) {
 }
 
 export function canVotePost(post,org) {
-  return canAnnotatePost.call(this, post,org)
-    && userId.call(this) != post.userId;
+    try {
+        return canAnnotatePost.call(this, post,org)
+            && userId.call(this) != post.userId;
+    } catch (e) {
+        console.log('canVotePost',e);
+        return false;
+    }
 }
 
 export function canFavoritePost(post,org) {
@@ -190,9 +200,9 @@ export function canReportPost(post,org) {
     && userId.call(this) != post.userId;
 }
 
-export function canCommentPost(post,org) { 
+export function canCommentPost(post,org) {
   const ret = canContributeToPost.call(this,post,org)
-    && !memberCannotComment.call(this); 
+    && !memberCannotComment.call(this);
   return ret;
 }
 
@@ -200,7 +210,7 @@ export function canUpdateComment(post,comment) {
   return canCommentPost.call(this,post)
     && comment != null
     && (!comment.deleted || isOrganizationModerator.call(this))
-    && (comment.userId === userId.call(this) || isOrganizationModerator.call(this)); 
+    && (comment.userId === userId.call(this) || isOrganizationModerator.call(this));
 }
 
 export function canPinComment(post,comment) {
@@ -210,25 +220,25 @@ export function canPinComment(post,comment) {
     && (post.userId === userId.call(this) || isOrganizationModerator.call(this));
 }
 
-export function canReplyComment(post,comment) { 
-  return canCommentPost.call(this, post) 
+export function canReplyComment(post,comment) {
+  return canCommentPost.call(this, post)
     && comment != null
     && !comment.deleted;
 }
 
 export function canAnnotateComment(post,comment) {
-  return canAnnotatePost.call(this, post) 
+  return canAnnotatePost.call(this, post)
     && comment != null
     && !comment.deleted;
 }
 
-export function canVoteComment(post,comment) { 
-  return canAnnotateComment.call(this, post, comment) 
+export function canVoteComment(post,comment) {
+  return canAnnotateComment.call(this, post, comment)
     && comment.userId !== userId.call(this);
 }
 
-export function canReportComment(post,comment) { 
-  return canAnnotateComment.call(this, post, comment) 
+export function canReportComment(post,comment) {
+  return canAnnotateComment.call(this, post, comment)
     && comment.userId !== userId.call(this);
 }
 
@@ -269,14 +279,14 @@ export const sortComments = (comments) => {
     // show comments posted within 1min first, then revert to points,age ranking
     const aCreated = new Date(a.created);
     const bCreated = new Date(b.created);
-    return now - aCreated < msPerMinute || now - bCreated < msPerMinute ? 
+    return now - aCreated < msPerMinute || now - bCreated < msPerMinute ?
         (aCreated > bCreated ? -1 :  1)
       : commentKarma(a) > commentKarma(b) ?
         -1
       : commentKarma(a) < commentKarma(b) ?
         1
-      : aCreated > bCreated ? 
-        -1 : 
+      : aCreated > bCreated ?
+        -1 :
         1;
   });
 };

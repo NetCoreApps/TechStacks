@@ -1,11 +1,11 @@
 import { log, JsonServiceClient, toFormData } from "@servicestack/client";
-import { 
-    GetConfig, 
-    Overview, 
-    OverviewResponse, 
+import {
+    GetConfig,
+    Overview,
+    OverviewResponse,
     ConvertSessionToToken,
-    GetTechnology, 
-    GetTechnologyStack, 
+    GetTechnology,
+    GetTechnologyStack,
     GetPageStats,
     GetAllTechnologies,
     GetAllTechnologyStacks,
@@ -77,15 +77,17 @@ import {
     Authenticate,
 } from "./dtos";
 
-const usingProxy = location.host == "techstacks.io";
+const usingProxy = location.host === "techstacks.io";
 
-const BaseUrl = usingProxy
+let BaseUrl = usingProxy
     ? "https://www.techstacks.io/"  // .NET Core App Server on AWS LightSail
     : "/";
 
-const AuthBaseUrl = usingProxy
+let AuthBaseUrl = usingProxy
     ? "https://techstacks.io/"      // Netlify
     : "/";
+
+BaseUrl = AuthBaseUrl = "/";
 
 export const client = new JsonServiceClient(BaseUrl);
 export const authClient = new JsonServiceClient(AuthBaseUrl); //Note: higher latency as goes through Netlify's reverse proxy
@@ -94,6 +96,8 @@ export const getSessionInfo = async() => {
     try {
         //Converts Session to JWT Token Cookie
         const authResponse = await authClient.post(new ConvertSessionToToken());
+        if (BaseUrl === AuthBaseUrl)
+            return await client.get(new SessionInfo());
 
         client.bearerToken = authResponse.accessToken;
         const [response, authResponse2] = await Promise.all([
@@ -124,7 +128,7 @@ export const queryTechnology = async (query) => await client.get(new QueryTechno
 
 export const queryTechStacks = async (query) => await client.get(new QueryTechStacks(), { include: 'total', ...query });
 
-export const queryPosts = async (query) => await client.get(new QueryPosts(), 
+export const queryPosts = async (query) => await client.get(new QueryPosts(),
     { take:50, ...query, fields: "id,organizationId,userId,type,categoryId,slug,title,imageUrl,labels,technologyIds,upVotes,downVotes,points,commentsCount,created,createdBy" });
 
 export const queryPostComments = async(query) => await client.get(new QueryPostComments(), { take:50, ...query });
@@ -143,11 +147,11 @@ export const queryLatestOrganizationsPosts = async ({ organizationId, types, cat
     if (!orderBy)
         orderBy = 'rank';
     const request = { organizationId, orderBy };
-    if (types) 
+    if (types)
         request.types = types;
     if (categoryId)
         request.categoryId = categoryId;
-    if (is) 
+    if (is)
         request.is = is;
     if (skip > 0)
         request.skip = skip;
@@ -158,7 +162,7 @@ export const queryLatestOrganizationsPosts = async ({ organizationId, types, cat
 
 export const queryLatestPosts = async(types, technologyIds, skip, take) => {
     const request = { orderBy:'rank' };
-    if (types) 
+    if (types)
         request.types = types;
     if (technologyIds)
         request.anyTechnologyIds = technologyIds;
@@ -173,7 +177,7 @@ export const getTechnology = async(slug) => {
     const request = new GetTechnology();
     request.slug = slug;
     const response = await client.get(request);
-    return { 
+    return {
         ...response.technology,
         technologyStacks: response.technologyStacks
     }
@@ -295,10 +299,10 @@ export const createOrganization = async(name, slug, description) => {
 
 export const getOrganizationAdmin = async(id) => await client.get(new GetOrganizationAdmin(), { id });
 
-export const createOrganizationForTechnology = async(technologyId) => 
+export const createOrganizationForTechnology = async(technologyId) =>
     await client.post(Object.assign(new CreateOrganizationForTechnology(), { technologyId }));
 
-export const createOrganizationForTechStack = async(techStackId) => 
+export const createOrganizationForTechStack = async(techStackId) =>
     await client.post(Object.assign(new CreateOrganizationForTechnology(), { techStackId }));
 
 export const updateOrganization = async(args) => await client.put(Object.assign(new UpdateOrganization(), args));
@@ -479,7 +483,7 @@ export const logout = async() => {
 };
 
 export const login = async(provider, userName, password) => {
-    await logout();    
+    await logout();
 
     const request = new Authenticate();
     request.provider = provider;
