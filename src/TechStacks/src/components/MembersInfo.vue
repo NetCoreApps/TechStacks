@@ -49,7 +49,7 @@ export default {
   props: ['organization'],
 
   computed: {
-    errorSummary(){ 
+    errorSummary(){
       return errorResponseExcept.call(this,[]);
     },
     owners(){
@@ -62,10 +62,10 @@ export default {
       return this.organization.membersCount;
     },
     member(){
-      return this.userOrganizations && this.userOrganizations.members.find(x => x.organizationId == this.organization.id);
+      return this.userOrganizations && (this.userOrganizations.members || []).find(x => x.organizationId === this.organization.id);
     },
     pendingInvite(){
-      return this.userOrganizations && this.userOrganizations.memberInvites.find(x => x.organizationId == this.organization.id);
+      return this.userOrganizations && (this.userOrganizations.memberInvites || []).find(x => x.organizationId === this.organization.id);
     },
 
     ...mapGetters([

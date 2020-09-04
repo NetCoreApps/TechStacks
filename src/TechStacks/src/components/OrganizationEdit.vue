@@ -3,12 +3,12 @@
       <v-layout v-if="!id && errorSummary">
         <v-alert outline color="error" icon="warning" :value="true">
           Organization was not found
-        </v-alert>                  
+        </v-alert>
       </v-layout>
       <v-layout v-else-if="forbidden">
         <v-alert outline color="error" icon="warning" :value="true">
           Access is limited to Organization Owners and Moderators
-        </v-alert>                  
+        </v-alert>
       </v-layout>
       <v-layout v-else-if="!isOrganizationModerator">
         <v-alert outline color="error" icon="warning" :value="true">
@@ -27,13 +27,13 @@
             <v-card-title>
               <v-form v-model="valid" ref="form" lazy-validation style="width:900px">
                 <v-container>
-                  <v-alert outline color="error" icon="warning" :value="errorSummary">{{ errorSummary }}</v-alert>                  
+                  <v-alert outline color="error" icon="warning" :value="errorSummary">{{ errorSummary }}</v-alert>
                   <v-layout column>
 
                     <v-text-field
                       label="Organization Name"
                       v-model="name"
-                      required                        
+                      required
                       :disabled="!isOrganizationOwner"
                       :rules="nameRules"
                       :counter="nameCounter"
@@ -141,7 +141,7 @@
                     </v-layout>
 
                   </v-layout>
-                </v-container>              
+                </v-container>
               </v-form>
             </v-card-title>
             <v-card-actions v-if="isOrganizationOwner" style="text-align:center">
@@ -158,7 +158,7 @@
                   <v-flex xs5>
                       <v-btn large @click="remove" :disabled="!allowDelete" color="red" class="white--text">
                         Delete Organization
-                      </v-btn>                    
+                      </v-btn>
                   </v-flex>
               </v-layout>
             </v-card-actions>
@@ -206,7 +206,7 @@
                           <em class="label" :style="labelStyle(label.slug)">{{ label.slug }}</em>
 
                           {{ label.description }}
-                          
+
                         </v-flex>
                         <v-flex v-if="editLabel == label.slug">
                           <LabelEdit :label="label" @done="labelDone" />
@@ -244,7 +244,7 @@
                           </v-btn>
 
                           {{ category.name }}
-                          
+
                           <em class="tag">{{ category.slug }}</em>
                         </v-flex>
                         <v-flex v-if="editCategory == category.id">
@@ -286,7 +286,7 @@
                           {{ member.userName }}
                           <em v-if="member.isOwner" class="tag green">owner</em>
                           <em v-else-if="member.isModerator" class="tag blue">moderator</em>
-                          
+
                           <em v-if="member.denyAll" class="tag red">deny-all</em>
                           <em v-if="member.denyPosts" class="tag red">deny-posts</em>
                           <em v-if="member.denyComments" class="tag red">deny-comments</em>
@@ -296,7 +296,7 @@
                         </v-flex>
                       </v-layout>
                     </v-card-title>
-                  </v-card>                  
+                  </v-card>
                 </v-flex>
                 <v-flex v-if="addMember">
                   <MemberEdit :orgId="id" :isOrganizationOwner="isOrganizationOwner" @done="memberDone" />
@@ -340,7 +340,7 @@
               </v-layout>
             </v-card-title>
           </v-card>
-        </v-flex>        
+        </v-flex>
 
         <v-flex v-if="tab==4">
           <v-card>
@@ -352,7 +352,7 @@
                       <v-layout>
                         <v-flex>
                           <div>
-                            <nuxt-link :to="routes.post(report.postId,report.title)">{{ report.title }}</nuxt-link> 
+                            <nuxt-link :to="routes.post(report.postId,report.title)">{{ report.title }}</nuxt-link>
                             by <nuxt-link :to="routes.user(report.createdBy)">@{{ report.createdBy }}</nuxt-link>
                           </div>
                           <div>
@@ -362,7 +362,7 @@
                             <v-btn small @click="actionPostReport(report.id,report.postId,'Dismiss')" title="Dismiss" :disabled="loading">
                               Dismiss
                             </v-btn>
-                              total reports: <b>{{ report.reportCount }}</b>, this report from 
+                              total reports: <b>{{ report.reportCount }}</b>, this report from
                               <nuxt-link :to="routes.user(report.userName)">@{{ report.userName }}</nuxt-link>:
                               <b> {{ report.flagType }} </b> <em>{{ report.reportNotes }}</em>
                           </div>
@@ -377,7 +377,7 @@
               </v-layout>
             </v-card-title>
           </v-card>
-        </v-flex>        
+        </v-flex>
 
         <v-flex v-if="tab==5">
           <v-card>
@@ -389,7 +389,7 @@
                       <v-layout>
                         <v-flex>
                           <div>
-                            <nuxt-link :to="routes.comment(report.postId,report.postCommentId)">{{ report.postCommentId }}</nuxt-link> 
+                            <nuxt-link :to="routes.comment(report.postId,report.postCommentId)">{{ report.postCommentId }}</nuxt-link>
                             by <nuxt-link :to="routes.user(report.createdBy)">@{{ report.createdBy }}</nuxt-link>
                             <div class="comment-content" v-html="report.contentHtml" style="border:1px solid #ccc;padding:0 10px;margin:5px 0"></div>
                           </div>
@@ -400,7 +400,7 @@
                             <v-btn small @click="actionPostCommentReport(report.id,report.postCommentId,report.postId,'Dismiss')" title="Dismiss" :disabled="loading">
                               Dismiss
                             </v-btn>
-                              total reports: <b>{{ report.reportCount }}</b>, this report from 
+                              total reports: <b>{{ report.reportCount }}</b>, this report from
                               <nuxt-link :to="routes.user(report.userName)">@{{ report.userName }}</nuxt-link>:
                               <b> {{ report.flagType }} </b> <em>{{ report.reportNotes }}</em>
                           </div>
@@ -415,10 +415,10 @@
               </v-layout>
             </v-card-title>
           </v-card>
-        </v-flex>        
+        </v-flex>
 
       </v-layout>
-      
+
   </div>
 </template>
 
@@ -457,11 +457,11 @@ export default {
   components: { CategoryEdit, MemberEdit, LabelEdit, Editor },
   props: ['orgSlug'],
   computed: {
-    errorSummary(){ 
+    errorSummary(){
       return errorResponseExcept.call(this,Object.keys(organization));
     },
     member() {
-      return this.userOrganizations && this.userOrganizations.members.find(x => x.organizationId == this.id);
+      return this.userOrganizations && (this.userOrganizations.members || []).find(x => x.organizationId == this.id);
     },
     isOrganizationOwner(){
       return this.isAdmin || (this.member && this.member.isOwner);
@@ -498,7 +498,7 @@ export default {
         this.loadOrgnaization();
       }
     },
-    
+
     async lockOrganization(lock) {
       await lockOrganization(this.id, lock);
       this.locked = this.lockedBy = null;
@@ -528,7 +528,7 @@ export default {
           this.responseStatus = e.responseStatus || e;
       } finally {
           this.$store.commit('loading', false);
-      }      
+      }
     },
 
     async actionPostCommentReport(id,postCommentId,postId,action) {
@@ -541,7 +541,7 @@ export default {
           this.responseStatus = e.responseStatus || e;
       } finally {
           this.$store.commit('loading', false);
-      }      
+      }
     },
 
     async done() {
@@ -551,9 +551,9 @@ export default {
     async remove() {
       try {
         this.$store.commit('loading', true);
-        
+
         const response = await deleteOrganization(this.id);
-        
+
         this.done();
 
       } catch(e) {
@@ -567,13 +567,13 @@ export default {
       if (this.$refs.form.validate()) {
           try {
             this.$store.commit('loading', true);
-            
+
             const fields = toObject.call(this, Object.keys(organization));
 
             const response = await updateOrganization(fields);
 
             this.done();
-            
+
           } catch(e) {
               this.responseStatus = e.responseStatus || e;
           } finally {
@@ -622,7 +622,7 @@ export default {
     this.$store.dispatch('loadOverview');
     this.$store.dispatch('loadTechnologyTiers');
     this.loadOrgnaization();
-    
+
     window.addEventListener('keyup', this.handleKeyUp);
   },
 
