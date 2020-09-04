@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-rsync -avz -e 'ssh' bin/Release/netcoreapp3.1/publish/ ubuntu@forums.servicestack.net:/home/ubuntu/apps/techstacks
-ssh ubuntu@forums.servicestack.net "sudo supervisorctl restart app-techstacks"
+rsync -avz -e 'ssh' bin/Release/netcoreapp3.1/publish/ deploy@ec2-34-232-4-72.compute-1.amazonaws.com:/home/deploy/apps/techstacks
+ssh deploy@ec2-34-232-4-72.compute-1.amazonaws.com "sudo supervisorctl restart app-techstacks"
