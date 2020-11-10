@@ -36,7 +36,7 @@ namespace TechStacks.ServiceInterface
                 }
                 if (authTokens.Provider.ToLower() == "twitter")
                 {
-                    TwitterProfileUrl = session.GetProfileUrl();
+                    TwitterProfileUrl = session.GetProfileUrl().Replace("http://","https://");
                 }
 
                 ProfileUrl = GithubProfileUrl ?? TwitterProfileUrl;

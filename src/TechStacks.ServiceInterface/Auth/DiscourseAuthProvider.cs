@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using ServiceStack;
 using ServiceStack.Auth;
 
@@ -8,17 +10,18 @@ namespace TechStacks.ServiceInterface.Auth
     public class DiscourseAuthProvider : CredentialsAuthProvider
     {        
         public string DiscourseUrl { get; set; }
-        
-        public override bool TryAuthenticate(IServiceBase authService, string userName, string password)
+
+        public override async Task<bool> TryAuthenticateAsync(IServiceBase authService, string userName, string password,
+            CancellationToken token = new CancellationToken())
         {
-            var valid = base.TryAuthenticate(authService, userName, password);
+            var valid = await base.TryAuthenticateAsync(authService, userName, password, token);
             if (valid)
                 return true;
             
             var csrfUrl = DiscourseUrl.CombineWith("/session/csrf");
             
             var cookies = new CookieContainer();
-            var csrfJson = csrfUrl.GetJsonFromUrl(
+            var csrfJson = await csrfUrl.GetJsonFromUrlAsync(
                 requestFilter:req => req.CookieContainer = cookies);
             var csrfObj = (Dictionary<string,object>)JSON.parse(csrfJson);
 
@@ -26,7 +29,7 @@ namespace TechStacks.ServiceInterface.Auth
             
             var loginUrl = DiscourseUrl.CombineWith("/session");
             
-            var sessionJson = loginUrl.PostToUrl(new {
+            var sessionJson = await loginUrl.PostToUrlAsync(new {
                 login = userName,
                 password = password,
             }, requestFilter: req => {
