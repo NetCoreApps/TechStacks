@@ -87,7 +87,7 @@ namespace TechStacks
                 new GithubAuthProvider(AppSettings),
                 new JwtAuthProvider(AppSettings) {
                     RequireSecureConnection = false,
-                    IncludeJwtInConvertSessionToTokenResponse = true,
+                    UseTokenCookie = true,
                     CreatePayloadFilter = (payload, session) => {
                         var githubAuth = session.ProviderOAuthAccess.Safe()
                             .FirstOrDefault(x => x.Provider == "github");

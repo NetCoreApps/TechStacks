@@ -1,116 +1,82 @@
-import { log, JsonServiceClient, toFormData } from "@servicestack/client";
+import {JsonServiceClient, toFormData} from "@servicestack/client";
 import {
-    GetConfig,
-    Overview,
-    OverviewResponse,
-    ConvertSessionToToken,
-    GetTechnology,
-    GetTechnologyStack,
-    GetPageStats,
-    GetAllTechnologies,
-    GetAllTechnologyStacks,
-    QueryTechnology,
-    QueryTechStacks,
-    GetUserInfo,
-    SessionInfo,
-    GetUserFeed,
+    ActionPostCommentReport,
+    ActionPostReport,
     AddFavoriteTechnology,
-    RemoveFavoriteTechnology,
     AddFavoriteTechStack,
-    RemoveFavoriteTechStack,
-    CreateTechnology,
-    UpdateTechnology,
-    DeleteTechnology,
-    CreateTechnologyStack,
-    UpdateTechnologyStack,
-    DeleteTechnologyStack,
-    GetTechnologyPreviousVersions,
-    GetTechnologyStackPreviousVersions,
+    AddOrganizationCategory,
+    AddOrganizationLabel,
+    AddOrganizationMember,
+    Authenticate,
+    CreateOrganization,
+    CreateOrganizationForTechnology,
     CreatePost,
-    QueryPosts,
-    UserPostVote,
-    UserPostReport,
-    GetPost,
-    GetUsersKarma,
     CreatePostComment,
-    UserPostCommentReport,
-    UserPostCommentVote,
-    UpdatePostComment,
-    UpdatePost,
+    CreateTechnology,
+    CreateTechnologyStack,
+    DeleteOrganization,
+    DeleteOrganizationCategory,
     DeletePost,
     DeletePostComment,
-    GetUserPostCommentVotes,
-    PinPostComment,
-    QueryOrganizations,
-    GetOrganizationMembers,
-    QueryPostComments,
-    LockPost,
-    CreateOrganization,
-    DeleteOrganization,
-    UpdateOrganization,
-    CreateCategory,
-    GetOrganizationBySlug,
-    DeleteOrganizationCategory,
-    UpdateOrganizationCategory,
-    LockOrganization,
-    AddOrganizationMember,
-    UpdateOrganizationMember,
-    RemoveOrganizationMember,
-    AddOrganizationCategory,
-    CreateOrganizationFromPost,
-    CreateOrganizationForTechnology,
+    DeleteTechnology,
+    DeleteTechnologyStack,
+    GetAllTechnologies,
+    GetAllTechnologyStacks,
+    GetConfig,
     GetOrganization,
-    GetUserPostActivity,
-    UserPostFavorite,
-    RequestOrganizationMemberInvite,
-    UpdateOrganizationMemberInvite,
     GetOrganizationAdmin,
-    ActionPostReport,
-    ActionPostCommentReport,
+    GetOrganizationBySlug,
+    GetPageStats,
+    GetPost,
+    GetTechnology,
+    GetTechnologyPreviousVersions,
+    GetTechnologyStack,
+    GetTechnologyStackPreviousVersions,
+    GetUserFeed,
+    GetUserInfo,
     GetUserOrganizations,
+    GetUserPostActivity,
+    GetUserPostCommentVotes,
+    GetUsersKarma,
     HidePost,
-    GetPreRender,
-    AddOrganizationLabel,
-    UpdateOrganizationLabel,
+    LockOrganization,
+    LockPost,
+    Overview,
+    PinPostComment,
+    QueryPostComments,
+    QueryPosts,
+    QueryTechnology,
+    QueryTechStacks,
+    RemoveFavoriteTechnology,
+    RemoveFavoriteTechStack,
     RemoveOrganizationLabel,
+    RemoveOrganizationMember,
+    RequestOrganizationMemberInvite,
+    SessionInfo,
     SubscribeToOrganization,
-    Authenticate,
+    UpdateOrganization,
+    UpdateOrganizationCategory,
+    UpdateOrganizationLabel,
+    UpdateOrganizationMember,
+    UpdateOrganizationMemberInvite,
+    UpdatePost,
+    UpdatePostComment,
+    UpdateTechnology,
+    UpdateTechnologyStack,
+    UserPostCommentReport,
+    UserPostCommentVote,
+    UserPostFavorite,
+    UserPostReport,
+    UserPostVote,
 } from "./dtos";
 
-const usingProxy = location.host === "techstacks.io";
-
-let BaseUrl = usingProxy
-    ? "https://www.techstacks.io/"  // .NET Core App Server on AWS LightSail
-    : "/";
-
-let AuthBaseUrl = usingProxy
-    ? "https://techstacks.io/"      // Netlify
-    : "/";
-
-BaseUrl = AuthBaseUrl = "/";
+const BaseUrl = "/";
 
 export const client = new JsonServiceClient(BaseUrl);
-export const authClient = new JsonServiceClient(AuthBaseUrl); //Note: higher latency as goes through Netlify's reverse proxy
 
 export const getSessionInfo = async() => {
     try {
-        //Converts Session to JWT Token Cookie
-        const authResponse = await authClient.post(new ConvertSessionToToken());
-        if (BaseUrl === AuthBaseUrl)
-            return await client.get(new SessionInfo());
-
-        client.bearerToken = authResponse.accessToken;
-        const [response, authResponse2] = await Promise.all([
-            client.get(new SessionInfo()),
-            client.post(new ConvertSessionToToken()),
-        ]);
-
-        //Remove unnecessary JWT from HTTP Headers so only JWT Cookie is used
-        client.bearerToken = authClient.bearerToken = null;
-        client.headers.delete('Authorization');
-        authClient.headers.delete('Authorization');
-
-        return response;
+        return await client.get(new SessionInfo());
     } catch (e) {
         return null;
     }
