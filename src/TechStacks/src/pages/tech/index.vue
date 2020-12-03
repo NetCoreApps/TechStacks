@@ -56,18 +56,18 @@
                         </v-flex>
 
                         <v-flex xs3>
-                          <v-checkbox 
-                            :disabled="!orderByField || orderByField[0] == '-'"
+                          <v-checkbox
+                            :disabled="!orderByField || orderByField[0] === '-'"
                             label="Descending"
                             v-model="sortDesc"
-                          ></v-checkbox>                        
+                          ></v-checkbox>
                         </v-flex>
 
                         <v-flex xs5>
                           <v-btn large class="btn-reset" @click="reset()">reset</v-btn>
                           <v-btn large class="btn-add" :disabled="!isAuthenticated" :to="routes.newTech" primary>Add Technology</v-btn>
                         </v-flex>
-                        
+
                       </v-layout>
 
                       <v-layout style="text-align:center;min-height:20px">
@@ -106,7 +106,7 @@
                   <td class="nowrap">{{ props.item.name }}</td>
                   <td>{{ props.item.description }}</td>
                   <td class="nowrap" style="text-align:center">
-                    <a :href="routes.tech(props.item.slug)"><img :src="props.item.logoUrl" :alt="props.item.name" style="max-width:220px;max-height:120px;padding:1em 0"></a>
+                    <nuxt-link :to="routes.tech(props.item.slug)" :title="props.item.name"><img :src="props.item.logoUrl" :alt="props.item.name" style="max-width:220px;max-height:120px;padding:1em 0"></nuxt-link>
                     <div>{{ props.item.vendorName }}</div>
                   </td>
                 </tr>
@@ -117,7 +117,7 @@
         <v-flex v-else-if="!loading">
           <v-alert outline v-if="!querying" :value="true" color="info" icon="info">
             No results matched your query
-          </v-alert>          
+          </v-alert>
         </v-flex>
       </v-layout>
     </v-container>
@@ -134,8 +134,8 @@ import { log } from "~/store";
 
 export default {
   computed: {
-    heroUrl() { 
-      return heroes.hourly(new Date(), 20); 
+    heroUrl() {
+      return heroes.hourly(new Date(), 20);
     },
     hasQuery() {
       return this.name || this.vendor || this.tier || this.orderByField;
@@ -151,7 +151,7 @@ export default {
       this.results = this.allTechnologies;
       this.total = this.allTechnologiesTotal;
     },
-    buildAutoQuery(){ 
+    buildAutoQuery(){
       if (!this.hasQuery)
         return null;
 
@@ -162,8 +162,8 @@ export default {
         q.vendorNameContains = this.vendor;
       if (this.tier)
         q.tier = this.tier;
-      if (this.orderByField) 
-        q.orderBy = (this.sortDesc && this.orderByField[0] != '-' ? '-' : '') + this.orderByField;
+      if (this.orderByField)
+        q.orderBy = (this.sortDesc && this.orderByField[0] !== '-' ? '-' : '') + this.orderByField;
       return q;
     },
     async runQuery() {
@@ -189,7 +189,7 @@ export default {
     this.tier = qs.tier;
 
     const orderItem = qs.orderBy && this.orderBy.filter(x => x.value.indexOf(qs.orderBy) >= 0)[0];
-    this.sortDesc = qs.orderBy && qs.orderBy[0] == '-' && (orderItem && orderItem.value[0] != '-');
+    this.sortDesc = qs.orderBy && qs.orderBy[0] === '-' && (orderItem && orderItem.value[0] !== '-');
     this.orderByField = orderItem && orderItem.value;
 
     const setResults = () => {
@@ -200,7 +200,7 @@ export default {
         this.total = this.allTechnologiesTotal;
       }
     };
-    if (this.$store.getters.allTechnologies.length == 0) {
+    if (this.$store.getters.allTechnologies.length === 0) {
       this.$store.dispatch("getAllTechnologies").then(r => setResults());
     } else {
       setResults();
@@ -217,11 +217,11 @@ export default {
         vendor: '',
         orderByField: '',
         sortDesc: false,
-        orderBy: [{text:'Most Views', value:'-ViewCount'}, 
-                  {text:'Most Favorited', value:'-FavCount'}, 
-                  {text:'Recently Updated', value:'-LastModified'}, 
-                  {text:'Name', value:'Name'}, 
-                  {text:'Vendor', value:'VendorName'}, 
+        orderBy: [{text:'Most Views', value:'-ViewCount'},
+                  {text:'Most Favorited', value:'-FavCount'},
+                  {text:'Recently Updated', value:'-LastModified'},
+                  {text:'Name', value:'Name'},
+                  {text:'Vendor', value:'VendorName'},
                   {text:'Modified', value:'LastModified'},
                   {text:'Created', value:'Created'}],
         results: [],

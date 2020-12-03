@@ -6,8 +6,8 @@ oauth.twitter.ConsumerSecret 0i11DERF5s4azDOzMmsIurUECWG3RUTqQ9hqNJpCe7tWwyZrxj
 oauth.github.Scopes user
 oauth.github.ClientId d8f0b22800ce2b358438
 oauth.github.ClientSecret e0ed94f5d6409591363ed43f91576e136ce2b8e2
-oauth.RedirectUrl http://techstacks.io
-oauth.CallbackUrl http://techstacks.io/auth/{0}
+oauth.RedirectUrl https://techstacks.io
+oauth.CallbackUrl https://techstacks.io/auth/{0}
 OrmLite.Provider Postgres
 OrmLite.ConnectionString Server=apps.ct4ykeamwqkx.us-east-1.rds.amazonaws.com;Port=5432;User Id=test;Password=test;Database=techstacks;Pooling=true;MinPoolSize=0;MaxPoolSize=200
 Admins darren.j.reid@gmail.com,demis.bellot@gmail.com

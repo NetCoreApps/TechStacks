@@ -229,7 +229,7 @@ namespace TechStacks
                     TextColor = "#fff",
                     LinkColor = "#ffff8d",
                     BrandImageUrl = "/img/app/brand.png",
-                    BrandUrl = "http://techstacks.io",
+                    BrandUrl = "https://techstacks.io",
                     BackgroundImageUrl = "/img/app/bg.png",
                     IsPublic = true,
                     OnlyShowAnnotatedServices = true,

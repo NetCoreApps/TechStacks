@@ -25,8 +25,8 @@
                   <v-layout v-else-if="techstack">
                     <v-flex class="stack-description">
                       <h1>{{techstack.name}}</h1>
-                      <div v-if="techstack.vendorName != techstack.name" class="vendor">{{ techstack.vendorName }}</div>
-                      <div v-if="techstack" class="description">{{ techstack.description }}</div>          
+                      <div v-if="techstack.vendorName !== techstack.name" class="vendor">{{ techstack.vendorName }}</div>
+                      <div v-if="techstack" class="description">{{ techstack.description }}</div>
                     </v-flex>
                     <v-flex class="stack-screenshot" v-if="techstack.screenshotUrl && techstack.appUrl">
                       <a :href="techstack.appUrl">
@@ -44,8 +44,8 @@
                       <span>
                         <v-btn v-if="!hasFavorited" icon @click="addFavorite()" :title="!isAuthenticated ? 'Sign In to add to favorites' : 'add to favorites (F)'">
                           <v-icon>favorite_border</v-icon>
-                        </v-btn>  
-                        <v-btn v-if="hasFavorited" icon @click="removeFavorite()" title="remove from favorites (F)"><v-icon color="pink">favorite</v-icon></v-btn>  
+                        </v-btn>
+                        <v-btn v-if="hasFavorited" icon @click="removeFavorite()" title="remove from favorites (F)"><v-icon color="pink">favorite</v-icon></v-btn>
                         <b v-if="pageStats.favCount > 0">{{ pageStats.favCount }}</b> /
                       </span>
                       <span><b>{{ pageStats.viewCount }}</b> views</span>
@@ -59,7 +59,7 @@
                     </v-btn>
                   </v-flex>
                   <v-flex xs12 style="text-align:right;margin-right:1em;color:gray;font-size:smaller;vertical-align:middle">
-                    <span v-if="techstack.lastModifiedBy && techstack.lastModifiedBy != techstack.createdBy">
+                    <span v-if="techstack.lastModifiedBy && techstack.lastModifiedBy !== techstack.createdBy">
                       updated {{ dateFmt(new Date(techstack.lastModified)) }} by <nuxt-link :to="routes.user(techstack.lastModifiedBy)">{{ techstack.lastModifiedBy }}</nuxt-link>
                     </span>
                     <span>
@@ -89,7 +89,7 @@
 
                 <v-layout class="tech-info" v-for="tier in stackTiers" :key="tier.name">
                   <v-flex>
-                      
+
                       <v-flex>
                         <h2>{{tier.title}}</h2>
                       </v-flex>
@@ -126,7 +126,7 @@
     <v-container v-if="techstack" class="body" grid-list-md>
       <TechnologyComments ref="techComments" :techstack="techstack" @organizationCreated="loadTechStack" />
     </v-container>
-    
+
   </div>
 </template>
 
@@ -147,8 +147,8 @@ export default {
     slug() {
       return this.$route.params.slug;
     },
-    heroUrl() { 
-      return heroes.static(this.slug); 
+    heroUrl() {
+      return heroes.static(this.slug);
     },
     techstack(){
       return this.getTechnologyStack(this.slug);
@@ -220,7 +220,7 @@ export default {
 
     dateFmt,
   },
-  
+
   async mounted() {
     await this.$store.dispatch('loadTechnologyStackIfNotExists', this.slug);
     this.notFound = this.techstack == null;

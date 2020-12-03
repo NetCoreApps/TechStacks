@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using ServiceStack;
 using ServiceStack.OrmLite;
 using ServiceStack.Script;
-using ServiceStack.Templates;
 using TechStacks.ServiceInterface.DataModel;
 using TechStacks.ServiceInterface.Notifications;
 using TechStacks.ServiceModel.Types;
