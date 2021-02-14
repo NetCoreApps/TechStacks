@@ -74,7 +74,7 @@ namespace TechStacks.ServiceInterface
             if (string.IsNullOrEmpty(techStack.ScreenshotUrl))
                 throw new ArgumentException("Screenshot is Required", nameof(techStack.ScreenshotUrl));
 
-            var techIds = (request.TechnologyIds ?? new List<long>()).ToHashSet();
+            var techIds = (request.TechnologyIds ?? new List<long>()).ToSet();
 
             //Only Post an Update if Stack has TechCount >= 4
             var postUpdate = AppSettings.EnableTwitterUpdates() && techIds.Count >= 4;
@@ -154,7 +154,7 @@ namespace TechStacks.ServiceInterface
                         "This TechStack is locked and can only be modified by its Owner or Admins.");
             }
 
-            var techIds = (request.TechnologyIds ?? new List<long>()).ToHashSet();
+            var techIds = (request.TechnologyIds ?? new List<long>()).ToSet();
 
             //Only Post an Update if there was no other update today and Stack as TechCount >= 4
             var postUpdate = AppSettings.EnableTwitterUpdates()
@@ -187,7 +187,7 @@ namespace TechStacks.ServiceInterface
                 await Db.SaveAsync(techStack);
 
                 var existingTechChoices = await Db.SelectAsync<TechnologyChoice>(q => q.TechnologyStackId == request.Id);
-                var techIdsToAdd = techIds.Except(existingTechChoices.Select(x => x.TechnologyId)).ToHashSet();
+                var techIdsToAdd = techIds.Except(existingTechChoices.Select(x => x.TechnologyId)).ToSet();
                 var techChoices = techIdsToAdd.Map(x => new TechnologyChoice
                 {
                     TechnologyId = x,
