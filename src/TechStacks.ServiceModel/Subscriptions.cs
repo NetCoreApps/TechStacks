@@ -12,7 +12,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/subscribe", "PUT")]
-    public class SubscribeToOrganization : IReturnVoid
+    public class SubscribeToOrganization : IReturnVoid, IPut
     {
         public int OrganizationId { get; set; }
 
@@ -22,19 +22,19 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{PostId}/subscribe", "PUT")]
-    public class SubscribeToPost : IReturnVoid
+    public class SubscribeToPost : IReturnVoid, IPut
     {
         public long PostId { get; set; }
     }
 
     [Route("/orgs/{OrganizationId}/subscribe", "DELETE")]
-    public class DeleteOrganizationSubscription : IReturnVoid
+    public class DeleteOrganizationSubscription : IReturnVoid, IDelete
     {
         public long OrganizationId { get; set; }
     }
 
     [Route("/posts/{PostId}/subscribe", "DELETE")]
-    public class DeletePostSubscription : IReturnVoid
+    public class DeletePostSubscription : IReturnVoid, IDelete
     {
         public long PostId { get; set; }
     }

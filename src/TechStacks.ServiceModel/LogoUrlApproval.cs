@@ -4,7 +4,7 @@ using TechStacks.ServiceModel.Types;
 namespace TechStacks.ServiceModel
 {
     [Route("/admin/technology/{TechnologyId}/logo")]
-    public class LogoUrlApproval : IReturn<LogoUrlApprovalResponse>
+    public class LogoUrlApproval : IReturn<LogoUrlApprovalResponse>, IPut
     {
         public long TechnologyId { get; set; }
         public bool Approved { get; set; }

@@ -6,7 +6,7 @@ using TechStacks.ServiceModel.Types;
 namespace TechStacks.ServiceModel
 {
     [Route("/my-session")]
-    public class SessionInfo : IReturn<SessionInfoResponse> {}
+    public class SessionInfo : IReturn<SessionInfoResponse>, IGet {}
 
     public class SessionInfoResponse
     {

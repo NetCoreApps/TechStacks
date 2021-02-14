@@ -5,14 +5,14 @@ namespace TechStacks.ServiceModel
 {
     [ExcludeMetadata]
     [Route("/notifications/{Id}/send")]
-    public class SendNotification : IReturnVoid
+    public class SendNotification : IReturnVoid, IPost
     {
         public long Id { get; set; }
     }
 
     [ExcludeMetadata]
     [Route("/email/system")]
-    public class SendSystemEmail : IReturnVoid
+    public class SendSystemEmail : IReturnVoid, IPost
     {
         public string Subject { get; set; }
         public string Body { get; set; }
@@ -20,7 +20,7 @@ namespace TechStacks.ServiceModel
     
     [ExcludeMetadata]
     [Route("/email/send")]
-    public class SendEmail : IReturnVoid
+    public class SendEmail : IReturnVoid, IPost
     {
         public string To { get; set; }
         public string Subject { get; set; }
@@ -29,7 +29,7 @@ namespace TechStacks.ServiceModel
     
     [ExcludeMetadata]
     [Route("/notifications/retry-pending")]
-    public class RetryPendingNotifications {}
+    public class RetryPendingNotifications : IGet {}
 
     public class RetryPendingNotificationsResponse
     {

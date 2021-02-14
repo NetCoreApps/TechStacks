@@ -5,7 +5,7 @@ using ServiceStack;
 namespace TechStacks.ServiceModel
 {
     [Route("/sync/discourse/{Site}")]
-    public class SyncDiscourseSite
+    public class SyncDiscourseSite : IPost
     {
         public string Site { get; set; }
     }
@@ -21,7 +21,7 @@ namespace TechStacks.ServiceModel
         public ResponseStatus ResponseStatus { get; set; }
     }
     
-    public class ImportUser : IReturn<ImportUserResponse>
+    public class ImportUser : IReturn<ImportUserResponse>, IPost
     {
         public string UserName { get; set; }
 
@@ -55,7 +55,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/import/uservoice/suggestion")]
-    public class ImportUserVoiceSuggestion : IReturn<ImportUserVoiceSuggestionResponse>
+    public class ImportUserVoiceSuggestion : IReturn<ImportUserVoiceSuggestionResponse>, IPost
     {
         public int OrganizationId { get; set; }
         public string Url { get; set; }

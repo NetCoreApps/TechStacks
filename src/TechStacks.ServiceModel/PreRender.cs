@@ -8,7 +8,7 @@ using ServiceStack.Web;
 namespace TechStacks.ServiceModel
 {
     [Route("/prerender/{Path*}", "PUT")]
-    public class StorePreRender : IRequiresRequestStream, IReturnVoid
+    public class StorePreRender : IRequiresRequestStream, IReturnVoid, IPut
     {
         public string Path { get; set; }
         
@@ -16,7 +16,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/prerender/{Path*}", "GET")]
-    public class GetPreRender : IReturn<string>
+    public class GetPreRender : IReturn<string>, IGet
     {
         public string Path { get; set; }
     }
@@ -39,7 +39,7 @@ namespace TechStacks.ServiceModel
     
     
     [Route("/prerender/sites")]
-    public class GetPathsToRender {}
+    public class GetPathsToRender : IGet {}
 
     public class GetPathsToRenderResponse
     {

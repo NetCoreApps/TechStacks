@@ -3,7 +3,7 @@
 namespace TechStacks.ServiceModel
 {
     [Route("/admin/techstacks/{TechnologyStackId}/lock")]
-    public class LockTechStack : IReturn<LockStackResponse>
+    public class LockTechStack : IReturn<LockStackResponse>, IPut
     {
         public long TechnologyStackId { get; set; }
         public bool IsLocked { get; set; }
@@ -12,7 +12,7 @@ namespace TechStacks.ServiceModel
     public class LockStackResponse {}
 
     [Route("/admin/technology/{TechnologyId}/lock")]
-    public class LockTech : IReturn<LockStackResponse>
+    public class LockTech : IReturn<LockStackResponse>, IPut
     {
         public long TechnologyId { get; set; }
         public bool IsLocked { get; set; }

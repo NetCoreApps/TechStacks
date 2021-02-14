@@ -6,13 +6,13 @@ using TechStacks.ServiceModel.Types;
 namespace TechStacks.ServiceModel
 {
     [Route("/organizations/{Slug}", "GET")]
-    public class GetOrganizationBySlug : IReturn<GetOrganizationResponse>
+    public class GetOrganizationBySlug : IReturn<GetOrganizationResponse>, IGet
     {
         public string Slug { get; set; }
     }
 
     [Route("/orgs/{Id}", "GET")]
-    public class GetOrganization : IReturn<GetOrganizationResponse>
+    public class GetOrganization : IReturn<GetOrganizationResponse>, IGet
     {
         public int? Id { get; set; }
     }
@@ -41,7 +41,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{Id}/admin", "GET")]
-    public class GetOrganizationAdmin : IReturn<GetOrganizationAdminResponse>
+    public class GetOrganizationAdmin : IReturn<GetOrganizationAdminResponse>, IGet
     {
         public int Id { get; set; }
     }
@@ -127,7 +127,7 @@ namespace TechStacks.ServiceModel
 
 
     [Route("/orgs", "POST")]
-    public class CreateOrganization : IReturn<CreateOrganizationResponse>
+    public class CreateOrganization : IReturn<CreateOrganizationResponse>, IPost
     {
         public string Name { get; set; }
         public string Slug { get; set; }
@@ -147,7 +147,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/posts/new", "POST")]
-    public class CreateOrganizationForTechnology : IReturn<CreateOrganizationForTechnologyResponse>
+    public class CreateOrganizationForTechnology : IReturn<CreateOrganizationForTechnologyResponse>, IPost
     {
         public long? TechnologyId { get; set; }
         public long? TechStackId { get; set; }
@@ -164,7 +164,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{Id}", "PUT")]
-    public class UpdateOrganization : IReturn<UpdateOrganizationResponse>
+    public class UpdateOrganization : IReturn<UpdateOrganizationResponse>, IPut
     {
         public int Id { get; set; }
         public string Slug { get; set; }
@@ -193,13 +193,13 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{Id}", "DELETE")]
-    public class DeleteOrganization : IReturnVoid
+    public class DeleteOrganization : IReturnVoid, IDelete
     {
         public int Id { get; set; }
     }
 
     [Route("/orgs/{Id}/lock", "PUT")]
-    public class LockOrganization : IReturnVoid
+    public class LockOrganization : IReturnVoid, IPut
     {
         public int Id { get; set; }
         public bool Lock { get; set; }
@@ -207,7 +207,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/categories", "GET")]
-    public class GetCategories : IReturn<GetCategoriesResponse>
+    public class GetCategories : IReturn<GetCategoriesResponse>, IGet
     {
         public int OrganizationId { get; set; }
     }
@@ -218,7 +218,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/categories", "POST")]
-    public class AddOrganizationCategory : IReturn<AddOrganizationCategoryResponse>
+    public class AddOrganizationCategory : IReturn<AddOrganizationCategoryResponse>, IPost
     {
         public int OrganizationId { get; set; }
         public string Slug { get; set; }
@@ -236,7 +236,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/categories/{Id}", "PUT")]
-    public class UpdateOrganizationCategory : IReturn<UpdateOrganizationCategoryResponse>
+    public class UpdateOrganizationCategory : IReturn<UpdateOrganizationCategoryResponse>, IPut
     {
         public int OrganizationId { get; set; }
         public int Id { get; set; }
@@ -252,14 +252,14 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/categories/{Id}", "DELETE")]
-    public class DeleteOrganizationCategory : IReturnVoid
+    public class DeleteOrganizationCategory : IReturnVoid, IDelete
     {
         public int OrganizationId { get; set; }
         public int Id { get; set; }
     }
 
     [Route("/orgs/{Id}/members", "GET")]
-    public class GetOrganizationMembers : IReturn<GetOrganizationMembersResponse>
+    public class GetOrganizationMembers : IReturn<GetOrganizationMembersResponse>, IGet
     {
         public int Id { get; set; }
     }
@@ -275,7 +275,7 @@ namespace TechStacks.ServiceModel
 
 
     [Route("/orgs/{OrganizationId}/labels", "POST")]
-    public class AddOrganizationLabel : IReturn<OrganizationLabelResponse>
+    public class AddOrganizationLabel : IReturn<OrganizationLabelResponse>, IPost
     {
         public int OrganizationId { get; set; }
         public string Slug { get; set; }
@@ -284,7 +284,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/members/{Slug}", "PUT")]
-    public class UpdateOrganizationLabel : IReturn<OrganizationLabelResponse>
+    public class UpdateOrganizationLabel : IReturn<OrganizationLabelResponse>, IPut
     {
         public int OrganizationId { get; set; }
         public string Slug { get; set; }
@@ -293,7 +293,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/labels/{Slug}", "DELETE")]
-    public class RemoveOrganizationLabel : IReturnVoid
+    public class RemoveOrganizationLabel : IReturnVoid, IDelete
     {
         public int OrganizationId { get; set; }
         public string Slug { get; set; }
@@ -305,7 +305,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/members", "POST")]
-    public class AddOrganizationMember : IReturn<AddOrganizationMemberResponse>
+    public class AddOrganizationMember : IReturn<AddOrganizationMemberResponse>, IPost
     {
         public int OrganizationId { get; set; }
         public string UserName { get; set; }
@@ -323,7 +323,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/members/{Id}", "PUT")]
-    public class UpdateOrganizationMember : IReturn<UpdateOrganizationMemberResponse>
+    public class UpdateOrganizationMember : IReturn<UpdateOrganizationMemberResponse>, IPut
     {
         public int OrganizationId { get; set; }
         public int UserId { get; set; }
@@ -341,14 +341,14 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/members/{UserId}", "DELETE")]
-    public class RemoveOrganizationMember : IReturnVoid
+    public class RemoveOrganizationMember : IReturnVoid, IDelete
     {
         public int OrganizationId { get; set; }
         public int UserId { get; set; }
     }
 
     [Route("/orgs/{OrganizationId}/invites", "GET")]
-    public class GetOrganizationMemberInvites : IReturn<GetOrganizationMemberInvitesResponse>
+    public class GetOrganizationMemberInvites : IReturn<GetOrganizationMemberInvitesResponse>, IGet
     {
         public int OrganizationId { get; set; }
     }
@@ -361,7 +361,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/invites", "POST")]
-    public class RequestOrganizationMemberInvite : IReturn<RequestOrganizationMemberInviteResponse>
+    public class RequestOrganizationMemberInvite : IReturn<RequestOrganizationMemberInviteResponse>, IPost
     {
         public int OrganizationId { get; set; }
     }
@@ -374,7 +374,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/invites/{UserId}", "PUT")]
-    public class UpdateOrganizationMemberInvite : IReturn<UpdateOrganizationMemberInviteResponse>
+    public class UpdateOrganizationMemberInvite : IReturn<UpdateOrganizationMemberInviteResponse>, IPut
     {
         public int OrganizationId { get; set; }
         public string UserName { get; set; }
@@ -388,7 +388,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/orgs/{OrganizationId}/members/set", "POST")]
-    public class SetOrganizationMembers : IReturn<SetOrganizationMembersResponse>
+    public class SetOrganizationMembers : IReturn<SetOrganizationMembersResponse>, IPost
     {
         public int OrganizationId { get; set; }
         public string[] GithubUserNames { get; set; }

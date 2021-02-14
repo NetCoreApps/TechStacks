@@ -6,7 +6,7 @@ using TechStacks.ServiceModel.Types;
 namespace TechStacks.ServiceModel
 {
     [Route("/my-feed")]
-    public class GetUserFeed {}
+    public class GetUserFeed : IGet {}
 
     public class GetUserFeedResponse
     {
@@ -14,7 +14,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/userinfo/{UserName}")]
-    public class GetUserInfo : IReturn<GetUserInfoResponse>
+    public class GetUserInfo : IReturn<GetUserInfoResponse>, IGet
     {
         public string UserName { get; set; }
     }

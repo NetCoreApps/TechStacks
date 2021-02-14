@@ -7,7 +7,7 @@ using TechStacks.ServiceModel.Types;
 namespace TechStacks.ServiceModel
 {
     [Route("/posts", "GET")]
-    public class QueryPosts : QueryDb<Post>
+    public class QueryPosts : QueryDb<Post>, IGet
     {
         public int[] Ids { get; set; }
         public int? OrganizationId { get; set; }
@@ -18,14 +18,14 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/comment", "GET")]
-    public class QueryPostComments : QueryDb<PostComment>
+    public class QueryPostComments : QueryDb<PostComment>, IGet
     {
         public int? UserId { get; set; }
         public int? PostId { get; set; }
     }
 
     [Route("/posts", "POST")]
-    public class CreatePost : IReturn<CreatePostResponse>
+    public class CreatePost : IReturn<CreatePostResponse>, IPost
     {
         public int OrganizationId { get; set; }
 
@@ -70,7 +70,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{Id}", "PUT")]
-    public class UpdatePost : IReturn<UpdatePostResponse>
+    public class UpdatePost : IReturn<UpdatePostResponse>, IPut
     {
         public long Id { get; set; }
 
@@ -109,7 +109,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{Id}", "DELETE")]
-    public class DeletePost : IReturn<DeletePostResponse>
+    public class DeletePost : IReturn<DeletePostResponse>, IDelete
     {
         public long Id { get; set; }
     }
@@ -121,7 +121,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{Id}/lock", "PUT")]
-    public class LockPost : IReturnVoid
+    public class LockPost : IReturnVoid, IPut
     {
         public long Id { get; set; }
         public bool Lock { get; set; }
@@ -129,7 +129,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{Id}/hide", "PUT")]
-    public class HidePost : IReturnVoid
+    public class HidePost : IReturnVoid, IPut
     {
         public long Id { get; set; }
         public bool Hide { get; set; }
@@ -137,7 +137,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{Id}/status/{Status}", "PUT")]
-    public class ChangeStatusPost : IReturnVoid
+    public class ChangeStatusPost : IReturnVoid, IPut
     {
         public long Id { get; set; }
         public string Status { get; set; }
@@ -145,7 +145,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/user/posts/activity")]
-    public class GetUserPostActivity : IReturn<GetUserPostActivityResponse> {}
+    public class GetUserPostActivity : IReturn<GetUserPostActivityResponse>, IGet {}
 
     public class GetUserPostActivityResponse
     {
@@ -158,7 +158,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/user/organizations")]
-    public class GetUserOrganizations : IReturn<GetUserOrganizationsResponse> { }
+    public class GetUserOrganizations : IReturn<GetUserOrganizationsResponse>, IGet { }
 
     public class GetUserOrganizationsResponse
     {
@@ -168,7 +168,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{Id}/vote", "PUT")]
-    public class UserPostVote : IReturn<UserPostVoteResponse>
+    public class UserPostVote : IReturn<UserPostVoteResponse>, IPut
     {
         public long Id { get; set; }
         public int Weight { get; set; }
@@ -180,7 +180,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{Id}/favorite", "PUT")]
-    public class UserPostFavorite : IReturn<UserPostFavoriteResponse>
+    public class UserPostFavorite : IReturn<UserPostFavoriteResponse>, IPut
     {
         public long Id { get; set; }
     }
@@ -191,7 +191,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{Id}/report", "PUT")]
-    public class UserPostReport : IReturn<UserPostReportResponse>
+    public class UserPostReport : IReturn<UserPostReportResponse>, IPut
     {
         public long Id { get; set; }
         public FlagType FlagType { get; set; }
@@ -210,7 +210,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{PostId}/report/{Id}", "POST")]
-    public class ActionPostReport : IReturnVoid
+    public class ActionPostReport : IReturnVoid, IPost
     {
         public long PostId { get; set; }
         public long Id { get; set; }
@@ -218,7 +218,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{Id}", "GET")]
-    public class GetPost : IReturn<GetPostResponse>
+    public class GetPost : IReturn<GetPostResponse>, IGet
     {
         public long Id { get; set; }
         public string Include { get; set; }
@@ -236,7 +236,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{PostId}/comments", "POST")]
-    public class CreatePostComment : IReturn<CreatePostCommentResponse>
+    public class CreatePostComment : IReturn<CreatePostCommentResponse>, IPost
     {
         public long PostId { get; set; }
 
@@ -254,7 +254,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{PostId}/comments/{Id}", "PUT")]
-    public class UpdatePostComment : IReturn<UpdatePostCommentResponse>
+    public class UpdatePostComment : IReturn<UpdatePostCommentResponse>, IPut
     {
         public long Id { get; set; }
         public long PostId { get; set; }
@@ -267,7 +267,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{PostId}/comments/{Id}", "DELETE")]
-    public class DeletePostComment : IReturn<DeletePostCommentResponse>
+    public class DeletePostComment : IReturn<DeletePostCommentResponse>, IDelete
     {
         public long Id { get; set; }
         public long PostId { get; set; }
@@ -282,7 +282,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{PostId}/comments/{Id}", "GET")]
-    public class UserPostCommentVote : IReturn<UserPostCommentVoteResponse>
+    public class UserPostCommentVote : IReturn<UserPostCommentVoteResponse>, IGet
     {
         public long Id { get; set; }
         public long PostId { get; set; }
@@ -295,7 +295,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{PostId}/comments/{Id}/report", "PUT")]
-    public class UserPostCommentReport : IReturn<UserPostCommentReportResponse>
+    public class UserPostCommentReport : IReturn<UserPostCommentReportResponse>, IPut
     {
         public long Id { get; set; }
         public long PostId { get; set; }
@@ -309,7 +309,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/posts/{PostId}/comments/{PostCommentId}/report/{Id}", "POST")]
-    public class ActionPostCommentReport : IReturnVoid
+    public class ActionPostCommentReport : IReturnVoid, IPost
     {
         public long Id { get; set; }
         public long PostCommentId { get; set; }
@@ -318,7 +318,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/user/comments/votes")]
-    public class GetUserPostCommentVotes : IReturn<GetUserPostCommentVotesResponse>
+    public class GetUserPostCommentVotes : IReturn<GetUserPostCommentVotesResponse>, IGet
     {
         public long PostId { get; set; }
     }
@@ -330,8 +330,8 @@ namespace TechStacks.ServiceModel
         public List<long> DownVotedCommentIds { get; set; }
     }
 
-    [Route("/posts/{PostId}/comments/{Id}/pin", "UPDATE")]
-    public class PinPostComment : IReturn<PinPostCommentResponse>
+    [Route("/posts/{PostId}/comments/{Id}/pin", "PUT")]
+    public class PinPostComment : IReturn<PinPostCommentResponse>, IPut
     {
         public long Id { get; set; }
         public long PostId { get; set; }

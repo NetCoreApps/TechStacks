@@ -12,18 +12,18 @@ namespace TechStacks.ServiceModel
         Title = "Find Technology Stacks", Description = "Explore different Technology Stacks",
         IconUrl = "material-icons:cloud",
         DefaultSearchField = "Description", DefaultSearchType = "Contains", DefaultSearchText = "ServiceStack")]
-    public class FindTechStacks : QueryDb<TechnologyStack>
+    public class FindTechStacks : QueryDb<TechnologyStack>, IGet
     {
         public string NameContains { get; set; }
     }
 
     [Route("/techstacks/query")]
-    public class QueryTechStacks : QueryDb<TechnologyStack>
+    public class QueryTechStacks : QueryDb<TechnologyStack>, IGet
     {
     }
 
     [Route("/techstacks/{Slug}", Verbs = "GET")]
-    public class GetTechnologyStack : IReturn<GetTechnologyStackResponse>, IRegisterStats
+    public class GetTechnologyStack : IReturn<GetTechnologyStackResponse>, IRegisterStats, IGet
     {
         public string Slug { get; set; }
 
@@ -46,7 +46,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/techstacks/{Slug}/previous-versions", Verbs = "GET")]
-    public class GetTechnologyStackPreviousVersions : IReturn<GetTechnologyStackPreviousVersionsResponse>
+    public class GetTechnologyStackPreviousVersions : IReturn<GetTechnologyStackPreviousVersionsResponse>, IGet
     {
         public string Slug { get; set; }
 
@@ -63,7 +63,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/techstacks", Verbs = "POST")]
-    public class CreateTechnologyStack : IReturn<CreateTechnologyStackResponse>
+    public class CreateTechnologyStack : IReturn<CreateTechnologyStackResponse>, IPost
     {
         public string Name { get; set; }
         public string Slug { get; set; }
@@ -85,7 +85,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/techstacks/{Id}", Verbs = "PUT")]
-    public class UpdateTechnologyStack : IReturn<UpdateTechnologyStackResponse>
+    public class UpdateTechnologyStack : IReturn<UpdateTechnologyStackResponse>, IPut
     {
         public long Id { get; set; }
 
@@ -108,7 +108,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/techstacks/{Id}", Verbs = "DELETE")]
-    public class DeleteTechnologyStack : IReturn<DeleteTechnologyStackResponse>
+    public class DeleteTechnologyStack : IReturn<DeleteTechnologyStackResponse>, IDelete
     {
         public long Id { get; set; }
     }
@@ -121,7 +121,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/techstacks", Verbs = "GET")]
-    public class GetAllTechnologyStacks : IReturn<GetAllTechnologyStacksResponse>
+    public class GetAllTechnologyStacks : IReturn<GetAllTechnologyStacksResponse>, IGet
     {
     }
 
@@ -132,7 +132,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/techstacks/{Slug}/favorites")]
-    public class GetTechnologyStackFavoriteDetails : IReturn<GetTechnologyStackFavoriteDetailsResponse>
+    public class GetTechnologyStackFavoriteDetails : IReturn<GetTechnologyStackFavoriteDetailsResponse>, IGet
     {
         public string Slug { get; set; }
     }
@@ -163,18 +163,18 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/config")]
-    public class GetConfig : IReturn<GetConfigResponse>
+    public class GetConfig : IReturn<GetConfigResponse>, IGet
     {
     }
 
     [Route("/overview")]
-    public class Overview : IReturn<OverviewResponse>
+    public class Overview : IReturn<OverviewResponse>, IGet
     {
         public bool Reload { get; set; }
     }
 
     [Route("/app-overview")]
-    public class AppOverview : IReturn<AppOverviewResponse>
+    public class AppOverview : IReturn<AppOverviewResponse>, IGet
     {
         public bool Reload { get; set; }
     }

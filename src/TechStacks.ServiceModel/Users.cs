@@ -5,7 +5,7 @@ using TechStacks.ServiceModel.Types;
 namespace TechStacks.ServiceModel
 {
     [Route("/favorites/techtacks", Verbs = "GET")]
-    public class GetFavoriteTechStack : IReturn<GetFavoriteTechStackResponse>
+    public class GetFavoriteTechStack : IReturn<GetFavoriteTechStackResponse>, IGet
     {
         public int TechnologyStackId { get; set; }
     }
@@ -15,13 +15,13 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/favorites/techtacks/{TechnologyStackId}", Verbs = "PUT")]
-    public class AddFavoriteTechStack : IReturn<FavoriteTechStackResponse>
+    public class AddFavoriteTechStack : IReturn<FavoriteTechStackResponse>, IPut
     {
         public int TechnologyStackId { get; set; }
     }
 
     [Route("/favorites/techtacks/{TechnologyStackId}", Verbs = "DELETE")]
-    public class RemoveFavoriteTechStack : IReturn<FavoriteTechStackResponse>
+    public class RemoveFavoriteTechStack : IReturn<FavoriteTechStackResponse>, IDelete
     {
         public int TechnologyStackId { get; set; }
     }
@@ -33,7 +33,7 @@ namespace TechStacks.ServiceModel
 
 
     [Route("/favorites/technology", Verbs = "GET")]
-    public class GetFavoriteTechnologies : IReturn<GetFavoriteTechnologiesResponse>
+    public class GetFavoriteTechnologies : IReturn<GetFavoriteTechnologiesResponse>, IGet
     {
         public int TechnologyId { get; set; }
     }
@@ -43,12 +43,12 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/favorites/technology/{TechnologyId}", Verbs = "PUT")]
-    public class AddFavoriteTechnology : IReturn<FavoriteTechnologyResponse>
+    public class AddFavoriteTechnology : IReturn<FavoriteTechnologyResponse>, IPut
     {
         public int TechnologyId { get; set; }
     }
     [Route("/favorites/technology/{TechnologyId}", Verbs = "DELETE")]
-    public class RemoveFavoriteTechnology : IReturn<FavoriteTechnologyResponse>
+    public class RemoveFavoriteTechnology : IReturn<FavoriteTechnologyResponse>, IDelete
     {
         public int TechnologyId { get; set; }
     }
@@ -59,7 +59,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/pagestats/{Type}/{Slug}")]
-    public class GetPageStats : IReturn<GetPageStatsResponse>
+    public class GetPageStats : IReturn<GetPageStatsResponse>, IGet
     {
         public string Type { get; set; }
         public string Slug { get; set; }
@@ -76,7 +76,7 @@ namespace TechStacks.ServiceModel
 
     [Restrict(VisibleInternalOnly = true)]
     [Route("/tasks/hourly")]
-    public class HourlyTask
+    public class HourlyTask : IGet
     {
         public bool Force { get; set; }
     }
@@ -90,16 +90,16 @@ namespace TechStacks.ServiceModel
 
     [Restrict(VisibleInternalOnly = true)]
     [Route("/cache/clear")]
-    public class ClearCache : IReturn<string> {}
+    public class ClearCache : IReturn<string>, IGet {}
 
     [Route("/users/{UserName}/avatar", "GET")]
-    public class UserAvatar
+    public class UserAvatar : IGet
     {
         public string UserName { get; set; }
     }
 
     [Route("/users/karma", "GET")]
-    public class GetUsersKarma : IReturn<GetUsersKarmaResponse>
+    public class GetUsersKarma : IReturn<GetUsersKarmaResponse>, IGet
     {
         public int[] UserIds { get; set; }
     }
@@ -123,7 +123,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/users/by-email")]
-    public class GetUsersByEmails : IReturn<GetUsersByEmailsResponse>
+    public class GetUsersByEmails : IReturn<GetUsersByEmailsResponse>, IGet
     {
         public string[] Emails { get; set; }
     }

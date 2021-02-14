@@ -11,14 +11,14 @@ namespace TechStacks.ServiceModel
         Title = "Find Technologies", Description = "Explore different Technologies", 
         IconUrl = "octicon:database",
         DefaultSearchField = "Tier", DefaultSearchType = "=", DefaultSearchText = "Data")]
-    public class FindTechnologies : QueryDb<Technology>
+    public class FindTechnologies : QueryDb<Technology>, IGet
     {
         public string Name { get; set; }
         public string NameContains { get; set; }
     }
 
     [Route("/technology/query")]
-    public class QueryTechnology : QueryDb<Technology> {}
+    public class QueryTechnology : QueryDb<Technology>, IGet {}
 
     [QueryDb(QueryTerm.And)]
     [Route("/admin/technology/search")]
@@ -32,7 +32,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/technology/{Slug}")]
-    public class GetTechnology : IReturn<GetTechnologyResponse>, IRegisterStats
+    public class GetTechnology : IReturn<GetTechnologyResponse>, IRegisterStats, IGet
     {
         public string Slug { get; set; }
 
@@ -59,7 +59,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/technology/{Slug}/previous-versions", Verbs = "GET")]
-    public class GetTechnologyPreviousVersions : IReturn<GetTechnologyPreviousVersionsResponse>
+    public class GetTechnologyPreviousVersions : IReturn<GetTechnologyPreviousVersionsResponse>, IGet
     {
         public string Slug { get; set; }
 
@@ -76,7 +76,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/technology", Verbs = "POST")]
-    public class CreateTechnology : IReturn<CreateTechnologyResponse>
+    public class CreateTechnology : IReturn<CreateTechnologyResponse>, IPost
     {
         public string Name { get; set; }
         public string Slug { get; set; }
@@ -98,7 +98,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/technology/{Id}", Verbs = "PUT")]
-    public class UpdateTechnology : IReturn<UpdateTechnologyResponse>
+    public class UpdateTechnology : IReturn<UpdateTechnologyResponse>, IPut
     {
         public long Id { get; set; }
 
@@ -121,7 +121,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/technology/{Id}", Verbs = "DELETE")]
-    public class DeleteTechnology : IReturn<DeleteTechnologyResponse>
+    public class DeleteTechnology : IReturn<DeleteTechnologyResponse>, IDelete
     {
         public long Id { get; set; }
     }
@@ -134,7 +134,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/technology", Verbs = "GET")]
-    public class GetAllTechnologies : IReturn<GetAllTechnologiesResponse> {}
+    public class GetAllTechnologies : IReturn<GetAllTechnologiesResponse>, IGet {}
 
     public class GetAllTechnologiesResponse
     {
@@ -143,7 +143,7 @@ namespace TechStacks.ServiceModel
     }
 
     [Route("/technology/{Slug}/favorites")]
-    public class GetTechnologyFavoriteDetails : IReturn<GetTechnologyFavoriteDetailsResponse>
+    public class GetTechnologyFavoriteDetails : IReturn<GetTechnologyFavoriteDetailsResponse>, IGet
     {
         public string Slug { get; set; }
     }
