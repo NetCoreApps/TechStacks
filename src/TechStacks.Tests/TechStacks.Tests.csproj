@@ -3,6 +3,7 @@
     <TargetFramework>net5</TargetFramework>
     <DebugType>portable</DebugType>
     <OutputType>Library</OutputType>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\TechStacks.ServiceInterface\TechStacks.ServiceInterface.csproj" />

@@ -7,22 +7,33 @@ using TechStacks.ServiceModel.Types;
 namespace TechStacks.ServiceModel
 {
     [QueryDb(QueryTerm.Or)]
-    [Route("/techstacks/search")]
+    [Route("/techstacks/search"), Tag(Tags.AutoQuery), Tag(Tags.TechStacks)]
     [AutoQueryViewer(
         Title = "Find Technology Stacks", Description = "Explore different Technology Stacks",
         IconUrl = "material-icons:cloud",
         DefaultSearchField = "Description", DefaultSearchType = "Contains", DefaultSearchText = "ServiceStack")]
     public class FindTechStacks : QueryDb<TechnologyStack>, IGet
     {
+        public List<long> Ids { get; set; }
+        public string Name { get; set; }
+        public string Vendor { get; set; }
         public string NameContains { get; set; }
+        public string VendorNameContains { get; set; }
+        public string DescriptionContains { get; set; }
     }
 
-    [Route("/techstacks/query")]
+    [Route("/techstacks/query"), Tag(Tags.AutoQuery), Tag(Tags.TechStacks)]
     public class QueryTechStacks : QueryDb<TechnologyStack>, IGet
     {
+        public List<long> Ids { get; set; }
+        public string Name { get; set; }
+        public string Vendor { get; set; }
+        public string NameContains { get; set; }
+        public string VendorNameContains { get; set; }
+        public string DescriptionContains { get; set; }
     }
 
-    [Route("/techstacks/{Slug}", Verbs = "GET")]
+    [Route("/techstacks/{Slug}", Verbs = "GET"), Tag(Tags.TechStacks)]
     public class GetTechnologyStack : IReturn<GetTechnologyStackResponse>, IRegisterStats, IGet
     {
         public string Slug { get; set; }
@@ -45,7 +56,7 @@ namespace TechStacks.ServiceModel
         public ResponseStatus ResponseStatus { get; set; }
     }
 
-    [Route("/techstacks/{Slug}/previous-versions", Verbs = "GET")]
+    [Route("/techstacks/{Slug}/previous-versions", Verbs = "GET"), Tag(Tags.TechStacks)]
     public class GetTechnologyStackPreviousVersions : IReturn<GetTechnologyStackPreviousVersionsResponse>, IGet
     {
         public string Slug { get; set; }
@@ -62,7 +73,7 @@ namespace TechStacks.ServiceModel
         public List<TechnologyStackHistory> Results { get; set; }
     }
 
-    [Route("/techstacks", Verbs = "POST")]
+    [Route("/techstacks", Verbs = "POST"), Tag(Tags.TechStacks)]
     public class CreateTechnologyStack : IReturn<CreateTechnologyStackResponse>, IPost
     {
         public string Name { get; set; }
@@ -84,7 +95,7 @@ namespace TechStacks.ServiceModel
         public ResponseStatus ResponseStatus { get; set; }
     }
 
-    [Route("/techstacks/{Id}", Verbs = "PUT")]
+    [Route("/techstacks/{Id}", Verbs = "PUT"), Tag(Tags.TechStacks)]
     public class UpdateTechnologyStack : IReturn<UpdateTechnologyStackResponse>, IPut
     {
         public long Id { get; set; }
@@ -107,7 +118,7 @@ namespace TechStacks.ServiceModel
         public ResponseStatus ResponseStatus { get; set; }
     }
 
-    [Route("/techstacks/{Id}", Verbs = "DELETE")]
+    [Route("/techstacks/{Id}", Verbs = "DELETE"), Tag(Tags.TechStacks)]
     public class DeleteTechnologyStack : IReturn<DeleteTechnologyStackResponse>, IDelete
     {
         public long Id { get; set; }
@@ -120,7 +131,7 @@ namespace TechStacks.ServiceModel
         public ResponseStatus ResponseStatus { get; set; }
     }
 
-    [Route("/techstacks", Verbs = "GET")]
+    [Route("/techstacks", Verbs = "GET"), Tag(Tags.TechStacks)]
     public class GetAllTechnologyStacks : IReturn<GetAllTechnologyStacksResponse>, IGet
     {
     }
@@ -131,7 +142,7 @@ namespace TechStacks.ServiceModel
         public long Total { get; set; }
     }
 
-    [Route("/techstacks/{Slug}/favorites")]
+    [Route("/techstacks/{Slug}/favorites"), Tag(Tags.TechStacks)]
     public class GetTechnologyStackFavoriteDetails : IReturn<GetTechnologyStackFavoriteDetailsResponse>, IGet
     {
         public string Slug { get; set; }
@@ -153,73 +164,6 @@ namespace TechStacks.ServiceModel
         public long TechnologyId { get; set; }
         public long TechnologyStackId { get; set; }
         public string Justification { get; set; }
-    }
-
-    public class GetConfigResponse
-    {
-        public List<Option> AllTiers { get; set; }
-        public List<Option> AllPostTypes { get; set; }
-        public List<Option> AllFlagTypes { get; set; }
-    }
-
-    [Route("/config")]
-    public class GetConfig : IReturn<GetConfigResponse>, IGet
-    {
-    }
-
-    [Route("/overview")]
-    public class Overview : IReturn<OverviewResponse>, IGet
-    {
-        public bool Reload { get; set; }
-    }
-
-    [Route("/app-overview")]
-    public class AppOverview : IReturn<AppOverviewResponse>, IGet
-    {
-        public bool Reload { get; set; }
-    }
-
-    public class AppOverviewResponse
-    {
-        public DateTime Created { get; set; }
-        public List<Option> AllTiers { get; set; }
-        public List<TechnologyInfo> TopTechnologies { get; set; }
-
-        public ResponseStatus ResponseStatus { get; set; }
-    }
-
-    [DataContract]
-    public class Option
-    {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
-
-        [DataMember(Name = "title")]
-        public string Title { get; set; }
-
-        [DataMember(Name = "value")]
-        public TechnologyTier? Value { get; set; }
-    }
-
-    public class OverviewResponse
-    {
-        public DateTime Created { get; set; }
-        public List<UserInfo> TopUsers { get; set; }
-        public List<TechnologyInfo> TopTechnologies { get; set; }
-        public List<TechStackDetails> LatestTechStacks { get; set; }
-        public List<TechnologyStack> PopularTechStacks { get; set; }
-        public List<OrganizationInfo> AllOrganizations { get; set; }
-
-        public Dictionary<string, List<TechnologyInfo>> TopTechnologiesByTier { get; set; }
-
-        public ResponseStatus ResponseStatus { get; set; }
-    }
-
-    public class UserInfo
-    {
-        public string UserName { get; set; }
-        public string AvatarUrl { get; set; }
-        public int StacksCount { get; set; }
     }
 
     public class TechnologyInfo
@@ -263,4 +207,13 @@ namespace TechStacks.ServiceModel
         public string Slug { get; set; }
         public string Color { get; set; }
     }
+
+    [Route("/admin/techstacks/{TechnologyStackId}/lock"), Tag(Tags.TechStacks)]
+    public class LockTechStack : IReturn<LockStackResponse>, IPut
+    {
+        public long TechnologyStackId { get; set; }
+        public bool IsLocked { get; set; }
+    }
+
+    public class LockStackResponse {}
 }

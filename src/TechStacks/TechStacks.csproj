@@ -4,6 +4,7 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />

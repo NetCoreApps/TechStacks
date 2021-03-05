@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ServiceStack;
 using ServiceStack.DataAnnotations;
 
@@ -36,5 +37,23 @@ namespace TechStacks.ServiceModel
         public long[] ResentIds { get; set; }
         public ResponseStatus ResponseStatus { get; set; }
     }
+
+    [Restrict(VisibleInternalOnly = true)]
+    [Route("/tasks/hourly")]
+    public class HourlyTask : IGet
+    {
+        public bool Force { get; set; }
+    }
+
+    public class HourlyTaskResponse : IMeta
+    {
+        public Dictionary<string, string> Meta { get; set; }
+
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    [Restrict(VisibleInternalOnly = true)]
+    [Route("/cache/clear")]
+    public class ClearCache : IReturn<string>, IGet {}
 
 }

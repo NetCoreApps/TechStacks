@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ServiceStack;
 using ServiceStack.OrmLite;
 using TechStacks.ServiceModel;
@@ -101,11 +102,17 @@ namespace TechStacks.ServiceInterface
         public IAutoQueryDb AutoQuery { get; set; }
 
         //Cached AutoQuery
-        public object Any(FindTechStacks request) =>
-            AutoQuery.Execute(request, AutoQuery.CreateQuery(request, Request.GetRequestParams()));
+        public async Task<object> Any(FindTechStacks request)
+        {
+            using var db = AutoQuery.GetDb(request, base.Request);
+            return await AutoQuery.ExecuteAsync(request, AutoQuery.CreateQuery(request, Request, db), db);
+        }
 
-        public object Any(QueryTechStacks request) =>
-            AutoQuery.Execute(request, AutoQuery.CreateQuery(request, Request.GetRequestParams()));
+        public async Task<object> Any(QueryTechStacks request)
+        {
+            using var db = AutoQuery.GetDb(request, base.Request);
+            return await AutoQuery.ExecuteAsync(request, AutoQuery.CreateQuery(request, Request, db), db);
+        }
 
         private const int TechStacksAppId = 1;
 
