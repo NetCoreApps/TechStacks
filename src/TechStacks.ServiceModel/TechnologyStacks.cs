@@ -12,22 +12,22 @@ namespace TechStacks.ServiceModel
         Title = "Find Technology Stacks", Description = "Explore different Technology Stacks",
         IconUrl = "material-icons:cloud",
         DefaultSearchField = "Description", DefaultSearchType = "Contains", DefaultSearchText = "ServiceStack")]
-    public class FindTechStacks : QueryDb<TechnologyStack>, IGet
+    public class FindTechStacks : QueryDb<TechnologyStack,TechnologyStackView>, IGet
     {
         public List<long> Ids { get; set; }
         public string Name { get; set; }
-        public string Vendor { get; set; }
+        public string VendorName { get; set; }
         public string NameContains { get; set; }
         public string VendorNameContains { get; set; }
         public string DescriptionContains { get; set; }
     }
 
     [Route("/techstacks/query"), Tag(Tags.AutoQuery), Tag(Tags.TechStacks)]
-    public class QueryTechStacks : QueryDb<TechnologyStack>, IGet
+    public class QueryTechStacks : QueryDb<TechnologyStack,TechnologyStackView>, IGet
     {
         public List<long> Ids { get; set; }
         public string Name { get; set; }
-        public string Vendor { get; set; }
+        public string VendorName { get; set; }
         public string NameContains { get; set; }
         public string VendorNameContains { get; set; }
         public string DescriptionContains { get; set; }

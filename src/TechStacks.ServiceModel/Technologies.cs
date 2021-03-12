@@ -6,45 +6,31 @@ using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceModel
 {
+    [QueryDb(QueryTerm.Or)]
     [Route("/technology/search"), Tag(Tags.AutoQuery), Tag(Tags.Tech)]
     [AutoQueryViewer(
         Title = "Find Technologies", Description = "Explore different Technologies", 
         IconUrl = "octicon:database",
         DefaultSearchField = "Tier", DefaultSearchType = "=", DefaultSearchText = "Data")]
-    public class FindTechnologies : QueryDb<Technology>, IGet
+    public class FindTechnologies : QueryDb<Technology,TechnologyView>, IGet
     {
         public List<long> Ids { get; set; }
         public string Name { get; set; }
-        public string Vendor { get; set; }
+        public string VendorName { get; set; }
         public string NameContains { get; set; }
         public string VendorNameContains { get; set; }
         public string DescriptionContains { get; set; }
     }
 
     [Route("/technology/query"), Tag(Tags.AutoQuery), Tag(Tags.Tech)]
-    public class QueryTechnology : QueryDb<Technology>, IGet
+    public class QueryTechnology : QueryDb<Technology,TechnologyView>, IGet
     {
         public List<long> Ids { get; set; }
         public string Name { get; set; }
-        public string Vendor { get; set; }
+        public string VendorName { get; set; }
         public string NameContains { get; set; }
         public string VendorNameContains { get; set; }
         public string DescriptionContains { get; set; }
-    }
-
-    [QueryDb(QueryTerm.And)]
-    [Route("/admin/technology/search"), Tag(Tags.AutoQuery), Tag(Tags.Tech)]
-    [AutoQueryViewer(
-        Title = "Find Technologies Admin", Description = "Explore different Technologies",
-        IconUrl = "octicon:database",
-        DefaultSearchField = "Tier", DefaultSearchType = "=", DefaultSearchText = "Data")]
-    public class FindTechnologiesAdmin : QueryDb<Technology>
-    {
-        public long? Id { get; set; }
-        public string Name { get; set; }
-        public string Vendor { get; set; }
-        public string NameContains { get; set; }
-        public string VendorNameContains { get; set; }
     }
 
     [Route("/technology/{Slug}"), Tag(Tags.Tech)]
