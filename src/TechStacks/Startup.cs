@@ -239,7 +239,9 @@ namespace TechStacks
                 MaxLimit = 500,
                 StripUpperInLike = false,
                 ResponseFilters = {
+#if DEBUG
                     ctx => ctx.Response.Meta["Cache"] = Stopwatch.GetTimestamp().ToString()
+#endif
                 }
             });
             Plugins.Add(new AdminFeature());
