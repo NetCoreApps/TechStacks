@@ -238,6 +238,7 @@ namespace TechStacks
             Plugins.Add(new AutoQueryFeature {
                 MaxLimit = 500,
                 StripUpperInLike = false,
+                IncludeTotal = true,
                 ResponseFilters = {
 #if DEBUG
                     ctx => ctx.Response.Meta["Cache"] = Stopwatch.GetTimestamp().ToString()
