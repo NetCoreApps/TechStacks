@@ -60,8 +60,6 @@ namespace TechStacks
 //            LogManager.LogFactory = new ConsoleLogFactory(debugEnabled:true);
             log = LogManager.GetLogger(typeof(AppHost));
 
-            GetPlugin<NativeTypesFeature>().MetadataTypesConfig.BaseUrl = "https://www.techstacks.io";
-
             var debugMode = AppSettings.Get(nameof(HostConfig.DebugMode), false);
             SetConfig(new HostConfig {
                 // UseSameSiteCookies = true,
