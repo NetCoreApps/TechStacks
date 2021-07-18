@@ -168,9 +168,11 @@ namespace TechStacks.ServiceModel
         public Technology Result { get; set; }
     }
     
+    [Api("Limit updates to Technology to Owner or Admin users")]
     [Route("/admin/technology/{TechnologyId}/lock"), Tag(Tags.Tech)]
     public class LockTech : IReturn<LockStackResponse>, IPut
     {
+        [ValidateGreaterThan(0)]
         public long TechnologyId { get; set; }
         public bool IsLocked { get; set; }
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using ServiceStack;
+using ServiceStack.DataAnnotations;
 using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceModel
@@ -208,9 +209,11 @@ namespace TechStacks.ServiceModel
         public string Color { get; set; }
     }
 
+    [Description("Limit updates to TechStack to Owner or Admin users")]
     [Route("/admin/techstacks/{TechnologyStackId}/lock"), Tag(Tags.TechStacks)]
     public class LockTechStack : IReturn<LockStackResponse>, IPut
     {
+        [ValidateGreaterThan(0)]
         public long TechnologyStackId { get; set; }
         public bool IsLocked { get; set; }
     }

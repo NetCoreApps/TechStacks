@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using ServiceStack;
 using TechStacks.ServiceModel.Types;
 
-namespace TechStacks.ServiceInterface
+namespace TechStacks.ServiceInterface.Admin
 {
     public class DummyTypes 
     {
