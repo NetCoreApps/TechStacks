@@ -51,7 +51,7 @@
                           <em>/</em>
                         </span>
 
-                        <nuxt-link v-if="view == 'category'" :to="routes.organizationNews(organization.slug)" style="color:#333">
+                        <nuxt-link v-if="view === 'category'" :to="routes.organizationNews(organization.slug)" style="color:#333">
                           {{ organization.name }}
                         </nuxt-link>
                         <a v-else @click.prevent="resetQuery()" style="color:#333">
@@ -67,10 +67,10 @@
                       <v-btn class="btn-manage" v-if="canManageOrganization()" outline color="primary" :to="routes.organization(organization.slug)" title="Manage Organization (M)">
                         <span>{{ `Manage${organization.name.length &lt;= 20 ? ' ' + organization.name :''}` }}</span><b></b>
                       </v-btn>
-                      <v-btn class="btn-tech" v-if="organization.refSource == 'Technology'" outline color="primary" :to="routes.tech(getTechnologySlug(organization.refId))">
+                      <v-btn class="btn-tech" v-if="organization.refSource === 'Technology'" outline color="primary" :to="routes.tech(getTechnologySlug(organization.refId))">
                         <span>{{ organization.name.length &lt;= 20 ? 'TechStacks using  ' + organization.name : organization.name + ' TechStack' }}</span><b></b>
                       </v-btn>
-                      <v-btn class="btn-stack" v-if="organization.refSource == 'TechnologyStack'" outline color="primary" :to="routes.stack(organization.slug)">
+                      <v-btn class="btn-stack" v-if="organization.refSource === 'TechnologyStack'" outline color="primary" :to="routes.stack(organization.slug)">
                         <span>{{ organization.name }}'s TechStack</span><b></b>
                       </v-btn>
                     </span>
@@ -108,7 +108,7 @@
 
                     <MembersInfo :organization="organization" @done="memberDone" />
 
-                    <div v-if="view != 'category' && organization.categories.length > 1">
+                    <div v-if="view !== 'category' && organization.categories.length > 1">
                       <v-toolbar>
                         <v-toolbar-title>Categories</v-toolbar-title>
                       </v-toolbar>
@@ -172,7 +172,7 @@ export default {
       return (this.latestOrganizationPosts || []).length >= POSTS_PER_PAGE;
     },
     categoryId() {
-      const category = this.organization && this.organization.categories.filter(x => x.slug == this.c)[0];
+      const category = this.organization && this.organization.categories.filter(x => x.slug === this.c)[0];
       return category && category.id;
     },
     filterTypeNames() {
@@ -225,7 +225,7 @@ export default {
     },
     getPageUrl(p) {
       let qs = Object.assign({}, this.$route.query, { p });
-      if (qs.p == 0) delete qs["p"];
+      if (qs.p === 0) delete qs["p"];
       return appendQueryString(this.$route.path, qs);
     },
     loadPage(p) {
@@ -241,9 +241,9 @@ export default {
       this.types = qs.add || qs.types;
       const types = (this.types || "").split(",");
       const filterIndexes = types.map(name =>
-        this.browsablePostTypes.findIndex(x => x == name)
+        this.browsablePostTypes.findIndex(x => x === name)
       ).filter(x => x >= 0);
-      this.stageChanges({ filterTypes: filterIndexes, all: filterIndexes.length == 0 ? 0 : null });
+      this.stageChanges({ filterTypes: filterIndexes, all: filterIndexes.length === 0 ? 0 : null });
     },
     updateUrl(args) {
       let { p, add, show, ...qs } = this.$route.query; //strip ?p=&add=
@@ -259,9 +259,9 @@ export default {
       this.c = this.is = this.sort = undefined;
       this.changeTypes({});
     },
-    changeCategory(cateogry) {
-      this.c = this.c != cateogry.slug
-        ? cateogry.slug
+    changeCategory(category) {
+      this.c = this.c !== category.slug
+        ? category.slug
         : undefined;
       this.updateUrl({ c:this.c });
     },

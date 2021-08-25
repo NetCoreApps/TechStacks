@@ -4,7 +4,7 @@
         <v-card-title primary-title>
         <v-form v-model="valid" ref="form" lazy-validation style="width:100%">
             <v-container>
-            <v-alert outline color="error" icon="warning" :value="errorResponse()">{{ errorResponse() }}</v-alert>                  
+            <v-alert outline color="error" icon="warning" :value="errorResponse()">{{ errorResponse() }}</v-alert>
             <v-layout>
                 <v-flex xs8>
                     <v-select ref="type"
@@ -43,7 +43,7 @@
                         :error-messages="errorResponse('url')"
                         ></v-text-field>
 
-                    <Editor 
+                    <Editor
                         label=""
                         v-model="content"
                         :counter="contentCounter"
@@ -220,7 +220,7 @@ export default {
           }
       }
     },
-    
+
     handleKeyUp(e) {
       if (ignoreKeyPress(e)) return;
       const c = String.fromCharCode(e.keyCode).toLowerCase();
@@ -244,7 +244,7 @@ export default {
 
     if (this.initialCategoryId)
       this.categoryId = this.initialCategoryId;
-    
+
     this.$store.dispatch('loadTechnologyTiers');
 
     if (this.org) {
@@ -253,7 +253,9 @@ export default {
     if (this.post) {
       Object.assign(this, this.post);
     }
-    
+
+    console.log('org', this.org, 'organizationId', this.organizationId, 'type', this.type)
+
     window.addEventListener('keyup', this.handleKeyUp);
   },
 

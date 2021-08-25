@@ -2,7 +2,7 @@ import { appendQueryString, queryString } from "@servicestack/client";
 
 const hasQuery = (qs) => qs && Object.keys(qs).length > 0;
 
-const appendQuery = (route,qs) => hasQuery(qs) 
+const appendQuery = (route,qs) => hasQuery(qs)
     ? appendQueryString(route,qs)
     : route;
 
@@ -29,7 +29,7 @@ export const routes = {
     user: (userName) => `/users/${userName}`,
     userAvatar: (userName) => `/users/${userName}/avatar`,
     post: (postId, postSlug) => `/posts/${postId}/${postSlug}`,
-    comment: (postId,commmentId) => `/comments/${postId}/${commmentId}`,
+    comment: (postId,commentId) => `/comments/${postId}/${commentId}`,
     techTag: (slug,organization) => organization ? `/?t=${slug}` : `/tech/${slug}`,
     sortOrderByField(sort) {
         return sort == 'new'

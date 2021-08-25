@@ -43,24 +43,7 @@
       </v-flex>
 
       <v-flex v-if="add">
-        <v-card class="news-add">
-          <v-card-title>
-            <v-select ref="postOrg"
-              label="Post to where?"
-              autocomplete
-              :spellcheck="false"
-              :items="organizationsSelectItems"
-              v-model="organizationSlug"
-              @input="organizationSlug && $router.push(routes.organizationNews(organizationSlug,{add:postType}))"
-              ></v-select>
-
-            <v-btn :disabled="!organizationSlug" color="primary" :to="routes.organizationNews(organizationSlug,{add:postType})">
-              next
-              <v-icon>chevron_right</v-icon>
-            </v-btn>
-
-          </v-card-title>
-        </v-card>
+          <PostEdit ref="newPost" :org="organization" :initialCategoryId="categoryId" @done="postDone"></PostEdit>
       </v-flex>
 
       <v-flex v-if="latestNewsPosts.length > 0" style="margin:1em 0" class="no-prerender">
@@ -70,7 +53,7 @@
           <v-flex class="tech-organizations">
             <v-card>
               <v-card-title>
-                <em v-for="org in technologyOrganizations" :key="org.refId" :class="['tag', { highlight: org.refId == technologyId }]">
+                <em v-for="org in technologyOrganizations" :key="org.refId" :class="['tag', { highlight: org.refId === technologyId }]">
                   <a :href="`?t=${org.slug}`" @click.prevent="changeTechnology(org.slug)">
                     {{ org.name }}
                   </a>
@@ -137,6 +120,7 @@
 </template>
 
 <script>
+import PostEdit from "~/components/PostEdit.vue";
 import PostsList from "~/components/PostsList.vue";
 import OrganizationAdd from "~/components/OrganizationAdd.vue";
 
@@ -156,9 +140,11 @@ const allPostTypes = [
 const allTypeNames = allPostTypes.map(x => x.name).join(',');
 
 export default {
-  components: { PostsList, OrganizationAdd },
+  components: { PostEdit, PostsList, OrganizationAdd },
 
   computed: {
+    categoryId(){ return 55; }, //NEWS
+    organization() { return this.allOrganizations.find(x => x.slug === 'techstacks'); },
     page(){
       return parseInt(this.$route.query.p || 0);
     },
@@ -188,6 +174,11 @@ export default {
   },
 
   methods: {
+    async postDone() {
+      this.add = false;
+      this.$store.commit('latestOrganizationPostsQuery', null);
+      await this.refreshPosts();
+    },
     async refreshPosts() {
       await this.$store.dispatch({
         type: "latestNewsPosts",
@@ -198,7 +189,7 @@ export default {
     },
     getPageUrl(p) {
       let qs = Object.assign({}, this.$route.query, { p });
-      if (qs.p == 0) delete qs["p"];
+      if (qs.p === 0) delete qs["p"];
       return appendQueryString(this.$route.path, qs);
     },
     loadPage(p) {
@@ -209,9 +200,9 @@ export default {
       this.types = qs.types;
       const types = (this.types || "").split(",");
       const filterIndexes = types.map(name =>
-        this.allPostTypes.findIndex(x => x.name == name)
+        this.allPostTypes.findIndex(x => x.name === name)
       ).filter(x => x >= 0);
-      this.stageChanges({ filterTypes: filterIndexes, all: filterIndexes.length == 0 ? 0 : null });
+      this.stageChanges({ filterTypes: filterIndexes, all: filterIndexes.length === 0 ? 0 : null });
     },
     updateUrl(args) {
       let { p, ...qs } = this.$route.query; //strip ?p=
@@ -314,7 +305,7 @@ export default {
   async mounted() {
     this.initRoute(this.$route.query);
     this.$store.dispatch("loadUserPostActivity");
-    this.refreshPosts();
+    await this.refreshPosts();
 
     window.addEventListener('keyup', this.handleKeyUp);
   },
