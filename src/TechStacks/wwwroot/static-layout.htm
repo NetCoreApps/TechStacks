@@ -195,7 +195,7 @@
 </head>
 <body>
 <script>
-{{  'Authenticate' |> execService({ ifErrorReturn: "null" }) |> to => auth }}
+{{ sessionIfAuthenticated |> to => auth }}
 CONFIG = {
     auth: {{ auth ? auth.json() : "null" }}
 }
@@ -599,7 +599,7 @@ on(document.body, {
 
 </script>
 
-{{ htmlErrorDebug }}
+{{* htmlErrorDebug *}}
 
 </body>
 </html>

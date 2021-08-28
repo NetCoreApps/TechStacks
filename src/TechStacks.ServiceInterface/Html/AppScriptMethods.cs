@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using ServiceStack;
+using ServiceStack.Auth;
 using ServiceStack.Caching;
 using ServiceStack.Data;
 using ServiceStack.OrmLite;
@@ -28,6 +29,14 @@ namespace TechStacks.ServiceInterface.Html
         {
             Cache = cache;
             DbFactory = dbFactory;
+        }
+
+        public IAuthSession sessionIfAuthenticated(ScriptScopeContext scope) /*remove copy from SS v5.12.1+*/
+        {
+            var session = scope.GetRequest().GetSession();
+            return session.IsAuthenticated
+                ? session
+                : null;
         }
 
         public Dictionary<long, string> techSlugs()

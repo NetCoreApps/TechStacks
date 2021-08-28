@@ -16,7 +16,7 @@
                                 <v-btn icon class="vote-btn down" @click="votePost(post,-1)" :disabled="!canVotePost(post)">
                                   <v-icon>arrow_drop_down</v-icon>
                                 </v-btn>
-                              </v-layout>                                        
+                              </v-layout>
                           </v-flex>
 
                           <v-flex class="post-body">
@@ -58,7 +58,7 @@
               </v-card-title>
           </v-card>
       </v-layout>
-  
+
     <v-layout column>
 
         <PostAlerts :organization="organization" :post="post"></PostAlerts>
@@ -72,8 +72,8 @@
             <h2 v-if="post.comments.length > 1" class="comments-title">All {{post.comments.length || ''}} comments</h2>
             <h2 v-else class="comments-title">{{ post.comments.length == 1 ? '1 Comment' : 'No Comments' }}</h2>
 
-            <CommentEdit ref="txtComment" v-if="canCommentPost(post)" :post="post" @done="commentDone"></CommentEdit>    
-            
+            <CommentEdit ref="txtComment" v-if="canCommentPost(post)" :post="post" @done="commentDone"></CommentEdit>
+
             <div v-if="!isAuthenticated" class="comments-signin">Please <a :href="routes.authGitHub">Sign In</a> to comment</div>
 
         </v-flex>
@@ -84,7 +84,7 @@
 
     <ReportDialog :postId="reportPostId" v-if="reportPostId" @close="reportPostId=null"></ReportDialog>
   </div>
-  
+
   <h2 v-if="notFound"><v-icon color="red">error_outline</v-icon> Post was not found</h2>
 
 </div>
@@ -176,7 +176,7 @@ export default {
     async votePostDone(id){
       await this.loadPost();
     },
-    
+
     handleCtrlClick(e){
         if (!this.edit && e.ctrlKey && this.canUpdatePost(this.post)) {
             this.edit = true;
@@ -198,25 +198,25 @@ export default {
       }
       else if (c === 'p' && this.canReportPost(this.post)) {
         this.reportPostId=this.post.id
-      }      
+      }
       else if (c === 'c' && this.canCommentPost(this.post)) {
         const $txt = this.$refs.txtComment.$refs.editor.$refs.txt;
         $txt.focus();
         this.$refs.txtComment.$el.scrollIntoView();
-      }      
+      }
     },
 
     organizationMember,
-    canUpdatePost, 
+    canUpdatePost,
     canFavoritePost,
-    canReportPost, 
-    canCommentPost, 
-    votedClass, 
-    votePost, 
-    favoritePost, 
-    favoriteLabel, 
-    votePostComment, 
-    votedCommentClass, 
+    canReportPost,
+    canCommentPost,
+    votedClass,
+    votePost,
+    favoritePost,
+    favoriteLabel,
+    votePostComment,
+    votedCommentClass,
     canVotePost,
     labelStyle,
     fromNow,
@@ -225,6 +225,7 @@ export default {
 
   async mounted() {
     const task = this.loadPost();
+    this.edit = location.search.match(/[?&]edit/);
     this.$store.dispatch('loadUserPostActivity');
     this.$store.dispatch('loadUserPostCommentVotes', this.postId);
     this.$store.dispatch('loadTechnologyTiers');

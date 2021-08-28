@@ -40,7 +40,7 @@ export const routes = {
     },
     sort:(sort) => {
         const qs = queryString(location.href);
-        if (qs['sort'] == sort) {
+        if (qs['sort'] === sort) {
             delete qs['sort']; //toggle off
         } else {
             qs['sort'] = sort;
