@@ -18,8 +18,14 @@ namespace TechStacks.ServiceInterface
     public class ClientRoutesService : Service
     {
         //Return index.html for unmatched requests so routing is handled on client
-        public object Any(FallbackForClientRoutes request) => 
-            new PageResult(Request.GetPage("/"));
+        public object Any(FallbackForClientRoutes request)
+        {
+            return Request.PathInfo == "/"
+                ? Request.GetPageResult("/static")
+                : Request.PathInfo.StartsWith("/p/")
+                    ? Request.GetPageResult("/static-post")
+                    : new HttpResult(VirtualFileSources.GetFile("index.html"));
+        }
 
         public object Any(Ping request) => "OK";
     }

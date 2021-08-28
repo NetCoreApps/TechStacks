@@ -1,0 +1,91 @@
+<!--
+layout: static-layout
+-->
+
+{{var p = qs.p ? qs.p.toInt() : 0}}
+{{var postPos = p * 30 + 1 }}
+
+<div class="flex">
+
+    {{#each post in p.queryPosts()}}
+    <div class="card post" style="height: auto;">
+        <div class="card__title">
+            <div class="container fluid grid-list-sm">
+                <div class="layout row align-center">
+                    <div class="flex post-rank"
+                         style="max-width: 24px;"><span
+                        class="rank">{{postPos + index}}</span></div>
+                    <div class="flex post-votes"
+                         style="max-width: 52px;">
+                        <div class="layout column"
+                             style="text-align: center;">
+                            <button disabled="disabled"
+                                    type="button"
+                                    class="vote-btn up btn btn--disabled btn--icon">
+                                <div class="btn__content"><i
+                                    aria-hidden="true"
+                                    class="icon material-icons">arrow_drop_up</i>
+                                </div>
+                            </button>
+                            <h4 class="votes">{{post.Points}}</h4>
+                            <button disabled="disabled"
+                                    type="button"
+                                    class="vote-btn down btn btn--disabled btn--icon">
+                                <div class="btn__content"><i
+                                    aria-hidden="true"
+                                    class="icon material-icons">arrow_drop_down</i>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex post-body">
+                        <div class="layout column">
+                            <div><a
+                                href="/p/{{post.Id}}/{{post.Slug}}"
+                                class="post-link">{{post.Title}}</a>
+                            </div>
+                            <div class="post-info"
+                                 style="text-transform: lowercase;">
+                                submitted {{post.TimeAgo}} by
+                                <a href="/users/{{post.CreatedBy}}" class="">@{{post.CreatedBy}}</a>
+                                to <a href="/{{post.OrganizationSlug}}?types=Post" class="">{{post.OrganizationName}} Posts</a><span>
+                                {{#if post.TechnologyIds}}
+                                    with
+                                    {{#each post.TechnologySlugs }}
+                                        <a href="/tech/{{it}}" class="tag">{{it}}</a>
+                                    {{/each}}
+                                {{/if}}
+                                </span>
+                            </div>
+                            <div class="post-actions">
+                                <a href="/posts/{{post.Id}}/{{post.Slug}}" class="">comments</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+
+
+    <div class="flex" style="margin-top: 5px;">
+        {{#if p > 0}}
+        <a href="/?p={{p-1}}" class="btn--active btn btn--router primary" title="View Previous (←)">
+            <div class="btn__content"><i aria-hidden="true" class="icon material-icons">chevron_left</i>
+                prev
+            </div>
+        </a>
+        <span class="page-num">{{p}}</span>
+        {{/if}}
+        <a href="/?p={{p+1}}" class="btn--active btn btn--router primary" title="View Next (→)" style="position:relative">
+            <div class="btn__content">
+                more
+                <i aria-hidden="true" class="icon material-icons">chevron_right</i>
+            </div>
+        </a>
+    </div>
+
+
+</div>
+

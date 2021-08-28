@@ -22,6 +22,7 @@ using TechStacks.ServiceModel.Types;
 using TechStacks.ServiceInterface;
 using TechStacks.ServiceInterface.Admin;
 using TechStacks.ServiceInterface.Auth;
+using TechStacks.ServiceInterface.Html;
 using TechStacks.ServiceInterface.Notifications;
 using TechStacks.ServiceModel;
 
@@ -78,7 +79,12 @@ namespace TechStacks
             container.Register<IDbConnectionFactory>(dbFactory);
 
             // enable server-side rendering, see: https://sharpscript.net
-            Plugins.Add(new SharpPagesFeature());
+            Plugins.Add(new SharpPagesFeature {
+                HtmlExtension = "htm",
+                ScriptMethods = {
+                    new AppScriptMethods(GetCacheClient(), dbFactory)
+                }
+            });
 
             Plugins.Add(new AuthFeature(() => new CustomUserSession(), new IAuthProvider[] {
                 new TwitterAuthProvider(AppSettings),

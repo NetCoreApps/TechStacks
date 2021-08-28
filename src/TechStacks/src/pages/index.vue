@@ -21,7 +21,7 @@
 
               <h1>
                 <span class="parent-organization">
-                  <nuxt-link :to="routes.homeNews" style="color:#333">news </nuxt-link>
+                  <nuxt-link to="/news/" style="color:#333">news </nuxt-link>
                 </span>
               </h1>
             </v-layout>
@@ -51,7 +51,25 @@
           <PostsList :posts="latestNewsPosts" :page="page" />
 
           <v-flex class="tech-organizations">
-            <v-card>
+
+              <v-card>
+                  <v-card-title>
+                      <div style="color:#999;text-transform:uppercase;font-size:11px">
+                          Sponsored by:
+                      </div>
+                  </v-card-title>
+                  <v-card-actions>
+                      <v-layout align-center style="text-align:center">
+                          <v-flex>
+                              <a href="https://servicestack.net">
+                                  <img src="../static/img/logo-text.svg" alt="Sponsored by ServiceStack">
+                              </a>
+                          </v-flex>
+                      </v-layout>
+                  </v-card-actions>
+              </v-card>
+
+            <v-card style="margin-top:.5em">
               <v-card-title>
                 <em v-for="org in technologyOrganizations" :key="org.refId" :class="['tag', { highlight: org.refId === technologyId }]">
                   <a :href="`?t=${org.slug}`" @click.prevent="changeTechnology(org.slug)">
@@ -93,6 +111,7 @@
                 </v-layout>
               </v-card-actions>
             </v-card>
+
           </v-flex>
         </v-layout>
 
