@@ -31,7 +31,8 @@ namespace TechStacks.ServiceInterface.Html
             DbFactory = dbFactory;
         }
 
-        public IAuthSession sessionIfAuthenticated(ScriptScopeContext scope) /*remove copy from SS v5.12.1+*/
+        /*remove copy from SS v5.12.1+*/
+        public IAuthSession sessionIfAuthenticated(ScriptScopeContext scope)
         {
             var session = scope.GetRequest().GetSession();
             return session.IsAuthenticated

@@ -10,9 +10,6 @@
           left: () => goNav(1),
           right: () => goNav(-1)
         }">
-        <nuxt-link class="logo" :to="routes.homeNews" exact>
-          <img src="../static/img/logo-white.svg" width="42" height="42" />
-        </nuxt-link>
         <nuxt-link :to="routes.homeNews" exact style="color:#fff;text-decoration:none">
           <v-toolbar-title v-text="title" style="font-size:26px;"></v-toolbar-title>
         </nuxt-link>
@@ -62,11 +59,6 @@
           </v-slide-y-transition>
         </v-container>
       </v-content>
-      <v-footer :fixed="fixed" app style="justify-content:center;">
-        <div id="sig" style="font-size:12px;color:gray">
-          made with <span>&#10084;</span> by <a target="_blank" href="https://servicestack.net" title="ServiceStack">ServiceStack</a>
-        </div>
-      </v-footer>
     </div>
   </v-app>
 </template>

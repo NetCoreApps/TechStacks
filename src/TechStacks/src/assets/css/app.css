@@ -221,8 +221,6 @@ section.block {
   overflow-x: auto;
 }
 .post-image img {
-  max-width: 1070px;
-  max-height: 1070px;
   margin-top: 8px;
 }
 .post-comments > .comment {
@@ -591,12 +589,50 @@ blockquote {
   -webkit-box-shadow: none;
 }
 
+.post {
+    max-width: 1024px;
+}
+.post img, .post-image img {
+    max-width: 990px;
+}
+
+@media only screen and (min-width: 1400px) {
+    .post {
+        max-width: 1024px;
+    }
+    .post img, .post-image img {
+        max-width: 990px;
+    }
+}
+
+@media only screen and (max-width: 1400px) {
+    .post {
+        max-width: 900px; /*sidebar*/
+        overflow-x: hidden;
+    }
+    .post img, .post-image img {
+        max-width: 870px;
+    }
+}
+
+@media only screen and (max-width: 1280px) {
+    .post {
+        max-width: 1024px;
+        overflow-x: hidden;
+    }
+    .post img, .post-image img {
+        max-width: 990px;
+    }
+}
 
 /* iPad in landscape: 1024x768 */
-@media only screen and (min-width: 1024px) {
-  .form-sm {
-    min-width: 500px;
-  }
+@media only screen and (max-width: 1024px) {
+    .form-sm {
+        min-width: 500px;
+    }
+    .post, .post img, .post-image img {
+        max-width: 100%;
+    }
 }
 
 /* iPad in portrait: 768x1024 */
@@ -604,7 +640,7 @@ blockquote {
   .container {
     padding: 0;
   }
-  .card, .hero .card, .post, .post-content, .post-image img {
+  .card, .hero .card, .post, .post-content, .post img, .post-image img {
     max-width: 768px;
     min-width: auto;
   }
@@ -636,9 +672,6 @@ blockquote {
   /* News Posts */
   .org-types {
     margin-top: 5px;
-  }
-  .post-image img {
-    max-width: 100%;
   }
   .tech-results td:nth-child(2), .tech-results th:nth-child(2) {
     display: none;
@@ -694,7 +727,7 @@ blockquote {
     -webkit-box-shadow: none;
     box-shadow: none;
   }
-  .card, .hero .card, .post, .post-content, .post-image img {
+  .card, .hero .card, .post, .post-content, .post img, .post-image img {
     max-width: 414px;
   }
   p, pre, .description {
