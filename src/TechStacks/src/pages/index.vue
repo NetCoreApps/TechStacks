@@ -48,7 +48,22 @@
 
       <v-flex v-if="latestNewsPosts.length > 0" style="margin:1em 0" class="no-prerender">
         <v-layout wrap>
-          <PostsList :posts="latestNewsPosts" :page="page" />
+
+          <div class="flex">
+              <PostsList :posts="latestNewsPosts" :page="page" />
+
+              <v-flex class="flex">
+                  <v-btn v-if="page > 0" color="primary" :to="getPageUrl(page-1)" title="View Previous (←)">
+                      <v-icon>chevron_left</v-icon>
+                      prev
+                  </v-btn>
+                  <span class="page-num" v-if="page > 0">{{ page }}</span>
+                  <v-btn v-if="hasMore" color="primary" :to="getPageUrl(page+1)" title="View Next (→)">
+                      more
+                      <v-icon>chevron_right</v-icon>
+                  </v-btn>
+              </v-flex>
+          </div>
 
           <v-flex class="tech-organizations">
 
@@ -114,18 +129,6 @@
 
           </v-flex>
         </v-layout>
-
-        <v-flex style="margin-top:5px;">
-          <v-btn v-if="page > 0" color="primary" :to="getPageUrl(page-1)" title="View Previous (←)">
-            <v-icon>chevron_left</v-icon>
-            prev
-          </v-btn>
-          <span class="page-num" v-if="page > 0">{{ page }}</span>
-          <v-btn v-if="hasMore" color="primary" :to="getPageUrl(page+1)" title="View Next (→)">
-            more
-            <v-icon>chevron_right</v-icon>
-          </v-btn>
-        </v-flex>
 
       </v-flex>
       <v-flex v-else-if="!loading">
@@ -373,6 +376,11 @@ export default {
   .tech-organizations {
     margin-left: 0;
   }
+}
+@media only screen and (max-width: 599px) {
+    .tech-organizations {
+        max-width: unset;
+    }
 }
 
 </style>

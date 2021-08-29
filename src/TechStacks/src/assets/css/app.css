@@ -13,7 +13,7 @@ html {
   color: #333;
 }
 
-body {  
+body {
 }
 .navbar {
   border-radius: 0;
@@ -323,7 +323,7 @@ pre {
   word-spacing: normal;
 }
 
-.gfm ::-webkit-scrollbar { width:7px; height:5px } 
+.gfm ::-webkit-scrollbar { width:7px; height:5px }
 .gfm ::-webkit-scrollbar-thumb { background-color:#ccc; }
 
 .gfm p, .gfm blockquote, .gfm ul, .gfm ol, .gfm dl, .gfm table {
@@ -391,7 +391,7 @@ p>code, li>code {
   padding: 4px 8px;
   margin: 0 2px;
 }
-a.label.closed { 
+a.label.closed {
   background: #d32f2f;
 }
 .post-labels {
@@ -423,7 +423,7 @@ a.label.closed {
 }
 
 .comment-vote {
-  margin: 2px 5px 0 -8px; 
+  margin: 2px 5px 0 -8px;
   width: 20px;
 }
 .vote-comment {
@@ -636,7 +636,7 @@ blockquote {
   /* News Posts */
   .org-types {
     margin-top: 5px;
-  }  
+  }
   .post-image img {
     max-width: 100%;
   }
@@ -666,7 +666,7 @@ blockquote {
     flex-basis: 50%;
     max-width: 50%;
   }
-  .favorites-page .flex.xs9, .favorites-page .flex.xs3, 
+  .favorites-page .flex.xs9, .favorites-page .flex.xs3,
   .top-page .flex.xs6 {
     flex-basis: 100%;
     max-width: 100%;
@@ -763,7 +763,7 @@ blockquote {
   .gfm p, .gfm blockquote, .gfm ul, .gfm ol, .gfm dl, .gfm table {
     font-size: 14px;
   }
-  
+
   .stacks-page .hero .card .flex.xs4, .techs-page .hero .card .flex.xs3 {
     flex-basis: 50%;
     max-width: 50%;
@@ -775,7 +775,7 @@ blockquote {
   .stacks-page .title, .techs-page .title {
     margin-top: 10px;
   }
-  .techstacks .flex.xs3, 
+  .techstacks .flex.xs3,
   .top-page .flex.xs8, .top-page .flex.xs6, .top-page .flex.xs4 {
     flex-basis: 100%;
     max-width: 100%;
