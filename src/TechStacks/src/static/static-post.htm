@@ -8,53 +8,46 @@ layout: static-layout
     <div class="layout">
         <div class="flex card post" style="height: auto;">
             <div class="card__title">
+{{#if post}}
                 <div class="container fluid grid-list-sm">
-                    <div class="layout row">
-                        <div class="flex page-votes" style="max-width: 52px;">
-                            <div class="layout column" style="text-align: center;">
-                                <button disabled="disabled" type="button" class="vote-btn up btn btn--disabled btn--icon">
-                                    <div class="btn__content"><i aria-hidden="true" class="icon material-icons">arrow_drop_up</i></div>
-                                </button>
-                                <h4 class="votes">1</h4>
-                                <button disabled="disabled" type="button" class="vote-btn down btn btn--disabled btn--icon">
-                                    <div class="btn__content"><i aria-hidden="true" class="icon material-icons">arrow_drop_down</i></div>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="flex post-body">
-                            <div class="layout column">
-                                <div><a href="{{post.Url}}" class="post-title post-link external">{{post.Title}}</a></div>
-                                <div class="post-info" style="text-transform: lowercase;">
-                                    submitted {{post.TimeAgo}} by
-                                    <a href="/users/{{post.CreatedBy}}" class="">@{{post.CreatedBy}}</a>
-                                    to <a href="/{{post.OrganizationSlug}}?types=Post" class="">{{post.OrganizationName}} Posts</a><span>
-                                    {{#if post.TechnologyIds}}
+                    <div class="flex post-body">
+                        <div>
+                            <h3 style="font-weight:normal"><a href="{{post.Url}}" class="">{{ post.Title }}</a></h3>
+                            <div class="post-info" style="text-transform:lowercase;line-height:2em">
+                                submitted {{ post.TimeAgo }} by
+                                <a href="/users/{{post.CreatedBy}}">@{{ post.CreatedBy }}</a>
+                                to <a href="/{{post.OrganizationSlug}}?types=Post">{{ post.OrganizationName }} Posts</a>
+                                <span>
+                                    {{#if post.TechnologyIds }}
                                         with
                                         {{#each post.TechnologySlugs }}
-                                            <a href="/tech/{{it}}" class="tag">{{it}}</a>
+                                            <a href="/tech/{{it}}" class="tag">{{ it }}</a>
                                         {{/each}}
                                     {{/if}}
                                 </span>
-                                </div>
+                            </div>
+                            <div class="post-actions">
+                                <a title="Edit Post" href="/posts/{{post.Id}}/{{post.Slug}}?edit">edit</a>
+                                <a title="Comments" href="/posts/{{post.Id}}/{{post.Slug}}">comments</a>
+                            </div>
+                        </div>
+
+                        <div>
+                            {{#if post.ImageUrl}}
+                            <div class="post-image"><a href="{{post.Url}}"><img src="{{post.ImageUrl}}" alt="post image"></a></div>
+                            {{/if}}
+                            <div class="post-content details-html">
                                 <div>
-                                    {{#if post.ImageUrl}}
-                                        <div class="post-image"><a href="{{post.Url}}"><img src="{{post.ImageUrl}}" alt="post image"></a></div>
-                                    {{/if}}
-                                    <div class="post-content details-html">
-                                        <div>
-                                            <div class="gfm">{{post.ContentHtml |> raw}}</div>
-                                        </div>
-                                        <div class="continue"><a href="{{post.Url}}">continue reading</a></div>
-                                    </div>
-                                    <div class="post-actions">
-                                        <a title="Edit Post" href="/posts/{{post.Id}}/{{post.Slug}}?edit">edit</a>
-                                        <a title="Comments" href="/posts/{{post.Id}}/{{post.Slug}}">comments</a>
-                                    </div>
+                                    <div class="gfm">{{ post.ContentHtml |> raw }}</div>
                                 </div>
+                                <div class="continue mt-2"><a href="{{post.Url}}">continue reading</a></div>
                             </div>
                         </div>
                     </div>
                 </div>
+{{else}}
+    <h2 class="py-2 px-2" style="font-weight:normal">This post does not exist</h2>
+{{/if}}
             </div>
         </div>
     </div>
