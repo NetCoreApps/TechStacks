@@ -589,38 +589,36 @@ blockquote {
   -webkit-box-shadow: none;
 }
 
-.post {
+.static.post {
     max-width: 1024px;
 }
-.post img, .post-image img {
+.static.post img, .static.post .post-image img {
     max-width: 990px;
 }
 
 @media only screen and (min-width: 1400px) {
-    .post {
+    .static.post {
         max-width: 1024px;
     }
-    .post img, .post-image img {
+    .static.post img, .static.post .post-image img {
         max-width: 990px;
     }
 }
 
 @media only screen and (max-width: 1400px) {
-    .post {
+    .static.post {
         max-width: 900px; /*sidebar*/
-        overflow-x: hidden;
     }
-    .post img, .post-image img {
+    .static.post img, .static.post .post-image img {
         max-width: 870px;
     }
 }
 
 @media only screen and (max-width: 1280px) {
-    .post {
+    .static.post {
         max-width: 1024px;
-        overflow-x: hidden;
     }
-    .post img, .post-image img {
+    .static.post img, .static.post .post-image img {
         max-width: 990px;
     }
 }

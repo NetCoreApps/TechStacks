@@ -6,13 +6,13 @@ layout: static-layout
 {{ var post = queryPost(postId) }}
 <div class="flex post-page no-prerender">
     <div class="layout">
-        <div class="flex card post" style="height: auto;">
+        <div class="flex card static post" style="height:auto">
             <div class="card__title">
 {{#if post}}
                 <div class="container fluid grid-list-sm">
                     <div class="flex post-body">
                         <div>
-                            <h3 style="font-weight:normal"><a href="{{post.Url}}" class="">{{ post.Title }}</a></h3>
+                            <h2 style="font-weight:normal"><a href="{{post.Url}}" class="">{{ post.Title }}</a></h2>
                             <div class="post-info" style="text-transform:lowercase;line-height:2em">
                                 submitted {{ post.TimeAgo }} by
                                 <a href="/users/{{post.CreatedBy}}">@{{ post.CreatedBy }}</a>
