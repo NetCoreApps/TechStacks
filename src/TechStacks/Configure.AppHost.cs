@@ -76,7 +76,6 @@ public class AppHost : AppHostBase, IHostingStartup
         SetConfig(new HostConfig {
             // UseSameSiteCookies = true,
             AddRedirectParamsToQueryString = true,
-            DebugMode = HostingEnvironment.IsDevelopment(),
         });
 
         JsConfig.Init(new Config {
