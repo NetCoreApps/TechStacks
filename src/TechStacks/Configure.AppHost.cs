@@ -1,6 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using Funq;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using ServiceStack;
 using ServiceStack.Admin;
 using ServiceStack.Api.OpenApi;
@@ -25,13 +29,13 @@ namespace TechStacks;
 public class AppHost : AppHostBase, IHostingStartup
 {
     public void Configure(IWebHostBuilder builder) => builder
-        .ConfigureServices(services => {
+        .ConfigureServices((context,services) => {
             // Configure ASP.NET Core IOC Dependencies
             services.AddSingleton<IMessageService>(c => new BackgroundMqService());
 
             var dbFactory = new OrmLiteConnectionFactory(
                 Environment.GetEnvironmentVariable("TECHSTACKS_DB") ??
-                AppSettings.GetString("OrmLite.ConnectionString"),
+                context.Configuration.GetConnectionString("DefaultConnection"),
                 PostgreSqlDialect.Provider);
             dbFactory.RegisterDialectProvider(nameof(PostgreSqlDialect), PostgreSqlDialect.Provider);
 
@@ -69,11 +73,10 @@ public class AppHost : AppHostBase, IHostingStartup
 //            LogManager.LogFactory = new ConsoleLogFactory(debugEnabled:true);
         log = LogManager.GetLogger(typeof(AppHost));
 
-        var debugMode = AppSettings.Get(nameof(HostConfig.DebugMode), false);
         SetConfig(new HostConfig {
             // UseSameSiteCookies = true,
             AddRedirectParamsToQueryString = true,
-            DebugMode = debugMode,
+            DebugMode = HostingEnvironment.IsDevelopment(),
         });
 
         JsConfig.Init(new Config {
