@@ -1,16 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <DebugType>portable</DebugType>
     <OutputType>Library</OutputType>
-    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\TechStacks.ServiceInterface\TechStacks.ServiceInterface.csproj" />
     <ProjectReference Include="..\TechStacks.ServiceModel\TechStacks.ServiceModel.csproj" />
-    <PackageReference Include="NUnit" Version="3.12.*" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+    <PackageReference Include="NUnit" Version="3.13.*" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.1.*" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
     <PackageReference Include="ServiceStack" Version="5.*" />
     <PackageReference Include="ServiceStack.Server" Version="5.*" />
     <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="5.*" />

@@ -4,41 +4,41 @@ using ServiceStack.OrmLite;
 using TechStacks.ServiceInterface;
 using TechStacks.ServiceModel.Types;
 
-namespace TechStacks.Tests
+namespace TechStacks.Tests;
+
+public class DummyData
 {
-    public class DummyData
+    public static IMarkdownProvider Markdown = new GitHubApiMarkdownProvider();
+
+    public Post NewsPost(PostType type, int techId, string title, string url = null, string content = null, int comments = 0, int upVotes = 1, int userId = 1, string userName = "demisbellot") => new Post
     {
-        public static IMarkdownProvider Markdown = new GitHubApiMarkdownProvider();
+        Type = type,
+        OrganizationId = techId,
+        Title = title,
+        Slug = title.GenerateSlug(),
+        Url = url,
+        Content = content,
+        ContentHtml = Markdown.TransformAsync(content).Result,
+        CommentsCount = comments,
+        UserId = userId,
+        UpVotes = upVotes,
+        Created = DateTime.Now,
+        CreatedBy = userName,
+        Modified = DateTime.Now,
+        ModifiedBy = userName
+    };
 
-        public Post NewsPost(PostType type, int techId, string title, string url = null, string content = null, int comments = 0, int upVotes = 1, int userId = 1, string userName = "demisbellot") => new Post
-        {
-            Type = type,
-            OrganizationId = techId,
-            Title = title,
-            Slug = title.GenerateSlug(),
-            Url = url,
-            Content = content,
-            ContentHtml = Markdown.TransformAsync(content).Result,
-            CommentsCount = comments,
-            UserId = userId,
-            UpVotes = upVotes,
-            Created = DateTime.Now,
-            CreatedBy = userName,
-            Modified = DateTime.Now,
-            ModifiedBy = userName
-        };
+    private void AddPostVotes(IDbConnection db)
+    {
+        db.Insert(new PostVote { PostId = 1, UserId = 2, Weight = 1, Created = DateTime.Now });
+        db.Insert(new PostVote { PostId = 2, UserId = 2, Weight = -1, Created = DateTime.Now });
+        db.Insert(new PostVote { PostId = 3, UserId = 2, Weight = 1, Created = DateTime.Now });
+    }
 
-        private void AddPostVotes(IDbConnection db)
-        {
-            db.Insert(new PostVote { PostId = 1, UserId = 2, Weight = 1, Created = DateTime.Now });
-            db.Insert(new PostVote { PostId = 2, UserId = 2, Weight = -1, Created = DateTime.Now });
-            db.Insert(new PostVote { PostId = 3, UserId = 2, Weight = 1, Created = DateTime.Now });
-        }
-
-        private void AddPosts(IDbConnection db)
-        {
-            var postId = db.Insert(NewsPost(PostType.Question, 9, "Redis benchmark for a few instance, benchmark process often stuck in D(disk sleep) process state",
-                content: @"I have more than 5 redis server in one server machine and a client machine (54 core, 256G, 1000Mbps).
+    private void AddPosts(IDbConnection db)
+    {
+        var postId = db.Insert(NewsPost(PostType.Question, 9, "Redis benchmark for a few instance, benchmark process often stuck in D(disk sleep) process state",
+            content: @"I have more than 5 redis server in one server machine and a client machine (54 core, 256G, 1000Mbps).
 
 I launch benchmark for every server instance in client machine.
 
@@ -51,10 +51,10 @@ It seems redis-benchmark are waiting for I/O, and I cannot find the bottleneck o
 3. network bandwidth 200Mbit/s
 4. cpu usage of each benchmark process: 30%", comments: 9, upVotes: 10), selectIdentity: true);
 
-            AddPostComments(db, postId);
+        AddPostComments(db, postId);
 
-            db.Insert(NewsPost(PostType.Announcement, 9, "Redis 3.2.7 is out: IMPORTANT SECURITY FIXES INSIDE",
-                content: @"
+        db.Insert(NewsPost(PostType.Announcement, 9, "Redis 3.2.7 is out: IMPORTANT SECURITY FIXES INSIDE",
+            content: @"
 Redis 3.2.7     Released Tue Jan 31 16:21:41 CET 2017
 =====================================================
 
@@ -148,164 +148,163 @@ antirez in commit 68aab8e:
 Jan-Erik Rediger in commit 788e892:
  Reset the ttl for additional keys
  1 file changed, 1 insertion(+)"));
-            db.Insert(NewsPost(PostType.Post, 9, "Neural Redis (neural networks data structure extension for Redis machine learning) is out!",
-                "https://github.com/antirez/neural-redis", comments: 1, upVotes: 101, userId: 2, userName: "layoric"));
+        db.Insert(NewsPost(PostType.Post, 9, "Neural Redis (neural networks data structure extension for Redis machine learning) is out!",
+            "https://github.com/antirez/neural-redis", comments: 1, upVotes: 101, userId: 2, userName: "layoric"));
 
-            postId = db.Insert(NewsPost(PostType.Announcement, 9, "Redis 4.0 RC1 is out! My blog post about it", "http://antirez.com/news/110", comments: 2, upVotes: 1123, userId: 2, userName: "layoric"),
-                selectIdentity: true);
+        postId = db.Insert(NewsPost(PostType.Announcement, 9, "Redis 4.0 RC1 is out! My blog post about it", "http://antirez.com/news/110", comments: 2, upVotes: 1123, userId: 2, userName: "layoric"),
+            selectIdentity: true);
 
-            AddPostComments(db, postId);
-        }
+        AddPostComments(db, postId);
+    }
 
-        private void AddPostComments(IDbConnection db, long postId)
+    private void AddPostComments(IDbConnection db, long postId)
+    {
+        const int u1Id = 1;
+        const string u1 = "demisbellot";
+        const int u2Id = 2;
+        const string u2 = "layoric";
+
+        var id = db.Insert(new PostComment
         {
-            const int u1Id = 1;
-            const string u1 = "demisbellot";
-            const int u2Id = 2;
-            const string u2 = "layoric";
-
-            var id = db.Insert(new PostComment
-            {
-                PostId = postId,
-                UserId = u1Id,
-                CreatedBy = u1,
-                Modified = DateTime.Now,
-                Created = DateTime.Now,
-                UpVotes = 6,
-                Content =
+            PostId = postId,
+            UserId = u1Id,
+            CreatedBy = u1,
+            Modified = DateTime.Now,
+            Created = DateTime.Now,
+            UpVotes = 6,
+            Content =
                 @"You're not being very clear what you're talking about.
 
 > When I launch more than 3 benchmark process, the benchmark process state will be D sometimes and cpu usage for each process come down.
 
 This sounds like you're saying the benchmark clients are waiting on disk. But this is the Reddit for the server, so perhaps you're describing the Redis server processes? Would you please clarify?"
-            }, selectIdentity: true);
+        }, selectIdentity: true);
 
-            id = db.Insert(new PostComment
-            {
-                PostId = postId,
-                ReplyId = id,
-                UserId = u2Id,
-                CreatedBy = u2,
-                Modified = DateTime.Now.AddMinutes(-1),
-                Created = DateTime.Now.AddMinutes(-1),
-                UpVotes = 2,
-                Content =
+        id = db.Insert(new PostComment
+        {
+            PostId = postId,
+            ReplyId = id,
+            UserId = u2Id,
+            CreatedBy = u2,
+            Modified = DateTime.Now.AddMinutes(-1),
+            Created = DateTime.Now.AddMinutes(-1),
+            UpVotes = 2,
+            Content =
                 @"Sorry for the describe. The server have not meet bottleneck, CPU usage is low and can increase when bench from another client server. I want to know the bottleneck of my single client host. Why benchmark process in ""D"" state?"
-            }, selectIdentity: true);
+        }, selectIdentity: true);
 
-            id = db.Insert(new PostComment
-            {
-                PostId = postId,
-                ReplyId = id,
-                UserId = u1Id,
-                CreatedBy = u1,
-                Modified = DateTime.Now.AddMinutes(-1),
-                Created = DateTime.Now.AddMinutes(-1),
-                UpVotes = 2,
-                Content =
+        id = db.Insert(new PostComment
+        {
+            PostId = postId,
+            ReplyId = id,
+            UserId = u1Id,
+            CreatedBy = u1,
+            Modified = DateTime.Now.AddMinutes(-1),
+            Created = DateTime.Now.AddMinutes(-1),
+            UpVotes = 2,
+            Content =
                 @"Ah, you're asking about the redis-benchmark client program. A process in 'D' state is waiting for I/O to finish. This can occur because the process is waiting for disk I/O to finish, it's true. But that's not the only reason. It can occur because the process is waiting for other kinds of I/O, like network.
 
 Since the redis-benchmark process sends commands to the Redis server, it also receives the replies. Generating the key and value names doesn't take much time and transmitting to the server doesn't either. So a larger portion of the time will be spent waiting for the reply from the server. At the particular instant that ps captures the process's state, it's more likely to be in the state that's waiting for a reply than in the middle of transmitting a command.
 
 I think that's all it is - redis-benchmark behaving normally."
-            }, selectIdentity: true);
+        }, selectIdentity: true);
 
-            id = db.Insert(new PostComment
-            {
-                PostId = postId,
-                ReplyId = id,
-                UserId = u2Id,
-                CreatedBy = u2,
-                Modified = DateTime.Now.AddMinutes(-5),
-                Created = DateTime.Now.AddMinutes(-5),
-                UpVotes = 2,
-                Content =
+        id = db.Insert(new PostComment
+        {
+            PostId = postId,
+            ReplyId = id,
+            UserId = u2Id,
+            CreatedBy = u2,
+            Modified = DateTime.Now.AddMinutes(-5),
+            Created = DateTime.Now.AddMinutes(-5),
+            UpVotes = 2,
+            Content =
                 @"Thanks for your comment.
 
 In my side, when I launch one benchmark process everything looks good, when I launch more than 3 benchmark processes to different redis server the benchmark cpu usage come down.
 
 Both server and client cpu/network resource is abundant. Futher more, client and server i/o is event-based(epoll in my environment), client dose not need block to wait for server reply. My interpretation is wrong?"
-            }, selectIdentity: true);
+        }, selectIdentity: true);
 
-            id = db.Insert(new PostComment
-            {
-                PostId = postId,
-                ReplyId = id,
-                UserId = u1Id,
-                CreatedBy = u1,
-                Modified = DateTime.Now.AddMinutes(id * -20),
-                Created = DateTime.Now.AddMinutes(id * -20),
-                UpVotes = 2,
-                Content =
+        id = db.Insert(new PostComment
+        {
+            PostId = postId,
+            ReplyId = id,
+            UserId = u1Id,
+            CreatedBy = u1,
+            Modified = DateTime.Now.AddMinutes(id * -20),
+            Created = DateTime.Now.AddMinutes(id * -20),
+            UpVotes = 2,
+            Content =
                 @"Can you post an example of the redis-benchmark commands you're running? It's not easy to know what resources the commands will consume on the client computer without seeing the tasks you're asking them to perform."
-            }, selectIdentity: true);
+        }, selectIdentity: true);
 
-            id = db.Insert(new PostComment
-            {
-                PostId = postId,
-                ReplyId = id,
-                UserId = u2Id,
-                CreatedBy = u2,
-                Modified = DateTime.Now.AddMinutes(id * -20),
-                Created = DateTime.Now.AddMinutes(id * -20),
-                UpVotes = 2,
-                Content =
+        id = db.Insert(new PostComment
+        {
+            PostId = postId,
+            ReplyId = id,
+            UserId = u2Id,
+            CreatedBy = u2,
+            Modified = DateTime.Now.AddMinutes(id * -20),
+            Created = DateTime.Now.AddMinutes(id * -20),
+            UpVotes = 2,
+            Content =
                 @"Sure. the system screenshot in google docs: https://docs.google.com/document/d/1MjdLPW1KngWedJORdpwCjblUygUFi-2Hoz30ezpifhA/edit?usp=sharing"
-            }, selectIdentity: true);
+        }, selectIdentity: true);
 
-            id = db.Insert(new PostComment
-            {
-                PostId = postId,
-                ReplyId = id,
-                UserId = u1Id,
-                CreatedBy = u1,
-                Modified = DateTime.Now.AddMinutes(id * -20),
-                Created = DateTime.Now.AddMinutes(id * -20),
-                UpVotes = 2,
-                Content =
+        id = db.Insert(new PostComment
+        {
+            PostId = postId,
+            ReplyId = id,
+            UserId = u1Id,
+            CreatedBy = u1,
+            Modified = DateTime.Now.AddMinutes(id * -20),
+            Created = DateTime.Now.AddMinutes(id * -20),
+            UpVotes = 2,
+            Content =
                 @"Is the screenshot correct?
 
  - There are no other command-line options to the right of ""-q set {key:0000000nnnnn}"" that your terminal window failed to wrap around and make visible?
  - Are you really running all 7 processes with ""-n 10000000000"" (send 10 billion requests)?"
-            }, selectIdentity: true);
+        }, selectIdentity: true);
 
-            id = db.Insert(new PostComment
-            {
-                PostId = postId,
-                ReplyId = id,
-                UserId = u2Id,
-                CreatedBy = u2,
-                Modified = DateTime.Now.AddMinutes(id * -20),
-                Created = DateTime.Now.AddMinutes(id * -20),
-                UpVotes = 2,
-                Content =
+        id = db.Insert(new PostComment
+        {
+            PostId = postId,
+            ReplyId = id,
+            UserId = u2Id,
+            CreatedBy = u2,
+            Modified = DateTime.Now.AddMinutes(id * -20),
+            Created = DateTime.Now.AddMinutes(id * -20),
+            UpVotes = 2,
+            Content =
                 @"It's correct And the commands are complete.
 
 I use redis cluster of 10 redis master nodes, so I use specific key for different master.
 
 I start benchmark with '-n 10000000000' to make benchmark process last for a longer time."
-            }, selectIdentity: true);
+        }, selectIdentity: true);
 
-            id = db.Insert(new PostComment
-            {
-                PostId = postId,
-                ReplyId = id,
-                UserId = u1Id,
-                CreatedBy = u1,
-                Modified = DateTime.Now.AddMinutes(id * -20),
-                Created = DateTime.Now.AddMinutes(id * -20),
-                UpVotes = 2,
-                Content =
+        id = db.Insert(new PostComment
+        {
+            PostId = postId,
+            ReplyId = id,
+            UserId = u1Id,
+            CreatedBy = u1,
+            Modified = DateTime.Now.AddMinutes(id * -20),
+            Created = DateTime.Now.AddMinutes(id * -20),
+            UpVotes = 2,
+            Content =
                 @"My interpretation of the situation is that your redis-benchmark commands are consuming unexpected machine resources because of the extremely large '-n' option (request count). If I'm correctly interpreting the process listing you posted, each of the redis-benchmark commands are consuming 12GB or RAM. (there also seems to be a Redis server process on the same machine, which doesn't match with your original description that this machine is only running the redis-benchmark commands)
 
 I suggest cutting down the '-n' option to 100000 and see if the processes display different behavior."
-            }, selectIdentity: true);
+        }, selectIdentity: true);
 
-            db.Select<PostComment>().ForEach(x =>
-            {
-                x.ContentHtml = Markdown.TransformAsync(x.Content).Result;
-                db.Save(x);
-            });
-        }
+        db.Select<PostComment>().ForEach(x =>
+        {
+            x.ContentHtml = Markdown.TransformAsync(x.Content).Result;
+            db.Save(x);
+        });
     }
 }

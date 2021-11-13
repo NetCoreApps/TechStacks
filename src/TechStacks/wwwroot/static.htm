@@ -48,7 +48,6 @@ layout: static-layout
                                  style="text-transform: lowercase;">
                                 submitted {{post.TimeAgo}} by
                                 <a href="/users/{{post.CreatedBy}}" class="">@{{post.CreatedBy}}</a>
-                                to <a href="/{{post.OrganizationSlug}}?types=Post" class="">{{post.OrganizationName}} Posts</a><span>
                                 {{#if post.TechnologyIds}}
                                     with
                                     {{#each post.TechnologySlugs }}

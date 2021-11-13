@@ -11,66 +11,62 @@ using TechStacks.ServiceInterface;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 
-namespace TechStacks.Tests
+namespace TechStacks.Tests;
+
+[TestFixture]
+public class UnitTests
 {
-    [TestFixture]
-    public class UnitTests
+    private ServiceStackHost appHost;
+
+    [OneTimeSetUp]
+    public void Init()
     {
-        private ServiceStackHost appHost;
+        appHost = new UnitTestHost();
+        var debugSettings = new FileInfo(@"~/../../../TechStacks/wwwroot_build/deploy/appsettings.license.txt".MapAbsolutePath());
+        Licensing.RegisterLicenseFromFileIfExists(debugSettings.FullName);
+        appHost.Init();
+    }
 
-        [OneTimeSetUp]
-        public void Init()
-        {
-            appHost = new UnitTestHost();
-            var debugSettings = new FileInfo(@"~/../../../TechStacks/wwwroot_build/deploy/appsettings.license.txt".MapAbsolutePath());
-            Licensing.RegisterLicenseFromFileIfExists(debugSettings.FullName);
-            appHost.Init();
-        }
+    [OneTimeTearDown]
+    public void TestFixtureTearDown()
+    {
+        appHost.Dispose();
+    }
 
-        [OneTimeTearDown]
-        public void TestFixtureTearDown()
-        {
-           appHost.Dispose();
-        }
+    [SetUp]
+    public void Setup()
+    {
+        var dbFactory = appHost.Resolve<IDbConnectionFactory>();
+        using var db = dbFactory.OpenDbConnection();
+        db.DropAndCreateTable<TechnologyStack>();
+        db.DropAndCreateTable<Technology>();
+        db.DropAndCreateTable<TechnologyChoice>();
+        db.DropAndCreateTable<UserFavoriteTechnologyStack>();
+        db.DropAndCreateTable<UserFavoriteTechnology>();
 
-        [SetUp]
-        public void Setup()
-        {
-            var dbFactory = appHost.Resolve<IDbConnectionFactory>();
-            using (var db = dbFactory.OpenDbConnection())
-            {
-                db.DropAndCreateTable<TechnologyStack>();
-                db.DropAndCreateTable<Technology>();
-                db.DropAndCreateTable<TechnologyChoice>();
-                db.DropAndCreateTable<UserFavoriteTechnologyStack>();
-                db.DropAndCreateTable<UserFavoriteTechnology>();
-            }
+        SeedTestHost();
+    }
 
-            SeedTestHost();
-        }
+    [Test]
+    public void Can_Get_Stacks()
+    {
+        var service = appHost.Resolve<CachedTechnologyStackServices>();
+        var response = (GetAllTechnologyStacksResponse)service.Get(new GetAllTechnologyStacks());
+        var dbFactory = appHost.Resolve<IDbConnectionFactory>();
+        using var db = dbFactory.OpenDbConnection();
+        
+        var allStacks = db.Select<TechnologyStack>().ToList();
+        Assert.That(allStacks.Count, Is.EqualTo(response.Results.Count));
+    }
 
-        [Test]
-        public void Can_Get_Stacks()
-        {
-            var service = appHost.Resolve<CachedTechnologyStackServices>();
-            var response = (GetAllTechnologyStacksResponse)service.Get(new GetAllTechnologyStacks());
-            var dbFactory = appHost.Resolve<IDbConnectionFactory>();
-            using (var db = dbFactory.OpenDbConnection())
-            {
-                var allStacks = db.Select<TechnologyStack>().ToList();
-                Assert.That(allStacks.Count, Is.EqualTo(response.Results.Count));
-            }
-        }
+    private void SeedTestHost()
+    {
+        Seeds.SeedApp(appHost.Resolve<IDbConnectionFactory>());
+    }
 
-        private void SeedTestHost()
-        {
-            Seeds.SeedApp(appHost.Resolve<IDbConnectionFactory>());
-        }
-
-        [Test]
-        public void Generate_AuthKey()
-        {
-            Convert.ToBase64String(AesUtils.CreateKey()).Print();
-        }
+    [Test]
+    public void Generate_AuthKey()
+    {
+        Convert.ToBase64String(AesUtils.CreateKey()).Print();
     }
 }
