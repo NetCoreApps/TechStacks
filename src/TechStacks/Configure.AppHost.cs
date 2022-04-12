@@ -92,12 +92,33 @@ public class AppHost : AppHostBase, IHostingStartup
             }
         });
 
+        var authRepo = new OrmLiteAuthRepository<CustomUserAuth, UserAuthDetails>(dbFactory);
+        container.Register<IUserAuthRepository>(authRepo);
+        authRepo.InitSchema();
+        using var db = dbFactory.OpenDbConnection();
+        var lockedUserIds = db.ColumnDistinct<int>(
+            db.From<CustomUserAuth>().Where(x => x.LockedDate != null).Select(x => x.Id));
+
+        db.CreateTableIfNotExists<TechnologyStack>();
+        db.CreateTableIfNotExists<Technology>();
+        db.CreateTableIfNotExists<TechnologyChoice>();
+        db.CreateTableIfNotExists<UserFavoriteTechnologyStack>();
+        db.CreateTableIfNotExists<UserFavoriteTechnology>();
+
+        Plugins.Add(CreateSiteMap(db, baseUrl:"https://techstacks.io"));
+
         Plugins.Add(new AuthFeature(() => new CustomUserSession(), new IAuthProvider[] {
             new TwitterAuthProvider(AppSettings),
             new GithubAuthProvider(AppSettings),
             new JwtAuthProvider(AppSettings) {
                 RequireSecureConnection = false,
                 UseTokenCookie = true,
+                // Ensure locked accounts are enforced prior to their JWT expiring
+                ValidateToken = (payload, req) => {
+                    if (lockedUserIds.Contains(payload.GetValue("sub", () => "0").ToInt()))
+                        throw new AuthenticationException(ErrorMessages.UserAccountLocked.Localize(req));
+                    return true;
+                },
                 CreatePayloadFilter = (payload, session) => {
                     var githubAuth = session.ProviderOAuthAccess.Safe()
                         .FirstOrDefault(x => x.Provider == "github");
@@ -139,22 +160,7 @@ public class AppHost : AppHostBase, IHostingStartup
             Bcc = AppSettings.GetString("smtp.Bcc"),
         });
 
-        var authRepo = new OrmLiteAuthRepository<CustomUserAuth, UserAuthDetails>(dbFactory);
-        container.Register<IUserAuthRepository>(authRepo);
-        authRepo.InitSchema();
-
         Plugins.Add(new AdminUsersFeature());
-
-        using (var db = dbFactory.OpenDbConnection())
-        {
-            db.CreateTableIfNotExists<TechnologyStack>();
-            db.CreateTableIfNotExists<Technology>();
-            db.CreateTableIfNotExists<TechnologyChoice>();
-            db.CreateTableIfNotExists<UserFavoriteTechnologyStack>();
-            db.CreateTableIfNotExists<UserFavoriteTechnology>();
-
-            Plugins.Add(CreateSiteMap(db, baseUrl:"https://techstacks.io"));
-        }
 
         Plugins.Add(new CorsFeature(
             allowOriginWhitelist: new[] {
