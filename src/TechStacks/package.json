@@ -13,7 +13,7 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
-    "@servicestack/client": "^1.0.31",
+    "@servicestack/client": "^1.1.15",
     "@servicestack/editor": "0.0.2",
     "@servicestack/images": "^1.0.0",
     "npm": "^6.13.4",

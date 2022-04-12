@@ -143,6 +143,8 @@ public class AppHost : AppHostBase, IHostingStartup
         container.Register<IUserAuthRepository>(authRepo);
         authRepo.InitSchema();
 
+        Plugins.Add(new AdminUsersFeature());
+
         using (var db = dbFactory.OpenDbConnection())
         {
             db.CreateTableIfNotExists<TechnologyStack>();
@@ -183,7 +185,7 @@ public class AppHost : AppHostBase, IHostingStartup
             }
         });
         Plugins.Add(new AutoQueryFeature {
-            MaxLimit = 500,
+            MaxLimit = 100,
             StripUpperInLike = false,
             IncludeTotal = true,
             ResponseFilters = {

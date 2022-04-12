@@ -1,5 +1,5 @@
 /* Options:
-Date: 2022-01-01 04:59:08
+Date: 2022-01-15 14:09:10
 Version: 5.133
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://techstacks.io
@@ -1395,45 +1395,14 @@ export class UnAssignRolesResponse
     public constructor(init?: Partial<UnAssignRolesResponse>) { (Object as any).assign(this, init); }
 }
 
-// @DataContract
-export class ConvertSessionToTokenResponse
-{
-    // @DataMember(Order=1)
-    public meta: { [index: string]: string; };
-
-    // @DataMember(Order=2)
-    public accessToken: string;
-
-    // @DataMember(Order=3)
-    public refreshToken: string;
-
-    // @DataMember(Order=4)
-    public responseStatus: ResponseStatus;
-
-    public constructor(init?: Partial<ConvertSessionToTokenResponse>) { (Object as any).assign(this, init); }
-}
-
-// @DataContract
-export class GetAccessTokenResponse
-{
-    // @DataMember(Order=1)
-    public accessToken: string;
-
-    // @DataMember(Order=2)
-    public meta: { [index: string]: string; };
-
-    // @DataMember(Order=3)
-    public responseStatus: ResponseStatus;
-
-    public constructor(init?: Partial<GetAccessTokenResponse>) { (Object as any).assign(this, init); }
-}
-
 // @Route("/ping")
 export class Ping
 {
 
     public constructor(init?: Partial<Ping>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'Ping'; }
     public getMethod() { return 'POST'; }
+    public createResponse() {}
 }
 
 // @Route("/orgs/{Id}", "GET")
@@ -1442,9 +1411,9 @@ export class GetOrganization implements IReturn<GetOrganizationResponse>, IGet
     public id?: number;
 
     public constructor(init?: Partial<GetOrganization>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetOrganizationResponse(); }
     public getTypeName() { return 'GetOrganization'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetOrganizationResponse(); }
 }
 
 // @Route("/organizations/{Slug}", "GET")
@@ -1453,9 +1422,9 @@ export class GetOrganizationBySlug implements IReturn<GetOrganizationResponse>, 
     public slug: string;
 
     public constructor(init?: Partial<GetOrganizationBySlug>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetOrganizationResponse(); }
     public getTypeName() { return 'GetOrganizationBySlug'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetOrganizationResponse(); }
 }
 
 // @Route("/orgs/{Id}/members", "GET")
@@ -1464,9 +1433,9 @@ export class GetOrganizationMembers implements IReturn<GetOrganizationMembersRes
     public id: number;
 
     public constructor(init?: Partial<GetOrganizationMembers>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetOrganizationMembersResponse(); }
     public getTypeName() { return 'GetOrganizationMembers'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetOrganizationMembersResponse(); }
 }
 
 // @Route("/orgs/{Id}/admin", "GET")
@@ -1475,9 +1444,9 @@ export class GetOrganizationAdmin implements IReturn<GetOrganizationAdminRespons
     public id: number;
 
     public constructor(init?: Partial<GetOrganizationAdmin>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetOrganizationAdminResponse(); }
     public getTypeName() { return 'GetOrganizationAdmin'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetOrganizationAdminResponse(); }
 }
 
 // @Route("/orgs/posts/new", "POST")
@@ -1487,9 +1456,9 @@ export class CreateOrganizationForTechnology implements IReturn<CreateOrganizati
     public techStackId?: number;
 
     public constructor(init?: Partial<CreateOrganizationForTechnology>) { (Object as any).assign(this, init); }
-    public createResponse() { return new CreateOrganizationForTechnologyResponse(); }
     public getTypeName() { return 'CreateOrganizationForTechnology'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new CreateOrganizationForTechnologyResponse(); }
 }
 
 // @Route("/orgs", "POST")
@@ -1503,9 +1472,9 @@ export class CreateOrganization implements IReturn<CreateOrganizationResponse>, 
     public refUrn: string;
 
     public constructor(init?: Partial<CreateOrganization>) { (Object as any).assign(this, init); }
-    public createResponse() { return new CreateOrganizationResponse(); }
     public getTypeName() { return 'CreateOrganization'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new CreateOrganizationResponse(); }
 }
 
 // @Route("/orgs/{Id}", "PUT")
@@ -1532,9 +1501,9 @@ export class UpdateOrganization implements IReturn<UpdateOrganizationResponse>, 
     public technologyIds: number[];
 
     public constructor(init?: Partial<UpdateOrganization>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UpdateOrganizationResponse(); }
     public getTypeName() { return 'UpdateOrganization'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UpdateOrganizationResponse(); }
 }
 
 // @Route("/orgs/{Id}", "DELETE")
@@ -1543,9 +1512,9 @@ export class DeleteOrganization implements IReturnVoid, IDelete
     public id: number;
 
     public constructor(init?: Partial<DeleteOrganization>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'DeleteOrganization'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() {}
 }
 
 // @Route("/orgs/{Id}/lock", "PUT")
@@ -1556,9 +1525,9 @@ export class LockOrganization implements IReturnVoid, IPut
     public reason: string;
 
     public constructor(init?: Partial<LockOrganization>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'LockOrganization'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() {}
 }
 
 // @Route("/orgs/{OrganizationId}/labels", "POST")
@@ -1570,9 +1539,9 @@ export class AddOrganizationLabel implements IReturn<OrganizationLabelResponse>,
     public color: string;
 
     public constructor(init?: Partial<AddOrganizationLabel>) { (Object as any).assign(this, init); }
-    public createResponse() { return new OrganizationLabelResponse(); }
     public getTypeName() { return 'AddOrganizationLabel'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new OrganizationLabelResponse(); }
 }
 
 // @Route("/orgs/{OrganizationId}/members/{Slug}", "PUT")
@@ -1584,9 +1553,9 @@ export class UpdateOrganizationLabel implements IReturn<OrganizationLabelRespons
     public color: string;
 
     public constructor(init?: Partial<UpdateOrganizationLabel>) { (Object as any).assign(this, init); }
-    public createResponse() { return new OrganizationLabelResponse(); }
     public getTypeName() { return 'UpdateOrganizationLabel'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new OrganizationLabelResponse(); }
 }
 
 // @Route("/orgs/{OrganizationId}/labels/{Slug}", "DELETE")
@@ -1596,9 +1565,9 @@ export class RemoveOrganizationLabel implements IReturnVoid, IDelete
     public slug: string;
 
     public constructor(init?: Partial<RemoveOrganizationLabel>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'RemoveOrganizationLabel'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() {}
 }
 
 // @Route("/orgs/{OrganizationId}/categories", "POST")
@@ -1611,9 +1580,9 @@ export class AddOrganizationCategory implements IReturn<AddOrganizationCategoryR
     public technologyIds: number[];
 
     public constructor(init?: Partial<AddOrganizationCategory>) { (Object as any).assign(this, init); }
-    public createResponse() { return new AddOrganizationCategoryResponse(); }
     public getTypeName() { return 'AddOrganizationCategory'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new AddOrganizationCategoryResponse(); }
 }
 
 // @Route("/orgs/{OrganizationId}/categories/{Id}", "PUT")
@@ -1627,9 +1596,9 @@ export class UpdateOrganizationCategory implements IReturn<UpdateOrganizationCat
     public technologyIds: number[];
 
     public constructor(init?: Partial<UpdateOrganizationCategory>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UpdateOrganizationCategoryResponse(); }
     public getTypeName() { return 'UpdateOrganizationCategory'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UpdateOrganizationCategoryResponse(); }
 }
 
 // @Route("/orgs/{OrganizationId}/categories/{Id}", "DELETE")
@@ -1639,9 +1608,9 @@ export class DeleteOrganizationCategory implements IReturnVoid, IDelete
     public id: number;
 
     public constructor(init?: Partial<DeleteOrganizationCategory>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'DeleteOrganizationCategory'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() {}
 }
 
 // @Route("/orgs/{OrganizationId}/members", "POST")
@@ -1657,9 +1626,9 @@ export class AddOrganizationMember implements IReturn<AddOrganizationMemberRespo
     public notes: string;
 
     public constructor(init?: Partial<AddOrganizationMember>) { (Object as any).assign(this, init); }
-    public createResponse() { return new AddOrganizationMemberResponse(); }
     public getTypeName() { return 'AddOrganizationMember'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new AddOrganizationMemberResponse(); }
 }
 
 // @Route("/orgs/{OrganizationId}/members/{Id}", "PUT")
@@ -1675,9 +1644,9 @@ export class UpdateOrganizationMember implements IReturn<UpdateOrganizationMembe
     public notes: string;
 
     public constructor(init?: Partial<UpdateOrganizationMember>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UpdateOrganizationMemberResponse(); }
     public getTypeName() { return 'UpdateOrganizationMember'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UpdateOrganizationMemberResponse(); }
 }
 
 // @Route("/orgs/{OrganizationId}/members/{UserId}", "DELETE")
@@ -1687,9 +1656,9 @@ export class RemoveOrganizationMember implements IReturnVoid, IDelete
     public userId: number;
 
     public constructor(init?: Partial<RemoveOrganizationMember>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'RemoveOrganizationMember'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() {}
 }
 
 // @Route("/orgs/{OrganizationId}/members/set", "POST")
@@ -1707,9 +1676,9 @@ export class SetOrganizationMembers implements IReturn<SetOrganizationMembersRes
     public denyAll: boolean;
 
     public constructor(init?: Partial<SetOrganizationMembers>) { (Object as any).assign(this, init); }
-    public createResponse() { return new SetOrganizationMembersResponse(); }
     public getTypeName() { return 'SetOrganizationMembers'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new SetOrganizationMembersResponse(); }
 }
 
 // @Route("/orgs/{OrganizationId}/invites", "GET")
@@ -1718,9 +1687,9 @@ export class GetOrganizationMemberInvites implements IReturn<GetOrganizationMemb
     public organizationId: number;
 
     public constructor(init?: Partial<GetOrganizationMemberInvites>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetOrganizationMemberInvitesResponse(); }
     public getTypeName() { return 'GetOrganizationMemberInvites'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetOrganizationMemberInvitesResponse(); }
 }
 
 // @Route("/orgs/{OrganizationId}/invites", "POST")
@@ -1729,9 +1698,9 @@ export class RequestOrganizationMemberInvite implements IReturn<RequestOrganizat
     public organizationId: number;
 
     public constructor(init?: Partial<RequestOrganizationMemberInvite>) { (Object as any).assign(this, init); }
-    public createResponse() { return new RequestOrganizationMemberInviteResponse(); }
     public getTypeName() { return 'RequestOrganizationMemberInvite'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new RequestOrganizationMemberInviteResponse(); }
 }
 
 // @Route("/orgs/{OrganizationId}/invites/{UserId}", "PUT")
@@ -1743,9 +1712,9 @@ export class UpdateOrganizationMemberInvite implements IReturn<UpdateOrganizatio
     public dismiss: boolean;
 
     public constructor(init?: Partial<UpdateOrganizationMemberInvite>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UpdateOrganizationMemberInviteResponse(); }
     public getTypeName() { return 'UpdateOrganizationMemberInvite'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UpdateOrganizationMemberInviteResponse(); }
 }
 
 // @Route("/posts", "GET")
@@ -1759,9 +1728,9 @@ export class QueryPosts extends QueryDb_1<Post> implements IReturn<QueryResponse
     public is: string[];
 
     public constructor(init?: Partial<QueryPosts>) { super(init); (Object as any).assign(this, init); }
-    public createResponse() { return new QueryResponse<Post>(); }
     public getTypeName() { return 'QueryPosts'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Post>(); }
 }
 
 // @Route("/posts/{Id}", "GET")
@@ -1771,9 +1740,9 @@ export class GetPost implements IReturn<GetPostResponse>, IGet
     public include: string;
 
     public constructor(init?: Partial<GetPost>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetPostResponse(); }
     public getTypeName() { return 'GetPost'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetPostResponse(); }
 }
 
 // @Route("/posts", "POST")
@@ -1798,9 +1767,9 @@ export class CreatePost implements IReturn<CreatePostResponse>, IPost
     public refUrn: string;
 
     public constructor(init?: Partial<CreatePost>) { (Object as any).assign(this, init); }
-    public createResponse() { return new CreatePostResponse(); }
     public getTypeName() { return 'CreatePost'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new CreatePostResponse(); }
 }
 
 // @Route("/posts/{Id}", "PUT")
@@ -1823,9 +1792,9 @@ export class UpdatePost implements IReturn<UpdatePostResponse>, IPut
     public meta: string;
 
     public constructor(init?: Partial<UpdatePost>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UpdatePostResponse(); }
     public getTypeName() { return 'UpdatePost'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UpdatePostResponse(); }
 }
 
 // @Route("/posts/{Id}", "DELETE")
@@ -1834,9 +1803,9 @@ export class DeletePost implements IReturn<DeletePostResponse>, IDelete
     public id: number;
 
     public constructor(init?: Partial<DeletePost>) { (Object as any).assign(this, init); }
-    public createResponse() { return new DeletePostResponse(); }
     public getTypeName() { return 'DeletePost'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() { return new DeletePostResponse(); }
 }
 
 // @Route("/posts/{Id}/lock", "PUT")
@@ -1847,9 +1816,9 @@ export class LockPost implements IReturnVoid, IPut
     public reason: string;
 
     public constructor(init?: Partial<LockPost>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'LockPost'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() {}
 }
 
 // @Route("/posts/{Id}/hide", "PUT")
@@ -1860,9 +1829,9 @@ export class HidePost implements IReturnVoid, IPut
     public reason: string;
 
     public constructor(init?: Partial<HidePost>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'HidePost'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() {}
 }
 
 // @Route("/posts/{Id}/status/{Status}", "PUT")
@@ -1873,9 +1842,9 @@ export class ChangeStatusPost implements IReturnVoid, IPut
     public reason: string;
 
     public constructor(init?: Partial<ChangeStatusPost>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'ChangeStatusPost'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() {}
 }
 
 // @Route("/posts/{PostId}/report/{Id}", "POST")
@@ -1886,9 +1855,9 @@ export class ActionPostReport implements IReturnVoid, IPost
     public reportAction: ReportAction;
 
     public constructor(init?: Partial<ActionPostReport>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'ActionPostReport'; }
     public getMethod() { return 'POST'; }
+    public createResponse() {}
 }
 
 // @Route("/posts/{PostId}/comments", "POST")
@@ -1899,9 +1868,9 @@ export class CreatePostComment implements IReturn<CreatePostCommentResponse>, IP
     public content: string;
 
     public constructor(init?: Partial<CreatePostComment>) { (Object as any).assign(this, init); }
-    public createResponse() { return new CreatePostCommentResponse(); }
     public getTypeName() { return 'CreatePostComment'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new CreatePostCommentResponse(); }
 }
 
 // @Route("/posts/{PostId}/comments/{Id}", "PUT")
@@ -1912,9 +1881,9 @@ export class UpdatePostComment implements IReturn<UpdatePostCommentResponse>, IP
     public content: string;
 
     public constructor(init?: Partial<UpdatePostComment>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UpdatePostCommentResponse(); }
     public getTypeName() { return 'UpdatePostComment'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UpdatePostCommentResponse(); }
 }
 
 // @Route("/posts/{PostId}/comments/{Id}", "DELETE")
@@ -1924,9 +1893,9 @@ export class DeletePostComment implements IReturn<DeletePostCommentResponse>, ID
     public postId: number;
 
     public constructor(init?: Partial<DeletePostComment>) { (Object as any).assign(this, init); }
-    public createResponse() { return new DeletePostCommentResponse(); }
     public getTypeName() { return 'DeletePostComment'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() { return new DeletePostCommentResponse(); }
 }
 
 // @Route("/posts/{PostId}/comments/{PostCommentId}/report/{Id}", "POST")
@@ -1938,9 +1907,9 @@ export class ActionPostCommentReport implements IReturnVoid, IPost
     public reportAction: ReportAction;
 
     public constructor(init?: Partial<ActionPostCommentReport>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'ActionPostCommentReport'; }
     public getMethod() { return 'POST'; }
+    public createResponse() {}
 }
 
 // @Route("/user/comments/votes")
@@ -1949,9 +1918,9 @@ export class GetUserPostCommentVotes implements IReturn<GetUserPostCommentVotesR
     public postId: number;
 
     public constructor(init?: Partial<GetUserPostCommentVotes>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetUserPostCommentVotesResponse(); }
     public getTypeName() { return 'GetUserPostCommentVotes'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetUserPostCommentVotesResponse(); }
 }
 
 // @Route("/posts/{PostId}/comments/{Id}/pin", "PUT")
@@ -1962,9 +1931,9 @@ export class PinPostComment implements IReturn<PinPostCommentResponse>, IPut
     public pin: boolean;
 
     public constructor(init?: Partial<PinPostComment>) { (Object as any).assign(this, init); }
-    public createResponse() { return new PinPostCommentResponse(); }
     public getTypeName() { return 'PinPostComment'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new PinPostCommentResponse(); }
 }
 
 // @Route("/users/by-email")
@@ -1973,9 +1942,9 @@ export class GetUsersByEmails implements IReturn<GetUsersByEmailsResponse>, IGet
     public emails: string[];
 
     public constructor(init?: Partial<GetUsersByEmails>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetUsersByEmailsResponse(); }
     public getTypeName() { return 'GetUsersByEmails'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetUsersByEmailsResponse(); }
 }
 
 // @Route("/user/posts/activity")
@@ -1983,9 +1952,9 @@ export class GetUserPostActivity implements IReturn<GetUserPostActivityResponse>
 {
 
     public constructor(init?: Partial<GetUserPostActivity>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetUserPostActivityResponse(); }
     public getTypeName() { return 'GetUserPostActivity'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetUserPostActivityResponse(); }
 }
 
 // @Route("/user/organizations")
@@ -1993,9 +1962,9 @@ export class GetUserOrganizations implements IReturn<GetUserOrganizationsRespons
 {
 
     public constructor(init?: Partial<GetUserOrganizations>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetUserOrganizationsResponse(); }
     public getTypeName() { return 'GetUserOrganizations'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetUserOrganizationsResponse(); }
 }
 
 // @Route("/posts/{Id}/vote", "PUT")
@@ -2005,9 +1974,9 @@ export class UserPostVote implements IReturn<UserPostVoteResponse>, IPut
     public weight: number;
 
     public constructor(init?: Partial<UserPostVote>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UserPostVoteResponse(); }
     public getTypeName() { return 'UserPostVote'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UserPostVoteResponse(); }
 }
 
 // @Route("/posts/{Id}/favorite", "PUT")
@@ -2016,9 +1985,9 @@ export class UserPostFavorite implements IReturn<UserPostFavoriteResponse>, IPut
     public id: number;
 
     public constructor(init?: Partial<UserPostFavorite>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UserPostFavoriteResponse(); }
     public getTypeName() { return 'UserPostFavorite'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UserPostFavoriteResponse(); }
 }
 
 // @Route("/posts/{Id}/report", "PUT")
@@ -2029,9 +1998,9 @@ export class UserPostReport implements IReturn<UserPostReportResponse>, IPut
     public reportNotes: string;
 
     public constructor(init?: Partial<UserPostReport>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UserPostReportResponse(); }
     public getTypeName() { return 'UserPostReport'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UserPostReportResponse(); }
 }
 
 // @Route("/posts/{PostId}/comments/{Id}", "GET")
@@ -2042,9 +2011,9 @@ export class UserPostCommentVote implements IReturn<UserPostCommentVoteResponse>
     public weight: number;
 
     public constructor(init?: Partial<UserPostCommentVote>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UserPostCommentVoteResponse(); }
     public getTypeName() { return 'UserPostCommentVote'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new UserPostCommentVoteResponse(); }
 }
 
 // @Route("/posts/{PostId}/comments/{Id}/report", "PUT")
@@ -2056,9 +2025,9 @@ export class UserPostCommentReport implements IReturn<UserPostCommentReportRespo
     public reportNotes: string;
 
     public constructor(init?: Partial<UserPostCommentReport>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UserPostCommentReportResponse(); }
     public getTypeName() { return 'UserPostCommentReport'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UserPostCommentReportResponse(); }
 }
 
 // @Route("/prerender/{Path*}", "PUT")
@@ -2067,9 +2036,9 @@ export class StorePreRender implements IReturnVoid, IPut
     public path: string;
 
     public constructor(init?: Partial<StorePreRender>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'StorePreRender'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() {}
 }
 
 // @Route("/prerender/{Path*}", "GET")
@@ -2078,9 +2047,9 @@ export class GetPreRender implements IReturn<string>, IGet
     public path: string;
 
     public constructor(init?: Partial<GetPreRender>) { (Object as any).assign(this, init); }
-    public createResponse() { return ''; }
     public getTypeName() { return 'GetPreRender'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return ''; }
 }
 
 // @Route("/my-session")
@@ -2088,9 +2057,9 @@ export class SessionInfo implements IReturn<SessionInfoResponse>, IGet
 {
 
     public constructor(init?: Partial<SessionInfo>) { (Object as any).assign(this, init); }
-    public createResponse() { return new SessionInfoResponse(); }
     public getTypeName() { return 'SessionInfo'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new SessionInfoResponse(); }
 }
 
 // @Route("/orgs/{OrganizationId}/subscribe", "PUT")
@@ -2101,9 +2070,9 @@ export class SubscribeToOrganization implements IReturnVoid, IPut
     public frequency?: Frequency;
 
     public constructor(init?: Partial<SubscribeToOrganization>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'SubscribeToOrganization'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() {}
 }
 
 // @Route("/posts/{PostId}/subscribe", "PUT")
@@ -2112,9 +2081,9 @@ export class SubscribeToPost implements IReturnVoid, IPut
     public postId: number;
 
     public constructor(init?: Partial<SubscribeToPost>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'SubscribeToPost'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() {}
 }
 
 // @Route("/orgs/{OrganizationId}/subscribe", "DELETE")
@@ -2123,9 +2092,9 @@ export class DeleteOrganizationSubscription implements IReturnVoid, IDelete
     public organizationId: number;
 
     public constructor(init?: Partial<DeleteOrganizationSubscription>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'DeleteOrganizationSubscription'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() {}
 }
 
 // @Route("/posts/{PostId}/subscribe", "DELETE")
@@ -2134,9 +2103,9 @@ export class DeletePostSubscription implements IReturnVoid, IDelete
     public postId: number;
 
     public constructor(init?: Partial<DeletePostSubscription>) { (Object as any).assign(this, init); }
-    public createResponse() {}
     public getTypeName() { return 'DeletePostSubscription'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() {}
 }
 
 // @Route("/technology/{Slug}/previous-versions", "GET")
@@ -2145,9 +2114,9 @@ export class GetTechnologyPreviousVersions implements IReturn<GetTechnologyPrevi
     public slug: string;
 
     public constructor(init?: Partial<GetTechnologyPreviousVersions>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetTechnologyPreviousVersionsResponse(); }
     public getTypeName() { return 'GetTechnologyPreviousVersions'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetTechnologyPreviousVersionsResponse(); }
 }
 
 // @Route("/technology", "GET")
@@ -2155,9 +2124,9 @@ export class GetAllTechnologies implements IReturn<GetAllTechnologiesResponse>, 
 {
 
     public constructor(init?: Partial<GetAllTechnologies>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetAllTechnologiesResponse(); }
     public getTypeName() { return 'GetAllTechnologies'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetAllTechnologiesResponse(); }
 }
 
 // @Route("/technology/search")
@@ -2172,9 +2141,9 @@ export class FindTechnologies extends QueryDb_2<Technology, TechnologyView> impl
     public descriptionContains: string;
 
     public constructor(init?: Partial<FindTechnologies>) { super(init); (Object as any).assign(this, init); }
-    public createResponse() { return new QueryResponse<TechnologyView>(); }
     public getTypeName() { return 'FindTechnologies'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<TechnologyView>(); }
 }
 
 // @Route("/technology/query")
@@ -2188,9 +2157,9 @@ export class QueryTechnology extends QueryDb_2<Technology, TechnologyView> imple
     public descriptionContains: string;
 
     public constructor(init?: Partial<QueryTechnology>) { super(init); (Object as any).assign(this, init); }
-    public createResponse() { return new QueryResponse<TechnologyView>(); }
     public getTypeName() { return 'QueryTechnology'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<TechnologyView>(); }
 }
 
 // @Route("/technology/{Slug}")
@@ -2199,9 +2168,9 @@ export class GetTechnology implements IReturn<GetTechnologyResponse>, IRegisterS
     public slug: string;
 
     public constructor(init?: Partial<GetTechnology>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetTechnologyResponse(); }
     public getTypeName() { return 'GetTechnology'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetTechnologyResponse(); }
 }
 
 // @Route("/technology/{Slug}/favorites")
@@ -2210,9 +2179,9 @@ export class GetTechnologyFavoriteDetails implements IReturn<GetTechnologyFavori
     public slug: string;
 
     public constructor(init?: Partial<GetTechnologyFavoriteDetails>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetTechnologyFavoriteDetailsResponse(); }
     public getTypeName() { return 'GetTechnologyFavoriteDetails'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetTechnologyFavoriteDetailsResponse(); }
 }
 
 // @Route("/technology", "POST")
@@ -2229,9 +2198,9 @@ export class CreateTechnology implements IReturn<CreateTechnologyResponse>, IPos
     public tier: TechnologyTier;
 
     public constructor(init?: Partial<CreateTechnology>) { (Object as any).assign(this, init); }
-    public createResponse() { return new CreateTechnologyResponse(); }
     public getTypeName() { return 'CreateTechnology'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new CreateTechnologyResponse(); }
 }
 
 // @Route("/technology/{Id}", "PUT")
@@ -2248,9 +2217,9 @@ export class UpdateTechnology implements IReturn<UpdateTechnologyResponse>, IPut
     public tier: TechnologyTier;
 
     public constructor(init?: Partial<UpdateTechnology>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UpdateTechnologyResponse(); }
     public getTypeName() { return 'UpdateTechnology'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UpdateTechnologyResponse(); }
 }
 
 // @Route("/technology/{Id}", "DELETE")
@@ -2259,9 +2228,9 @@ export class DeleteTechnology implements IReturn<DeleteTechnologyResponse>, IDel
     public id: number;
 
     public constructor(init?: Partial<DeleteTechnology>) { (Object as any).assign(this, init); }
-    public createResponse() { return new DeleteTechnologyResponse(); }
     public getTypeName() { return 'DeleteTechnology'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() { return new DeleteTechnologyResponse(); }
 }
 
 // @Route("/techstacks/{Slug}/previous-versions", "GET")
@@ -2270,9 +2239,9 @@ export class GetTechnologyStackPreviousVersions implements IReturn<GetTechnology
     public slug: string;
 
     public constructor(init?: Partial<GetTechnologyStackPreviousVersions>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetTechnologyStackPreviousVersionsResponse(); }
     public getTypeName() { return 'GetTechnologyStackPreviousVersions'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetTechnologyStackPreviousVersionsResponse(); }
 }
 
 // @Route("/pagestats/{Type}/{Slug}")
@@ -2283,9 +2252,9 @@ export class GetPageStats implements IReturn<GetPageStatsResponse>, IGet
     public id?: number;
 
     public constructor(init?: Partial<GetPageStats>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetPageStatsResponse(); }
     public getTypeName() { return 'GetPageStats'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetPageStatsResponse(); }
 }
 
 // @Route("/cache/clear")
@@ -2293,9 +2262,9 @@ export class ClearCache implements IReturn<string>, IGet
 {
 
     public constructor(init?: Partial<ClearCache>) { (Object as any).assign(this, init); }
-    public createResponse() { return ''; }
     public getTypeName() { return 'ClearCache'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return ''; }
 }
 
 // @Route("/tasks/hourly")
@@ -2304,9 +2273,9 @@ export class HourlyTask implements IReturn<HourlyTaskResponse>, IGet
     public force: boolean;
 
     public constructor(init?: Partial<HourlyTask>) { (Object as any).assign(this, init); }
-    public createResponse() { return new HourlyTaskResponse(); }
     public getTypeName() { return 'HourlyTask'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new HourlyTaskResponse(); }
 }
 
 // @Route("/techstacks/search")
@@ -2321,9 +2290,9 @@ export class FindTechStacks extends QueryDb_2<TechnologyStack, TechnologyStackVi
     public descriptionContains: string;
 
     public constructor(init?: Partial<FindTechStacks>) { super(init); (Object as any).assign(this, init); }
-    public createResponse() { return new QueryResponse<TechnologyStackView>(); }
     public getTypeName() { return 'FindTechStacks'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<TechnologyStackView>(); }
 }
 
 // @Route("/techstacks/query")
@@ -2337,9 +2306,9 @@ export class QueryTechStacks extends QueryDb_2<TechnologyStack, TechnologyStackV
     public descriptionContains: string;
 
     public constructor(init?: Partial<QueryTechStacks>) { super(init); (Object as any).assign(this, init); }
-    public createResponse() { return new QueryResponse<TechnologyStackView>(); }
     public getTypeName() { return 'QueryTechStacks'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<TechnologyStackView>(); }
 }
 
 // @Route("/overview")
@@ -2348,9 +2317,9 @@ export class Overview implements IReturn<OverviewResponse>, IGet
     public reload: boolean;
 
     public constructor(init?: Partial<Overview>) { (Object as any).assign(this, init); }
-    public createResponse() { return new OverviewResponse(); }
     public getTypeName() { return 'Overview'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new OverviewResponse(); }
 }
 
 // @Route("/app-overview")
@@ -2359,9 +2328,9 @@ export class AppOverview implements IReturn<AppOverviewResponse>, IGet
     public reload: boolean;
 
     public constructor(init?: Partial<AppOverview>) { (Object as any).assign(this, init); }
-    public createResponse() { return new AppOverviewResponse(); }
     public getTypeName() { return 'AppOverview'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new AppOverviewResponse(); }
 }
 
 // @Route("/techstacks", "GET")
@@ -2369,9 +2338,9 @@ export class GetAllTechnologyStacks implements IReturn<GetAllTechnologyStacksRes
 {
 
     public constructor(init?: Partial<GetAllTechnologyStacks>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetAllTechnologyStacksResponse(); }
     public getTypeName() { return 'GetAllTechnologyStacks'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetAllTechnologyStacksResponse(); }
 }
 
 // @Route("/techstacks/{Slug}", "GET")
@@ -2380,9 +2349,9 @@ export class GetTechnologyStack implements IReturn<GetTechnologyStackResponse>, 
     public slug: string;
 
     public constructor(init?: Partial<GetTechnologyStack>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetTechnologyStackResponse(); }
     public getTypeName() { return 'GetTechnologyStack'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetTechnologyStackResponse(); }
 }
 
 // @Route("/techstacks/{Slug}/favorites")
@@ -2391,9 +2360,9 @@ export class GetTechnologyStackFavoriteDetails implements IReturn<GetTechnologyS
     public slug: string;
 
     public constructor(init?: Partial<GetTechnologyStackFavoriteDetails>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetTechnologyStackFavoriteDetailsResponse(); }
     public getTypeName() { return 'GetTechnologyStackFavoriteDetails'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetTechnologyStackFavoriteDetailsResponse(); }
 }
 
 // @Route("/config")
@@ -2401,9 +2370,9 @@ export class GetConfig implements IReturn<GetConfigResponse>, IGet
 {
 
     public constructor(init?: Partial<GetConfig>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetConfigResponse(); }
     public getTypeName() { return 'GetConfig'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetConfigResponse(); }
 }
 
 // @Route("/techstacks", "POST")
@@ -2420,9 +2389,9 @@ export class CreateTechnologyStack implements IReturn<CreateTechnologyStackRespo
     public technologyIds: number[];
 
     public constructor(init?: Partial<CreateTechnologyStack>) { (Object as any).assign(this, init); }
-    public createResponse() { return new CreateTechnologyStackResponse(); }
     public getTypeName() { return 'CreateTechnologyStack'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new CreateTechnologyStackResponse(); }
 }
 
 // @Route("/techstacks/{Id}", "PUT")
@@ -2439,9 +2408,9 @@ export class UpdateTechnologyStack implements IReturn<UpdateTechnologyStackRespo
     public technologyIds: number[];
 
     public constructor(init?: Partial<UpdateTechnologyStack>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UpdateTechnologyStackResponse(); }
     public getTypeName() { return 'UpdateTechnologyStack'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new UpdateTechnologyStackResponse(); }
 }
 
 // @Route("/techstacks/{Id}", "DELETE")
@@ -2450,9 +2419,9 @@ export class DeleteTechnologyStack implements IReturn<DeleteTechnologyStackRespo
     public id: number;
 
     public constructor(init?: Partial<DeleteTechnologyStack>) { (Object as any).assign(this, init); }
-    public createResponse() { return new DeleteTechnologyStackResponse(); }
     public getTypeName() { return 'DeleteTechnologyStack'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() { return new DeleteTechnologyStackResponse(); }
 }
 
 // @Route("/favorites/techtacks", "GET")
@@ -2461,9 +2430,9 @@ export class GetFavoriteTechStack implements IReturn<GetFavoriteTechStackRespons
     public technologyStackId: number;
 
     public constructor(init?: Partial<GetFavoriteTechStack>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetFavoriteTechStackResponse(); }
     public getTypeName() { return 'GetFavoriteTechStack'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetFavoriteTechStackResponse(); }
 }
 
 // @Route("/favorites/techtacks/{TechnologyStackId}", "PUT")
@@ -2472,9 +2441,9 @@ export class AddFavoriteTechStack implements IReturn<FavoriteTechStackResponse>,
     public technologyStackId: number;
 
     public constructor(init?: Partial<AddFavoriteTechStack>) { (Object as any).assign(this, init); }
-    public createResponse() { return new FavoriteTechStackResponse(); }
     public getTypeName() { return 'AddFavoriteTechStack'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new FavoriteTechStackResponse(); }
 }
 
 // @Route("/favorites/techtacks/{TechnologyStackId}", "DELETE")
@@ -2483,9 +2452,9 @@ export class RemoveFavoriteTechStack implements IReturn<FavoriteTechStackRespons
     public technologyStackId: number;
 
     public constructor(init?: Partial<RemoveFavoriteTechStack>) { (Object as any).assign(this, init); }
-    public createResponse() { return new FavoriteTechStackResponse(); }
     public getTypeName() { return 'RemoveFavoriteTechStack'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() { return new FavoriteTechStackResponse(); }
 }
 
 // @Route("/favorites/technology", "GET")
@@ -2494,9 +2463,9 @@ export class GetFavoriteTechnologies implements IReturn<GetFavoriteTechnologiesR
     public technologyId: number;
 
     public constructor(init?: Partial<GetFavoriteTechnologies>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetFavoriteTechnologiesResponse(); }
     public getTypeName() { return 'GetFavoriteTechnologies'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetFavoriteTechnologiesResponse(); }
 }
 
 // @Route("/favorites/technology/{TechnologyId}", "PUT")
@@ -2505,9 +2474,9 @@ export class AddFavoriteTechnology implements IReturn<FavoriteTechnologyResponse
     public technologyId: number;
 
     public constructor(init?: Partial<AddFavoriteTechnology>) { (Object as any).assign(this, init); }
-    public createResponse() { return new FavoriteTechnologyResponse(); }
     public getTypeName() { return 'AddFavoriteTechnology'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new FavoriteTechnologyResponse(); }
 }
 
 // @Route("/favorites/technology/{TechnologyId}", "DELETE")
@@ -2516,9 +2485,9 @@ export class RemoveFavoriteTechnology implements IReturn<FavoriteTechnologyRespo
     public technologyId: number;
 
     public constructor(init?: Partial<RemoveFavoriteTechnology>) { (Object as any).assign(this, init); }
-    public createResponse() { return new FavoriteTechnologyResponse(); }
     public getTypeName() { return 'RemoveFavoriteTechnology'; }
     public getMethod() { return 'DELETE'; }
+    public createResponse() { return new FavoriteTechnologyResponse(); }
 }
 
 // @Route("/my-feed")
@@ -2526,9 +2495,9 @@ export class GetUserFeed implements IReturn<GetUserFeedResponse>, IGet
 {
 
     public constructor(init?: Partial<GetUserFeed>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetUserFeedResponse(); }
     public getTypeName() { return 'GetUserFeed'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetUserFeedResponse(); }
 }
 
 // @Route("/users/karma", "GET")
@@ -2537,9 +2506,9 @@ export class GetUsersKarma implements IReturn<GetUsersKarmaResponse>, IGet
     public userIds: number[];
 
     public constructor(init?: Partial<GetUsersKarma>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetUsersKarmaResponse(); }
     public getTypeName() { return 'GetUsersKarma'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetUsersKarmaResponse(); }
 }
 
 // @Route("/userinfo/{UserName}")
@@ -2548,9 +2517,9 @@ export class GetUserInfo implements IReturn<GetUserInfoResponse>, IGet
     public userName: string;
 
     public constructor(init?: Partial<GetUserInfo>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetUserInfoResponse(); }
     public getTypeName() { return 'GetUserInfo'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new GetUserInfoResponse(); }
 }
 
 // @Route("/users/{UserName}/avatar", "GET")
@@ -2559,7 +2528,9 @@ export class UserAvatar implements IGet
     public userName: string;
 
     public constructor(init?: Partial<UserAvatar>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UserAvatar'; }
     public getMethod() { return 'GET'; }
+    public createResponse() {}
 }
 
 // @Route("/mq/start")
@@ -2567,9 +2538,9 @@ export class MqStart implements IReturn<string>
 {
 
     public constructor(init?: Partial<MqStart>) { (Object as any).assign(this, init); }
-    public createResponse() { return ''; }
     public getTypeName() { return 'MqStart'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return ''; }
 }
 
 // @Route("/mq/stop")
@@ -2577,9 +2548,9 @@ export class MqStop implements IReturn<string>
 {
 
     public constructor(init?: Partial<MqStop>) { (Object as any).assign(this, init); }
-    public createResponse() { return ''; }
     public getTypeName() { return 'MqStop'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return ''; }
 }
 
 // @Route("/mq/stats")
@@ -2587,9 +2558,9 @@ export class MqStats implements IReturn<string>
 {
 
     public constructor(init?: Partial<MqStats>) { (Object as any).assign(this, init); }
-    public createResponse() { return ''; }
     public getTypeName() { return 'MqStats'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return ''; }
 }
 
 // @Route("/mq/status")
@@ -2597,9 +2568,9 @@ export class MqStatus implements IReturn<string>
 {
 
     public constructor(init?: Partial<MqStatus>) { (Object as any).assign(this, init); }
-    public createResponse() { return ''; }
     public getTypeName() { return 'MqStatus'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return ''; }
 }
 
 // @Route("/sync/discourse/{Site}")
@@ -2608,9 +2579,9 @@ export class SyncDiscourseSite implements IReturn<SyncDiscourseSiteResponse>, IP
     public site: string;
 
     public constructor(init?: Partial<SyncDiscourseSite>) { (Object as any).assign(this, init); }
-    public createResponse() { return new SyncDiscourseSiteResponse(); }
     public getTypeName() { return 'SyncDiscourseSite'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new SyncDiscourseSiteResponse(); }
 }
 
 // @Route("/admin/technology/{TechnologyId}/logo")
@@ -2620,9 +2591,9 @@ export class LogoUrlApproval implements IReturn<LogoUrlApprovalResponse>, IPut
     public approved: boolean;
 
     public constructor(init?: Partial<LogoUrlApproval>) { (Object as any).assign(this, init); }
-    public createResponse() { return new LogoUrlApprovalResponse(); }
     public getTypeName() { return 'LogoUrlApproval'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new LogoUrlApprovalResponse(); }
 }
 
 /**
@@ -2637,9 +2608,9 @@ export class LockTechStack implements IReturn<LockStackResponse>, IPut
     public isLocked: boolean;
 
     public constructor(init?: Partial<LockTechStack>) { (Object as any).assign(this, init); }
-    public createResponse() { return new LockStackResponse(); }
     public getTypeName() { return 'LockTechStack'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new LockStackResponse(); }
 }
 
 /**
@@ -2655,9 +2626,9 @@ export class LockTech implements IReturn<LockStackResponse>, IPut
     public isLocked: boolean;
 
     public constructor(init?: Partial<LockTech>) { (Object as any).assign(this, init); }
-    public createResponse() { return new LockStackResponse(); }
     public getTypeName() { return 'LockTech'; }
     public getMethod() { return 'PUT'; }
+    public createResponse() { return new LockStackResponse(); }
 }
 
 export class DummyTypes
@@ -2665,7 +2636,9 @@ export class DummyTypes
     public post: Post[];
 
     public constructor(init?: Partial<DummyTypes>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DummyTypes'; }
     public getMethod() { return 'POST'; }
+    public createResponse() {}
 }
 
 // @Route("/email/post/{PostId}")
@@ -2674,9 +2647,9 @@ export class EmailTest implements IReturn<EmailTestRespoonse>
     public postId?: number;
 
     public constructor(init?: Partial<EmailTest>) { (Object as any).assign(this, init); }
-    public createResponse() { return new EmailTestRespoonse(); }
     public getTypeName() { return 'EmailTest'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new EmailTestRespoonse(); }
 }
 
 export class ImportUser implements IReturn<ImportUserResponse>, IPost
@@ -2695,9 +2668,9 @@ export class ImportUser implements IReturn<ImportUserResponse>, IPost
     public meta: { [index: string]: string; };
 
     public constructor(init?: Partial<ImportUser>) { (Object as any).assign(this, init); }
-    public createResponse() { return new ImportUserResponse(); }
     public getTypeName() { return 'ImportUser'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new ImportUserResponse(); }
 }
 
 // @Route("/import/uservoice/suggestion")
@@ -2724,17 +2697,25 @@ export class ImportUserVoiceSuggestion implements IReturn<ImportUserVoiceSuggest
     public updatedAt: string;
 
     public constructor(init?: Partial<ImportUserVoiceSuggestion>) { (Object as any).assign(this, init); }
-    public createResponse() { return new ImportUserVoiceSuggestionResponse(); }
     public getTypeName() { return 'ImportUserVoiceSuggestion'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new ImportUserVoiceSuggestionResponse(); }
 }
 
+/**
+* Sign In
+*/
 // @Route("/auth")
 // @Route("/auth/{provider}")
+// @Api(Description="Sign In")
 // @DataContract
 export class Authenticate implements IReturn<AuthenticateResponse>, IPost
 {
+    /**
+    * AuthProvider, e.g. credentials
+    */
     // @DataMember(Order=1)
+    // @ApiMember(Description="AuthProvider, e.g. credentials")
     public provider: string;
 
     // @DataMember(Order=2)
@@ -2789,9 +2770,9 @@ export class Authenticate implements IReturn<AuthenticateResponse>, IPost
     public meta: { [index: string]: string; };
 
     public constructor(init?: Partial<Authenticate>) { (Object as any).assign(this, init); }
-    public createResponse() { return new AuthenticateResponse(); }
     public getTypeName() { return 'Authenticate'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new AuthenticateResponse(); }
 }
 
 // @Route("/assignroles")
@@ -2811,9 +2792,9 @@ export class AssignRoles implements IReturn<AssignRolesResponse>, IPost
     public meta: { [index: string]: string; };
 
     public constructor(init?: Partial<AssignRoles>) { (Object as any).assign(this, init); }
-    public createResponse() { return new AssignRolesResponse(); }
     public getTypeName() { return 'AssignRoles'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new AssignRolesResponse(); }
 }
 
 // @Route("/unassignroles")
@@ -2833,44 +2814,9 @@ export class UnAssignRoles implements IReturn<UnAssignRolesResponse>, IPost
     public meta: { [index: string]: string; };
 
     public constructor(init?: Partial<UnAssignRoles>) { (Object as any).assign(this, init); }
-    public createResponse() { return new UnAssignRolesResponse(); }
     public getTypeName() { return 'UnAssignRoles'; }
     public getMethod() { return 'POST'; }
-}
-
-// @Route("/session-to-token")
-// @DataContract
-export class ConvertSessionToToken implements IReturn<ConvertSessionToTokenResponse>, IPost
-{
-    // @DataMember(Order=1)
-    public preserveSession: boolean;
-
-    // @DataMember(Order=2)
-    public meta: { [index: string]: string; };
-
-    public constructor(init?: Partial<ConvertSessionToToken>) { (Object as any).assign(this, init); }
-    public createResponse() { return new ConvertSessionToTokenResponse(); }
-    public getTypeName() { return 'ConvertSessionToToken'; }
-    public getMethod() { return 'POST'; }
-}
-
-// @Route("/access-token")
-// @DataContract
-export class GetAccessToken implements IReturn<GetAccessTokenResponse>, IPost
-{
-    // @DataMember(Order=1)
-    public refreshToken: string;
-
-    // @DataMember(Order=2)
-    public useTokenCookie?: boolean;
-
-    // @DataMember(Order=3)
-    public meta: { [index: string]: string; };
-
-    public constructor(init?: Partial<GetAccessToken>) { (Object as any).assign(this, init); }
-    public createResponse() { return new GetAccessTokenResponse(); }
-    public getTypeName() { return 'GetAccessToken'; }
-    public getMethod() { return 'POST'; }
+    public createResponse() { return new UnAssignRolesResponse(); }
 }
 
 // @Route("/posts/comment", "GET")
@@ -2892,8 +2838,8 @@ export class QueryPostComments extends QueryDb_1<PostComment> implements IReturn
     public reportCountBelow?: number;
 
     public constructor(init?: Partial<QueryPostComments>) { super(init); (Object as any).assign(this, init); }
-    public createResponse() { return new QueryResponse<PostComment>(); }
     public getTypeName() { return 'QueryPostComments'; }
     public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<PostComment>(); }
 }
 
