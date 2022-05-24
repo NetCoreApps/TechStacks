@@ -24,7 +24,6 @@ namespace TechStacks.ServiceInterface
                 content.AddFile("image", image.FileName, image.InputStream, image.ContentType);
                 reqMsg.Content = content;
                 var responseMessage = imgurClient.Send(reqMsg);
-                //var responseMessage = imgurClient.UploadFile(new HttpRequestMessage(HttpMethod.Post, "https://api.imgur.com/3/image"),image.InputStream, image.FileName, MimeTypes.GetMimeType(image.FileName), fieldName: "image");
 
                 try
                 {
