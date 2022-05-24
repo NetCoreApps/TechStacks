@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ServiceStack;
 using ServiceStack.Logging;
@@ -47,18 +48,18 @@ namespace TechStacks.ServiceInterface
             }
         }
 
-        private void ConfigureRequest(HttpWebRequest req, string githubToken)
+        private void ConfigureRequest(HttpRequestMessage req, string githubToken)
         {
             if (!string.IsNullOrEmpty(githubToken))
             {
-                req.Headers[HttpHeaders.Authorization] = "Token " + githubToken;
+                req.AddHeader(HttpHeaders.Authorization, "Token " + githubToken);
             }
             else if (!string.IsNullOrEmpty(Base64UserPass))
             {
-                req.Headers[HttpHeaders.Authorization] = "Basic " + Base64UserPass;
+                req.AddHeader(HttpHeaders.Authorization,"Basic " + Base64UserPass);
             }
 
-            req.UserAgent = UserAgent;
+            req.AddHeader(HttpHeaders.UserAgent,UserAgent);
         }
     }
 }

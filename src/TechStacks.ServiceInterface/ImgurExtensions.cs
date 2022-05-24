@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using ServiceStack;
 using ServiceStack.Web;
 
@@ -15,42 +16,46 @@ namespace TechStacks.ServiceInterface
         {
             try
             {
-                var imgurReq = WebRequest.Create("https://api.imgur.com/3/image");
-                imgurReq.Headers[HttpHeaders.Authorization] = $"Client-ID {imgurClientId}";
-                imgurReq.UploadFile(image.InputStream, image.FileName, MimeTypes.GetMimeType(image.FileName), field: "image");
+                using var content = new MultipartFormDataContent();
+                var imgurClient = HttpUtils.Create();
+
+                var reqMsg = new HttpRequestMessage(HttpMethod.Post, "https://api.imgur.com/3/image");
+                reqMsg.Headers.Add(HttpHeaders.Authorization, $"Client-ID {imgurClientId}");
+                content.AddFile("image", image.FileName, image.InputStream, image.ContentType);
+                reqMsg.Content = content;
+                var responseMessage = imgurClient.Send(reqMsg);
 
                 try
                 {
-                    using (var imgurRes = imgurReq.GetResponse())
-                    using (var stream = imgurRes.GetResponseStream())
+                    var imgurRes =  responseMessage.ReadToEnd();
+                    
+                    var resText = imgurRes;
+                    var jsonRes = JSON.parse(resText);
+                    if (jsonRes is Dictionary<string, object> jsonObj)
                     {
-                        var resText = stream.ReadFully().FromUtf8Bytes();
-                        var jsonRes = JSON.parse(resText);
-                        if (jsonRes is Dictionary<string, object> jsonObj)
+                        if (jsonObj["data"] is Dictionary<string, object> data)
                         {
-                            if (jsonObj["data"] is Dictionary<string, object> data)
+                            if (minWidth != null || maxWidth != null || minHeight != null || maxHeight != null)
                             {
-                                if (minWidth != null || maxWidth != null || minHeight != null || maxHeight != null)
-                                {
-                                    var width = (int) data["width"];
-                                    var height = (int) data["height"];
+                                var width = (int) data["width"];
+                                var height = (int) data["height"];
 
-                                    if (width < minWidth || height < minHeight)
-                                        throw new ArgumentException($"Minimum Dimensions {minWidth} x {minHeight}",
-                                            paramName);
+                                if (width < minWidth || height < minHeight)
+                                    throw new ArgumentException($"Minimum Dimensions {minWidth} x {minHeight}",
+                                        paramName);
 
-                                    if (width > maxWidth || height > maxHeight)
-                                        throw new ArgumentException($"Maximum Dimensions {maxWidth} x {maxHeight}",
-                                            paramName);
-                                }
+                                if (width > maxWidth || height > maxHeight)
+                                    throw new ArgumentException($"Maximum Dimensions {maxWidth} x {maxHeight}",
+                                        paramName);
+                            }
 
-                                if (data["link"] is string link && !string.IsNullOrEmpty(link))
-                                {
-                                    return link.Replace("\\/", "/");
-                                }
+                            if (data["link"] is string link && !string.IsNullOrEmpty(link))
+                            {
+                                return link.Replace("\\/", "/");
                             }
                         }
                     }
+                
                 }
                 catch (WebException e)
                 {

@@ -10,11 +10,11 @@
     <PackageReference Include="NUnit" Version="3.13.*" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.1.*" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
-    <PackageReference Include="ServiceStack" Version="5.*" />
-    <PackageReference Include="ServiceStack.Server" Version="5.*" />
-    <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="5.*" />
-    <PackageReference Include="ServiceStack.OrmLite.Sqlite" Version="5.*" />
-    <PackageReference Include="ServiceStack.Kestrel" Version="5.*" />
+    <PackageReference Include="ServiceStack" Version="6.*" />
+    <PackageReference Include="ServiceStack.Server" Version="6.*" />
+    <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="6.*" />
+    <PackageReference Include="ServiceStack.OrmLite.Sqlite" Version="6.*" />
+    <PackageReference Include="ServiceStack.Kestrel" Version="6.*" />
 
 <!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.OrmLite\src\ServiceStack.OrmLite.PostgreSQL\ServiceStack.OrmLite.PostgreSQL.Source.csproj" />-->
 <!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.OrmLite\src\ServiceStack.OrmLite\ServiceStack.OrmLite.Source.csproj" />-->

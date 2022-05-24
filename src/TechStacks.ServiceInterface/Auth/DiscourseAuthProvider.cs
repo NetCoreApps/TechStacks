@@ -22,7 +22,10 @@ namespace TechStacks.ServiceInterface.Auth
             
             var cookies = new CookieContainer();
             var csrfJson = await csrfUrl.GetJsonFromUrlAsync(
-                requestFilter:req => req.CookieContainer = cookies);
+                requestFilter: req =>
+                {
+                    req.Headers.Add("Cookie",cookies.GetAllCookies().Join(";"));
+                });
             var csrfObj = (Dictionary<string,object>)JSON.parse(csrfJson);
 
             var csrf = csrfObj["csrf"] as string;
@@ -33,9 +36,9 @@ namespace TechStacks.ServiceInterface.Auth
                 login = userName,
                 password = password,
             }, requestFilter: req => {
-                req.CookieContainer = cookies;
-                req.Headers["X-CSRF-Token"] = csrf;
-                req.Accept = MimeTypes.Json;
+                req.Headers.Add("Cookie",cookies.GetAllCookies().Join(";"));
+                req.Headers.Add("X-CSRF-Token", csrf);
+                req.AddHeader("Accept",MimeTypes.Json);
             });
 
             var jsonObj = (Dictionary<string, object>) JSON.parse(sessionJson);
