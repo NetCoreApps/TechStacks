@@ -10,11 +10,6 @@ namespace TechStacks.ServiceInterface
 {
     public static class ImgurExtensions
     {
-        private static HttpClient _client;
-        private static HttpClient GetClient()
-        {
-            return _client ??= new HttpClient();
-        }
         public static string UploadToImgur(this IHttpFile image, string imgurClientId, string paramName,
             int? minWidth = null, int? minHeight = null,
             int? maxWidth = null, int? maxHeight = null)
