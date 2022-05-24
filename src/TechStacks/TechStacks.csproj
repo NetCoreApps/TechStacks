@@ -14,11 +14,11 @@
     <Content Include="emails\**\*" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ServiceStack" Version="5.*" />
-    <PackageReference Include="ServiceStack.Server" Version="5.*" />
-    <PackageReference Include="ServiceStack.Admin" Version="5.*" />
-    <PackageReference Include="ServiceStack.Api.OpenApi" Version="5.*" />
-    <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="5.*" />
+    <PackageReference Include="ServiceStack" Version="6.*" />
+    <PackageReference Include="ServiceStack.Server" Version="6.*" />
+    <PackageReference Include="ServiceStack.Admin" Version="6.*" />
+    <PackageReference Include="ServiceStack.Api.OpenApi" Version="6.*" />
+    <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="6.*" />
 
 <!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.OrmLite\src\ServiceStack.OrmLite.PostgreSQL\ServiceStack.OrmLite.PostgreSQL.Source.csproj" />-->
 <!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.OrmLite\src\ServiceStack.OrmLite\ServiceStack.OrmLite.Source.csproj" />-->

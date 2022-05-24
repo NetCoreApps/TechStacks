@@ -18,6 +18,7 @@ using ServiceStack.Validation;
 using TechStacks.ServiceModel.Types;
 using TechStacks.ServiceInterface;
 using TechStacks.ServiceInterface.Auth;
+using TechStacks.ServiceInterface.DataModel;
 using TechStacks.ServiceInterface.Html;
 using TechStacks.ServiceInterface.Notifications;
 using TechStacks.ServiceModel;
@@ -99,9 +100,23 @@ public class AppHost : AppHostBase, IHostingStartup
         var lockedUserIds = db.ColumnDistinct<int>(
             db.From<CustomUserAuth>().Where(x => x.LockedDate != null).Select(x => x.Id));
 
+        db.CreateTableIfNotExists<Organization>();
+        db.CreateTableIfNotExists<OrganizationMember>();
+        db.CreateTableIfNotExists<OrganizationLabel>();
+        db.CreateTableIfNotExists<OrganizationMemberInvite>();
+        db.CreateTableIfNotExists<OrganizationSubscription>();
+        db.CreateTableIfNotExists<Category>();
+        db.CreateTableIfNotExists<PageStats>();
+        db.CreateTableIfNotExists<Post>();
+        db.CreateTableIfNotExists<PostVote>();
+        db.CreateTableIfNotExists<PostFavorite>();
+        db.CreateTableIfNotExists<Notification>();
+        db.CreateTableIfNotExists<UserActivity>();
         db.CreateTableIfNotExists<TechnologyStack>();
         db.CreateTableIfNotExists<Technology>();
+        db.CreateTableIfNotExists<TechnologyHistory>();
         db.CreateTableIfNotExists<TechnologyChoice>();
+        db.CreateTableIfNotExists<TechnologyStackHistory>();
         db.CreateTableIfNotExists<UserFavoriteTechnologyStack>();
         db.CreateTableIfNotExists<UserFavoriteTechnology>();
 

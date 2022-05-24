@@ -4,7 +4,8 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\TechStacks.ServiceModel\TechStacks.ServiceModel.csproj" />
-    <PackageReference Include="ServiceStack.Server" Version="5.*" />
+    <PackageReference Include="ServiceStack" Version="6.*" />
+    <PackageReference Include="ServiceStack.Server" Version="6.*" />
     
 <!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.OrmLite\src\ServiceStack.OrmLite\ServiceStack.OrmLite.Source.csproj" />-->
 <!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.Redis\src\ServiceStack.Redis\ServiceStack.Redis.Source.csproj" />-->

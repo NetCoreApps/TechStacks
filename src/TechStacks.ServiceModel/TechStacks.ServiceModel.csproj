@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ServiceStack.Interfaces" Version="5.*" />
+    <PackageReference Include="ServiceStack.Interfaces" Version="6.*" />
 
 <!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack\src\ServiceStack.Interfaces\ServiceStack.Interfaces.csproj" />-->
 
