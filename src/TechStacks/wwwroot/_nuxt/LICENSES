@@ -1,19 +1,19 @@
 /*!
- * Vue.js v2.5.16
- * (c) 2014-2018 Evan You
+ * Vue.js v2.7.14
+ * (c) 2014-2022 Evan You
  * Released under the MIT License.
  */
 
 /*!
  * The buffer module from node.js, for the browser.
  *
- * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @author   Feross Aboukhadijeh <http://feross.org>
  * @license  MIT
  */
 
-/**
- * vuex v3.0.1
- * (c) 2017 Evan You
+/*!
+ * vuex v3.6.2
+ * (c) 2021 Evan You
  * @license MIT
  */
 
@@ -22,17 +22,19 @@
  * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
  * @license   Licensed under MIT license
  *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   v4.2.4+314e4831
+ * @version   v4.2.8+1e68dce6
  */
 
 /**
- * vue-meta v1.5.0
- * (c) 2018 Declan de Wet & Atinux
+ * vue-meta v1.6.0
+ * (c) 2019 Declan de Wet & Sébastien Chopin (@Atinux)
  * @license MIT
  */
 
 /*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
+	object-assign
+	(c) Sindre Sorhus
+	@license MIT
+	*/
+
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */

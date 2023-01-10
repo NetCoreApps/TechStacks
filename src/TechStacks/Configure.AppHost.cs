@@ -215,7 +215,6 @@ public class AppHost : AppHostBase, IHostingStartup
 #endif
             }
         });
-        Plugins.Add(new AdminFeature());
         Plugins.Add(new OpenApiFeature());
 
         RegisterTypedRequestFilter<IRegisterStats>((req, res, dto) =>
