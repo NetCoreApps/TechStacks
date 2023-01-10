@@ -206,7 +206,7 @@ public class AppHost : AppHostBase, IHostingStartup
             }
         });
         Plugins.Add(new AutoQueryFeature {
-            MaxLimit = 100,
+            MaxLimit = 500,
             StripUpperInLike = false,
             IncludeTotal = true,
             ResponseFilters = {
