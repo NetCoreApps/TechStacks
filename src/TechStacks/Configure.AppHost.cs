@@ -123,7 +123,6 @@ public class AppHost : AppHostBase, IHostingStartup
         Plugins.Add(CreateSiteMap(db, baseUrl:"https://techstacks.io"));
 
         Plugins.Add(new AuthFeature(() => new CustomUserSession(), new IAuthProvider[] {
-            new TwitterAuthProvider(AppSettings),
             new GithubAuthProvider(AppSettings),
             new JwtAuthProvider(AppSettings) {
                 RequireSecureConnection = false,
