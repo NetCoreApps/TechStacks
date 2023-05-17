@@ -11,7 +11,14 @@
     {{#each f in findFilesInDirectory('/_nuxt','*.css').reverse() }}
     <link href="/{{f.VirtualPath}}" rel="stylesheet">
     {{/each}}
-    <script async="" src="https://www.google-analytics.com/analytics.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9EZHMS9ZM6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-9EZHMS9ZM6');
+    </script>
     <style type="text/css">.news-add {max-width: 500px}
     .tech-organizations {max-width: 330px;margin-left: 1em}
     .tech-organizations .tag, .tech-organizations .tag a {font-size: 13px;color: #333}
