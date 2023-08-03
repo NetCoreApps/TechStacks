@@ -55,6 +55,12 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Write prod appsettings
+        run: |
+          cat <<EOF > ./TechStacks/appsettings.Production.json
+          ${{ secrets.APP_SETTINGS }}
+          EOF
       
       # Build and push new docker image, skip for manual redeploy other than 'latest'
       - name: Build and push Docker images
