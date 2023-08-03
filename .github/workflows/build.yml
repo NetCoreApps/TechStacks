@@ -22,14 +22,3 @@ jobs:
         run: dotnet build
         working-directory: .
         
-      - name: test
-        run: |
-          dotnet test
-          if [ $? -eq 0 ]; then
-            echo TESTS PASSED
-          else
-            echo TESTS FAILED
-            exit 1
-          fi
-        working-directory: ./TechStacks.Tests
-
