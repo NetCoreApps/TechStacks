@@ -27,6 +27,7 @@ public class ImportFromDiscourseTasks : DbTasksBase
         };
 
     //[Test]
+    [Ignore("Admin Task")]
     public void Add_Categories()
     {
         using (new BasicAppHost().Init())
@@ -143,6 +144,7 @@ public class ImportFromDiscourseTasks : DbTasksBase
     }
         
     [Test]
+    [Ignore("Admin Task")]
     public void Import_latest_content_from_Forums()
     {
         using var init = new BasicAppHost().Init();
@@ -154,6 +156,7 @@ public class ImportFromDiscourseTasks : DbTasksBase
     }
 
     //[Test]
+    [Ignore("Admin Task")]
     public void Import_Forum_Users()
     {
         using var init = new BasicAppHost().Init();
@@ -166,6 +169,7 @@ public class ImportFromDiscourseTasks : DbTasksBase
     }
 
     //[Test]
+    [Ignore("Admin Task")]
     public void ReImport_all_Forum_Posts()
     {
         using var init = new BasicAppHost().Init();
