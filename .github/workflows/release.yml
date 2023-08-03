@@ -65,6 +65,7 @@ jobs:
       - name: NPM install
         run: |
           cd TechStacks
+          npm install
           npm run publish
       
       # Build and push new docker image, skip for manual redeploy other than 'latest'
