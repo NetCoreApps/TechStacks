@@ -21,6 +21,10 @@ jobs:
       - name: build
         run: dotnet build
         working-directory: .
+        
+      - name: License
+        run: |
+          echo "SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }}" >> $GITHUB_ENV
 
       - name: test
         run: |

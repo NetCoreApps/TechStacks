@@ -10,6 +10,7 @@ services:
       VIRTUAL_HOST: ${HOST_DOMAIN}
       LETSENCRYPT_HOST: ${HOST_DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+      SERVICESTACK_LICENSE: ${SERVICESTACK_LICENSE}
     volumes:
       - ${APP_NAME}-mydb:/app/App_Data
   ${APP_NAME}-migration:
