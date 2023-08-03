@@ -4,14 +4,15 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/TechStacks/bin/Debug/netcoreapp2.0/TechStacks.dll",
+            "program": "${workspaceFolder}/TechStacks/bin/Debug/netcoreapp2.0/TechStacks.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/TechStacks",
+            "cwd": "${workspaceFolder}/TechStacks",
             "console": "internalConsole",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
@@ -25,9 +26,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/TechStacks/bin/Debug/netcoreapp2.0/TechStacks.dll",
+            "program": "${workspaceFolder}/TechStacks/bin/Debug/netcoreapp2.0/TechStacks.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/TechStacks",
+            "cwd": "${workspaceFolder}/TechStacks",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
@@ -47,7 +48,7 @@
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "ASPNETCORE_URLS": "http://*:16325/"
-            },
+           },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             }

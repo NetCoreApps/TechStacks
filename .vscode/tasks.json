@@ -11,9 +11,6 @@
             "presentation": {
                 "reveal": "silent"
             },
-            "options": {
-                "cwd": "${workspaceFolder}/src"
-            },
             "problemMatcher": "$msCompile"
         }
     ]
