@@ -82,11 +82,6 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ env.image_repository_name }}:${{ env.TAG_NAME }}
-          secrets: |
-            SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }}
-            FORUMS_DB=${{ secrets.FORUMS_DB }}
-            TECHSTACKS_SMTP_USER=${{ secrets.TECHSTACKS_SMTP_USER }}
-            TECHSTACKS_SMTP_PASS=${{ secrets.TECHSTACKS_SMTP_PASS }}
   
   deploy_via_ssh:
     needs: push_to_registry
@@ -125,6 +120,10 @@ jobs:
           APP_NAME: ${{ github.event.repository.name }}
           HOST_DOMAIN: ${{ env.domain }}
           LETSENCRYPT_EMAIL: ${{ env.letsencrypt_email }}
+          SERVICESTACK_LICENSE: ${{ secrets.SERVICESTACK_LICENSE }}
+          FORUMS_DB: ${{ secrets.FORUMS_DB }}
+          TECHSTACKS_SMTP_USER: ${{ secrets.TECHSTACKS_SMTP_USER }}
+          TECHSTACKS_SMTP_PASS: ${{ secrets.TECHSTACKS_SMTP_PASS }}
         with:
           input: .deploy/docker-compose-template.yml
           output: .deploy/${{ github.event.repository.name }}-docker-compose.yml
