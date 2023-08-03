@@ -75,13 +75,18 @@ jobs:
 
       # Build and push new docker image, skip for manual redeploy other than 'latest'
       - name: Build and push Docker images
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         if: ${{ github.event.inputs.version == '' || github.event.inputs.version == 'latest' }}
         with:
           file: Dockerfile
           context: .
           push: true
           tags: ghcr.io/${{ env.image_repository_name }}:${{ env.TAG_NAME }}
+          secrets: |
+            SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }}
+            FORUMS_DB=${{ secrets.FORUMS_DB }}
+            TECHSTACKS_SMTP_USER=${{ secrets.TECHSTACKS_SMTP_USER }}
+            TECHSTACKS_SMTP_PASS=${{ secrets.TECHSTACKS_SMTP_PASS }}
   
   deploy_via_ssh:
     needs: push_to_registry
