@@ -117,7 +117,7 @@ jobs:
           fi;
 
       # Populate docker-compose.yml with variables from build process, including TAG_NAME.
-      - name: docker-compose file prep
+      - name: docker compose file prep
         uses: danielr1996/envsubst-action@1.1.0
         env:
           RELEASE_VERSION: ${{ env.TAG_NAME }}
@@ -152,11 +152,11 @@ jobs:
           envs: APPTOKEN,USERNAME
           script: |
             echo $APPTOKEN | docker login ghcr.io -u $USERNAME --password-stdin
-            docker-compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
-            docker-compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up ${{ github.event.repository.name }}-migration
+            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
+            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up ${{ github.event.repository.name }}-migration
 
       # Deploy Docker image with ServiceStack application using `docker compose up` remotely
-      - name: remote docker-compose up via ssh
+      - name: remote docker compose up via ssh
         uses: appleboy/ssh-action@v0.1.5
         env:
           APPTOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -169,5 +169,5 @@ jobs:
           envs: APPTOKEN,USERNAME
           script: |
             echo $APPTOKEN | docker login ghcr.io -u $USERNAME --password-stdin
-            docker-compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
-            docker-compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up -d
+            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
+            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up -d
