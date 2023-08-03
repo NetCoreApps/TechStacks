@@ -61,13 +61,18 @@ jobs:
           cat <<EOF > ./TechStacks/appsettings.Production.json
           ${{ secrets.APP_SETTINGS }}
           EOF
-          
-      - name: NPM install
+      
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      # Run postinstall script
+      - name: Install and build npm
         run: |
-          cd TechStacks
           npm install
           npm run publish
-      
+        working-directory: ./TechStacks
+
       # Build and push new docker image, skip for manual redeploy other than 'latest'
       - name: Build and push Docker images
         uses: docker/build-push-action@v3
