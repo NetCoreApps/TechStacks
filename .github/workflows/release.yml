@@ -61,6 +61,11 @@ jobs:
           cat <<EOF > ./TechStacks/appsettings.Production.json
           ${{ secrets.APP_SETTINGS }}
           EOF
+          
+      - name: NPM install
+        run: |
+          cd TechStacks
+          npm run publish
       
       # Build and push new docker image, skip for manual redeploy other than 'latest'
       - name: Build and push Docker images
