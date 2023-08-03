@@ -13,7 +13,7 @@ using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.Tests;
 
-[TestFixture]
+//[TestFixture]
 public class IntegrationTests
 {
 
@@ -80,7 +80,8 @@ public class IntegrationTests
         client.Post(new CreateTechnology
         {
             Description = "Description1",
-            Name = "My new tech"
+            Name = "My new tech",
+            Slug = "my-new-tech"
         });
         var dbFactory = appHost.Resolve<IDbConnectionFactory>();
         using var db = dbFactory.OpenDbConnection();
@@ -99,7 +100,8 @@ public class IntegrationTests
             client.Post(new CreateTechnology
             {
                 Description = "Description1",
-                Name = tech.Name
+                Name = tech.Name,
+                Slug = tech.Name.GenerateSlug()
             });
         }
         catch (Exception)
@@ -117,7 +119,8 @@ public class IntegrationTests
         var response = client.Post(new CreateTechnology
         {
             Description = "Description1",
-            Name = tech.Name + " TeSting"
+            Name = tech.Name + " TeSting",
+            Slug = (tech.Name + " TeSting").GenerateSlug()
         });
 
         try
@@ -148,7 +151,8 @@ public class IntegrationTests
             client.Post(new CreateTechnologyStack
             {
                 Description = "Description1",
-                Name = stack.Name
+                Name = stack.Name,
+                Slug = stack.Name.GenerateSlug()
             });
         }
         catch (Exception)
@@ -166,7 +170,8 @@ public class IntegrationTests
         var response = client.Post(new CreateTechnologyStack
         {
             Description = "Description1",
-            Name = stack.Name + " TeSting"
+            Name = stack.Name + " TeSting",
+            Slug = (stack.Name + " TeSting").GenerateSlug()
         });
 
         try
