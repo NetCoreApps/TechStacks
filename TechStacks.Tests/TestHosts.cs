@@ -13,7 +13,10 @@ namespace TechStacks.Tests;
 
 public class UnitTestHost : BasicAppHost
 {
-    public UnitTestHost() : base(typeof(TechnologyServices).Assembly) {}
+    public UnitTestHost() : base(typeof(TechnologyServices).Assembly)
+    {
+        ServiceStack.Licensing.RegisterLicense("OSS BSD-2-Clause 2023 https://github.com/NetCoreApps/TechStacks saetukAMlCkth5Y5cwlWBGdK7iv4MteXIIooIstIMz3lrJotPYulM15WYSnGxeg1Wc42Cp0rrN0KVSfXCinncvC8750lzxz4rDB4eGuJW/1p0wcspHH8IevKJUJ/EFe5AoDihHXIOj4ITXil11/Ouc3eGC4LtQcG8U2xVdQwD4Y=");
+    }
 
     public override void Configure(Container container)
     {
@@ -50,7 +53,10 @@ public class UnitTestHost : BasicAppHost
 public class IntegrationTestHost : AppSelfHostBase
 {
     public IntegrationTestHost()
-        : base("IntegrationTestHost", typeof(TechnologyServices).Assembly) {}
+        : base("IntegrationTestHost", typeof(TechnologyServices).Assembly)
+    {
+        ServiceStack.Licensing.RegisterLicense("OSS BSD-2-Clause 2023 https://github.com/NetCoreApps/TechStacks saetukAMlCkth5Y5cwlWBGdK7iv4MteXIIooIstIMz3lrJotPYulM15WYSnGxeg1Wc42Cp0rrN0KVSfXCinncvC8750lzxz4rDB4eGuJW/1p0wcspHH8IevKJUJ/EFe5AoDihHXIOj4ITXil11/Ouc3eGC4LtQcG8U2xVdQwD4Y=");
+    }
 
     public override void Configure(Container container)
     {
