@@ -115,7 +115,6 @@ jobs:
           APP_NAME: ${{ github.event.repository.name }}
           HOST_DOMAIN: ${{ env.domain }}
           LETSENCRYPT_EMAIL: ${{ env.letsencrypt_email }}
-          SERVICESTACK_LICENSE: ${{ secrets.SERVICESTACK_LICENSE }}
         with:
           input: .deploy/docker-compose-template.yml
           output: .deploy/${{ github.event.repository.name }}-docker-compose.yml
