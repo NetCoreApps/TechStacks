@@ -9,7 +9,7 @@ using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface
 {
-    [CacheResponse(Duration = 600)]
+    
     public class PostPublicServices : PostServicesBase
     {
         public IAutoQueryDb AutoQuery { get; set; }
