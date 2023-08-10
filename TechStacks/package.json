@@ -4,10 +4,10 @@
   "description": "ServiceStack Nuxt.js project",
   "private": true,
   "scripts": {
-    "dev": "SET NODE_OPTIONS=--openssl-legacy-provider && nuxt",
+    "dev": "nuxt",
     "dtos": "cd src/shared && typescript-ref && tsc -m ES6 dtos.ts",
-    "build": "SET NODE_OPTIONS=--openssl-legacy-provider && nuxt build",
-    "publish": "SET NODE_OPTIONS=--openssl-legacy-provider && nuxt build && dotnet publish -c Release",
+    "build": "nuxt build",
+    "publish": "nuxt build && dotnet publish -c Release",
     "deploy": "npm run publish && bash deploy.sh",
     "lint": "eslint --ext .js,.vue .",
     "precommit": "npm run lint"

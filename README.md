@@ -1,4 +1,4 @@
-# The New TechStacks
+# TechStacks
 
 ![](https://raw.githubusercontent.com/ServiceStack/docs/master/docs/images/release-notes/techstacks-new.png)
 

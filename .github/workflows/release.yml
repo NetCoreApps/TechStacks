@@ -61,16 +61,21 @@ jobs:
           cat <<EOF > ./TechStacks/appsettings.Production.json
           ${{ secrets.APP_SETTINGS }}
           EOF
-          
-      - name: NPM install
+      
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      # Run postinstall script
+      - name: Install and build npm
         run: |
-          cd TechStacks
           npm install
           npm run publish
-      
+        working-directory: ./TechStacks
+
       # Build and push new docker image, skip for manual redeploy other than 'latest'
       - name: Build and push Docker images
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         if: ${{ github.event.inputs.version == '' || github.event.inputs.version == 'latest' }}
         with:
           file: Dockerfile
@@ -107,14 +112,18 @@ jobs:
           fi;
 
       # Populate docker-compose.yml with variables from build process, including TAG_NAME.
-      - name: docker-compose file prep
-        uses: danielr1996/envsubst-action@1.0.0
+      - name: docker compose file prep
+        uses: danielr1996/envsubst-action@1.1.0
         env:
           RELEASE_VERSION: ${{ env.TAG_NAME }}
           IMAGE_REPO: ${{ env.image_repository_name }}
           APP_NAME: ${{ github.event.repository.name }}
           HOST_DOMAIN: ${{ env.domain }}
           LETSENCRYPT_EMAIL: ${{ env.letsencrypt_email }}
+          SERVICESTACK_LICENSE: ${{ secrets.SERVICESTACK_LICENSE }}
+          FORUMS_DB: ${{ secrets.FORUMS_DB }}
+          TECHSTACKS_SMTP_USER: ${{ secrets.TECHSTACKS_SMTP_USER }}
+          TECHSTACKS_SMTP_PASS: ${{ secrets.TECHSTACKS_SMTP_PASS }}
         with:
           input: .deploy/docker-compose-template.yml
           output: .deploy/${{ github.event.repository.name }}-docker-compose.yml
@@ -142,11 +151,11 @@ jobs:
           envs: APPTOKEN,USERNAME
           script: |
             echo $APPTOKEN | docker login ghcr.io -u $USERNAME --password-stdin
-            docker-compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
-            docker-compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up ${{ github.event.repository.name }}-migration
+            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
+            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up ${{ github.event.repository.name }}-migration
 
       # Deploy Docker image with ServiceStack application using `docker compose up` remotely
-      - name: remote docker-compose up via ssh
+      - name: remote docker compose up via ssh
         uses: appleboy/ssh-action@v0.1.5
         env:
           APPTOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -159,5 +168,5 @@ jobs:
           envs: APPTOKEN,USERNAME
           script: |
             echo $APPTOKEN | docker login ghcr.io -u $USERNAME --password-stdin
-            docker-compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
-            docker-compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up -d
+            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
+            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up -d
