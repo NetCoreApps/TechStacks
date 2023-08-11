@@ -7,6 +7,7 @@ using TechStacks.ServiceModel.Types;
 namespace TechStacks.ServiceModel
 {
     [Route("/posts", "GET"), Tag(Tags.AutoQuery), Tag(Tags.Posts)]
+    [Restrict(AccessTo = RequestAttributes.Json | RequestAttributes.Html | RequestAttributes.Jsv | RequestAttributes.AnyHttpMethod)]
     public partial class QueryPosts
         : QueryDb<Post>, IGet
     {
