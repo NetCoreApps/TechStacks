@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TechStacks.ServiceModel\TechStacks.ServiceModel.csproj" />
-    <PackageReference Include="ServiceStack" Version="6.*" />
-    <PackageReference Include="ServiceStack.Server" Version="6.*" />
-    
-<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.OrmLite\src\ServiceStack.OrmLite\ServiceStack.OrmLite.Source.csproj" />-->
-<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.Redis\src\ServiceStack.Redis\ServiceStack.Redis.Source.csproj" />-->
-<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack.Text\src\ServiceStack.Text\ServiceStack.Text.csproj" />-->
-<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack\src\ServiceStack.Client\ServiceStack.Client.Source.csproj" />-->
-<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack\src\ServiceStack.Common\ServiceStack.Common.Source.csproj" />-->
-<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack\src\ServiceStack.Interfaces\ServiceStack.Interfaces.csproj" />-->
-<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack\src\ServiceStack.Server\ServiceStack.Server.Source.csproj" />-->
-<!--    <ProjectReference Include="..\..\..\..\..\Source\ServiceStack\src\ServiceStack\ServiceStack.Source.csproj" />-->
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\TechStacks.ServiceModel\TechStacks.ServiceModel.csproj"/>
+        <PackageReference Include="ServiceStack" Version="6.*"/>
+        <PackageReference Include="ServiceStack.Server" Version="6.*"/>
+
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack.OrmLite\src\ServiceStack.OrmLite\ServiceStack.OrmLite.csproj"/>-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack.Redis\src\ServiceStack.Redis\ServiceStack.Redis.csproj"/>-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack.Text\src\ServiceStack.Text\ServiceStack.Text.csproj"/>-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Server\ServiceStack.Server.csproj"/>-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Client\ServiceStack.Client.csproj"/>-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Common\ServiceStack.Common.csproj"/>-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Interfaces\ServiceStack.Interfaces.csproj"/>-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack\ServiceStack.csproj"/>-->
+    </ItemGroup>
 </Project>
