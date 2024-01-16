@@ -186,7 +186,6 @@ public class AppHost : AppHostBase, IHostingStartup
             allowedHeaders: "Content-Type, Allow, Authorization",
             maxAge: 60 * 60)); //Cache OPTIONS permissions
 
-        Plugins.Add(new ValidationFeature());
         container.RegisterValidators(typeof(AppHost).Assembly);
         container.RegisterValidators(typeof(TechnologyServices).Assembly);
 
