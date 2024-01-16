@@ -14,7 +14,7 @@ public class PostPublicUserServices : Service
     public object Any(GetUsersByEmails request)
     {
         if (request.Emails.IsEmpty())
-            return new GetUsersByEmailsResponse { Results = new List<UserRef>() };
+            return new GetUsersByEmailsResponse { Results = [] };
             
         var users = Db.Select<UserRef>(
             @"select distinct c.id, c.user_name, COALESCE(c.email,d.email) as email, c.ref_id, c.ref_source, c.ref_urn

@@ -192,31 +192,6 @@ public class MigrationTasks : DbTasksBase
             db.AddColumn<CustomUserAuth>(x => x.DisableEmails);
     }
 
-    //[Test]
-    public void Add_UserActivity()
-    {
-        using var db = dbFactory.Open();
-        db.DropAndCreateTable<UserActivity>();
-
-        var result = db.ExecuteSql(@"
-                    insert into user_activity (id, user_name, created, modified) 
-                    select id, user_name, created_date, modified_date from custom_user_auth c
-                    where not exists (select * from user_activity where c.id = id)");
-
-        $"Rows added: {result}".Print();
-    }
-
-    //[Test]
-    public void test_sql()
-    {
-        using var db = dbFactory.Open();
-        db.ExecuteSql(
-            @"update post set 
-                         up_votes   = (select count(*) from post_vote where post_id = @id and weight > 0), 
-                         down_votes = (select count(*) from post_vote where post_id = @id and weight < 0)
-                   where id = @id", new { id = 2 });
-    }
-
     public class PostInfo
     {
         public int OrganizationId { get; set; }
@@ -224,26 +199,6 @@ public class MigrationTasks : DbTasksBase
         public int Id { get; set; }
         public string Slug { get; set; }
         public string Name { get; set; }
-    }
-
-    //[Test]
-    public void Create_missing_userActivities()
-    {
-        using var db = dbFactory.Open();
-        var usersWithoutActivities = db.SqlList<CustomUserAuth>(
-            @"select u.* from custom_user_auth u left join user_activity a on u.id = a.id where a.id is null");
-
-        foreach (var user in usersWithoutActivities)
-        {
-            $"Inserting User {user.Id} @{user.UserName}".Print();
-            db.Insert(new UserActivity
-            {
-                Id = user.Id,
-                UserName = user.UserName,
-                Created = DateTime.UtcNow,
-                Modified = DateTime.UtcNow,
-            });
-        }
     }
 
     [Test]
