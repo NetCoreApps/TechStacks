@@ -268,10 +268,11 @@ function on(sel, handlers) {
                                 <div class="btn__content">Stacks</div>
                             </a><a href="/tech/" class="btn btn--flat btn--router" title="Technologies (4)">
                                 <div class="btn__content">Technologies</div>
-                            </a><a href="/favorites/" class="btn btn--flat btn--router" title="Favorites (5)">
-                                <div class="btn__content">Favorites</div>
                             </a>
                                 {{#if auth}}
+                                <a href="/favorites/" class="btn btn--flat btn--router" title="Favorites (5)">
+                                    <div class="btn__content">Favorites</div>
+                                </a>
                                 <div class="menu" data-menu="profileMenu" style="display: inline-block;">
                                     <div class="menu__activator">
                                         <button type="button" class="btn btn--flat">

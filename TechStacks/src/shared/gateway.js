@@ -1,4 +1,4 @@
-import {JsonServiceClient, toFormData} from "@servicestack/client";
+import {JsonApiClient, toFormData} from "@servicestack/client";
 import {
     ActionPostCommentReport,
     ActionPostReport,
@@ -72,7 +72,7 @@ import {
 
 const BaseUrl = "/";
 
-export const client = new JsonServiceClient(BaseUrl);
+export const client = JsonApiClient.create(BaseUrl);
 
 export const getSessionInfo = async() => {
     try {

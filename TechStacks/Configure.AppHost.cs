@@ -243,7 +243,7 @@ public class AppHost : AppHostBase, IHostingStartup
                     LastModified = DateTime.UtcNow,
                     UrlSet = db.Select(db.From<TechnologyStack>().OrderByDescending(x => x.LastModified))
                         .Map(x => new SitemapUrl {
-                            Location = baseUrl + new ClientTechnologyStack {Slug = x.Slug}.ToAbsoluteUri(),
+                            Location = baseUrl + new ClientTechnologyStack {Slug = x.Slug}.ToGetUrl(),
                             LastModified = x.LastModified,
                             ChangeFrequency = SitemapFrequency.Weekly,
                         }),
@@ -254,7 +254,7 @@ public class AppHost : AppHostBase, IHostingStartup
                     LastModified = DateTime.UtcNow,
                     UrlSet = db.Select(db.From<Technology>().OrderByDescending(x => x.LastModified))
                         .Map(x => new SitemapUrl {
-                            Location = baseUrl + new ClientTechnology {Slug = x.Slug}.ToAbsoluteUri(),
+                            Location = baseUrl + new ClientTechnology {Slug = x.Slug}.ToGetUrl(),
                             LastModified = x.LastModified,
                             ChangeFrequency = SitemapFrequency.Weekly,
                         })
@@ -265,7 +265,7 @@ public class AppHost : AppHostBase, IHostingStartup
                     LastModified = DateTime.UtcNow,
                     UrlSet = db.Select(db.From<CustomUserAuth>().OrderByDescending(x => x.ModifiedDate))
                         .Map(x => new SitemapUrl {
-                            Location = baseUrl + new ClientUser {UserName = x.UserName}.ToAbsoluteUri(),
+                            Location = baseUrl + new ClientUser {UserName = x.UserName}.ToGetUrl(),
                             LastModified = x.ModifiedDate,
                             ChangeFrequency = SitemapFrequency.Weekly,
                         })

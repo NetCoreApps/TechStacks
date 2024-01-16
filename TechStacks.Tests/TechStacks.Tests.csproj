@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <DebugType>portable</DebugType>
     <OutputType>Library</OutputType>
   </PropertyGroup>
@@ -11,11 +11,11 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.1.*" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
 
-    <PackageReference Include="ServiceStack" Version="6.*" />
-    <PackageReference Include="ServiceStack.Server" Version="6.*" />
-    <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="6.*" />
-    <PackageReference Include="ServiceStack.OrmLite.Sqlite.Data" Version="6.*" />
-    <PackageReference Include="ServiceStack.Kestrel" Version="6.*" />
+    <PackageReference Include="ServiceStack" Version="8.*" />
+    <PackageReference Include="ServiceStack.Server" Version="8.*" />
+    <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="8.*" />
+    <PackageReference Include="ServiceStack.OrmLite.Sqlite.Data" Version="8.*" />
+    <PackageReference Include="ServiceStack.Kestrel" Version="8.*" />
 
 <!--    <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Kestrel\ServiceStack.Kestrel.csproj" />-->
 <!--    <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack.OrmLite\src\ServiceStack.OrmLite.Sqlite.Data\ServiceStack.OrmLite.Sqlite.Data.csproj" />-->

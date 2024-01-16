@@ -16,7 +16,7 @@
     "node": ">=16.0.0 <17.0.0"
   },
   "dependencies": {
-    "@servicestack/client": "^1.2.5",
+    "@servicestack/client": "^2.0.17",
     "@servicestack/editor": "0.0.2",
     "@servicestack/images": "^1.0.0",
     "npm": "^9.2.0",

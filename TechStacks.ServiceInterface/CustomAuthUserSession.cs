@@ -14,7 +14,6 @@ namespace TechStacks.ServiceInterface
     public class CustomUserSession : AuthUserSession
     {
         public string GithubProfileUrl { get; set; }
-        public string TwitterProfileUrl { get; set; }
 
         public override void OnAuthenticated(IServiceBase authService, IAuthSession session, IAuthTokens tokens, Dictionary<string, string> authInfo)
         {
@@ -34,12 +33,8 @@ namespace TechStacks.ServiceInterface
                         GithubProfileUrl = avatarUrl;
                     }
                 }
-                if (authTokens.Provider.ToLower() == "twitter")
-                {
-                    TwitterProfileUrl = session.GetProfileUrl().Replace("http://","https://");
-                }
 
-                ProfileUrl = GithubProfileUrl ?? TwitterProfileUrl;
+                ProfileUrl = GithubProfileUrl;
                 
                 using (var db = dbFactory.OpenDbConnection())
                 {

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
@@ -14,10 +14,10 @@
         <Content Include="emails\**\*" CopyToPublishDirectory="PreserveNewest"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="ServiceStack" Version="6.*"/>
-        <PackageReference Include="ServiceStack.Server" Version="6.*"/>
-        <PackageReference Include="ServiceStack.Api.OpenApi" Version="6.*"/>
-        <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="6.*"/>
+        <PackageReference Include="ServiceStack" Version="8.*"/>
+        <PackageReference Include="ServiceStack.Server" Version="8.*"/>
+        <PackageReference Include="ServiceStack.Api.OpenApi" Version="8.*"/>
+        <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="8.*"/>
 
 <!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Api.OpenApi\ServiceStack.Api.OpenApi.csproj"/>-->
 <!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack.OrmLite\src\ServiceStack.OrmLite.PostgreSQL\ServiceStack.OrmLite.PostgreSQL.csproj"/>-->
