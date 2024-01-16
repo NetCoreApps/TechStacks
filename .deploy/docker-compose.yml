@@ -3,6 +3,7 @@ services:
   app:
     image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION} 
     restart: always                               
+    network_mode: bridge
     ports:                                         
       - "8080"                                     
     container_name: ${APP_NAME}_app                
@@ -28,10 +29,10 @@ services:
     volumes:
       - app-mydb:/app/App_Data  
 
-networks:
-  default:
-    external: true                                     
-    name: nginx                                        
+# networks:
+#   default:
+#     external: true                                     
+#     name: nginx                                        
 
 volumes:
     app-mydb:                                          
