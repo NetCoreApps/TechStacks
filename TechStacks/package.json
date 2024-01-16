@@ -9,6 +9,10 @@
     "build": "nuxt build",
     "publish": "nuxt build && dotnet publish -c Release",
     "deploy": "npm run publish && bash deploy.sh",
+    "migrate": "dotnet run --AppTasks=migrate",
+    "revert:last": "dotnet run --AppTasks=migrate.revert:last",
+    "revert:all": "dotnet run --AppTasks=migrate.revert:all",
+    "rerun:last": "npm run revert:last && npm run migrate",
     "lint": "eslint --ext .js,.vue .",
     "precommit": "npm run lint"
   },

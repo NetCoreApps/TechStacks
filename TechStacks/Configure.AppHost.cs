@@ -26,7 +26,7 @@ using TechStacks.ServiceModel;
 
 namespace TechStacks;
 
-public class AppHost : AppHostBase, IHostingStartup
+public class AppHost() : AppHostBase("TechStacks!", typeof(TechnologyServices).Assembly), IHostingStartup
 {
     public void Configure(IWebHostBuilder builder) => builder
         .ConfigureServices((context,services) => {
@@ -54,9 +54,6 @@ public class AppHost : AppHostBase, IHostingStartup
 
             appHost.ExecuteService(new RetryPendingNotifications());
         });
-
-    public AppHost()
-        : base("TechStacks!", typeof(TechnologyServices).Assembly) { }
 
     private static ILog? log;
 
@@ -93,30 +90,11 @@ public class AppHost : AppHostBase, IHostingStartup
         container.Register<IUserAuthRepository>(authRepo);
         authRepo.InitSchema();
         using var db = dbFactory.OpenDbConnection();
-        var lockedUserIds = db.ColumnDistinct<int>(
-            db.From<CustomUserAuth>().Where(x => x.LockedDate != null).Select(x => x.Id));
-
-        db.CreateTableIfNotExists<Organization>();
-        db.CreateTableIfNotExists<OrganizationMember>();
-        db.CreateTableIfNotExists<OrganizationLabel>();
-        db.CreateTableIfNotExists<OrganizationMemberInvite>();
-        db.CreateTableIfNotExists<OrganizationSubscription>();
-        db.CreateTableIfNotExists<Category>();
-        db.CreateTableIfNotExists<PageStats>();
-        db.CreateTableIfNotExists<Post>();
-        db.CreateTableIfNotExists<PostVote>();
-        db.CreateTableIfNotExists<PostFavorite>();
-        db.CreateTableIfNotExists<Notification>();
-        db.CreateTableIfNotExists<UserActivity>();
-        db.CreateTableIfNotExists<TechnologyStack>();
-        db.CreateTableIfNotExists<Technology>();
-        db.CreateTableIfNotExists<TechnologyHistory>();
-        db.CreateTableIfNotExists<TechnologyChoice>();
-        db.CreateTableIfNotExists<TechnologyStackHistory>();
-        db.CreateTableIfNotExists<UserFavoriteTechnologyStack>();
-        db.CreateTableIfNotExists<UserFavoriteTechnology>();
 
         Plugins.Add(CreateSiteMap(db, baseUrl:"https://techstacks.io"));
+
+        var lockedUserIds = db.ColumnDistinct<int>(
+            db.From<CustomUserAuth>().Where(x => x.LockedDate != null).Select(x => x.Id));
 
         Plugins.Add(new AuthFeature(() => new CustomUserSession(), [
             new GithubAuthProvider(AppSettings),
