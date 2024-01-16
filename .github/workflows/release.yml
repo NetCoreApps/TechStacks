@@ -120,7 +120,6 @@ jobs:
           APP_NAME: ${{ github.event.repository.name }}
           HOST_DOMAIN: ${{ env.domain }}
           LETSENCRYPT_EMAIL: ${{ env.letsencrypt_email }}
-          SERVICESTACK_LICENSE: ${{ secrets.SERVICESTACK_LICENSE }}
           FORUMS_DB: ${{ secrets.FORUMS_DB }}
           TECHSTACKS_SMTP_USER: ${{ secrets.TECHSTACKS_SMTP_USER }}
           TECHSTACKS_SMTP_PASS: ${{ secrets.TECHSTACKS_SMTP_PASS }}

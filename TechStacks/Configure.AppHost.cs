@@ -283,4 +283,7 @@ public class AppHost : AppHostBase, IHostingStartup
                 }
             }
         };
+
+    public static void RegisterLicense() =>
+        Licensing.RegisterLicense("OSS BSD-3-Clause 2024 https://github.com/NetCoreApps/TechStacks otNWkDy8SaBst+5+0DZ2jRhUpAXTzQil2M5/xjBVB6hX/zn6SZhuKxhZLF4VrsDfd5qPCoZmuShaxmGtLeovzMjof54vgk7+69i0icWaN5eD1aSr6hYO1eN/Lw3ee9AxQ5mDWPN8LHNk6s0zq9znAEET9y/6SM3X3FHHZ3QT1HU=");
 }

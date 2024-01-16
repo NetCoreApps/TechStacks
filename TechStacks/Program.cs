@@ -1,6 +1,7 @@
 using ServiceStack;
 using TechStacks;
 
+AppHost.RegisterLicense();
 var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
