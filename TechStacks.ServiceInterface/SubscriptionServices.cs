@@ -6,95 +6,94 @@ using TechStacks.ServiceInterface.DataModel;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 
-namespace TechStacks.ServiceInterface
+namespace TechStacks.ServiceInterface;
+
+[Authenticate]
+public class SubscriptionServices : PostServicesBase
 {
-    [Authenticate]
-    public class SubscriptionServices : PostServicesBase
+    public void Put(SubscribeToOrganization request)
     {
-        public void Put(SubscribeToOrganization request)
+        if (request.OrganizationId <= 0)
+            throw new ArgumentNullException(nameof(request.OrganizationId));
+
+        var user = GetUser();
+        var userId = user.GetUserId();
+
+        AssertCanViewOrganization(Db, request.OrganizationId, user);
+
+        var rowsDeleted = Db.Delete<OrganizationSubscription>(x =>
+            x.OrganizationId == request.OrganizationId && x.UserId == userId);
+
+        var now = DateTime.Now;
+        var sub = new OrganizationSubscription
         {
-            if (request.OrganizationId <= 0)
-                throw new ArgumentNullException(nameof(request.OrganizationId));
+            OrganizationId = request.OrganizationId,
+            UserId = userId,
+            UserName = user.UserName,
+            PostTypes = request.PostTypes.Select(x => x.ToString()).ToArray(),
+            FrequencyDays = request.Frequency != null ? (int)request.Frequency.Value : (int?)null,
+            Created = now,                 
+        };
 
-            var user = GetUser();
-            var userId = user.GetUserId();
+        Db.Insert(sub);
 
-            AssertCanViewOrganization(Db, request.OrganizationId, user);
+        ClearOrganizationCaches();
+    }
 
-            var rowsDeleted = Db.Delete<OrganizationSubscription>(x =>
-                x.OrganizationId == request.OrganizationId && x.UserId == userId);
+    public void Put(SubscribeToPost request)
+    {
+        if (request.PostId <= 0)
+            throw new ArgumentNullException(nameof(request.PostId));
 
-            var now = DateTime.Now;
-            var sub = new OrganizationSubscription
-            {
-                OrganizationId = request.OrganizationId,
-                UserId = userId,
-                UserName = user.UserName,
-                PostTypes = request.PostTypes.Select(x => x.ToString()).ToArray(),
-                FrequencyDays = request.Frequency != null ? (int)request.Frequency.Value : (int?)null,
-                Created = now,                 
-            };
+        var user = GetUser();
+        var userId = user.GetUserId();
 
-            Db.Insert(sub);
+        var post = AssertPost(request.PostId);
 
-            ClearOrganizationCaches();
-        }
+        AssertCanPostToOrganization(Db, post.OrganizationId, user, out var org, out var orgMember);
+        AssertCanAnnotatePost(post, user, orgMember);
 
-        public void Put(SubscribeToPost request)
+        var rowsDeleted = Db.Delete<SubscribePost>(x =>
+            x.PostId == request.PostId && x.UserId == userId);
+
+        var now = DateTime.Now;
+        var sub = new SubscribePost
         {
-            if (request.PostId <= 0)
-                throw new ArgumentNullException(nameof(request.PostId));
+            PostId = request.PostId,
+            OrganizationId = post.OrganizationId,
+            UserId = userId,
+            UserName = user.UserName,
+            Created = now,
+        };
 
-            var user = GetUser();
-            var userId = user.GetUserId();
+        Db.Insert(sub);
 
-            var post = AssertPost(request.PostId);
+        ClearPostCaches();
+    }
 
-            AssertCanPostToOrganization(Db, post.OrganizationId, user, out var org, out var orgMember);
-            AssertCanAnnotatePost(post, user, orgMember);
+    public void Delete(DeleteOrganizationSubscription request)
+    {
+        if (request.OrganizationId <= 0)
+            throw new ArgumentNullException(nameof(request.OrganizationId));
 
-            var rowsDeleted = Db.Delete<SubscribePost>(x =>
-                x.PostId == request.PostId && x.UserId == userId);
+        var userId = GetUserId();
 
-            var now = DateTime.Now;
-            var sub = new SubscribePost
-            {
-                PostId = request.PostId,
-                OrganizationId = post.OrganizationId,
-                UserId = userId,
-                UserName = user.UserName,
-                Created = now,
-            };
+        var rowsDeleted = Db.Delete<OrganizationSubscription>(x =>
+            x.OrganizationId == request.OrganizationId && x.UserId == userId);
 
-            Db.Insert(sub);
+        ClearOrganizationCaches();
+    }
 
-            ClearPostCaches();
-        }
+    public void Delete(DeletePostSubscription request)
+    {
+        if (request.PostId <= 0)
+            throw new ArgumentNullException(nameof(request.PostId));
 
-        public void Delete(DeleteOrganizationSubscription request)
-        {
-            if (request.OrganizationId <= 0)
-                throw new ArgumentNullException(nameof(request.OrganizationId));
+        var userId = GetUserId();
 
-            var userId = GetUserId();
+        var rowsDeleted = Db.Delete<SubscribePost>(x =>
+            x.PostId == request.PostId && x.UserId == userId);
 
-            var rowsDeleted = Db.Delete<OrganizationSubscription>(x =>
-                x.OrganizationId == request.OrganizationId && x.UserId == userId);
-
-            ClearOrganizationCaches();
-        }
-
-        public void Delete(DeletePostSubscription request)
-        {
-            if (request.PostId <= 0)
-                throw new ArgumentNullException(nameof(request.PostId));
-
-            var userId = GetUserId();
-
-            var rowsDeleted = Db.Delete<SubscribePost>(x =>
-                x.PostId == request.PostId && x.UserId == userId);
-
-            ClearPostCaches();
-        }
+        ClearPostCaches();
     }
 }

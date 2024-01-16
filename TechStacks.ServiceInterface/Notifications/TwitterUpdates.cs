@@ -8,35 +8,35 @@ using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.Configuration;
 
-namespace TechStacks.ServiceInterface.Notifications
+namespace TechStacks.ServiceInterface.Notifications;
+
+public class TwitterUpdates : ITwitterUpdates
 {
-    public class TwitterUpdates : ITwitterUpdates
-    {
-        private readonly TwitterGateway gateway;
-        private readonly string accessToken;
-        private readonly string accessTokenSecret;
+    private readonly TwitterGateway gateway;
+    private readonly string accessToken;
+    private readonly string accessTokenSecret;
         
-        public string BaseUrl { get; set; }
+    public string BaseUrl { get; set; }
 
-        public TwitterUpdates(
-            string consumerKey, string consumerSecret,
-            string accessToken, string accessTokenSecret)
+    public TwitterUpdates(
+        string consumerKey, string consumerSecret,
+        string accessToken, string accessTokenSecret)
+    {
+        this.accessToken = accessToken;
+        this.accessTokenSecret = accessTokenSecret;
+        this.gateway = new TwitterGateway
         {
-            this.accessToken = accessToken;
-            this.accessTokenSecret = accessTokenSecret;
-            this.gateway = new TwitterGateway
-            {
-                TwitterAuthProvider = new TwitterAuthProvider(new DictionarySettings(
-                    new Dictionary<string,string> {
-                        {"oauth.twitter.ConsumerKey", consumerKey},
-                        {"oauth.twitter.ConsumerSecret", consumerSecret},
-                    }))
-            };
-        }
+            TwitterAuthProvider = new TwitterAuthProvider(new DictionarySettings(
+                new Dictionary<string,string> {
+                    {"oauth.twitter.ConsumerKey", consumerKey},
+                    {"oauth.twitter.ConsumerSecret", consumerSecret},
+                }))
+        };
+    }
 
-        public string Tweet(string status)
-        {
-            var response = gateway.Send(new PostStatusTwitter
+    public string Tweet(string status)
+    {
+        var response = gateway.Send(new PostStatusTwitter
             {
                 AccessToken = accessToken,
                 AccessTokenSecret = accessTokenSecret,
@@ -44,78 +44,77 @@ namespace TechStacks.ServiceInterface.Notifications
             })
             .FirstOrDefault();
 
-            return response.StartsWithIgnoreCase("ERROR: ") ? response : null;
-        }
+        return response.StartsWithIgnoreCase("ERROR: ") ? response : null;
     }
+}
 
-    public class PostStatusTwitter
+public class PostStatusTwitter
+{
+    public string AccessToken { get; set; }
+    public string AccessTokenSecret { get; set; }
+    public string Status { get; set; }
+}
+
+public class TwitterGateway
+{
+    public TwitterAuthProvider TwitterAuthProvider { get; set; }
+
+    public List<string> Send(params PostStatusTwitter[] messages)
     {
-        public string AccessToken { get; set; }
-        public string AccessTokenSecret { get; set; }
-        public string Status { get; set; }
+        var results = new List<string>();
+        foreach (var message in messages)
+        {
+            try
+            {
+                var response = PostToUrl(TwitterAuthProvider,
+                    "https://api.twitter.com/1.1/statuses/update.json",
+                    message.AccessToken, message.AccessTokenSecret,
+                    new Dictionary<string, string> { { "status", message.Status } });
+
+                results.Add(response);
+            }
+            catch (Exception ex)
+            {
+                results.Add("ERROR: " + ex);
+            }
+        }
+        return results;
     }
 
-    public class TwitterGateway
+    public static string PostToUrl(TwitterAuthProvider oAuthProvider, string url, string accessToken, string accessTokenSecret, Dictionary<string, string> args, string acceptType = MimeTypes.Json)
     {
-        public TwitterAuthProvider TwitterAuthProvider { get; set; }
+        var uri = new Uri(url);
+        var webReq = (HttpWebRequest)WebRequest.Create(uri);
+        webReq.Accept = acceptType;
+        webReq.Method = HttpMethods.Post;
 
-        public List<string> Send(params PostStatusTwitter[] messages)
+        string data = null;
+        if (args != null)
         {
-            var results = new List<string>();
-            foreach (var message in messages)
+            var sb = new StringBuilder();
+            foreach (var arg in args)
             {
-                try
-                {
-                    var response = PostToUrl(TwitterAuthProvider,
-                        "https://api.twitter.com/1.1/statuses/update.json",
-                        message.AccessToken, message.AccessTokenSecret,
-                        new Dictionary<string, string> { { "status", message.Status } });
-
-                    results.Add(response);
-                }
-                catch (Exception ex)
-                {
-                    results.Add("ERROR: " + ex);
-                }
+                if (sb.Length > 0)
+                    sb.Append("&");
+                sb.Append($"{arg.Key}={OAuthUtils.PercentEncode(arg.Value)}");
             }
-            return results;
+            data = sb.ToString();
         }
 
-        public static string PostToUrl(TwitterAuthProvider oAuthProvider, string url, string accessToken, string accessTokenSecret, Dictionary<string, string> args, string acceptType = MimeTypes.Json)
+        webReq.Headers[HttpRequestHeader.Authorization] = OAuthAuthorizer.AuthorizeRequest(
+            oAuthProvider, accessToken, accessTokenSecret, "POST", uri, data);
+
+        if (data != null)
         {
-            var uri = new Uri(url);
-            var webReq = (HttpWebRequest)WebRequest.Create(uri);
-            webReq.Accept = acceptType;
-            webReq.Method = HttpMethods.Post;
-
-            string data = null;
-            if (args != null)
-            {
-                var sb = new StringBuilder();
-                foreach (var arg in args)
-                {
-                    if (sb.Length > 0)
-                        sb.Append("&");
-                    sb.Append($"{arg.Key}={OAuthUtils.PercentEncode(arg.Value)}");
-                }
-                data = sb.ToString();
-            }
-
-            webReq.Headers[HttpRequestHeader.Authorization] = OAuthAuthorizer.AuthorizeRequest(
-                oAuthProvider, accessToken, accessTokenSecret, "POST", uri, data);
-
-            if (data != null)
-            {
-                webReq.ContentType = MimeTypes.FormUrlEncoded;
-                using (var writer = new StreamWriter(webReq.GetRequestStream()))
-                    writer.Write(data);
-            }
-
-            using (var webRes = webReq.GetResponse())
-            {
-                return webRes.ReadToEnd();
-            }
+            webReq.ContentType = MimeTypes.FormUrlEncoded;
+            using (var writer = new StreamWriter(webReq.GetRequestStream()))
+                writer.Write(data);
         }
 
+        using (var webRes = webReq.GetResponse())
+        {
+            return webRes.ReadToEnd();
+        }
     }
+
 }

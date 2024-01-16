@@ -4,54 +4,53 @@ using ServiceStack;
 using ServiceStack.OrmLite;
 using TechStacks.ServiceModel;
 
-namespace TechStacks.ServiceInterface
+namespace TechStacks.ServiceInterface;
+
+public class PreRenderService : PostServicesBase
 {
-    public class PreRenderService : PostServicesBase
-    {
-        string GetPath() => Request.RawUrl.StartsWith("/prerender")
-            ? Request.RawUrl.Substring("/prerender".Length)
-            : Request.RawUrl;
+    string GetPath() => Request.RawUrl.StartsWith("/prerender")
+        ? Request.RawUrl.Substring("/prerender".Length)
+        : Request.RawUrl;
         
 //        [Authenticate]
-        public async Task Put(StorePreRender request)
-        {
-            var user = GetUser();
+    public async Task Put(StorePreRender request)
+    {
+        var user = GetUser();
             
-            var bytes = request.RequestStream.ReadFully();
+        var bytes = request.RequestStream.ReadFully();
 
-            var path = GetPath();
+        var path = GetPath();
             
-            var updated = await Db.UpdateOnlyAsync(() =>
+        var updated = await Db.UpdateOnlyAsync(() =>
                 new PreRender {
                     Data = bytes,
                     ContentType = Request.ContentType,
                     Modified = DateTime.Now,
                     ModfiedBy = user.UserName,
                 },
-                where:x => x.Path == path);
+            where:x => x.Path == path);
 
-            if (updated == 0)
-            {
-                Db.Insert(new PreRender {
-                    Path = path,
-                    Data = bytes,
-                    ContentType = Request.ContentType,
-                    Created = DateTime.Now,
-                    CreatedBy = user.UserName,
-                    Modified = DateTime.Now,
-                    ModfiedBy = user.UserName,
-                });
-            }
-        }
-
-        public async Task Get(GetPreRender request)
+        if (updated == 0)
         {
-            var path = GetPath();
-            var prerender = Db.SingleById<PreRender>(path);
-            if (prerender == null)
-                throw HttpError.NotFound(path);
-
-            await Response.WriteBytesToResponse(prerender.Data, prerender.ContentType);
+            Db.Insert(new PreRender {
+                Path = path,
+                Data = bytes,
+                ContentType = Request.ContentType,
+                Created = DateTime.Now,
+                CreatedBy = user.UserName,
+                Modified = DateTime.Now,
+                ModfiedBy = user.UserName,
+            });
         }
+    }
+
+    public async Task Get(GetPreRender request)
+    {
+        var path = GetPath();
+        var prerender = Db.SingleById<PreRender>(path);
+        if (prerender == null)
+            throw HttpError.NotFound(path);
+
+        await Response.WriteBytesToResponse(prerender.Data, prerender.ContentType);
     }
 }

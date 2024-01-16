@@ -1,8 +1,7 @@
-namespace TechStacks.ServiceInterface
+namespace TechStacks.ServiceInterface;
+
+public interface ITwitterUpdates
 {
-    public interface ITwitterUpdates
-    {
-        string BaseUrl { get; set; }
-        string Tweet(string status);
-    }
+    string BaseUrl { get; set; }
+    string Tweet(string status);
 }
