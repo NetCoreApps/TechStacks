@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using ServiceStack;
 using ServiceStack.Admin;
-using ServiceStack.Api.OpenApi;
 using ServiceStack.Auth;
 using ServiceStack.Data;
 using ServiceStack.Logging;
@@ -41,11 +40,9 @@ public class AppHost : AppHostBase, IHostingStartup
             dbFactory.RegisterDialectProvider(nameof(PostgreSqlDialect), PostgreSqlDialect.Provider);
 
             services.AddSingleton<IDbConnectionFactory>(dbFactory);
-        })
-        .Configure(app => {
-            // Configure ASP.NET Core App
-            if (!HasInit)
-                app.UseServiceStack(new AppHost());
+
+            services.RegisterValidators(typeof(AppHost).Assembly);
+            services.RegisterValidators(typeof(TechnologyServices).Assembly);
         })
         .ConfigureAppHost(afterAppHostInit: appHost => {
             var mqServer = appHost.Resolve<IMessageService>();
@@ -71,7 +68,6 @@ public class AppHost : AppHostBase, IHostingStartup
     // Configure your AppHost with the necessary configuration and dependencies your App needs
     public override void Configure(Container container)
     {
-//            LogManager.LogFactory = new ConsoleLogFactory(debugEnabled:true);
         log = LogManager.GetLogger(typeof(AppHost));
 
         SetConfig(new HostConfig {
@@ -122,7 +118,7 @@ public class AppHost : AppHostBase, IHostingStartup
 
         Plugins.Add(CreateSiteMap(db, baseUrl:"https://techstacks.io"));
 
-        Plugins.Add(new AuthFeature(() => new CustomUserSession(), new IAuthProvider[] {
+        Plugins.Add(new AuthFeature(() => new CustomUserSession(), [
             new GithubAuthProvider(AppSettings),
             new JwtAuthProvider(AppSettings) {
                 RequireSecureConnection = false,
@@ -139,16 +135,16 @@ public class AppHost : AppHostBase, IHostingStartup
                     payload["ats"] = githubAuth?.AccessTokenSecret;
                 },
                 PopulateSessionFilter = (session, obj, req) => {
-                    session.ProviderOAuthAccess = new List<IAuthTokens> {
-                        new AuthTokens {Provider = "github", AccessTokenSecret = obj["ats"]}
-                    };
+                    session.ProviderOAuthAccess = [
+                        new AuthTokens { Provider = "github", AccessTokenSecret = obj["ats"] }
+                    ];
                 }
             },
             new DiscourseAuthProvider {
                 Provider = "servicestack",
                 DiscourseUrl = "https://forums.servicestack.net",
-            },
-        }) {
+            }
+        ]) {
             HtmlRedirect = "/"
         });
 
@@ -186,9 +182,6 @@ public class AppHost : AppHostBase, IHostingStartup
             allowedHeaders: "Content-Type, Allow, Authorization",
             maxAge: 60 * 60)); //Cache OPTIONS permissions
 
-        container.RegisterValidators(typeof(AppHost).Assembly);
-        container.RegisterValidators(typeof(TechnologyServices).Assembly);
-
         Plugins.Add(new AutoQueryMetadataFeature {
             AutoQueryViewerConfig = {
                 ServiceDescription = "Discover what technologies were used to create popular Websites and Apps",
@@ -207,13 +200,7 @@ public class AppHost : AppHostBase, IHostingStartup
             MaxLimit = 500,
             StripUpperInLike = false,
             IncludeTotal = true,
-            ResponseFilters = {
-#if DEBUG
-                ctx => ctx.Response.Meta["Cache"] = Stopwatch.GetTimestamp().ToString()
-#endif
-            }
         });
-        Plugins.Add(new OpenApiFeature());
 
         RegisterTypedRequestFilter<IRegisterStats>((req, res, dto) =>
             dbFactory.RegisterPageView(dto.GetStatsId()));

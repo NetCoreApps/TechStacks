@@ -3,9 +3,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-        <TypeScriptToolsVersion>latest</TypeScriptToolsVersion>
+        <UserSecretsId>aspnet-TechStacks-7b2ab71a-0b50-423f-969d-e35a9402b1b5</UserSecretsId>
         <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+        <TypeScriptToolsVersion>latest</TypeScriptToolsVersion>
     </PropertyGroup>
     <ItemGroup>
         <Folder Include="wwwroot\"/>
@@ -16,8 +16,8 @@
     <ItemGroup>
         <PackageReference Include="ServiceStack" Version="8.*"/>
         <PackageReference Include="ServiceStack.Server" Version="8.*"/>
-        <PackageReference Include="ServiceStack.Api.OpenApi" Version="8.*"/>
         <PackageReference Include="ServiceStack.OrmLite.PostgreSQL" Version="8.*"/>
+        <PackageReference Include="ServiceStack.Extensions" Version="8.*"/>
 
 <!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Api.OpenApi\ServiceStack.Api.OpenApi.csproj"/>-->
 <!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack.OrmLite\src\ServiceStack.OrmLite.PostgreSQL\ServiceStack.OrmLite.PostgreSQL.csproj"/>-->

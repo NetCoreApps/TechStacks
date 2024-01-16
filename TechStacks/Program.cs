@@ -1,3 +1,6 @@
+using ServiceStack;
+using TechStacks;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
@@ -9,5 +12,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
     app.UseHttpsRedirection();
 }
+
+app.UseServiceStack(new AppHost());
 
 app.Run();
