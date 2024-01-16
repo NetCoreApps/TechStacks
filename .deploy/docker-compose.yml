@@ -18,14 +18,20 @@ services:
     volumes:
       - app-mydb:/app/App_Data  
 
-  ${APP_NAME}-migration:
-    image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION}
-    restart: "no"
-    profiles:
-      - migration
-    command: --AppTasks=migrate
+  app-migration:
+    image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION} 
+    restart: "no"                                  
+    container_name: ${APP_NAME}_app_migration       
+    profiles:                                      
+      - migration                                
+    command: --AppTasks=migrate                     
     volumes:
-      - ${APP_NAME}-mydb:/app/App_Data
+      - app-mydb:/app/App_Data  
+
+networks:
+  default:
+    external: true                                     
+    name: nginx                                        
 
 volumes:
-  ${APP_NAME}-mydb:
+    app-mydb:                                          
