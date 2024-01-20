@@ -15,11 +15,11 @@ module.exports = {
   },
   modules: ['@nuxtjs/proxy'],
   proxy: {
-    '/json': 'http://localhost:5000/',
-    '/auth': 'http://localhost:5000/',
-    '/users/*/avatar': 'http://localhost:5000/',
+    '/api': 'https://localhost:5001/',
+    '/auth': 'https://localhost:5001/',
+    '/users/*/avatar': 'https://localhost:5001/',
   },
-  css: ['~/assets/css/gfm.css','~/assets/css/app.css'],
+  css: ['~/assets/css/typography.css','~/assets/css/gfm.css','~/assets/css/styles.css'],
   /*
   ** Headers of the page
   */

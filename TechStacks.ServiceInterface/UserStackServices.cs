@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using ServiceStack;
 using ServiceStack.Configuration;
 using ServiceStack.OrmLite;
+using TechStacks.Data;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 
@@ -12,7 +14,6 @@ namespace TechStacks.ServiceInterface;
 
 public class UserStackServices : Service
 {
-    [Authenticate]
     public object Any(GetUserFeed request)
     {
         var session = SessionAs<CustomUserSession>();
@@ -49,11 +50,13 @@ public class LiveUserServices : Service
     {
         var results = Db.Dictionary<int,int>(Db.From<UserActivity>()
             .Where(x => request.UserIds.Contains(x.Id))
-            .Select(x => new { x.Id, Karma = 1 
-                                             + x.PostsCount + x.CommentUpVotes  
-                                             - x.PostDownVotes - x.CommentDownVotes
-                                             + (x.TechStacksCount * 5) + (x.PinnedCommentCount * 10)
-                                             + x.PostUpVotes
+            .Select(x => new { 
+                x.Id, 
+                Karma = 1 
+                     + x.PostsCount + x.CommentUpVotes  
+                     - x.PostDownVotes - x.CommentDownVotes
+                     + (x.TechStacksCount * 5) + (x.PinnedCommentCount * 10)
+                     + x.PostUpVotes
             }));
 
         return new GetUsersKarmaResponse
@@ -64,11 +67,16 @@ public class LiveUserServices : Service
 }
 
 [CacheResponse(Duration = 3600)]
-public class CachedUserStackServices : Service
+public class CachedUserStackServices(UserManager<ApplicationUser> userManager) : Service
 {
     public async Task<GetUserInfoResponse> Any(GetUserInfo request)
     {
-        var user = await Db.SingleAsync<CustomUserAuth>(x => x.UserName == request.UserName);
+        if (request.Id == default && string.IsNullOrEmpty(request.UserName))
+            throw new ArgumentNullException(nameof(request.Id));
+        
+        var user = request.Id != default 
+            ? await userManager.FindByIdAsync($"{request.Id}")
+            : await userManager.FindByNameAsync(request.UserName);
         if (user == null)
             throw HttpError.NotFound("User not found");
 
@@ -95,7 +103,7 @@ public class CachedUserStackServices : Service
             Created = DateTime.UtcNow,
             Id = user.Id,
             UserName = user.UserName,
-            AvatarUrl = user.DefaultProfileUrl ?? $"/users/{user.UserName}/avatar",
+            AvatarUrl = user.ProfileUrl ?? $"/users/{user.Id}/avatar",
             TechStacks = techStacks,
             FavoriteTechStacks = favStacks,
             FavoriteTechnologies = favTechs,
@@ -137,32 +145,33 @@ public class CachedUserStackServices : Service
 
     public async Task<object> Get(UserAvatar request)
     {
-        if (string.IsNullOrEmpty(request.UserName))
-            throw new ArgumentNullException(nameof(request.UserName));
+        if (request.UserId == default)
+            throw new ArgumentNullException(nameof(request.UserId));
 
-        var user = Db.Single<CustomUserAuth>(x => x.UserName == request.UserName);
-        if (user?.DefaultProfileUrl == null)
+        var user = await userManager.FindByIdAsync($"{request.UserId}");
+        if (user?.ProfileUrl == null)
         {
-            var imgIndex = Math.Abs(request.UserName.GetHashCode()) % MaterialColors.Length;
+            var imgIndex = Math.Abs(request.UserId.GetHashCode()) % MaterialColors.Length;
             var userNameColor = MaterialColors[imgIndex];
             Response.ContentType = MimeTypes.GetMimeType("svg");
-            var svg = SvgTemplate.Replace("BACKGROUND", userNameColor).Replace("LETTER", request.UserName.Substring(0, 1).ToUpper());
+            var svg = SvgTemplate.Replace("BACKGROUND", userNameColor).Replace("LETTER", ((char)((request.UserId % 26) + 65)).ToString());
             await Response.WriteAsync(svg);
             Response.EndRequest();
             return null;
         }
 
-        return HttpResult.Redirect(user.DefaultProfileUrl);
+        return HttpResult.Redirect(user.ProfileUrl);
     }
 }
 
 public static class UserExtensions
 {
-    public static int CalculateKarma(this UserActivity user) => 1 
-                                                                + user.PostUpVotes   + user.CommentUpVotes 
-                                                                - user.PostDownVotes - user.CommentDownVotes
-                                                                + (user.TechStacksCount * 5) + (user.PinnedCommentCount * 10)
-                                                                + user.PostsCount;
+    public static int CalculateKarma(this UserActivity user) => 
+        1 
+        + user.PostUpVotes   + user.CommentUpVotes 
+        - user.PostDownVotes - user.CommentDownVotes
+        + (user.TechStacksCount * 5) + (user.PinnedCommentCount * 10)
+        + user.PostsCount;
 
     public static bool IsAdmin(this AuthUserSession session) => session.HasRole(RoleNames.Admin, null);
 

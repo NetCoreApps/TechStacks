@@ -27,7 +27,7 @@ export const routes = {
     tech: (slug) => `/tech/${slug}/`,
     editTech: (slug) => `/tech/${slug}/edit`,
     user: (userName) => `/users/${userName}`,
-    userAvatar: (userName) => `/users/${userName}/avatar`,
+    userAvatar: (userId) => `/users/${userId}/avatar`,
     post: (postId, postSlug) => `/posts/${postId}/${postSlug}`,
     comment: (postId,commentId) => `/comments/${postId}/${commentId}`,
     techTag: (slug,organization) => organization ? `/?t=${slug}` : `/tech/${slug}`,

@@ -12,11 +12,11 @@
                   <v-flex style="text-align:center">
                       <v-card flat color="transparent">
                         <p>
-                          Discover what technologies were used to create popular Websites and Apps, for example here's what 
+                          Discover what technologies were used to create popular Websites and Apps, for example here's what
                           <nuxt-link :to="routes.stack('techstacks')">TechStacks was created</nuxt-link> with.
                         </p>
                         <p>
-                          Missing your favorite Tech or TechStack? Sign-in to add it now! 
+                          Missing your favorite Tech or TechStack? Sign-in to add it now!
                           and customize this page to see who else uses your favorite technology.
                         </p>
                       </v-card>
@@ -71,10 +71,10 @@
 
     <v-container class="body" grid-list-md>
       <v-layout row wrap>
-        
+
         <v-flex xs8>
           <v-layout row wrap>
-            <v-flex xs6 
+            <v-flex xs6
               v-for="tier in allTiers"
               :key="tier.name"
             >
@@ -139,31 +139,12 @@
               </v-card>
             </v-flex>
 
-            <v-flex>
-              <v-toolbar>
-                <v-toolbar-title>Browse by Users</v-toolbar-title>
-              </v-toolbar>
-              <v-card>
-                <v-card-title>
-                  <v-container fill-height fluid>
-                    <v-layout row>
-                      <v-flex>
-                        <v-flex class="headline" v-for="user in topUsers" :key="user.userName">
-                          <nuxt-link :to="routes.user(user.userName)"><em>({{ user.stacksCount }})</em> {{ user.userName }}</nuxt-link>
-                        </v-flex>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card-title>
-              </v-card>
-            </v-flex>
-
           </v-layout>
         </v-flex>
-      
+
       </v-layout>
     </v-container>
-  
+
   </div>
 </template>
 
@@ -181,7 +162,7 @@ export default {
     'topTechnologies',
     'topUsers'
   ]),
-    
+
   data: () => ({
     routes,
     name: '',

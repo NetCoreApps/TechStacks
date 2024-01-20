@@ -1,0 +1,248 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+<style>
+nav.toolbar {
+    font-family: Roboto,sans-serif;
+    line-height: 1.5;
+    color: #f1f1f1;
+}
+.grow, .spacer {
+    -webkit-box-flex: 1!important;
+    -ms-flex-positive: 1!important;
+    flex-grow: 1!important;
+}
+.icon {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-font-feature-settings: "liga";
+    font-feature-settings: "liga";
+    font-size: 24px;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    line-height: 1;
+    -webkit-transition: .3s cubic-bezier(.25,.8,.5,1);
+    transition: .3s cubic-bezier(.25,.8,.5,1);
+    vertical-align: middle;
+}
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+.slogan {
+    font-size: 14px;
+    padding-left: 10px;
+    font-style: italic;
+    color: #f1f1f1;
+    white-space: nowrap;
+}
+.toolbar a:hover {
+    opacity: 1;
+}
+a.btn:hover {
+    opacity: 1;
+}
+.toolbar[data-booted=true] {
+    -webkit-transition: .2s cubic-bezier(.4,0,.2,1);
+    transition: .2s cubic-bezier(.4,0,.2,1);
+}
+.application .theme--light.toolbar, .theme--light .toolbar {
+    background-color: #f5f5f5;
+    color: rgba(0,0,0,.87);
+}
+.toolbar--clipped {
+    z-index: 3;
+}
+.toolbar--absolute, .toolbar--fixed {
+    top: 0;
+    left: 0;
+}
+.toolbar--fixed {
+    position: fixed;
+    z-index: 2;
+}
+.toolbar {
+    -webkit-transition: none;
+    transition: none;
+    -webkit-box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+    box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+    display: block;
+    position: relative;
+    width: 100%;
+    will-change: padding-left;
+}
+.toolbar__title {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: .02em;
+    margin-left: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.toolbar__content, .toolbar__extension {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.toolbar__content>:not(.btn):not(.menu):last-child:not(:only-child), .toolbar__extension>:not(.btn):not(.menu):last-child:not(:only-child) {
+    margin-right: 16px;
+}
+.toolbar__items {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: inherit;
+    max-width: 100%;
+    padding: 0;
+}
+.btn:not(.btn--depressed) {
+    will-change: box-shadow;
+    -webkit-box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+.toolbar__items .btn {
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+}
+.toolbar__items .btn, .toolbar__items .menu, .toolbar__items .menu__activator {
+    height: inherit;
+    margin: 0;
+}
+.btn {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border-radius: 2px;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    height: 36px;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    font-size: 14px;
+    font-weight: 500;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    margin: 6px 8px;
+    min-width: 88px;
+    outline: 0;
+    text-transform: uppercase;
+    text-decoration: none;
+    -webkit-transition: .3s cubic-bezier(.25,.8,.5,1),color 1ms;
+    transition: .3s cubic-bezier(.25,.8,.5,1),color 1ms;
+    position: relative;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.btn__content {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border-radius: inherit;
+    color: inherit;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: inherit;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 0 16px;
+    -webkit-transition: .3s cubic-bezier(.25,.8,.5,1);
+    transition: .3s cubic-bezier(.25,.8,.5,1);
+    white-space: nowrap;
+    width: inherit;
+}
+.btn--active .btn__content:before, .btn:focus .btn__content:before, .btn:hover .btn__content:before {
+    background-color: currentColor;
+}
+.btn__content:before {
+    border-radius: inherit;
+    color: inherit;
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    opacity: .12;
+    -webkit-transition: .3s cubic-bezier(.25,.8,.5,1);
+    transition: .3s cubic-bezier(.25,.8,.5,1);
+    width: 100%;
+}
+</style>
+<header class="border-b border-gray-200 dark:border-gray-600">
+    <div class="flex flex-wrap items-center">
+        <div class="flex flex-grow flex-shrink flex-nowrap justify-end items-center">
+            <nav class="toolbar toolbar--clipped toolbar--fixed theme--dark" data-booted="true" style="margin-top: 0px;padding-right: 0px;padding-left: 0px;transform: translateY(0px);background: rgb(36, 41, 46);">
+                <div class="toolbar__content" style="height: 64px;">
+                    <a href="/" class="" style="color: rgb(255, 255, 255); text-decoration: none;">
+                        <div class="toolbar__title" style="font-size: 26px;">TechStacks</div>
+                    </a><a href="/posts/5944/welcome" class="slogan">no noise, just tech!</a>
+                    <div class="spacer"></div>
+                    <div class="toolbar__items hidden-sm-and-down">
+                        <a href="/" class="btn btn--flat btn--router" title="Home (1 or H)" style="position: relative;">
+                            <div class="btn__content">
+                                <i aria-hidden="true" class="icon material-icons">home</i>
+                            </div>
+                        </a>
+                        <a href="/top/" class="btn btn--flat btn--router" title="Top Technologies (2)" style="position: relative;">
+                            <div class="btn__content">Top</div>
+                        </a>
+                        <a href="/stacks/" class="btn btn--flat btn--router" title="Technology Stacks (3)" style="position: relative;">
+                            <div class="btn__content">Stacks</div>
+                        </a>
+                        <a href="/tech/" aria-current="page" class="btn btn--flat btn--router" title="Technologies (4)"style="position: relative;">
+                            <div class="btn__content">Technologies</div>
+                        </a>
+                        @if (IsAuthenticated)
+                        {
+                            <div class="menu" style="display: inline-block;">
+                                <div class="menu__activator">
+                                    <a href="/Identity/Account/Manage" class="btn btn--flat" style="position: relative;">
+                                        <div class="btn__content">
+                                            <img src="@User.GetPicture()" style="height:40px;border-radius:50%;">
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="/Identity/Account/Login" type="button" class="btn btn--flat btn--router" title="Sign In" style="position: relative;">
+                                <div class="btn__content">Sign In</div>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>

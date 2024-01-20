@@ -8,7 +8,7 @@ namespace TechStacks.Tests;
 
 public class DummyData
 {
-    public static IMarkdownProvider Markdown = new GitHubApiMarkdownProvider();
+    public static IMarkdownProvider Markdown = new MarkdownProvider();
 
     public Post NewsPost(PostType type, int techId, string title, string url = null, string content = null, int comments = 0, int upVotes = 1, int userId = 1, string userName = "demisbellot") => new Post
     {
@@ -18,7 +18,7 @@ public class DummyData
         Slug = title.GenerateSlug(),
         Url = url,
         Content = content,
-        ContentHtml = Markdown.TransformAsync(content).Result,
+        ContentHtml = Markdown.Transform(content),
         CommentsCount = comments,
         UserId = userId,
         UpVotes = upVotes,
@@ -303,7 +303,7 @@ I suggest cutting down the '-n' option to 100000 and see if the processes displa
 
         db.Select<PostComment>().ForEach(x =>
         {
-            x.ContentHtml = Markdown.TransformAsync(x.Content).Result;
+            x.ContentHtml = Markdown.Transform(x.Content);
             db.Save(x);
         });
     }

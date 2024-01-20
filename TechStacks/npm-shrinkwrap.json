@@ -23,6 +23,7 @@
         "eslint-loader": "^2.0.0",
         "eslint-plugin-vue": "^4.7.1",
         "gulp": "^3.9.1",
+        "shx": "^0.3.4",
         "typescript": "^4.9.4"
       },
       "engines": {
@@ -15127,6 +15128,39 @@
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/shelljs": {
+      "version": "0.8.5",
+      "resolved": "https://registry.npmjs.org/shelljs/-/shelljs-0.8.5.tgz",
+      "integrity": "sha512-TiwcRcrkhHvbrZbnRcFYMLl30Dfov3HKqzp5tO5b4pt6G/SezKcYhmDg15zXVBswHmctSAQKznqNW2LO5tTDow==",
+      "dev": true,
+      "dependencies": {
+        "glob": "^7.0.0",
+        "interpret": "^1.0.0",
+        "rechoir": "^0.6.2"
+      },
+      "bin": {
+        "shjs": "bin/shjs"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/shx": {
+      "version": "0.3.4",
+      "resolved": "https://registry.npmjs.org/shx/-/shx-0.3.4.tgz",
+      "integrity": "sha512-N6A9MLVqjxZYcVn8hLmtneQWIJtp8IKzMP4eMnx+nqkvXoqinUPCbUFLp2UcWTEIUONhlk0ewxr/jaVGlc+J+g==",
+      "dev": true,
+      "dependencies": {
+        "minimist": "^1.2.3",
+        "shelljs": "^0.8.5"
+      },
+      "bin": {
+        "shx": "lib/cli.js"
+      },
+      "engines": {
+        "node": ">=6"
+      }
+    },
     "node_modules/side-channel": {
       "version": "1.0.4",
       "resolved": "https://registry.npmjs.org/side-channel/-/side-channel-1.0.4.tgz",
@@ -29619,6 +29653,27 @@
       "version": "1.7.4",
       "resolved": "https://registry.npmjs.org/shell-quote/-/shell-quote-1.7.4.tgz",
       "integrity": "sha512-8o/QEhSSRb1a5i7TFR0iM4G16Z0vYB2OQVs4G3aAFXjn3T6yEx8AZxy1PgDF7I00LZHYA3WxaSYIf5e5sAX8Rw=="
+    },
+    "shelljs": {
+      "version": "0.8.5",
+      "resolved": "https://registry.npmjs.org/shelljs/-/shelljs-0.8.5.tgz",
+      "integrity": "sha512-TiwcRcrkhHvbrZbnRcFYMLl30Dfov3HKqzp5tO5b4pt6G/SezKcYhmDg15zXVBswHmctSAQKznqNW2LO5tTDow==",
+      "dev": true,
+      "requires": {
+        "glob": "^7.0.0",
+        "interpret": "^1.0.0",
+        "rechoir": "^0.6.2"
+      }
+    },
+    "shx": {
+      "version": "0.3.4",
+      "resolved": "https://registry.npmjs.org/shx/-/shx-0.3.4.tgz",
+      "integrity": "sha512-N6A9MLVqjxZYcVn8hLmtneQWIJtp8IKzMP4eMnx+nqkvXoqinUPCbUFLp2UcWTEIUONhlk0ewxr/jaVGlc+J+g==",
+      "dev": true,
+      "requires": {
+        "minimist": "^1.2.3",
+        "shelljs": "^0.8.5"
+      }
     },
     "side-channel": {
       "version": "1.0.4",

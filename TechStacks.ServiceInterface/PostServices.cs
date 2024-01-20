@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using ServiceStack;
 using ServiceStack.Configuration;
-using ServiceStack.Logging;
 using ServiceStack.OrmLite;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
@@ -11,12 +11,8 @@ using TechStacks.ServiceModel.Types;
 namespace TechStacks.ServiceInterface;
 
 [Authenticate]
-public class PostServices : PostServicesBase
+public class PostServices(IMarkdownProvider markdown, IConfiguration configuration) : PostServicesBase(markdown)
 {
-    static readonly ILog Log = LogManager.GetLogger(typeof(PostServices));
-
-    public IAppSettings AppSettings { get; set; }
-
     public async Task<CreatePostResponse> Post(CreatePost request)
     {
         var user = GetUser();
@@ -37,7 +33,7 @@ public class PostServices : PostServicesBase
         post.UserId = user.UserAuthId.ToInt();
         post.UpVotes = 0;
         post.Points = 1;
-        post.ContentHtml = await Markdown.TransformAsync(post.Content, user.GetGitHubToken());
+        post.ContentHtml = Markdown.Transform(post.Content);
         post.Rank = 0;
 
         if (!user.IsOrganizationModerator(orgMember))
@@ -47,7 +43,7 @@ public class PostServices : PostServicesBase
 
         if (string.IsNullOrEmpty(post.ImageUrl) && Request.Files.Length > 0)
         {
-            post.ImageUrl = Request.Files[0].UploadToImgur(AppSettings.GetString("oauth.imgur.ClientId"),
+            post.ImageUrl = Request.Files[0].UploadToImgur(configuration["oauth.imgur.ClientId"],
                 nameof(post.ImageUrl), minWidth: 200, minHeight: 200, maxWidth: 4000, maxHeight: 4000);
         }
 
@@ -77,7 +73,7 @@ public class PostServices : PostServicesBase
 
         if (post.Content != request.Content)
         {
-            post.ContentHtml = await Markdown.TransformAsync(request.Content, user.GetGitHubToken());
+            post.ContentHtml = Markdown.Transform(request.Content);
         }
 
         if (!user.IsOrganizationModerator(orgMember))
@@ -92,7 +88,7 @@ public class PostServices : PostServicesBase
 
         if (Request.Files.Length > 0)
         {
-            post.ImageUrl = Request.Files[0].UploadToImgur(AppSettings.GetString("oauth.imgur.ClientId"),
+            post.ImageUrl = Request.Files[0].UploadToImgur(configuration["oauth.imgur.ClientId"],
                 nameof(post.ImageUrl), minWidth: 200, minHeight: 200, maxWidth: 4000, maxHeight: 4000);
         }
 
@@ -299,7 +295,7 @@ public class PostServices : PostServicesBase
         comment.UserId = userId;
         comment.CreatedBy = user.UserName;
         comment.Created = comment.Modified = DateTime.Now;
-        comment.ContentHtml = await Markdown.TransformAsync(comment.Content, user.GetGitHubToken());
+        comment.ContentHtml = Markdown.Transform(comment.Content);
         comment.UpVotes = 0;
 
         var id = await Db.InsertAsync(comment, selectIdentity: true);
@@ -338,7 +334,7 @@ public class PostServices : PostServicesBase
 
         var userId = user.GetUserId();
 
-        var html = await Markdown.TransformAsync(request.Content, user.GetGitHubToken());
+        var html = Markdown.Transform(request.Content);
         var rowsUpdated = !user.IsAdmin()
             ? await Db.UpdateOnlyAsync(() => new PostComment {
                     Content = request.Content,

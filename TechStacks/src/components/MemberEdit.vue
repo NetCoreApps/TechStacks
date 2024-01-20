@@ -5,13 +5,13 @@
             <v-card-title>
               <v-form v-model="valid" ref="form" lazy-validation style="width:700px">
                 <v-container>
-                  <v-alert outline color="error" icon="warning" :value="errorSummary">{{ errorSummary }}</v-alert>                  
+                  <v-alert outline color="error" icon="warning" :value="errorSummary">{{ errorSummary }}</v-alert>
                   <v-layout column>
 
                     <v-text-field v-if="!isUpdate"
                       label="Username"
                       v-model="userName"
-                      required                        
+                      required
                       :rules="nameRules"
                       :counter="nameCounter"
                       :error-messages="errorResponse('userName')"
@@ -19,12 +19,9 @@
 
                     <v-layout v-else style="margin-bottom:1em">
                       <v-flex>
-                        <nuxt-link :to="routes.user(userName)">
-                          @{{ userName }} 
+                        <nuxt-link :to="routes.user(userId)">
+                          @{{ userId }}
                         </nuxt-link>
-                      </v-flex>
-                      <v-flex>
-                        User Id: {{ userId }}
                       </v-flex>
                     </v-layout>
 
@@ -57,7 +54,7 @@
                       ></v-text-field>
 
                   </v-layout>
-                </v-container>              
+                </v-container>
               </v-form>
             </v-card-title>
             <v-card-actions style="text-align:center">
@@ -76,14 +73,14 @@
                         <v-checkbox small label="confirm" v-model="allowDelete"></v-checkbox>
                         <v-btn small @click="remove" :disabled="!allowDelete" color="red" class="white--text">
                             Remove
-                        </v-btn>                    
+                        </v-btn>
                     </v-layout>
                   </v-flex>
               </v-layout>
             </v-card-actions>
           </v-card>
       </v-layout>
-      
+
   </div>
 </template>
 
@@ -109,7 +106,7 @@ const member = {
 export default {
   props: ['orgId','member','isOrganizationOwner'],
   computed: {
-    errorSummary(){ 
+    errorSummary(){
       return errorResponseExcept.call(this,Object.keys(member));
     },
     isUpdate(){
@@ -129,7 +126,7 @@ export default {
     async remove() {
       try {
         this.$store.commit('loading', true);
-        
+
         const response = await removeMember(this.organizationId, this.userId);
 
         this.reset(true,true);
@@ -145,13 +142,13 @@ export default {
       if (this.$refs.form.validate()) {
           try {
             this.$store.commit('loading', true);
-            
+
             const fields = toObject.call(this, Object.keys(member));
 
             const response = !this.isUpdate
               ? await addMember(fields)
               : await updateMember(fields);
-              
+
             this.reset(true);
 
           } catch(e) {
@@ -178,7 +175,7 @@ export default {
     ...member,
     valid: true,
     allowDelete: false,
-    nameCounter, nameRules, 
+    nameCounter, nameRules,
     responseStatus: null,
   }),
 

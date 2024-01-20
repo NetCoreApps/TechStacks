@@ -9,13 +9,11 @@ using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface;
 
-public class PostPublicServices : PostServicesBase
+public class PostPublicServices(IMarkdownProvider markdown, IAutoQueryDb autoQuery) : PostServicesBase(markdown)
 {
-    public IAutoQueryDb AutoQuery { get; set; }
-
     public object Any(QueryPosts request)
     {
-        var q = AutoQuery.CreateQuery(request, Request.GetRequestParams());
+        var q = autoQuery.CreateQuery(request, Request.GetRequestParams());
         q.Where(x => x.Deleted == null);
             
         var states = request.Is ?? TypeConstants.EmptyStringArray;
@@ -45,7 +43,7 @@ public class PostPublicServices : PostServicesBase
             q.And($"(ARRAY[{techIds}] && technology_ids OR organization_id in ({orgIds}))");
         }
 
-        return AutoQuery.Execute(request, q);
+        return autoQuery.Execute(request, q);
     }
 
     public async Task<GetPostResponse> Get(GetPost request)

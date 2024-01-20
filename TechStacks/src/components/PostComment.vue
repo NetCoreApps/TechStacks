@@ -5,7 +5,7 @@
             <v-layout @click="handleCtrlClick">
                 <v-flex class="comment-info">
                     <v-icon v-if="pinned" style="font-size:50px;color:#4caf50;margin-bottom:10px;" title="Pinned Comment">place</v-icon>
-                    <nuxt-link :to="routes.user(comment.createdBy)"><img class="comment-avatar" :src="routes.userAvatar(comment.createdBy)" :alt="`${comment.createdBy} profile`"></nuxt-link>
+                    <nuxt-link :to="routes.user(comment.userId)"><img class="comment-avatar" :src="routes.userAvatar(comment.userId)" alt="profile"></nuxt-link>
                     <div class="comment-karma"><b>{{ getUsersKarma(comment.userId) }}</b></div>
                 </v-flex>
                 <v-flex>
@@ -29,7 +29,7 @@
                             <a class="vote-comment down" @click="votePostComment(post.id, comment, -1)" title="vote down"></a>
                         </div>
                         <span class="points">{{commentKarmaLabel(comment)}}</span>
-                        
+
                         <nuxt-link :to="routes.comment(post.id,comment.id)" class="submitted">{{fromNow(comment.created)}}</nuxt-link>
 
                         <a v-if="!pinned && canReplyComment(post,comment)" @click.prevent="replyId=comment.id">reply</a>
@@ -47,7 +47,7 @@
             <post-comment :post="post" :comment="comment" :hide="hide" @votePostCommentDone="$emit('votePostCommentDone',comment.id)"></post-comment>
         </div>
     </div>
-</div>  
+</div>
 </template>
 
 <script>
@@ -98,7 +98,7 @@ export default {
     canPinComment,
     canVoteComment,
     votedCommentClass,
-    commentKarmaLabel, 
+    commentKarmaLabel,
     votePostComment,
     fromNow,
   },

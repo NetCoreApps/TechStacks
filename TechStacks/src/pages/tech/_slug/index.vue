@@ -25,10 +25,10 @@
                     <v-flex>
                       <h1>{{technology.name}}</h1>
                       <div class="subheading">
-                          <a :href="technology.productUrl">{{ technology.productUrl }}</a> 
+                          <a :href="technology.productUrl">{{ technology.productUrl }}</a>
                           <span>by {{ technology.vendorName }}</span>
                       </div>
-                      <div v-if="technology" class="description">{{ technology.description }}</div>          
+                      <div v-if="technology" class="description">{{ technology.description }}</div>
                     </v-flex>
                     <v-flex if="technology.productUrl && technology.logoUrl" style="text-align:center">
                       <a :href="technology.productUrl">
@@ -44,8 +44,8 @@
                       <span>
                         <v-btn v-if="!hasFavorited" icon @click="addFavorite()" :title="!isAuthenticated ? 'Sign In to add to favorites' : 'add to favorites'">
                           <v-icon>favorite_border</v-icon>
-                        </v-btn>  
-                        <v-btn v-if="hasFavorited" icon @click="removeFavorite()" title="remove from favorites"><v-icon color="pink">favorite</v-icon></v-btn>  
+                        </v-btn>
+                        <v-btn v-if="hasFavorited" icon @click="removeFavorite()" title="remove from favorites"><v-icon color="pink">favorite</v-icon></v-btn>
                         <b v-if="pageStats.favCount > 0">{{ pageStats.favCount }}</b> /
                       </span>
                       <span><b>{{ pageStats.viewCount }}</b> views</span>
@@ -59,7 +59,7 @@
                     </v-btn>
                   </v-flex>
                   <v-flex xs12 style="text-align:right;margin-right:1em;color:gray;font-size:smaller;vertical-align:middle">
-                    <span>added by <nuxt-link :to="routes.user(technology.createdBy)">{{ technology.createdBy }}</nuxt-link></span>
+                    <span>added by <nuxt-link :to="routes.user(technology.ownerId)">{{ technology.ownerId }}</nuxt-link></span>
                   </v-flex>
                 </v-card-actions>
 
@@ -136,8 +136,8 @@ export default {
     slug() {
       return this.$route.params.slug;
     },
-    heroUrl() { 
-      return heroes.static(this.slug); 
+    heroUrl() {
+      return heroes.static(this.slug);
     },
     technology(){
       return this.slug && this.getTechnology(this.slug);

@@ -20,17 +20,8 @@ public class PostView : Post
     public string TimeAgo { get; set; }
 }
 
-public class AppScriptMethods : ScriptMethods
+public class AppScriptMethods(ICacheClient cache, IDbConnectionFactory dbFactory) : ScriptMethods
 {
-    ICacheClient Cache { get; }
-    IDbConnectionFactory DbFactory { get; }
-
-    public AppScriptMethods(ICacheClient cache, IDbConnectionFactory dbFactory)
-    {
-        Cache = cache;
-        DbFactory = dbFactory;
-    }
-
     /*remove copy from SS v5.12.1+*/
     public IAuthSession sessionIfAuthenticated(ScriptScopeContext scope)
     {
@@ -42,8 +33,8 @@ public class AppScriptMethods : ScriptMethods
 
     public Dictionary<long, string> techSlugs()
     {
-        var to = Cache.GetOrCreate("tech:id:slugs", () => {
-            using var db = DbFactory.OpenDbConnection();
+        var to = cache.GetOrCreate("tech:id:slugs", () => {
+            using var db = dbFactory.OpenDbConnection();
             var q = db.From<Technology>()
                 .Select(x => new {x.Id, x.Slug});
             var map = db.Dictionary<long, string>(q);
@@ -57,9 +48,9 @@ public class AppScriptMethods : ScriptMethods
     public List<PostView> queryPosts(int page)
     {
         var cacheKey = CreateCacheKey(page);
-        var posts = Cache.GetOrCreate(cacheKey, TimeSpan.FromMinutes(1), () => {
+        var posts = cache.GetOrCreate(cacheKey, TimeSpan.FromMinutes(1), () => {
             var techSlugs = this.techSlugs();
-            using var db = DbFactory.OpenDbConnection();
+            using var db = dbFactory.OpenDbConnection();
             var q = db.From<Post>()
                 .Join<Organization>()
                 .Where(x => x.Deleted == null && x.Hidden == null && (x.Status == null || x.Status != "closed"))
@@ -97,9 +88,9 @@ public class AppScriptMethods : ScriptMethods
     public PostView queryPost(int postId)
     {
         var cacheKey = UrnId.Create<PostView>($"{postId}");
-        var post = Cache.GetOrCreate(cacheKey, () => {
+        var post = cache.GetOrCreate(cacheKey, () => {
             var techSlugs = this.techSlugs();
-            using var db = DbFactory.OpenDbConnection();
+            using var db = dbFactory.OpenDbConnection();
             var q = db.From<Post>()
                 .Join<Organization>()
                 .Where(x => x.Id == postId)

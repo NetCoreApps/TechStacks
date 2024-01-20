@@ -1,10 +1,11 @@
 <template>
-  <div v-if="organization" class="post-info" style="text-transform:lowercase">submitted {{fromNow(post.created)}} by
-      <nuxt-link :to="routes.user(post.createdBy)">@{{ post.createdBy }}</nuxt-link>
+  <div v-if="organization" class="post-info" style="text-transform:lowercase">
+      <nuxt-link :to="routes.user(post.userId)">submitted</nuxt-link>
+      {{fromNow(post.created)}}
       to <nuxt-link :to="toUrl">{{ toLabel }}</nuxt-link>
       <span v-if="(post.technologyIds || []).length > 0 && technologyTiers.length > 0">
         with
-        <nuxt-link class="tag" v-for="techId in post.technologyIds" :key="techId" 
+        <nuxt-link class="tag" v-for="techId in post.technologyIds" :key="techId"
             :to="routes.techTag(getTechnologySlug(techId),getTechnologyOrganization(techId))">
         {{ getTechnologySlug(techId) }}
         </nuxt-link>
@@ -29,7 +30,7 @@ export default {
       const orgName = catName && (this.organization.name.indexOf(catName) >= 0 || catName.indexOf(this.organization.name) >= 0)
         ? ''
         : this.organization.name + ' ';
-      return catName 
+      return catName
         ? `${orgName}${catName} ${this.post.type}s`
         : `${orgName}${this.post.type}s`;
     },
@@ -37,7 +38,7 @@ export default {
       const qs = { types: this.post.type };
       if (this.category)
         qs.c = this.category.slug;
-      
+
       return routes.organizationNews(this.organization.slug, qs);
     },
 

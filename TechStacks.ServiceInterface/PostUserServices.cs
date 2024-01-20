@@ -31,7 +31,7 @@ public class PostPublicUserServices : Service
 }
     
 [Authenticate]
-public class PostUserServices : PostServicesBase
+public class PostUserServices(IMarkdownProvider markdown) : PostServicesBase(markdown)
 {
     public async Task<GetUserPostActivityResponse> Get(GetUserPostActivity request)
     {

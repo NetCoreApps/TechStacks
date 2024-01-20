@@ -1,0 +1,46 @@
+﻿@inherits Microsoft.AspNetCore.Mvc.Razor.RazorPage<TModel>
+<!doctype html>
+<html lang="en">
+@{
+    var dev = HostContext.AppHost.IsDevelopmentEnvironment();
+}
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg" href="/img/logo.svg">
+    <title>@ViewData["Title"] - My App</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+    <link rel="stylesheet" href="/css/typography.css"/>
+
+    @Html.ImportMap(new()
+    {
+        ["@servicestack/client"] = ("/lib/mjs/servicestack-client.mjs", "/lib/mjs/servicestack-client.min.mjs"),
+    })
+    @await RenderSectionAsync("head", required: false)
+</head>
+<body class="bg-white dark:bg-black dark:text-white">
+@await Html.PartialAsync("Header")
+
+<div class="min-h-screen">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+@await Html.PartialAsync("Footer")
+
+<environment include="Development">
+    <script src="~/lib/js/jquery.js"></script>
+</environment>
+<environment exclude="Development">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            asp-fallback-src="~/lib/js/jquery.js"
+            asp-fallback-test="window.jQuery"
+            crossorigin="anonymous">
+    </script>
+</environment>
+
+@await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

@@ -12,7 +12,7 @@ namespace TechStacks.ServiceModel;
     Title = "Find Technologies", Description = "Explore different Technologies", 
     IconUrl = "octicon:database",
     DefaultSearchField = "Tier", DefaultSearchType = "=", DefaultSearchText = "Data")]
-public class FindTechnologies : QueryDb<Technology,TechnologyView>, IGet
+public class FindTechnologies : QueryDb<Technology,TechnologyView>
 {
     public List<long> Ids { get; set; }
     public string Name { get; set; }
@@ -23,7 +23,7 @@ public class FindTechnologies : QueryDb<Technology,TechnologyView>, IGet
 }
 
 [Route("/technology/query"), Tag(Tags.AutoQuery), Tag(Tags.Tech)]
-public class QueryTechnology : QueryDb<Technology,TechnologyView>, IGet
+public class QueryTechnology : QueryDb<Technology,TechnologyView>
 {
     public List<long> Ids { get; set; }
     public string Name { get; set; }

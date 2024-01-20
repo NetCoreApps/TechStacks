@@ -9,7 +9,7 @@ using TechStacks.ServiceModel.Types;
 namespace TechStacks.ServiceInterface;
 
 [Authenticate]
-public class SubscriptionServices : PostServicesBase
+public class SubscriptionServices(IMarkdownProvider markdown) : PostServicesBase(markdown)
 {
     public void Put(SubscribeToOrganization request)
     {

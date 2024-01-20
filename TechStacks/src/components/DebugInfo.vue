@@ -2,7 +2,7 @@
   <div>
       <h2>User</h2>
       <ul v-if="user">
-          <li>{{ user.userAuthId }}. @{{ user.userName }}, isAdmin: {{ isAdmin }}</li>
+          <li>{{ user.id }}, isAdmin: {{ isAdmin }}</li>
       </ul>
       <p v-else>No User</p>
 
@@ -13,8 +13,8 @@
           <li v-if="organization.deleted">Deleted {{ organization.deleted }}</li>
           <li v-if="organization.hidden">Hidden {{ organization.hidden }}</li>
           <li v-if="member">
-              Organization Member, Moderator: {{ member.isModerator }}, 
-              Deny: {{ deny.length > 0 ? deny.join(', ') : 'None' }} 
+              Organization Member, Moderator: {{ member.isModerator }},
+              Deny: {{ deny.length > 0 ? deny.join(', ') : 'None' }}
           </li>
           <li v-else>Not an Organization Member</li>
           <li v-if="isOrganizationModerator">Is Organization Moderator</li>

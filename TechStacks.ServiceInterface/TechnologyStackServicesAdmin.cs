@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using ServiceStack;
 using ServiceStack.Configuration;
 using ServiceStack.OrmLite;
@@ -13,35 +14,8 @@ using TechStacks.ServiceModel.Types;
 namespace TechStacks.ServiceInterface;
 
 [Authenticate]
-public class TechnologyStackServicesAdmin : Service
+public class TechnologyStackServicesAdmin(IConfiguration configuration, IMarkdownProvider markdown) : Service
 {
-    public IAppSettings AppSettings { get; set; }
-
-    public IMarkdownProvider Markdown { get; set; }
-
-    public ITwitterUpdates TwitterUpdates { get; set; }
-
-    private const int TweetUrlLength = 22;
-
-    private string PostTwitterUpdate(string msgPrefix, List<long> techIds, int maxLength)
-    {
-        var techSlugs = Db.Column<string>(Db.From<Technology>()
-            .Where(x => techIds.Contains(x.Id))
-            .Select(x => x.Slug));
-
-        var sb = new StringBuilder(msgPrefix);
-        foreach (var techSlug in techSlugs)
-        {
-            var slug = techSlug.Replace("-", "");
-            if (sb.Length + slug.Length + 3 > maxLength)
-                break;
-
-            sb.Append(" #" + slug);
-        }
-
-        return TwitterUpdates.Tweet(sb.ToString());
-    }
-
     public async Task<CreateTechnologyStackResponse> Post(CreateTechnologyStack request)
     {
         var slug = request.Slug;
@@ -63,11 +37,11 @@ public class TechnologyStackServicesAdmin : Service
         techStack.Created = DateTime.UtcNow;
         techStack.LastModified = techStack.Created;
         techStack.Slug = slug;
-        techStack.DetailsHtml = await Markdown.TransformAsync(request.Details, session.GetGitHubToken());
+        techStack.DetailsHtml = markdown.Transform(request.Details);
 
         if (string.IsNullOrEmpty(techStack.ScreenshotUrl) && Request.Files.Length > 0)
         {
-            techStack.ScreenshotUrl = Request.Files[0].UploadToImgur(AppSettings.GetString("oauth.imgur.ClientId"),
+            techStack.ScreenshotUrl = Request.Files[0].UploadToImgur(configuration["oauth.imgur.ClientId"],
                 nameof(techStack.ScreenshotUrl), minWidth:858, minHeight:689, maxWidth:2600, maxHeight:2600);
         }
 
@@ -75,11 +49,6 @@ public class TechnologyStackServicesAdmin : Service
             throw new ArgumentException("Screenshot is Required", nameof(techStack.ScreenshotUrl));
 
         var techIds = (request.TechnologyIds ?? new List<long>()).ToSet();
-
-        //Only Post an Update if Stack has TechCount >= 4
-        var postUpdate = AppSettings.EnableTwitterUpdates() && techIds.Count >= 4;
-        if (postUpdate)
-            techStack.LastStatusUpdate = techStack.Created;
 
         long id;
         using (var trans = Db.OpenTransaction())
@@ -110,22 +79,12 @@ public class TechnologyStackServicesAdmin : Service
         history.TechnologyIds = techIds.ToList();
         await Db.InsertAsync(history);
 
-        await Db.ExecuteSqlAsync(
-            @"update user_activity set 
-                         tech_stacks_count = (select count(*) from technology_stack where owner_id = @userIdStr)
-                   where id = @userId",
+        await Db.ExecuteSqlAsync(@"update user_activity set 
+             tech_stacks_count = (select count(*) from technology_stack where owner_id = @userIdStr)
+             where id = @userId",
             new { userId = session.GetUserId(), userIdStr = session.UserAuthId });
 
         Cache.FlushAll();
-
-        if (postUpdate)
-        {
-            var url = TwitterUpdates.BaseUrl.CombineWith(new ClientTechnologyStack { Slug = techStack.Slug }.ToUrl());
-            PostTwitterUpdate(
-                $"{techStack.Name}'s Stack! {url} ",
-                request.TechnologyIds,
-                maxLength: 140 - (TweetUrlLength - url.Length));
-        }
 
         return new CreateTechnologyStackResponse
         {
@@ -154,28 +113,20 @@ public class TechnologyStackServicesAdmin : Service
                     "This TechStack is locked and can only be modified by its Owner or Admins.");
         }
 
-        var techIds = (request.TechnologyIds ?? new List<long>()).ToSet();
-
-        //Only Post an Update if there was no other update today and Stack as TechCount >= 4
-        var postUpdate = AppSettings.EnableTwitterUpdates()
-                         && techStack.LastStatusUpdate.GetValueOrDefault(DateTime.MinValue) < DateTime.UtcNow.Date
-                         && techIds.Count >= 4;
+        var techIds = (request.TechnologyIds ?? []).ToSet();
 
         if (techStack.Details != request.Details)
         {
-            techStack.DetailsHtml = await Markdown.TransformAsync(request.Details, session.GetGitHubToken());
+            techStack.DetailsHtml = markdown.Transform(request.Details);
         }
 
         techStack.PopulateWith(request);
         techStack.LastModified = DateTime.UtcNow;
         techStack.LastModifiedBy = session.UserName;
 
-        if (postUpdate)
-            techStack.LastStatusUpdate = techStack.LastModified;
-
         if (Request.Files.Length > 0)
         {
-            techStack.ScreenshotUrl = Request.Files[0].UploadToImgur(AppSettings.GetString("oauth.imgur.ClientId"),
+            techStack.ScreenshotUrl = Request.Files[0].UploadToImgur(configuration["oauth.imgur.ClientId"],
                 nameof(techStack.ScreenshotUrl), minWidth:858, minHeight:689, maxWidth:2600, maxHeight:2600);
         }
 
@@ -220,18 +171,6 @@ public class TechnologyStackServicesAdmin : Service
         {
             Result = techStack.ConvertTo<TechStackDetails>()
         };
-
-        if (postUpdate)
-        {
-            var url = TwitterUpdates.BaseUrl.CombineWith(new ClientTechnologyStack { Slug = techStack.Slug }.ToUrl());
-            response.ResponseStatus = new ResponseStatus
-            {
-                Message = PostTwitterUpdate(
-                    $"{techStack.Name}'s Stack! {url} ",
-                    request.TechnologyIds,
-                    maxLength: 140 - (TweetUrlLength - url.Length))
-            };
-        }
 
         return response;
     }

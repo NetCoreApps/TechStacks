@@ -74,7 +74,7 @@ public class UserInfo
     public int StacksCount { get; set; }
 }
     
-[Route("/prerender/{Path*}", "PUT"), Tag(Tags.Site)]
+[Route("/prerender/{**Path}", "PUT"), Tag(Tags.Site)]
 public class StorePreRender : IRequiresRequestStream, IReturnVoid, IPut
 {
     public string Path { get; set; }
@@ -82,7 +82,7 @@ public class StorePreRender : IRequiresRequestStream, IReturnVoid, IPut
     public Stream RequestStream { get; set; }
 }
 
-[Route("/prerender/{Path*}", "GET"), Tag(Tags.Site)]
+[Route("/prerender/{**Path}", "GET"), Tag(Tags.Site)]
 public class GetPreRender : IReturn<string>, IGet
 {
     public string Path { get; set; }
@@ -101,7 +101,7 @@ public class PreRender
     public string CreatedBy { get; set; }
         
     public DateTime Modified { get; set; }
-    public string ModfiedBy { get; set; }
+    public string ModifiedBy { get; set; }
 }
     
     

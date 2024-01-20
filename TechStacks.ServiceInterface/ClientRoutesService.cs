@@ -5,7 +5,7 @@ using ServiceStack.Script;
 namespace TechStacks.ServiceInterface;
 
 [Exclude(Feature.Metadata)]
-[FallbackRoute("/{PathInfo*}", Matches = "AcceptsHtml")]
+// [FallbackRoute("/{*PathInfo}", Matches = "AcceptsHtml")]
 public class FallbackForClientRoutes
 {
     public string PathInfo { get; set; }
@@ -13,7 +13,7 @@ public class FallbackForClientRoutes
 }
 
 [Route("/ping")]
-public class Ping {}
+public class Ping : IGet {}
     
 public class ClientRoutesService : Service
 {

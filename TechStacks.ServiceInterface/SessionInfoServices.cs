@@ -5,7 +5,6 @@ using TechStacks.ServiceModel;
 
 namespace TechStacks.ServiceInterface;
 
-[Authenticate]
 [CacheResponse(Duration = 3600, VaryByUser = true)]
 public class SessionInfoServices : Service
 {
@@ -15,15 +14,14 @@ public class SessionInfoServices : Service
         var response = session.ConvertTo<SessionInfoResponse>();
 
         var userInfoTask = Gateway.SendAsync(new GetUserInfo {
-            UserName = session.UserName,
+            UserName = session.UserAuthName,
         });
 
         var userOrgTask = Gateway.SendAsync(new GetUserOrganizations());           
 
         var userInfo = await userInfoTask;
         response.PopulateWith(userInfo);
-        if (response.ProfileUrl == null)
-            response.ProfileUrl = response.AvatarUrl;
+        response.ProfileUrl ??= response.AvatarUrl;
 
         var userOrg = await userOrgTask;
         response.Members = userOrg.Members;

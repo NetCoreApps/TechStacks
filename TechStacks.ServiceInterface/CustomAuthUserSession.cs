@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.Configuration;
 using ServiceStack.Data;
 using ServiceStack.DataAnnotations;
 using ServiceStack.OrmLite;
+using TechStacks.Data;
 using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface;
@@ -18,11 +23,9 @@ public class CustomUserSession : AuthUserSession
     public override void OnAuthenticated(IServiceBase authService, IAuthSession session, IAuthTokens tokens, Dictionary<string, string> authInfo)
     {
         base.OnAuthenticated(authService, session, tokens, authInfo);
-        var appSettings = authService.TryResolve<IAppSettings>();
         var userAuthRepo = authService.TryResolve<IAuthRepository>();
         var userAuth = userAuthRepo.GetUserAuth(session, tokens);
         var dbFactory = authService.TryResolve<IDbConnectionFactory>();
-        var userId = this.UserAuthId.ToInt();
 
         foreach (var authTokens in session.ProviderOAuthAccess)
         {
@@ -35,33 +38,43 @@ public class CustomUserSession : AuthUserSession
             }
 
             ProfileUrl = GithubProfileUrl;
-                
-            using (var db = dbFactory.OpenDbConnection())
+
+            using var db = dbFactory.OpenDbConnection();
+            var userActivity = db.SingleById<UserActivity>(userAuth.Id);
+            if (userActivity == null)
             {
-                var userAuthInstance = db.Single<CustomUserAuth>(x => x.Id == userId);
-                if (userAuthInstance != null)
+                db.Insert(new UserActivity
                 {
-                    userAuthInstance.DefaultProfileUrl = this.ProfileUrl;
-                    userAuthInstance.IpAddress = authService.Request.UserHostAddress;
-
-                    db.Update(userAuthInstance);
-                }
-
-                var userActivity = db.SingleById<UserActivity>(userAuth.Id);
-                if (userActivity == null)
-                {
-                    db.Insert(new UserActivity
-                    {
-                        Id = userAuth.Id,
-                        UserName = session.UserName,
-                        Created = DateTime.UtcNow,
-                        Modified = DateTime.UtcNow,
-                    });
-                }
+                    Id = userAuth.Id,
+                    UserName = session.UserName,
+                    Created = DateTime.UtcNow,
+                    Modified = DateTime.UtcNow,
+                });
             }
         }
     }
 }
+
+public class AdditionalUserClaimsPrincipalFactory(
+    UserManager<ApplicationUser> userManager,
+    RoleManager<ApplicationRole> roleManager,
+    IOptions<IdentityOptions> optionsAccessor)
+    : UserClaimsPrincipalFactory<ApplicationUser, ApplicationRole>(userManager, roleManager, optionsAccessor)
+{
+    public override async Task<ClaimsPrincipal> CreateAsync(ApplicationUser user)
+    {
+        var principal = await base.CreateAsync(user);
+        var identity = (ClaimsIdentity)principal.Identity!;
+
+        var claims = new List<Claim>();
+        if (user.ProfileUrl != null)
+            claims.Add(new Claim(JwtClaimTypes.Picture, user.ProfileUrl));
+
+        identity.AddClaims(claims);
+        return principal;
+    }
+}
+
 
 public class CustomUserAuth : UserAuth
 {
@@ -83,3 +96,4 @@ public class CustomUserAuth : UserAuth
 
     public string CreatedBy { get; set; }
 }
+

@@ -22,9 +22,7 @@
           <v-btn flat :to="routes.homeStacks" title="Technology Stacks (3)">Stacks</v-btn>
           <v-btn flat :to="routes.homeTech" title="Technologies (4)">Technologies</v-btn>
           <v-btn v-if="isAuthenticated" flat :to="routes.homeFavorites" title="Favorites (5)">Favorites</v-btn>
-          <v-btn v-if="!isAuthenticated" @click="href(`/auth/github`)">
-            <img src="../static/img/github.svg" width="30" height="30" style="backgroundd:#333" />
-          </v-btn>
+          <v-btn v-if="!isAuthenticated" flat @click="href('/Identity/Account/Login')">Sign In</v-btn>
           <v-menu v-if="isAuthenticated">
             <v-btn flat slot="activator">
               <img :src="user.profileUrl" height="40" style="border-radius:50%" />
@@ -32,9 +30,14 @@
             <v-list dark style="margin-top:50px">
               <v-list-tile>
                 <v-list-tile-title class="white--text">
-                  <nuxt-link :to="routes.user(user.userName)">Profile</nuxt-link>
+                  <nuxt-link :to="routes.user(user.id)">Profile</nuxt-link>
                 </v-list-tile-title>
               </v-list-tile>
+                <v-list-tile>
+                    <v-list-tile-title class="white--text">
+                        <a href="/Identity/Account/Manage">Account</a>
+                    </v-list-tile-title>
+                </v-list-tile>
               <v-list-tile>
                 <v-list-tile-title class="white--text">
                   <a href="/auth/logout">Logout</a>

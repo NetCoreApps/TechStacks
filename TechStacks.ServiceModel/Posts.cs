@@ -8,8 +8,7 @@ namespace TechStacks.ServiceModel;
 
 [Route("/posts", "GET"), Tag(Tags.AutoQuery), Tag(Tags.Posts)]
 [Restrict(AccessTo = RequestAttributes.Json | RequestAttributes.Html | RequestAttributes.Jsv | RequestAttributes.AnyHttpMethod)]
-public partial class QueryPosts
-    : QueryDb<Post>, IGet
+public partial class QueryPosts : QueryDb<Post>
 {
     public virtual int[] Ids { get; set; }
     public virtual int? OrganizationId { get; set; }
@@ -20,7 +19,7 @@ public partial class QueryPosts
 }
 
 [Route("/posts/comment", "GET"), Tag(Tags.AutoQuery), Tag(Tags.Posts)]
-public class QueryPostComments : QueryDb<PostComment>, IGet
+public class QueryPostComments : QueryDb<PostComment>
 {
     public long? Id { get; set; }
     public long? UserId { get; set; }

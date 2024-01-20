@@ -1,8 +1,8 @@
 /* Options:
-Date: 2022-01-15 14:09:10
-Version: 5.133
+Date: 2024-01-20 13:42:21
+Version: 8.01
 Tip: To override a DTO option, remove "//" prefix before updating
-BaseUrl: https://techstacks.io
+BaseUrl: https://localhost:5001
 
 //GlobalNamespace: 
 //MakePropertiesOptional: False
@@ -28,12 +28,12 @@ export interface IReturnVoid
 
 export interface IHasSessionId
 {
-    sessionId: string;
+    sessionId?: string;
 }
 
 export interface IHasBearerToken
 {
-    bearerToken: string;
+    bearerToken?: string;
 }
 
 export interface IGet
@@ -331,28 +331,6 @@ export class TechnologyStackView
     public constructor(init?: Partial<TechnologyStackView>) { (Object as any).assign(this, init); }
 }
 
-export class UserVoiceUser
-{
-    public id: number;
-    public name: string;
-    public email: string;
-    public avatarUrl: string;
-    public createdAt: string;
-    public updatedAt: string;
-
-    public constructor(init?: Partial<UserVoiceUser>) { (Object as any).assign(this, init); }
-}
-
-export class UserVoiceComment
-{
-    public text: string;
-    public formattedText: string;
-    public createdAt: string;
-    public creator: UserVoiceUser;
-
-    public constructor(init?: Partial<UserVoiceComment>) { (Object as any).assign(this, init); }
-}
-
 export class PostComment
 {
     public id: number;
@@ -382,6 +360,45 @@ export class PostComment
     public refUrn: string;
 
     public constructor(init?: Partial<PostComment>) { (Object as any).assign(this, init); }
+}
+
+// @DataContract
+export class ResponseError
+{
+    // @DataMember(Order=1)
+    public errorCode: string;
+
+    // @DataMember(Order=2)
+    public fieldName: string;
+
+    // @DataMember(Order=3)
+    public message: string;
+
+    // @DataMember(Order=4)
+    public meta: { [index: string]: string; };
+
+    public constructor(init?: Partial<ResponseError>) { (Object as any).assign(this, init); }
+}
+
+// @DataContract
+export class ResponseStatus
+{
+    // @DataMember(Order=1)
+    public errorCode: string;
+
+    // @DataMember(Order=2)
+    public message: string;
+
+    // @DataMember(Order=3)
+    public stackTrace: string;
+
+    // @DataMember(Order=4)
+    public errors: ResponseError[];
+
+    // @DataMember(Order=5)
+    public meta: { [index: string]: string; };
+
+    public constructor(init?: Partial<ResponseStatus>) { (Object as any).assign(this, init); }
 }
 
 export class Organization
@@ -471,45 +488,6 @@ export class OrganizationMember
     public notes: string;
 
     public constructor(init?: Partial<OrganizationMember>) { (Object as any).assign(this, init); }
-}
-
-// @DataContract
-export class ResponseError
-{
-    // @DataMember(Order=1)
-    public errorCode: string;
-
-    // @DataMember(Order=2)
-    public fieldName: string;
-
-    // @DataMember(Order=3)
-    public message: string;
-
-    // @DataMember(Order=4)
-    public meta: { [index: string]: string; };
-
-    public constructor(init?: Partial<ResponseError>) { (Object as any).assign(this, init); }
-}
-
-// @DataContract
-export class ResponseStatus
-{
-    // @DataMember(Order=1)
-    public errorCode: string;
-
-    // @DataMember(Order=2)
-    public message: string;
-
-    // @DataMember(Order=3)
-    public stackTrace: string;
-
-    // @DataMember(Order=4)
-    public errors: ResponseError[];
-
-    // @DataMember(Order=5)
-    public meta: { [index: string]: string; };
-
-    public constructor(init?: Partial<ResponseStatus>) { (Object as any).assign(this, init); }
 }
 
 export class OrganizationMemberInvite
@@ -722,6 +700,14 @@ export class Option
     public constructor(init?: Partial<Option>) { (Object as any).assign(this, init); }
 }
 
+export class HelloResponse
+{
+    public result: string;
+    public responseStatus: ResponseStatus;
+
+    public constructor(init?: Partial<HelloResponse>) { (Object as any).assign(this, init); }
+}
+
 export class GetOrganizationResponse
 {
     public cache: number;
@@ -856,7 +842,7 @@ export class UpdateOrganizationMemberInviteResponse
 }
 
 // @DataContract
-export class QueryResponse<T>
+export class QueryResponse<Post>
 {
     // @DataMember(Order=1)
     public offset: number;
@@ -865,7 +851,7 @@ export class QueryResponse<T>
     public total: number;
 
     // @DataMember(Order=3)
-    public results: T[];
+    public results: Post[];
 
     // @DataMember(Order=4)
     public meta: { [index: string]: string; };
@@ -873,7 +859,7 @@ export class QueryResponse<T>
     // @DataMember(Order=5)
     public responseStatus: ResponseStatus;
 
-    public constructor(init?: Partial<QueryResponse<T>>) { (Object as any).assign(this, init); }
+    public constructor(init?: Partial<QueryResponse<Post>>) { (Object as any).assign(this, init); }
 }
 
 export class GetPostResponse
@@ -1270,16 +1256,6 @@ export class GetUserInfoResponse
     public constructor(init?: Partial<GetUserInfoResponse>) { (Object as any).assign(this, init); }
 }
 
-export class SyncDiscourseSiteResponse
-{
-    public timeTaken: string;
-    public userLogs: string[];
-    public postsLogs: string[];
-    public responseStatus: ResponseStatus;
-
-    public constructor(init?: Partial<SyncDiscourseSiteResponse>) { (Object as any).assign(this, init); }
-}
-
 export class LogoUrlApprovalResponse
 {
     public result: Technology;
@@ -1293,28 +1269,11 @@ export class LockStackResponse
     public constructor(init?: Partial<LockStackResponse>) { (Object as any).assign(this, init); }
 }
 
-export class EmailTestRespoonse
+export class EmailTestResponse
 {
     public responseStatus: ResponseStatus;
 
-    public constructor(init?: Partial<EmailTestRespoonse>) { (Object as any).assign(this, init); }
-}
-
-export class ImportUserResponse
-{
-    public id: number;
-    public responseStatus: ResponseStatus;
-
-    public constructor(init?: Partial<ImportUserResponse>) { (Object as any).assign(this, init); }
-}
-
-export class ImportUserVoiceSuggestionResponse
-{
-    public postId: number;
-    public postSlug: string;
-    public responseStatus: ResponseStatus;
-
-    public constructor(init?: Partial<ImportUserVoiceSuggestionResponse>) { (Object as any).assign(this, init); }
+    public constructor(init?: Partial<EmailTestResponse>) { (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -1342,57 +1301,24 @@ export class AuthenticateResponse implements IHasSessionId, IHasBearerToken
     public refreshToken: string;
 
     // @DataMember(Order=8)
-    public profileUrl: string;
+    public refreshTokenExpiry?: string;
 
     // @DataMember(Order=9)
-    public roles: string[];
+    public profileUrl: string;
 
     // @DataMember(Order=10)
-    public permissions: string[];
+    public roles: string[];
 
     // @DataMember(Order=11)
-    public responseStatus: ResponseStatus;
+    public permissions: string[];
 
     // @DataMember(Order=12)
+    public responseStatus: ResponseStatus;
+
+    // @DataMember(Order=13)
     public meta: { [index: string]: string; };
 
     public constructor(init?: Partial<AuthenticateResponse>) { (Object as any).assign(this, init); }
-}
-
-// @DataContract
-export class AssignRolesResponse
-{
-    // @DataMember(Order=1)
-    public allRoles: string[];
-
-    // @DataMember(Order=2)
-    public allPermissions: string[];
-
-    // @DataMember(Order=3)
-    public meta: { [index: string]: string; };
-
-    // @DataMember(Order=4)
-    public responseStatus: ResponseStatus;
-
-    public constructor(init?: Partial<AssignRolesResponse>) { (Object as any).assign(this, init); }
-}
-
-// @DataContract
-export class UnAssignRolesResponse
-{
-    // @DataMember(Order=1)
-    public allRoles: string[];
-
-    // @DataMember(Order=2)
-    public allPermissions: string[];
-
-    // @DataMember(Order=3)
-    public meta: { [index: string]: string; };
-
-    // @DataMember(Order=4)
-    public responseStatus: ResponseStatus;
-
-    public constructor(init?: Partial<UnAssignRolesResponse>) { (Object as any).assign(this, init); }
 }
 
 // @Route("/ping")
@@ -1403,6 +1329,18 @@ export class Ping
     public getTypeName() { return 'Ping'; }
     public getMethod() { return 'POST'; }
     public createResponse() {}
+}
+
+// @Route("/hello")
+// @Route("/hello/{Name}")
+export class Hello implements IReturn<HelloResponse>
+{
+    public name: string;
+
+    public constructor(init?: Partial<Hello>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'Hello'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new HelloResponse(); }
 }
 
 // @Route("/orgs/{Id}", "GET")
@@ -2034,6 +1972,7 @@ export class UserPostCommentReport implements IReturn<UserPostCommentReportRespo
 export class StorePreRender implements IReturnVoid, IPut
 {
     public path: string;
+    public requestStream: string;
 
     public constructor(init?: Partial<StorePreRender>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'StorePreRender'; }
@@ -2053,6 +1992,7 @@ export class GetPreRender implements IReturn<string>, IGet
 }
 
 // @Route("/my-session")
+// @ValidateRequest(Validator="IsAuthenticated")
 export class SessionInfo implements IReturn<SessionInfoResponse>, IGet
 {
 
@@ -2491,6 +2431,7 @@ export class RemoveFavoriteTechnology implements IReturn<FavoriteTechnologyRespo
 }
 
 // @Route("/my-feed")
+// @ValidateRequest(Validator="IsAuthenticated")
 export class GetUserFeed implements IReturn<GetUserFeedResponse>, IGet
 {
 
@@ -2511,9 +2452,10 @@ export class GetUsersKarma implements IReturn<GetUsersKarmaResponse>, IGet
     public createResponse() { return new GetUsersKarmaResponse(); }
 }
 
-// @Route("/userinfo/{UserName}")
+// @Route("/userinfo/{Id}")
 export class GetUserInfo implements IReturn<GetUserInfoResponse>, IGet
 {
+    public id: number;
     public userName: string;
 
     public constructor(init?: Partial<GetUserInfo>) { (Object as any).assign(this, init); }
@@ -2522,10 +2464,10 @@ export class GetUserInfo implements IReturn<GetUserInfoResponse>, IGet
     public createResponse() { return new GetUserInfoResponse(); }
 }
 
-// @Route("/users/{UserName}/avatar", "GET")
+// @Route("/users/{UserId}/avatar", "GET")
 export class UserAvatar implements IGet
 {
-    public userName: string;
+    public userId: number;
 
     public constructor(init?: Partial<UserAvatar>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'UserAvatar'; }
@@ -2573,17 +2515,6 @@ export class MqStatus implements IReturn<string>
     public createResponse() { return ''; }
 }
 
-// @Route("/sync/discourse/{Site}")
-export class SyncDiscourseSite implements IReturn<SyncDiscourseSiteResponse>, IPost
-{
-    public site: string;
-
-    public constructor(init?: Partial<SyncDiscourseSite>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'SyncDiscourseSite'; }
-    public getMethod() { return 'POST'; }
-    public createResponse() { return new SyncDiscourseSiteResponse(); }
-}
-
 // @Route("/admin/technology/{TechnologyId}/logo")
 export class LogoUrlApproval implements IReturn<LogoUrlApprovalResponse>, IPut
 {
@@ -2596,9 +2527,7 @@ export class LogoUrlApproval implements IReturn<LogoUrlApprovalResponse>, IPut
     public createResponse() { return new LogoUrlApprovalResponse(); }
 }
 
-/**
-* Limit updates to TechStack to Owner or Admin users
-*/
+/** @description Limit updates to TechStack to Owner or Admin users */
 // @Route("/admin/techstacks/{TechnologyStackId}/lock")
 export class LockTechStack implements IReturn<LockStackResponse>, IPut
 {
@@ -2613,9 +2542,7 @@ export class LockTechStack implements IReturn<LockStackResponse>, IPut
     public createResponse() { return new LockStackResponse(); }
 }
 
-/**
-* Limit updates to Technology to Owner or Admin users
-*/
+/** @description Limit updates to Technology to Owner or Admin users */
 // @Route("/admin/technology/{TechnologyId}/lock")
 // @Api(Description="Limit updates to Technology to Owner or Admin users")
 export class LockTech implements IReturn<LockStackResponse>, IPut
@@ -2642,181 +2569,56 @@ export class DummyTypes
 }
 
 // @Route("/email/post/{PostId}")
-export class EmailTest implements IReturn<EmailTestRespoonse>
+// @ValidateRequest(Validator="IsAdmin")
+export class EmailTest implements IReturn<EmailTestResponse>
 {
     public postId?: number;
 
     public constructor(init?: Partial<EmailTest>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'EmailTest'; }
     public getMethod() { return 'POST'; }
-    public createResponse() { return new EmailTestRespoonse(); }
+    public createResponse() { return new EmailTestResponse(); }
 }
 
-export class ImportUser implements IReturn<ImportUserResponse>, IPost
-{
-    public userName: string;
-    public email: string;
-    public firstName: string;
-    public lastName: string;
-    public displayName: string;
-    public company: string;
-    public refSource: string;
-    public refId?: number;
-    public refIdStr: string;
-    public refUrn: string;
-    public defaultProfileUrl: string;
-    public meta: { [index: string]: string; };
-
-    public constructor(init?: Partial<ImportUser>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'ImportUser'; }
-    public getMethod() { return 'POST'; }
-    public createResponse() { return new ImportUserResponse(); }
-}
-
-// @Route("/import/uservoice/suggestion")
-export class ImportUserVoiceSuggestion implements IReturn<ImportUserVoiceSuggestionResponse>, IPost
-{
-    public organizationId: number;
-    public url: string;
-    public id: number;
-    public topicId: number;
-    public state: string;
-    public title: string;
-    public slug: string;
-    public category: string;
-    public text: string;
-    public formattedText: string;
-    public voteCount: number;
-    public closedAt?: string;
-    public statusKey: string;
-    public statusHexColor: string;
-    public statusChangedBy: UserVoiceUser;
-    public creator: UserVoiceUser;
-    public response: UserVoiceComment;
-    public createdAt: string;
-    public updatedAt: string;
-
-    public constructor(init?: Partial<ImportUserVoiceSuggestion>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'ImportUserVoiceSuggestion'; }
-    public getMethod() { return 'POST'; }
-    public createResponse() { return new ImportUserVoiceSuggestionResponse(); }
-}
-
-/**
-* Sign In
-*/
-// @Route("/auth")
-// @Route("/auth/{provider}")
+/** @description Sign In */
+// @Route("/auth", "GET,POST")
+// @Route("/auth/{provider}", "POST")
 // @Api(Description="Sign In")
 // @DataContract
 export class Authenticate implements IReturn<AuthenticateResponse>, IPost
 {
-    /**
-    * AuthProvider, e.g. credentials
-    */
+    /** @description AuthProvider, e.g. credentials */
     // @DataMember(Order=1)
-    // @ApiMember(Description="AuthProvider, e.g. credentials")
     public provider: string;
 
     // @DataMember(Order=2)
-    public state: string;
-
-    // @DataMember(Order=3)
-    public oauth_token: string;
-
-    // @DataMember(Order=4)
-    public oauth_verifier: string;
-
-    // @DataMember(Order=5)
     public userName: string;
 
-    // @DataMember(Order=6)
+    // @DataMember(Order=3)
     public password: string;
 
-    // @DataMember(Order=7)
+    // @DataMember(Order=4)
     public rememberMe?: boolean;
 
-    // @DataMember(Order=9)
-    public errorView: string;
-
-    // @DataMember(Order=10)
-    public nonce: string;
-
-    // @DataMember(Order=11)
-    public uri: string;
-
-    // @DataMember(Order=12)
-    public response: string;
-
-    // @DataMember(Order=13)
-    public qop: string;
-
-    // @DataMember(Order=14)
-    public nc: string;
-
-    // @DataMember(Order=15)
-    public cnonce: string;
-
-    // @DataMember(Order=17)
+    // @DataMember(Order=5)
     public accessToken: string;
 
-    // @DataMember(Order=18)
+    // @DataMember(Order=6)
     public accessTokenSecret: string;
 
-    // @DataMember(Order=19)
-    public scope: string;
+    // @DataMember(Order=7)
+    public returnUrl: string;
 
-    // @DataMember(Order=20)
+    // @DataMember(Order=8)
+    public errorView: string;
+
+    // @DataMember(Order=9)
     public meta: { [index: string]: string; };
 
     public constructor(init?: Partial<Authenticate>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'Authenticate'; }
     public getMethod() { return 'POST'; }
     public createResponse() { return new AuthenticateResponse(); }
-}
-
-// @Route("/assignroles")
-// @DataContract
-export class AssignRoles implements IReturn<AssignRolesResponse>, IPost
-{
-    // @DataMember(Order=1)
-    public userName: string;
-
-    // @DataMember(Order=2)
-    public permissions: string[];
-
-    // @DataMember(Order=3)
-    public roles: string[];
-
-    // @DataMember(Order=4)
-    public meta: { [index: string]: string; };
-
-    public constructor(init?: Partial<AssignRoles>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'AssignRoles'; }
-    public getMethod() { return 'POST'; }
-    public createResponse() { return new AssignRolesResponse(); }
-}
-
-// @Route("/unassignroles")
-// @DataContract
-export class UnAssignRoles implements IReturn<UnAssignRolesResponse>, IPost
-{
-    // @DataMember(Order=1)
-    public userName: string;
-
-    // @DataMember(Order=2)
-    public permissions: string[];
-
-    // @DataMember(Order=3)
-    public roles: string[];
-
-    // @DataMember(Order=4)
-    public meta: { [index: string]: string; };
-
-    public constructor(init?: Partial<UnAssignRoles>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'UnAssignRoles'; }
-    public getMethod() { return 'POST'; }
-    public createResponse() { return new UnAssignRolesResponse(); }
 }
 
 // @Route("/posts/comment", "GET")

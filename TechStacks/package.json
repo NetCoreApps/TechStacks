@@ -1,12 +1,14 @@
 {
-  "name": "TechStacks",
+  "name": "techstacks",
   "version": "1.0.0",
   "description": "ServiceStack Nuxt.js project",
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "dtos": "cd src/shared && typescript-ref && tsc -m ES6 dtos.ts",
-    "build": "nuxt build",
+    "ui:dev": "npx tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --watch",
+    "ui:build": "npx tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify",
+    "dtos": "cd src/shared && x ts && tsc -m ES6 dtos.ts",
+    "build": "shx cp wwwroot/css/app.css src/static/css/app.css && nuxt build",
     "publish": "nuxt build && dotnet publish -c Release",
     "deploy": "npm run publish && bash deploy.sh",
     "migrate": "dotnet run --AppTasks=migrate",
@@ -35,6 +37,7 @@
     "eslint-loader": "^2.0.0",
     "eslint-plugin-vue": "^4.7.1",
     "gulp": "^3.9.1",
+    "shx": "^0.3.4",
     "typescript": "^4.9.4"
   }
 }

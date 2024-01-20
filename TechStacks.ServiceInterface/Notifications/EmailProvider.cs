@@ -39,44 +39,42 @@ public class EmailProvider
 
     public void Send(EmailMessage email)
     {
-        try 
-        { 
-            using (var client = new SmtpClient(Host, Port))
+        try
+        {
+            using var client = new SmtpClient(Host, Port);
+            client.Credentials = new System.Net.NetworkCredential(UserName, Password);
+            client.EnableSsl = EnableSsl;
+
+            var emailTo = email.To.ToMailAddress();
+            var emailFrom = email.From.ToMailAddress();
+
+            var msg = new MailMessage(emailFrom, emailTo)
             {
-                client.Credentials = new System.Net.NetworkCredential(UserName, Password);
-                client.EnableSsl = EnableSsl;
+                Subject = email.Subject,
+                Body = email.Body ?? email.BodyHtml,
+                IsBodyHtml = email.Body == null,
+            };
 
-                var emailTo = email.To.ToMailAddress();
-                var emailFrom = email.From.ToMailAddress();
+            if (!msg.IsBodyHtml && email.BodyHtml != null)
+            {
+                var mimeType = new ContentType(MimeTypes.Html);
+                var alternate = AlternateView.CreateAlternateViewFromString(email.BodyHtml, mimeType);
+                msg.AlternateViews.Add(alternate);
+            }
 
-                var msg = new MailMessage(emailFrom, emailTo)
-                {
-                    Subject = email.Subject,
-                    Body = email.Body ?? email.BodyHtml,
-                    IsBodyHtml = email.Body == null,
-                };
+            if (email.Cc != null)
+            {
+                msg.CC.Add(email.Cc.ToMailAddress());
+            }
 
-                if (!msg.IsBodyHtml && email.BodyHtml != null)
-                {
-                    var mimeType = new ContentType(MimeTypes.Html);
-                    var alternate = AlternateView.CreateAlternateViewFromString(email.BodyHtml, mimeType);
-                    msg.AlternateViews.Add(alternate);
-                }
+            if (!string.IsNullOrEmpty(Bcc))
+            {
+                msg.Bcc.Add(new MailAddress(Bcc));
+            }
 
-                if (email.Cc != null)
-                {
-                    msg.CC.Add(email.Cc.ToMailAddress());
-                }
+            BeforeSend?.Invoke(email, msg);
 
-                if (!string.IsNullOrEmpty(Bcc))
-                {
-                    msg.Bcc.Add(new MailAddress(Bcc));
-                }
-
-                BeforeSend?.Invoke(email, msg);
-
-                client.Send(msg);
-            }                
+            client.Send(msg);
         }
         catch (Exception e)
         {

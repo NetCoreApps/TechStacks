@@ -4,15 +4,15 @@
       <v-layout column>
         <v-alert outline color="error" icon="warning" :value="errorSummary">{{ errorSummary }}</v-alert>
         <v-flex v-for="member in owners" :key="member.userName">
-            <nuxt-link :to="routes.user(member.userName)">@{{ member.userName }} </nuxt-link>
+            <nuxt-link :to="routes.user(member.userId)">@{{ member.userId }} </nuxt-link>
             <em class="tag green">owner</em>
         </v-flex>
         <v-flex v-for="member in moderators" :key="member.userName">
-            <nuxt-link :to="routes.user(member.userName)">@{{ member.userName }} </nuxt-link>
+            <nuxt-link :to="routes.user(member.userId)">@{{ member.userId }} </nuxt-link>
             <em class="tag green">owner</em>
         </v-flex>
         <v-flex v-if="member && !(member.isOwner || member.isModerator)">
-            <nuxt-link :to="routes.user(member.userName)">@{{ member.userName }} </nuxt-link>
+            <nuxt-link :to="routes.user(member.userId)">@{{ member.userId }} </nuxt-link>
             <em class="tag">member</em>
         </v-flex>
 

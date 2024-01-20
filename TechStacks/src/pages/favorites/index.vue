@@ -22,7 +22,7 @@
                     <v-layout column align-center>
                       <v-flex if="user.profileUrl">
                         <div class="avatarbox">
-                          <nuxt-link :to="routes.user(user.userName)"><img :src="user.profileUrl"></nuxt-link>
+                          <nuxt-link :to="routes.user(user.id)"><img :src="user.profileUrl"></nuxt-link>
                         </div>
                       </v-flex>
                       <v-flex style="text-align:center">
@@ -74,10 +74,10 @@
           </v-flex>
 
         </v-flex>
-        
+
         <v-flex v-if="tab == 1" xs9>
           <v-layout row wrap>
-            <v-flex xs12 
+            <v-flex xs12
               v-for="techstack in sessionFeed"
               :key="techstack.name"
             >
@@ -121,8 +121,8 @@
         </v-flex>
 
         <v-flex v-if="tab == 2" xs9>
-          
-          <PostsList :posts="favoritedPosts" :page="page" />          
+
+          <PostsList :posts="favoritedPosts" :page="page" />
 
           <v-flex v-if="favoritedPosts.length > POSTS_PER_PAGE" style="margin-top:5px;">
             <v-btn v-if="page > 0" color="primary" :to="getPageUrl(page-1)" title="View Previous (←)">
@@ -200,7 +200,7 @@
 
           </v-layout>
         </v-flex>
-      
+
       </v-layout>
     </v-container>
   </div>
@@ -256,9 +256,9 @@ export default {
       this.$router.push(this.getPageUrl(p));
     },
     initRoute(qs) {
-      this.stageChanges({ 
-        tab: parseInt(qs.t) || 0, 
-        page: parseInt(qs.p) || 0 
+      this.stageChanges({
+        tab: parseInt(qs.t) || 0,
+        page: parseInt(qs.p) || 0
       });
     },
     stageChanges(changes) {

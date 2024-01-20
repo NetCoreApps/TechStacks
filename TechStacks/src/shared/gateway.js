@@ -164,9 +164,9 @@ export const getPageStats = async(type, slug, id) => {
     return await client.get(request);
 }
 
-export const getUserInfo = async(username) => {
+export const getUserInfo = async(id) => {
     const request = new GetUserInfo();
-    request.userName = username;
+    request.id = id;
     return await client.get(request);
 }
 

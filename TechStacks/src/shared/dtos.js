@@ -1,8 +1,8 @@
 /* Options:
-Date: 2022-01-15 14:09:10
-Version: 5.133
+Date: 2024-01-20 13:42:21
+Version: 8.01
 Tip: To override a DTO option, remove "//" prefix before updating
-BaseUrl: https://techstacks.io
+BaseUrl: https://localhost:5001
 
 //GlobalNamespace:
 //MakePropertiesOptional: False
@@ -18,10 +18,12 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -151,20 +153,6 @@ var TechnologyStackView = /** @class */ (function () {
     return TechnologyStackView;
 }());
 export { TechnologyStackView };
-var UserVoiceUser = /** @class */ (function () {
-    function UserVoiceUser(init) {
-        Object.assign(this, init);
-    }
-    return UserVoiceUser;
-}());
-export { UserVoiceUser };
-var UserVoiceComment = /** @class */ (function () {
-    function UserVoiceComment(init) {
-        Object.assign(this, init);
-    }
-    return UserVoiceComment;
-}());
-export { UserVoiceComment };
 var PostComment = /** @class */ (function () {
     function PostComment(init) {
         Object.assign(this, init);
@@ -172,6 +160,22 @@ var PostComment = /** @class */ (function () {
     return PostComment;
 }());
 export { PostComment };
+// @DataContract
+var ResponseError = /** @class */ (function () {
+    function ResponseError(init) {
+        Object.assign(this, init);
+    }
+    return ResponseError;
+}());
+export { ResponseError };
+// @DataContract
+var ResponseStatus = /** @class */ (function () {
+    function ResponseStatus(init) {
+        Object.assign(this, init);
+    }
+    return ResponseStatus;
+}());
+export { ResponseStatus };
 var Organization = /** @class */ (function () {
     function Organization(init) {
         Object.assign(this, init);
@@ -200,22 +204,6 @@ var OrganizationMember = /** @class */ (function () {
     return OrganizationMember;
 }());
 export { OrganizationMember };
-// @DataContract
-var ResponseError = /** @class */ (function () {
-    function ResponseError(init) {
-        Object.assign(this, init);
-    }
-    return ResponseError;
-}());
-export { ResponseError };
-// @DataContract
-var ResponseStatus = /** @class */ (function () {
-    function ResponseStatus(init) {
-        Object.assign(this, init);
-    }
-    return ResponseStatus;
-}());
-export { ResponseStatus };
 var OrganizationMemberInvite = /** @class */ (function () {
     function OrganizationMemberInvite(init) {
         Object.assign(this, init);
@@ -341,6 +329,13 @@ var Option = /** @class */ (function () {
     return Option;
 }());
 export { Option };
+var HelloResponse = /** @class */ (function () {
+    function HelloResponse(init) {
+        Object.assign(this, init);
+    }
+    return HelloResponse;
+}());
+export { HelloResponse };
 var GetOrganizationResponse = /** @class */ (function () {
     function GetOrganizationResponse(init) {
         Object.assign(this, init);
@@ -762,13 +757,6 @@ var GetUserInfoResponse = /** @class */ (function () {
     return GetUserInfoResponse;
 }());
 export { GetUserInfoResponse };
-var SyncDiscourseSiteResponse = /** @class */ (function () {
-    function SyncDiscourseSiteResponse(init) {
-        Object.assign(this, init);
-    }
-    return SyncDiscourseSiteResponse;
-}());
-export { SyncDiscourseSiteResponse };
 var LogoUrlApprovalResponse = /** @class */ (function () {
     function LogoUrlApprovalResponse(init) {
         Object.assign(this, init);
@@ -783,27 +771,13 @@ var LockStackResponse = /** @class */ (function () {
     return LockStackResponse;
 }());
 export { LockStackResponse };
-var EmailTestRespoonse = /** @class */ (function () {
-    function EmailTestRespoonse(init) {
+var EmailTestResponse = /** @class */ (function () {
+    function EmailTestResponse(init) {
         Object.assign(this, init);
     }
-    return EmailTestRespoonse;
+    return EmailTestResponse;
 }());
-export { EmailTestRespoonse };
-var ImportUserResponse = /** @class */ (function () {
-    function ImportUserResponse(init) {
-        Object.assign(this, init);
-    }
-    return ImportUserResponse;
-}());
-export { ImportUserResponse };
-var ImportUserVoiceSuggestionResponse = /** @class */ (function () {
-    function ImportUserVoiceSuggestionResponse(init) {
-        Object.assign(this, init);
-    }
-    return ImportUserVoiceSuggestionResponse;
-}());
-export { ImportUserVoiceSuggestionResponse };
+export { EmailTestResponse };
 // @DataContract
 var AuthenticateResponse = /** @class */ (function () {
     function AuthenticateResponse(init) {
@@ -812,22 +786,6 @@ var AuthenticateResponse = /** @class */ (function () {
     return AuthenticateResponse;
 }());
 export { AuthenticateResponse };
-// @DataContract
-var AssignRolesResponse = /** @class */ (function () {
-    function AssignRolesResponse(init) {
-        Object.assign(this, init);
-    }
-    return AssignRolesResponse;
-}());
-export { AssignRolesResponse };
-// @DataContract
-var UnAssignRolesResponse = /** @class */ (function () {
-    function UnAssignRolesResponse(init) {
-        Object.assign(this, init);
-    }
-    return UnAssignRolesResponse;
-}());
-export { UnAssignRolesResponse };
 // @Route("/ping")
 var Ping = /** @class */ (function () {
     function Ping(init) {
@@ -839,6 +797,18 @@ var Ping = /** @class */ (function () {
     return Ping;
 }());
 export { Ping };
+// @Route("/hello")
+// @Route("/hello/{Name}")
+var Hello = /** @class */ (function () {
+    function Hello(init) {
+        Object.assign(this, init);
+    }
+    Hello.prototype.getTypeName = function () { return 'Hello'; };
+    Hello.prototype.getMethod = function () { return 'POST'; };
+    Hello.prototype.createResponse = function () { return new HelloResponse(); };
+    return Hello;
+}());
+export { Hello };
 // @Route("/orgs/{Id}", "GET")
 var GetOrganization = /** @class */ (function () {
     function GetOrganization(init) {
@@ -1360,6 +1330,7 @@ var GetPreRender = /** @class */ (function () {
 }());
 export { GetPreRender };
 // @Route("/my-session")
+// @ValidateRequest(Validator="IsAuthenticated")
 var SessionInfo = /** @class */ (function () {
     function SessionInfo(init) {
         Object.assign(this, init);
@@ -1759,6 +1730,7 @@ var RemoveFavoriteTechnology = /** @class */ (function () {
 }());
 export { RemoveFavoriteTechnology };
 // @Route("/my-feed")
+// @ValidateRequest(Validator="IsAuthenticated")
 var GetUserFeed = /** @class */ (function () {
     function GetUserFeed(init) {
         Object.assign(this, init);
@@ -1780,7 +1752,7 @@ var GetUsersKarma = /** @class */ (function () {
     return GetUsersKarma;
 }());
 export { GetUsersKarma };
-// @Route("/userinfo/{UserName}")
+// @Route("/userinfo/{Id}")
 var GetUserInfo = /** @class */ (function () {
     function GetUserInfo(init) {
         Object.assign(this, init);
@@ -1791,7 +1763,7 @@ var GetUserInfo = /** @class */ (function () {
     return GetUserInfo;
 }());
 export { GetUserInfo };
-// @Route("/users/{UserName}/avatar", "GET")
+// @Route("/users/{UserId}/avatar", "GET")
 var UserAvatar = /** @class */ (function () {
     function UserAvatar(init) {
         Object.assign(this, init);
@@ -1846,17 +1818,6 @@ var MqStatus = /** @class */ (function () {
     return MqStatus;
 }());
 export { MqStatus };
-// @Route("/sync/discourse/{Site}")
-var SyncDiscourseSite = /** @class */ (function () {
-    function SyncDiscourseSite(init) {
-        Object.assign(this, init);
-    }
-    SyncDiscourseSite.prototype.getTypeName = function () { return 'SyncDiscourseSite'; };
-    SyncDiscourseSite.prototype.getMethod = function () { return 'POST'; };
-    SyncDiscourseSite.prototype.createResponse = function () { return new SyncDiscourseSiteResponse(); };
-    return SyncDiscourseSite;
-}());
-export { SyncDiscourseSite };
 // @Route("/admin/technology/{TechnologyId}/logo")
 var LogoUrlApproval = /** @class */ (function () {
     function LogoUrlApproval(init) {
@@ -1868,9 +1829,7 @@ var LogoUrlApproval = /** @class */ (function () {
     return LogoUrlApproval;
 }());
 export { LogoUrlApproval };
-/**
-* Limit updates to TechStack to Owner or Admin users
-*/
+/** @description Limit updates to TechStack to Owner or Admin users */
 // @Route("/admin/techstacks/{TechnologyStackId}/lock")
 var LockTechStack = /** @class */ (function () {
     function LockTechStack(init) {
@@ -1882,9 +1841,7 @@ var LockTechStack = /** @class */ (function () {
     return LockTechStack;
 }());
 export { LockTechStack };
-/**
-* Limit updates to Technology to Owner or Admin users
-*/
+/** @description Limit updates to Technology to Owner or Admin users */
 // @Route("/admin/technology/{TechnologyId}/lock")
 // @Api(Description="Limit updates to Technology to Owner or Admin users")
 var LockTech = /** @class */ (function () {
@@ -1908,42 +1865,20 @@ var DummyTypes = /** @class */ (function () {
 }());
 export { DummyTypes };
 // @Route("/email/post/{PostId}")
+// @ValidateRequest(Validator="IsAdmin")
 var EmailTest = /** @class */ (function () {
     function EmailTest(init) {
         Object.assign(this, init);
     }
     EmailTest.prototype.getTypeName = function () { return 'EmailTest'; };
     EmailTest.prototype.getMethod = function () { return 'POST'; };
-    EmailTest.prototype.createResponse = function () { return new EmailTestRespoonse(); };
+    EmailTest.prototype.createResponse = function () { return new EmailTestResponse(); };
     return EmailTest;
 }());
 export { EmailTest };
-var ImportUser = /** @class */ (function () {
-    function ImportUser(init) {
-        Object.assign(this, init);
-    }
-    ImportUser.prototype.getTypeName = function () { return 'ImportUser'; };
-    ImportUser.prototype.getMethod = function () { return 'POST'; };
-    ImportUser.prototype.createResponse = function () { return new ImportUserResponse(); };
-    return ImportUser;
-}());
-export { ImportUser };
-// @Route("/import/uservoice/suggestion")
-var ImportUserVoiceSuggestion = /** @class */ (function () {
-    function ImportUserVoiceSuggestion(init) {
-        Object.assign(this, init);
-    }
-    ImportUserVoiceSuggestion.prototype.getTypeName = function () { return 'ImportUserVoiceSuggestion'; };
-    ImportUserVoiceSuggestion.prototype.getMethod = function () { return 'POST'; };
-    ImportUserVoiceSuggestion.prototype.createResponse = function () { return new ImportUserVoiceSuggestionResponse(); };
-    return ImportUserVoiceSuggestion;
-}());
-export { ImportUserVoiceSuggestion };
-/**
-* Sign In
-*/
-// @Route("/auth")
-// @Route("/auth/{provider}")
+/** @description Sign In */
+// @Route("/auth", "GET,POST")
+// @Route("/auth/{provider}", "POST")
 // @Api(Description="Sign In")
 // @DataContract
 var Authenticate = /** @class */ (function () {
@@ -1956,30 +1891,6 @@ var Authenticate = /** @class */ (function () {
     return Authenticate;
 }());
 export { Authenticate };
-// @Route("/assignroles")
-// @DataContract
-var AssignRoles = /** @class */ (function () {
-    function AssignRoles(init) {
-        Object.assign(this, init);
-    }
-    AssignRoles.prototype.getTypeName = function () { return 'AssignRoles'; };
-    AssignRoles.prototype.getMethod = function () { return 'POST'; };
-    AssignRoles.prototype.createResponse = function () { return new AssignRolesResponse(); };
-    return AssignRoles;
-}());
-export { AssignRoles };
-// @Route("/unassignroles")
-// @DataContract
-var UnAssignRoles = /** @class */ (function () {
-    function UnAssignRoles(init) {
-        Object.assign(this, init);
-    }
-    UnAssignRoles.prototype.getTypeName = function () { return 'UnAssignRoles'; };
-    UnAssignRoles.prototype.getMethod = function () { return 'POST'; };
-    UnAssignRoles.prototype.createResponse = function () { return new UnAssignRolesResponse(); };
-    return UnAssignRoles;
-}());
-export { UnAssignRoles };
 // @Route("/posts/comment", "GET")
 var QueryPostComments = /** @class */ (function (_super) {
     __extends(QueryPostComments, _super);

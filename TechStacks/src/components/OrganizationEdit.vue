@@ -276,7 +276,7 @@
                   <v-card flat v-for="member in members" :key="member.id">
                     <v-card-title style="margin:0;padding:0">
                       <v-layout>
-                        <v-flex v-if="editMember != member.id">
+                        <v-flex v-if="editMember !== member.id">
 
                           <v-btn v-if="isOrganizationModerator" small fab dark color="pink" @click="editMember = member.id" title="Edit Member"
                                  :disabled="(member.isOwner || member.isModerator) && !isOrganizationOwner">
@@ -291,7 +291,7 @@
                           <em v-if="member.denyPosts" class="tag red">deny-posts</em>
                           <em v-if="member.denyComments" class="tag red">deny-comments</em>
                         </v-flex>
-                        <v-flex v-if="editMember == member.id">
+                        <v-flex v-if="editMember === member.id">
                           <MemberEdit :orgId="id" :member="member" :isOrganizationOwner="isOrganizationOwner" @done="memberDone" />
                         </v-flex>
                       </v-layout>
@@ -312,7 +312,7 @@
           </v-card>
         </v-flex>
 
-        <v-flex v-if="tab==3">
+        <v-flex v-if="tab===3">
           <v-card>
             <v-card-title>
               <v-layout column>
@@ -333,7 +333,7 @@
                       </v-layout>
                     </v-card-title>
                   </v-card>
-                  <v-alert color="info" icon="info" outline :value="memberInvites.length == 0">
+                  <v-alert color="info" icon="info" outline :value="memberInvites.length === 0">
                     No Member Invite Requests remaining
                   </v-alert>
                 </v-flex>
@@ -353,7 +353,7 @@
                         <v-flex>
                           <div>
                             <nuxt-link :to="routes.post(report.postId,report.title)">{{ report.title }}</nuxt-link>
-                            by <nuxt-link :to="routes.user(report.createdBy)">@{{ report.createdBy }}</nuxt-link>
+                            by <nuxt-link :to="routes.user(report.userId)">@{{ report.userId }}</nuxt-link>
                           </div>
                           <div>
                             <v-btn small dark color="purple" @click="actionPostReport(report.id,report.postId,'Delete')" title="Approve" :disabled="loading">
@@ -363,14 +363,14 @@
                               Dismiss
                             </v-btn>
                               total reports: <b>{{ report.reportCount }}</b>, this report from
-                              <nuxt-link :to="routes.user(report.userName)">@{{ report.userName }}</nuxt-link>:
+                              <nuxt-link :to="routes.user(report.userId)">@{{ report.userId }}</nuxt-link>:
                               <b> {{ report.flagType }} </b> <em>{{ report.reportNotes }}</em>
                           </div>
                         </v-flex>
                       </v-layout>
                     </v-card-title>
                   </v-card>
-                  <v-alert color="info" icon="info" outline :value="reportedPosts.length == 0">
+                  <v-alert color="info" icon="info" outline :value="reportedPosts.length === 0">
                     No Post Reports remaining
                   </v-alert>
                 </v-flex>
@@ -390,7 +390,7 @@
                         <v-flex>
                           <div>
                             <nuxt-link :to="routes.comment(report.postId,report.postCommentId)">{{ report.postCommentId }}</nuxt-link>
-                            by <nuxt-link :to="routes.user(report.createdBy)">@{{ report.createdBy }}</nuxt-link>
+                            by <nuxt-link :to="routes.user(report.userId)">@{{ report.userId }}</nuxt-link>
                             <div class="comment-content" v-html="report.contentHtml" style="border:1px solid #ccc;padding:0 10px;margin:5px 0"></div>
                           </div>
                           <div>
@@ -401,14 +401,14 @@
                               Dismiss
                             </v-btn>
                               total reports: <b>{{ report.reportCount }}</b>, this report from
-                              <nuxt-link :to="routes.user(report.userName)">@{{ report.userName }}</nuxt-link>:
+                              <nuxt-link :to="routes.user(report.userId)">@{{ report.userId }}</nuxt-link>:
                               <b> {{ report.flagType }} </b> <em>{{ report.reportNotes }}</em>
                           </div>
                         </v-flex>
                       </v-layout>
                     </v-card-title>
                   </v-card>
-                  <v-alert color="info" icon="info" outline :value="reportedPostComments.length == 0">
+                  <v-alert color="info" icon="info" outline :value="reportedPostComments.length === 0">
                     No Comment Reports remaining
                   </v-alert>
                 </v-flex>

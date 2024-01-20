@@ -4,6 +4,9 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\TechStacks.ServiceModel\TechStacks.ServiceModel.csproj"/>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.*" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.*" />
+        <PackageReference Include="Markdig" Version="0.34.*" />
         <PackageReference Include="ServiceStack" Version="8.*"/>
         <PackageReference Include="ServiceStack.Server" Version="8.*"/>
 

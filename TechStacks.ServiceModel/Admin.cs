@@ -24,8 +24,10 @@ public class SendSystemEmail : IReturnVoid, IPost
 public class SendEmail : IReturnVoid, IPost
 {
     public string To { get; set; }
+    public string ToName { get; set; }
     public string Subject { get; set; }
     public string Body { get; set; }
+    public string BodyHtml { get; set; }
 }
     
 [ExcludeMetadata]

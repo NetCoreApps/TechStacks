@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Linq;
@@ -66,31 +67,23 @@ public static class TechExtensions
         return txt;
     }
 
-    public static Task RegisterPageView(this IDbConnectionFactory dbFactory, string id)
+    public static async Task<long> RegisterPageViewAsync(this IDbConnection db, string id)
     {
-        var db = dbFactory.Open();
+        var rows = await db.ExecuteSqlAsync("UPDATE page_stats SET view_count = view_count + 1 WHERE id = @id", new { id });
+        var parts = id.Substring(1).SplitOnFirst('/');
+        if (rows == 0 && parts.Length == 2)
+        {
+            var type = parts[0];
+            var slug = parts[1];
 
-        return db.ExecuteSqlAsync("UPDATE page_stats SET view_count = view_count + 1 WHERE id = @id", new { id })
-            .ContinueWith(t =>
-            {
-                var parts = id.Substring(1).SplitOnFirst('/');
-                if (t.Result == 0 && parts.Length == 2)
-                {
-                    var type = parts[0];
-                    var slug = parts[1];
-
-                    return db.InsertAsync(new PageStats
-                        {
-                            Id = id,
-                            RefType = type,
-                            RefSlug = slug,
-                            ViewCount = 1,
-                            LastModified = DateTime.UtcNow,
-                        })
-                        .ContinueWith(t2 => (int)t2.Result);
-                }
-
-                return t;
-            }).ContinueWith(_ => db.Dispose());
+            return await db.InsertAsync(new PageStats {
+                Id = id,
+                RefType = type,
+                RefSlug = slug,
+                ViewCount = 1,
+                LastModified = DateTime.UtcNow,
+            });
+        }
+        return 0;
     }
 }

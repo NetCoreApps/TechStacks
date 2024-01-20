@@ -1,61 +1,16 @@
 using System;
-using System.Net;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 using ServiceStack;
 using ServiceStack.OrmLite;
-using ServiceStack.Logging;
 using ServiceStack.Configuration;
-using TechStacks.ServiceInterface.Notifications;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface;
 
 [Authenticate]
-public class TechnologyServicesAdmin : Service
+public class TechnologyServicesAdmin(IConfiguration configuration) : Service
 {
-    public static ILog Log = LogManager.GetLogger(typeof(TechnologyServicesAdmin));
-
-    public IAppSettings AppSettings { get; set; }
-
-    public ITwitterUpdates TwitterUpdates { get; set; }
-
-    private const int TweetUrlLength = 22;
-
-    private string PostTwitterUpdate(string msgPrefix, List<long> techIds, int maxLength)
-    {
-        try
-        {
-            var stackNames = Db.Column<string>(Db.From<TechnologyStack>()
-                .Where(x => techIds.Contains(x.Id))
-                .Select(x => x.Name));
-
-            var sb = new StringBuilder(msgPrefix);
-            for (int i = 0; i < stackNames.Count; i++)
-            {
-                var name = stackNames[i];
-                if (sb.Length + name.Length + 3 > maxLength)
-                    break;
-
-                if (i > 0)
-                    sb.Append(",");
-
-                sb.Append(" " + name);
-            }
-
-            return TwitterUpdates.Tweet(sb.ToString());
-
-        }
-        catch (Exception ex)
-        {
-            Log.Error("Could not post to Twitter: " + msgPrefix, ex);
-            return null;
-        }        
-    }
-
     public object Post(CreateTechnology request)
     {
         var slug = request.Slug;
@@ -76,7 +31,7 @@ public class TechnologyServicesAdmin : Service
 
         if (string.IsNullOrEmpty(tech.LogoUrl) && Request.Files.Length > 0)
         {
-            tech.LogoUrl = Request.Files[0].UploadToImgur(AppSettings.GetString("oauth.imgur.ClientId"),
+            tech.LogoUrl = Request.Files[0].UploadToImgur(configuration["oauth.imgur.ClientId"],
                 nameof(tech.LogoUrl), minWidth:100, minHeight:50, maxWidth:2000, maxHeight:1000);
         }
 
@@ -93,25 +48,11 @@ public class TechnologyServicesAdmin : Service
         Db.Insert(history);
 
         Db.ExecuteSql(
-            @"update user_activity set 
-                                 technology_count = (select count(*) from technology where owner_id = @userIdStr)
-                           where id = @userId",
+            @"update user_activity set technology_count = (select count(*) from technology where owner_id = @userIdStr)
+              where id = @userId",
             new { userId = session.GetUserId(), userIdStr = session.UserAuthId });
 
         Cache.FlushAll();
-
-        var postUpdate = AppSettings.EnableTwitterUpdates();
-        if (postUpdate)
-        {
-            var url = TwitterUpdates.BaseUrl.CombineWith(new ClientTechnology { Slug = tech.Slug }.ToUrl());
-            var twitterSlug = tech.Slug.Replace("-", "");
-            PostTwitterUpdate(
-                $"Who's using #{twitterSlug}? {url}",
-                Db.ColumnDistinct<long>(Db.From<TechnologyChoice>()
-                    .Where(x => x.TechnologyId == tech.Id)
-                    .Select(x => x.TechnologyStackId)).ToList(),
-                maxLength: 140 - (TweetUrlLength - url.Length));
-        }
 
         return new CreateTechnologyResponse
         {
@@ -134,20 +75,13 @@ public class TechnologyServicesAdmin : Service
                     "This Technology is locked and can only be modified by its Owner or Admins.");
         }
 
-        //Only Post an Update if there was no other update today
-        var postUpdate = AppSettings.EnableTwitterUpdates()
-                         && tech.LastStatusUpdate.GetValueOrDefault(DateTime.MinValue) < DateTime.UtcNow.Date;
-
         tech.PopulateWith(request);
         tech.LastModifiedBy = session.UserName;
         tech.LastModified = DateTime.UtcNow;
 
-        if (postUpdate)
-            tech.LastStatusUpdate = tech.LastModified;
-
         if (Request.Files.Length > 0)
         {
-            tech.LogoUrl = Request.Files[0].UploadToImgur(AppSettings.GetString("oauth.imgur.ClientId"),
+            tech.LogoUrl = Request.Files[0].UploadToImgur(configuration["oauth.imgur.ClientId"],
                 nameof(tech.LogoUrl), minWidth:100, minHeight:50, maxWidth:2000, maxHeight:1000);
         }
 
@@ -167,23 +101,6 @@ public class TechnologyServicesAdmin : Service
         {
             Result = tech
         };
-
-        if (postUpdate)
-        {
-            var url = TwitterUpdates.BaseUrl.CombineWith(new ClientTechnology { Slug = tech.Slug }.ToUrl());
-            var twitterSlug = tech.Slug.Replace("-", "");
-
-            response.ResponseStatus = new ResponseStatus
-            {
-                Message = PostTwitterUpdate(
-                    $"Who's using #{twitterSlug}? {url}",
-                    Db.ColumnDistinct<long>(Db.From<TechnologyChoice>()
-                        .Where(x => x.TechnologyId == tech.Id)
-                        .Select(x => x.TechnologyStackId)).ToList(),
-                    maxLength: 140 - (TweetUrlLength - url.Length))
-            };
-        }
-
         return response;
     }
 
@@ -214,7 +131,7 @@ public class TechnologyServicesAdmin : Service
 
         return new DeleteTechnologyResponse
         {
-            Result = new Technology { Id = (long)request.Id }
+            Result = new Technology { Id = request.Id }
         };
     }
 }

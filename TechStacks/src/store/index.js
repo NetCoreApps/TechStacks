@@ -1,11 +1,11 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { 
-    getConfig, 
-    getOverview, 
+import {
+    getConfig,
+    getOverview,
     getUserOrganizations,
-    getTechnology, 
-    getTechnologyStack, 
+    getTechnology,
+    getTechnologyStack,
     getPageStats,
     getAllTechnologies,
     getAllTechStacks,
@@ -154,8 +154,8 @@ const mutations = {
         state.userActivity = sessionInfo && sessionInfo.userActivity;
 
         //userOrganizations
-        state.userOrganizations = sessionInfo && { 
-            members: sessionInfo.members, 
+        state.userOrganizations = sessionInfo && {
+            members: sessionInfo.members,
             memberInvites: sessionInfo.memberInvites,
             subscriptions: sessionInfo.subscriptions,
         };
@@ -203,7 +203,7 @@ const mutations = {
         organization.full = true;
 
         state.organization = organization;
-        Vue.set(state.organizationIdMap, organization.id, organization); 
+        Vue.set(state.organizationIdMap, organization.id, organization);
     },
     hidePost(state, postId) {
         state.hidePostIds.push(postId);
@@ -274,16 +274,16 @@ const mutations = {
 
     // Use Vue .set() to update objects/arrays so mutations can be observed
     technology(state, technology) {
-        Vue.set(state.technologyMap, technology.slug, technology); 
+        Vue.set(state.technologyMap, technology.slug, technology);
     },
     technologyStack(state, techstack) {
-        Vue.set(state.techstacksMap, techstack.slug, techstack); 
+        Vue.set(state.techstacksMap, techstack.slug, techstack);
     },
     pageStats(state, pageStats) {
-        Vue.set(state.pageStatsMap, statsKey(pageStats.type,pageStats.slug), pageStats); 
+        Vue.set(state.pageStatsMap, statsKey(pageStats.type,pageStats.slug), pageStats);
     },
     userInfo(state, userInfo) {
-        Vue.set(state.userInfoMap, userInfo.userName, userInfo); 
+        Vue.set(state.userInfoMap, userInfo.id, userInfo);
     },
     addFavoriteTechnology(state, tech) {
         state.favoriteTechnologies.push(tech);
@@ -302,7 +302,7 @@ const mutations = {
         Vue.delete(state.technologyMap, slug);
     },
     post(state, post) {
-        Vue.set(state.postsMap, post.id, post); 
+        Vue.set(state.postsMap, post.id, post);
     },
     usersKarma(state, usersKarma) {
         for (var userId in usersKarma) {
@@ -385,7 +385,7 @@ const getters = {
     getOrganizationId: state => slug => state.orgSlugMap[slug],
     getOrganizationSlug: state => orgId => (state.allOrganizations.find(x => x.id === orgId) || {}).slug,
     getOrganization: state => orgId => state.organizationIdMap[orgId] || state.allOrganizations.find(x => x.id === orgId),
-    getOrganizationBySlug: (state,getters) => slug => getters.getOrganization(getters.getOrganizationId(slug)),    
+    getOrganizationBySlug: (state,getters) => slug => getters.getOrganization(getters.getOrganizationId(slug)),
     getLangByOrganizationId: (state,getters) => orgId => getLangCode((getters.getOrganization(orgId) || {}).lang),
     getOrganizationSubscription:  state => orgId => (state.userOrganizations && state.userOrganizations.subscriptions || []).find(x => x.organizationId === orgId),
     getTechnologyOrganization: (state) => techId => state.allOrganizations.find(x => x.refId == techId && x.refSource == "Technology"),
@@ -394,10 +394,10 @@ const getters = {
     getTechnologyStack: state => slug => state.techstacksMap[slug],
     getTechnologyStackId: state => slug => state.techstacksMap[slug] && state.techstacksMap[slug].id,
     getPageStats: state => (type,slug) => state.pageStatsMap[statsKey(type,slug)],
-    getUserInfo: state => userName => state.userInfoMap[userName],
-    canChangeTechnology: (state,getters) => tech => getters.isAuthenticated && 
+    getUserInfo: state => id => state.userInfoMap[id],
+    canChangeTechnology: (state,getters) => tech => getters.isAuthenticated &&
         (!tech.isLocked || state.sessionInfo.userAuthId == tech.ownerId || getters.isAdmin),
-    canChangeTechStack: (state,getters) => stack => getters.isAuthenticated && 
+    canChangeTechStack: (state,getters) => stack => getters.isAuthenticated &&
         (!stack.isLocked || state.sessionInfo.userAuthId == stack.ownerId || getters.isAdmin),
     latestOrganizationPosts: (state,getters) => (getters.organization && state.latestOrganizationPosts[getters.organization.id] || [])
         .filter(x => state.hidePostIds.indexOf(x.id) == -1).slice(0,POSTS_PER_PAGE),
@@ -411,7 +411,7 @@ async function doAction(commit, mutation, action) {
     commit('loading', true);
     try {
         commit(mutation, await action());
-    } 
+    }
     finally {
         commit('loading', false);
     }
@@ -483,8 +483,8 @@ const actions = {
         commit('pageStats', await getPageStats(type, slug, id));
     },
 
-    async getUserInfo({ commit }, username) {
-        await doAction(commit, 'userInfo', async() => await getUserInfo(username));
+    async getUserInfo({ commit }, id) {
+        await doAction(commit, 'userInfo', async() => await getUserInfo(id));
     },
 
     async loadUserFeed({ commit }) {
@@ -513,7 +513,7 @@ const actions = {
             commit('removeFavoriteTechnology', id);
             await removeFavoriteTechnology(id);
         } else {
-            commit('removeFavoriteTechStack', id);            
+            commit('removeFavoriteTechStack', id);
             await removeFavoriteTechStack(id);
         }
         commit('sessionUserInfo', await getUserInfo(state.sessionInfo.userName));
@@ -524,7 +524,7 @@ const actions = {
         if (getters.organization && getters.organization.id === orgId && getters.organization.full) return;
         await dispatch('loadOrganizationById', orgId);
     },
-    
+
     async loadOrganizationById({ commit, dispatch }, orgId) {
         try {
             await doAction(commit, 'organization', async() => await getOrganizationById(orgId));
@@ -538,7 +538,7 @@ const actions = {
         if (getters.organization && getters.organization.slug === slug && getters.organization.full) return;
         await dispatch('loadOrganizationBySlug', slug);
     },
-    
+
     async loadOrganizationBySlug({ commit, getters, state, dispatch }, slug) {
         try {
             await doAction(commit, 'organization', async() => await getOrganizationBySlug(slug));
@@ -551,18 +551,18 @@ const actions = {
         let { types, page, technologyIds } = query;
 
         const skip = page > 0 ? page * POSTS_PER_PAGE : 0;
-    
+
         await doAction(commit, 'latestNewsPosts', async() => await queryLatestPosts(types, technologyIds, skip));
     },
 
     async latestOrganizationPosts({ commit, getters, state }, query) {
-        if (!getters.organization) 
+        if (!getters.organization)
             return;
 
         let { types, page, categoryId, orderBy, is } = query;
 
         const q = state.latestOrganizationPostsQuery;
-        const repeatedQuery = q && q.organizationId === organizationId && q.types === types && q.page === page && 
+        const repeatedQuery = q && q.organizationId === organizationId && q.types === types && q.page === page &&
                               q.categoryId === categoryId && q.orderBy == orderBy && q.is == is;
         if (repeatedQuery) return;
         commit('latestOrganizationPostsQuery', { organizationId, ...query });
@@ -572,10 +572,10 @@ const actions = {
 
         const organizationId = getters.organization.id;
         const skip = page > 0 ? page * POSTS_PER_PAGE : 0;
-    
-        await doAction(commit, 'latestOrganizationPosts', async() => ({ 
-            organizationId, 
-            posts: await queryLatestOrganizationsPosts({ organizationId, types, categoryId, is, orderBy, skip }) 
+
+        await doAction(commit, 'latestOrganizationPosts', async() => ({
+            organizationId,
+            posts: await queryLatestOrganizationsPosts({ organizationId, types, categoryId, is, orderBy, skip })
         }));
     },
 
@@ -638,7 +638,7 @@ const actions = {
     },
 };
 
-const createStore = () => 
+const createStore = () =>
     new Vuex.Store({
         state,
         mutations,

@@ -12,9 +12,9 @@ using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface;
 
-public class PostServicesBase : Service
+public class PostServicesBase(IMarkdownProvider markdown) : Service
 {
-    public IMarkdownProvider Markdown { get; set; }
+    public IMarkdownProvider Markdown { get; set; } = markdown;
 
     public AuthUserSession GetUser() => SessionAs<AuthUserSession>();
     public int GetUserId() => SessionAs<AuthUserSession>().UserAuthId.ToInt();

@@ -40,15 +40,13 @@ public class TechnologyServices : Service
 }
 
 [CacheResponse(Duration = 3600)]
-public class CachedTechnologyServices : Service
+public class CachedTechnologyServices(IAutoQueryDb autoQuery) : Service
 {
-    public IAutoQueryDb AutoQuery { get; set; }
-
     public object Any(FindTechnologies request) =>
-        AutoQuery.Execute(request, AutoQuery.CreateQuery(request, Request.GetRequestParams()));
+        autoQuery.Execute(request, autoQuery.CreateQuery(request, Request.GetRequestParams()));
 
     public object Any(QueryTechnology request) =>
-        AutoQuery.Execute(request, AutoQuery.CreateQuery(request, Request.GetRequestParams()));
+        autoQuery.Execute(request, autoQuery.CreateQuery(request, Request.GetRequestParams()));
 
     public object Get(GetTechnology request)
     {

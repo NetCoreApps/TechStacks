@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using ServiceStack;
 using ServiceStack.OrmLite;
 using ServiceStack.Script;
+using TechStacks.Data;
 using TechStacks.ServiceInterface.DataModel;
 using TechStacks.ServiceInterface.Notifications;
 using TechStacks.ServiceModel.Types;
@@ -19,7 +23,11 @@ public class UserEmailInfo
     public string DisplayName { get; set; }
 }
     
-public partial class NotificationServices : Service
+public partial class NotificationServices(
+    ILogger<NotificationServices> log,
+    UserManager<ApplicationUser> userManager, 
+    EmailProvider email, 
+    IConfiguration configuration) : Service
 {
     private Notification AssertNotification(long Id)
     {
@@ -60,31 +68,29 @@ public partial class NotificationServices : Service
         var template = new EmailTemplate {
             TemplatePath = templatePath,
             ToUserIds = toUserIds.ToArray(),
-            FromEmail = AppSettings.GetString("NotificationsFromEmail"),
+            FromEmail = configuration["NotificationsFromEmail"],
             FromName = fromName,
-            CcEmail = AppSettings.GetString("NotificationsCcEmail"),
+            CcEmail = configuration["NotificationsCcEmail"],
             CcName = ccName,
             Subject = subject,
             BodyHtml = html,
             Created = DateTime.Now,
         };
 
-        using (var trans = Db.OpenTransaction())
-        {
-            template.Id = await Db.InsertAsync(template, selectIdentity: true);
+        using var trans = Db.OpenTransaction();
+        template.Id = await Db.InsertAsync(template, selectIdentity: true);
 
-            var operations = new List<string>(notification.Operations ?? TypeConstants.EmptyStringArray);
-            operations.AddIfNotExists(operation);
-            notification.Started = DateTime.Now;
-            notification.Operations = operations.ToArray();
-            notification.EmailTemplateId = template.Id;
-            notification.UserIds = toUserIds.ToArray();
-            notification.EmailedUserIds = new int[0];
+        var operations = new List<string>(notification.Operations ?? TypeConstants.EmptyStringArray);
+        operations.AddIfNotExists(operation);
+        notification.Started = DateTime.Now;
+        notification.Operations = operations.ToArray();
+        notification.EmailTemplateId = template.Id;
+        notification.UserIds = toUserIds.ToArray();
+        notification.EmailedUserIds = Array.Empty<int>();
 
-            await Db.UpdateAsync(notification);
+        await Db.UpdateAsync(notification);
 
-            trans.Commit();
-        }
+        trans.Commit();
 
         return template;
     }
@@ -97,23 +103,21 @@ public partial class NotificationServices : Service
 
     private async Task SendEmailsToRemainingUsers(Notification notification, EmailTemplate template)
     {
-        var remainingUserIds = notification.UserIds.Where(x => !notification.EmailedUserIds.Contains(x)).ToList();
+        var remainingUserIds = notification.UserIds.Where(x => !notification.EmailedUserIds.Contains(x)).Map(x => $"{x}");
         if (remainingUserIds.Count > 0)
         {
-            var users = await Db.SelectAsync<UserEmailInfo>(Db.From<CustomUserAuth>()
-                .Where(x => remainingUserIds.Contains(x.Id)));
-
-            var userMap = users.ToDictionary(x => x.Id);
-
             foreach (var userId in remainingUserIds)
             {
-                var user = userMap[userId];
+                var user = await userManager.FindByIdAsync(userId);
+                if (user == null)
+                    continue;
+                
                 if (!string.IsNullOrEmpty(user.Email))
                 {
-                    Email.Send(template.ToEmailMessage(user.Email, user.DisplayName ?? user.UserName));
+                    email.Send(template.ToEmailMessage(user.Email, user.DisplayName ?? user.UserName));
                 }
 
-                await RecordEmailSentToUser(notification.Id, userId);
+                await RecordEmailSentToUser(notification.Id, userId.ToInt());
             }
         }
         else
@@ -124,9 +128,9 @@ public partial class NotificationServices : Service
 
     private void SendNotificationEmail(EmailTemplate template, string toName)
     {
-        var notificationsEmail = AppSettings.GetString("NotificationsFromEmail");
-        var email = template.ToEmailMessage(notificationsEmail, toName);
-        Email.Send(email);
+        var notificationsEmail = configuration["NotificationsFromEmail"];
+        var emailMessage = template.ToEmailMessage(notificationsEmail, toName);
+        email.Send(emailMessage);
     }
 }
 

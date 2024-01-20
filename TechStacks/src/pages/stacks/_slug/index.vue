@@ -63,7 +63,7 @@
                       updated {{ dateFmt(new Date(techstack.lastModified)) }} by <nuxt-link :to="routes.user(techstack.lastModifiedBy)">{{ techstack.lastModifiedBy }}</nuxt-link>
                     </span>
                     <span>
-                      added by <nuxt-link :to="routes.user(techstack.createdBy)">{{ techstack.createdBy }}</nuxt-link>
+                      added by <nuxt-link :to="routes.user(techstack.ownerId)">{{ techstack.ownerId }}</nuxt-link>
                     </span>
                   </v-flex>
                 </v-card-actions>

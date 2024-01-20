@@ -5,6 +5,7 @@ using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceModel;
 
+[ValidateIsAuthenticated]
 [Route("/my-session"), Tag(Tags.User)]
 public class SessionInfo : IReturn<SessionInfoResponse>, IGet {}
 
@@ -46,6 +47,7 @@ public class SessionInfoResponse
     public ResponseStatus ResponseStatus { get; set; }
 }
     
+[ValidateIsAuthenticated]
 [Route("/my-feed"), Tag(Tags.User)]
 public class GetUserFeed : IGet {}
 
@@ -54,9 +56,10 @@ public class GetUserFeedResponse
     public List<TechStackDetails> Results { get; set; } 
 }
 
-[Route("/userinfo/{UserName}"), Tag(Tags.User)]
+[Route("/userinfo/{Id}"), Tag(Tags.User)]
 public class GetUserInfo : IReturn<GetUserInfoResponse>, IGet
 {
+    public int Id { get; set; }
     public string UserName { get; set; }
 }
 
@@ -143,10 +146,10 @@ public class GetPageStatsResponse
     public long FavCount { get; set; }
 }
 
-[Route("/users/{UserName}/avatar", "GET"), Tag(Tags.User)]
+[Route("/users/{UserId}/avatar", "GET"), Tag(Tags.User)]
 public class UserAvatar : IGet
 {
-    public string UserName { get; set; }
+    public int UserId { get; set; }
 }
 
 [Route("/users/karma", "GET"), Tag(Tags.User)]

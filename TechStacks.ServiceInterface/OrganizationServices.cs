@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using ServiceStack;
 using ServiceStack.OrmLite;
+using TechStacks.Data;
 using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 
@@ -65,7 +67,8 @@ public class PublicOrganizationServices : Service
 }
 
 [Authenticate]
-public class OrganizationServices : PostServicesBase
+public class OrganizationServices(IMarkdownProvider markdown, UserManager<ApplicationUser> userManager) 
+    : PostServicesBase(markdown)
 {
     public const string Uncategorized = nameof(Uncategorized);
 
@@ -264,7 +267,7 @@ public class OrganizationServices : PostServicesBase
 
         if (organization.Description != request.Description)
         {
-            organization.DescriptionHtml = await Markdown.TransformAsync(request.Description, user.GetGitHubToken());
+            organization.DescriptionHtml = Markdown.Transform(request.Description);
         }
 
         organization.PopulateWith(request);
@@ -445,7 +448,7 @@ public class OrganizationServices : PostServicesBase
         ClearOrganizationCaches();
     }
 
-    public object Post(AddOrganizationMember request)
+    public async Task<object> Post(AddOrganizationMember request)
     {
         var user = GetUser();
         AssertOrganizationModerator(Db, request.OrganizationId, user, out var org, out var orgMember);
@@ -454,7 +457,7 @@ public class OrganizationServices : PostServicesBase
         if (requiresOwner && !user.IsOrganizationOwner(orgMember))
             throw HttpError.Forbidden("This action is limited to Organization Owners");
 
-        var memberUser = Db.Single<CustomUserAuth>(x => x.UserName.ToLower() == request.UserName.ToLower());
+        var memberUser = await userManager.FindByNameAsync(request.UserName);
         if (memberUser == null)
             throw HttpError.NotFound("User does not exist");
 
@@ -654,11 +657,8 @@ public class OrganizationServices : PostServicesBase
         var user = GetUser();
         AssertOrganizationModerator(Db, request.OrganizationId, user, out var org, out var orgMember);
 
-        var userId = Db.Scalar<int>(Db.From<CustomUserAuth>()
-            .Where(x => x.UserName == request.UserName)
-            .Select(x => x.Id));
-
-        if (userId == default(int))
+        var userId = (await userManager.FindByNameAsync(request.UserName))?.Id;
+        if (userId == null)
             throw HttpError.NotFound("User does not exist");
 
         var now = DateTime.Now;
@@ -670,7 +670,7 @@ public class OrganizationServices : PostServicesBase
             var id = await Db.InsertAsync(new OrganizationMember
             {
                 OrganizationId = request.OrganizationId,
-                UserId = userId,
+                UserId = userId.Value,
                 UserName = request.UserName,
                 IsOwner = !hasOwnersOrModerators,
                 Created = now,

@@ -6,7 +6,7 @@ using TechStacks.ServiceModel;
 
 namespace TechStacks.ServiceInterface;
 
-public class PreRenderService : PostServicesBase
+public class PreRenderService(IMarkdownProvider markdown) : PostServicesBase(markdown)
 {
     string GetPath() => Request.RawUrl.StartsWith("/prerender")
         ? Request.RawUrl.Substring("/prerender".Length)
@@ -26,7 +26,7 @@ public class PreRenderService : PostServicesBase
                     Data = bytes,
                     ContentType = Request.ContentType,
                     Modified = DateTime.Now,
-                    ModfiedBy = user.UserName,
+                    ModifiedBy = user.UserName,
                 },
             where:x => x.Path == path);
 
@@ -39,7 +39,7 @@ public class PreRenderService : PostServicesBase
                 Created = DateTime.Now,
                 CreatedBy = user.UserName,
                 Modified = DateTime.Now,
-                ModfiedBy = user.UserName,
+                ModifiedBy = user.UserName,
             });
         }
     }

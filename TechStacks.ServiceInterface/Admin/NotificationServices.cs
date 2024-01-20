@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using ServiceStack;
 using ServiceStack.Configuration;
-using ServiceStack.DataAnnotations;
-using ServiceStack.Logging;
 using ServiceStack.OrmLite;
 using ServiceStack.Script;
 using TechStacks.ServiceInterface.DataModel;
@@ -16,12 +15,6 @@ namespace TechStacks.ServiceInterface.Admin;
 [RequiredRole("Admin")]
 public partial class NotificationServices : Service
 {
-    private static ILog log = LogManager.GetLogger(typeof(NotificationServices));
-        
-    public EmailProvider Email { get; set; } 
-        
-    public IAppSettings AppSettings { get; set; }
-
     public object Any(RetryPendingNotifications request)
     {
         var pendingNotificationIds = Db.Column<long>(Db.From<Notification>()
@@ -31,7 +24,8 @@ public partial class NotificationServices : Service
 
         if (pendingNotificationIds.Length > 0)
         {
-            log.Info($"Resending {pendingNotificationIds.Length} pending notifications: {pendingNotificationIds}");
+            log.LogInformation("Resending {Length} pending notifications: {PendingNotificationIds}",
+                pendingNotificationIds.Length, pendingNotificationIds);
 
             foreach (var notificationId in pendingNotificationIds)
             {
@@ -60,32 +54,18 @@ public partial class NotificationServices : Service
 
     public void Any(SendSystemEmail request)
     {
-        Email.Send(new EmailMessage {
+        email.Send(new EmailMessage {
             To = new MailTo {
-                Email = AppSettings.GetString("SystemToEmail"),
+                Email = configuration["SystemToEmail"],
             },
             From = new MailTo {
-                Email = AppSettings.GetString("NotificationsFromEmail"),
+                Email = configuration["NotificationsFromEmail"],
             },
             Subject = $"[SYSTEM] {request.Subject}",
             Body = request.Body,
         });
     }
 
-    public void Any(SendEmail request)
-    {
-        Email.Send(new EmailMessage {
-            To = new MailTo {
-                Email = request.To,
-            },
-            From = new MailTo {
-                Email = AppSettings.GetString("NotificationsFromEmail"),
-            },
-            Subject = request.Subject,
-            Body = request.Body,
-        });
-    }
-        
     public async Task Any(SendNotification request)
     {
         var notification = AssertNotification(request.Id);
@@ -114,7 +94,7 @@ public partial class NotificationServices : Service
         }
         else
         {
-            log.Warn($"Received notification of unknown Event Type: {notification.Event}");
+            log.LogWarning("Received notification of unknown Event Type: {Notification}", notification.Event);
         }
     }
 
@@ -126,7 +106,8 @@ public partial class NotificationServices : Service
         {
             var post = await AssertPost(notification.RefId);
             var org = await Db.SingleByIdAsync<Organization>(post.OrganizationId);
-            var user = await Db.SingleByIdAsync<CustomUserAuth>(post.UserId);
+            var user = await userManager.FindByIdAsync($"{post.UserId}")
+                ?? throw HttpError.NotFound($"User {post.UserId} not found");
 
             var q = Db.From<OrganizationSubscription>()
                 .Where(x => x.OrganizationId == post.OrganizationId)
@@ -139,7 +120,7 @@ public partial class NotificationServices : Service
             var page = context.GetPage(templatePath);
             var result = new PageResult(page) {
                 Args = {
-                    ["baseUrl"] = AppSettings.GetString("PublicBaseUrl"),
+                    ["baseUrl"] = configuration["PublicBaseUrl"],
                     ["post"] = post,
                     ["organization"] = org,
                 }
@@ -176,7 +157,7 @@ public partial class NotificationServices : Service
             var page = context.GetPage(templatePath);
             var result = new PageResult(page) {
                 Args = {
-                    ["baseUrl"] = AppSettings.GetString("PublicBaseUrl"),
+                    ["baseUrl"] = configuration["PublicBaseUrl"],
                     ["report"] = report,
                     ["post"] = post,
                     ["organization"] = org,
@@ -216,7 +197,7 @@ public partial class NotificationServices : Service
             var page = context.GetPage(templatePath);
             var result = new PageResult(page) {
                 Args = {
-                    ["baseUrl"] = AppSettings.GetString("PublicBaseUrl"),
+                    ["baseUrl"] = configuration["PublicBaseUrl"],
                     ["report"] = report,
                     ["comment"] = comment,
                     ["organization"] = org,
