@@ -222,7 +222,7 @@ a.btn:hover {
                         <a href="/tech/" aria-current="page" class="btn btn--flat btn--router" title="Technologies (4)"style="position: relative;">
                             <div class="btn__content">Technologies</div>
                         </a>
-                        @if (IsAuthenticated)
+                        @if (User.IsAuthenticated())
                         {
                             <div class="menu" style="display: inline-block;">
                                 <div class="menu__activator">
