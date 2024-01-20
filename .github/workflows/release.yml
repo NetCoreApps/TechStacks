@@ -115,6 +115,9 @@ jobs:
           echo "IMAGE_REPO=${{ env.image_repository_name }}" >> .deploy/.env
           echo "RELEASE_VERSION=${{ env.TAG_NAME }}" >> .deploy/.env
           echo "FORUMS_DB=${{ secrets.FORUMS_DB }}" >> .deploy/.env
+          echo "GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" >> .deploy/.env
+          echo "GH_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}" >> .deploy/.env
+          echo "TECHSTACKS_DB=${{ secrets.TECHSTACKS_DB }}" >> .deploy/.env
           echo "TECHSTACKS_SMTP_USER=${{ secrets.TECHSTACKS_SMTP_USER }}" >> .deploy/.env
           echo "TECHSTACKS_SMTP_PASS=${{ secrets.TECHSTACKS_SMTP_PASS }}" >> .deploy/.env
 

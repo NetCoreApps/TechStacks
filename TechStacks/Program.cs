@@ -22,8 +22,8 @@ services.AddAuthentication(options =>
     })
     .AddGitHub(options =>
     {
-        options.ClientId = config["oauth.github.ClientId"]!;
-        options.ClientSecret = config["oauth.github.ClientSecret"]!;
+        options.ClientId = Environment.GetEnvironmentVariable("GH_CLIENT_ID") ?? config["oauth.github.ClientId"]!;
+        options.ClientSecret = Environment.GetEnvironmentVariable("GH_CLIENT_SECRET") ?? config["oauth.github.ClientSecret"]!;
         options.Scope.Add("user:email");
         options.CallbackPath = "/signin-oidc-github";
     })
