@@ -70,7 +70,6 @@ services.Configure<ForwardedHeadersOptions>(options => {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
 });
 
-
 services.AddRazorPages();
 services.Configure<IdentityOptions>(options =>
 {
