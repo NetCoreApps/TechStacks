@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ServiceStack;
@@ -63,6 +64,12 @@ services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfi
     .AddSignInManager()
     .AddDefaultTokenProviders();
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, AdditionalUserClaimsPrincipalFactory>();
+
+services.Configure<ForwardedHeadersOptions>(options => {
+    //https://github.com/aspnet/IISIntegration/issues/140#issuecomment-215135928
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
+});
+
 
 services.AddRazorPages();
 services.Configure<IdentityOptions>(options =>
