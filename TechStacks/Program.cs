@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ServiceStack;
+using ServiceStack.Logging;
 using ServiceStack.OrmLite;
 using TechStacks;
 using TechStacks.Data;
@@ -35,9 +36,12 @@ services.AddAuthentication(options =>
             {
                 var uriBuilder = new UriBuilder(ctx.RedirectUri) {
                     Scheme = "https",
-                    Port = -1
+                    Port = -1 // default port for scheme
                 };
-                ctx.RedirectUri = uriBuilder.ToString();
+                var newUri = uriBuilder.ToString();
+                LogManager.GetLogger(typeof(Program)).DebugFormat("Changing URL from '{0}' to '{1}'",
+                    ctx.RedirectUri, newUri);
+                ctx.RedirectUri = newUri;
                 return Task.FromResult(0);
             }
         };
