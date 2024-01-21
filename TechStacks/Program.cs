@@ -29,24 +29,19 @@ services.AddAuthentication(options =>
         options.ClientSecret = Environment.GetEnvironmentVariable("GH_CLIENT_SECRET") ?? config["oauth.github.ClientSecret"]!;
         options.Scope.Add("user:email");
         options.CallbackPath = "/signin-oidc-github";
-        /*
-        options.Events = new OAuthEvents
+        // Force OAuth redirect as https
+        options.Events.OnRedirectToAuthorizationEndpoint = ctx =>
         {
-            // Force OAuth redirect as https
-            OnRedirectToAuthorizationEndpoint = ctx =>
-            {
-                var uriBuilder = new UriBuilder(ctx.RedirectUri) {
-                    Scheme = "https",
-                    Port = -1 // default port for scheme
-                };
-                var newUri = uriBuilder.ToString();
-                LogManager.GetLogger(typeof(Program)).DebugFormat("Changing URL from '{0}' to '{1}'",
-                    ctx.RedirectUri, newUri);
-                ctx.RedirectUri = newUri;
-                return Task.FromResult(0);
-            }
+            var uriBuilder = new UriBuilder(ctx.RedirectUri) {
+                Scheme = "https",
+                Port = -1 // default port for scheme
+            };
+            var newUri = uriBuilder.ToString();
+            LogManager.GetLogger(typeof(Program)).DebugFormat("Changing URL from '{0}' to '{1}'",
+                ctx.RedirectUri, newUri);
+            ctx.RedirectUri = newUri;
+            return Task.FromResult(0);
         };
-       */
     })
     .AddScheme<AuthenticationSchemeOptions,BasicAuthenticationHandler<ApplicationUser,int>>(BasicAuthenticationHandler.Scheme, null)
     .AddIdentityCookies(options => options.DisableRedirectsForApis());
