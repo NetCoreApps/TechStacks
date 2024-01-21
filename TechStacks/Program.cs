@@ -29,6 +29,7 @@ services.AddAuthentication(options =>
         options.ClientSecret = Environment.GetEnvironmentVariable("GH_CLIENT_SECRET") ?? config["oauth.github.ClientSecret"]!;
         options.Scope.Add("user:email");
         options.CallbackPath = "/signin-oidc-github";
+        /*
         options.Events = new OAuthEvents
         {
             // Force OAuth redirect as https
@@ -45,6 +46,7 @@ services.AddAuthentication(options =>
                 return Task.FromResult(0);
             }
         };
+       */
     })
     .AddScheme<AuthenticationSchemeOptions,BasicAuthenticationHandler<ApplicationUser,int>>(BasicAuthenticationHandler.Scheme, null)
     .AddIdentityCookies(options => options.DisableRedirectsForApis());
@@ -85,7 +87,10 @@ builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, Additio
 
 services.Configure<ForwardedHeadersOptions>(options => {
     //https://github.com/aspnet/IISIntegration/issues/140#issuecomment-215135928
-    options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
+    //https://github.com/IdentityServer/IdentityServer4/issues/324#issuecomment-309021465
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownProxies.Clear();
+    options.KnownProxies.Clear();
 });
 
 services.AddRazorPages();
