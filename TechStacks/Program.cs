@@ -67,11 +67,6 @@ services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfi
     .AddDefaultTokenProviders();
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, AdditionalUserClaimsPrincipalFactory>();
 
-services.Configure<ForwardedHeadersOptions>(options => {
-    //https://github.com/aspnet/IISIntegration/issues/140#issuecomment-215135928
-    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-});
-
 services.AddRazorPages();
 services.Configure<IdentityOptions>(options =>
 {
@@ -115,12 +110,14 @@ builder.Services.AddServiceStack(typeof(TechnologyServices).Assembly, c => {
     });
 });
 
-var app = builder.Build();
-// Force Request HTTPS to OAuth redirects include https://
-app.Use((ctx, next) => {
-    ctx.Request.Scheme = "https";
-    return next();
+//https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-3.1
+services.Configure<ForwardedHeadersOptions>(options => {
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
+
+var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 app.UseMigrationsEndPoint();
 app.UseSwagger();
