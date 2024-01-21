@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -27,6 +28,19 @@ services.AddAuthentication(options =>
         options.ClientSecret = Environment.GetEnvironmentVariable("GH_CLIENT_SECRET") ?? config["oauth.github.ClientSecret"]!;
         options.Scope.Add("user:email");
         options.CallbackPath = "/signin-oidc-github";
+        options.Events = new OAuthEvents
+        {
+            // Force OAuth redirect as https
+            OnRedirectToAuthorizationEndpoint = ctx =>
+            {
+                var uriBuilder = new UriBuilder(ctx.RedirectUri) {
+                    Scheme = "https",
+                    Port = -1
+                };
+                ctx.RedirectUri = uriBuilder.ToString();
+                return Task.FromResult(0);
+            }
+        };
     })
     .AddScheme<AuthenticationSchemeOptions,BasicAuthenticationHandler<ApplicationUser,int>>(BasicAuthenticationHandler.Scheme, null)
     .AddIdentityCookies(options => options.DisableRedirectsForApis());
