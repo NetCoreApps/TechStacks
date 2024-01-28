@@ -54,8 +54,6 @@ services.AddCors(options => {
 // $ dotnet ef database update
 var connectionString = Environment.GetEnvironmentVariable("TECHSTACKS_DB") ??
                        config.GetConnectionString("DefaultConnection");
-var dbFactory = new OrmLiteConnectionFactory(connectionString, PostgreSqlDialect.Provider);
-using var db = dbFactory.OpenDbConnection();
 
 services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString, b => b.MigrationsAssembly(nameof(TechStacks))));
