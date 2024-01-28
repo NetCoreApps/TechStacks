@@ -1,11 +1,9 @@
 ﻿using System.Threading.Tasks;
 using ServiceStack;
-using ServiceStack.Auth;
 using TechStacks.ServiceModel;
 
 namespace TechStacks.ServiceInterface;
 
-[CacheResponse(Duration = 3600, VaryByUser = true)]
 public class SessionInfoServices : Service
 {
     public async Task<SessionInfoResponse> Any(SessionInfo request)
