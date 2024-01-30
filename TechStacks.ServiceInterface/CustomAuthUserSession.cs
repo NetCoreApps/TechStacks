@@ -23,9 +23,8 @@ public class CustomUserSession : AuthUserSession
     public override void OnAuthenticated(IServiceBase authService, IAuthSession session, IAuthTokens tokens, Dictionary<string, string> authInfo)
     {
         base.OnAuthenticated(authService, session, tokens, authInfo);
-        var userAuthRepo = authService.TryResolve<IAuthRepository>();
-        var userAuth = userAuthRepo.GetUserAuth(session, tokens);
         var dbFactory = authService.TryResolve<IDbConnectionFactory>();
+        var userId = session.UserAuthId.ToInt();
 
         foreach (var authTokens in session.ProviderOAuthAccess)
         {
@@ -40,12 +39,12 @@ public class CustomUserSession : AuthUserSession
             ProfileUrl = GithubProfileUrl;
 
             using var db = dbFactory.OpenDbConnection();
-            var userActivity = db.SingleById<UserActivity>(userAuth.Id);
+            var userActivity = db.SingleById<UserActivity>(userId);
             if (userActivity == null)
             {
                 db.Insert(new UserActivity
                 {
-                    Id = userAuth.Id,
+                    Id = userId,
                     UserName = session.UserName,
                     Created = DateTime.UtcNow,
                     Modified = DateTime.UtcNow,
