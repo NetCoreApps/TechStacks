@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -7,51 +6,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using ServiceStack;
 using ServiceStack.Auth;
-using ServiceStack.Configuration;
-using ServiceStack.Data;
-using ServiceStack.DataAnnotations;
-using ServiceStack.OrmLite;
 using TechStacks.Data;
-using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface;
 
 public class CustomUserSession : AuthUserSession
 {
     public string GithubProfileUrl { get; set; }
-
-    public override void OnAuthenticated(IServiceBase authService, IAuthSession session, IAuthTokens tokens, Dictionary<string, string> authInfo)
-    {
-        base.OnAuthenticated(authService, session, tokens, authInfo);
-        var dbFactory = authService.TryResolve<IDbConnectionFactory>();
-        var userId = session.UserAuthId.ToInt();
-
-        foreach (var authTokens in session.ProviderOAuthAccess)
-        {
-            if (authTokens.Provider.ToLower() == "github")
-            {
-                if (authInfo != null && authInfo.TryGetValue("avatar_url", out var avatarUrl))
-                {
-                    GithubProfileUrl = avatarUrl;
-                }
-            }
-
-            ProfileUrl = GithubProfileUrl;
-
-            using var db = dbFactory.OpenDbConnection();
-            var userActivity = db.SingleById<UserActivity>(userId);
-            if (userActivity == null)
-            {
-                db.Insert(new UserActivity
-                {
-                    Id = userId,
-                    UserName = session.UserName,
-                    Created = DateTime.UtcNow,
-                    Modified = DateTime.UtcNow,
-                });
-            }
-        }
-    }
 }
 
 public class AdditionalUserClaimsPrincipalFactory(
@@ -74,7 +35,6 @@ public class AdditionalUserClaimsPrincipalFactory(
     }
 }
 
-
 public class CustomUserAuth : UserAuth
 {
     public string DefaultProfileUrl { get; set; }
@@ -95,4 +55,3 @@ public class CustomUserAuth : UserAuth
 
     public string CreatedBy { get; set; }
 }
-
