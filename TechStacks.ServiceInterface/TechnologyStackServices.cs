@@ -14,7 +14,7 @@ public class TechnologyStackServices : Service
     public object Get(GetTechnologyStackPreviousVersions request)
     {
         if (request.Slug == null)
-            throw new ArgumentNullException("Slug");
+            throw new ArgumentNullException(nameof(request.Slug));
 
         if (!long.TryParse(request.Slug, out var id))
         {
@@ -97,21 +97,19 @@ public class TechnologyStackServices : Service
 }
 
 [CacheResponse(Duration = 3600)]
-public class CachedTechnologyStackServices : Service
+public class CachedTechnologyStackServices(IAutoQueryDb autoQuery) : Service
 {
-    public IAutoQueryDb AutoQuery { get; set; }
-
     //Cached AutoQuery
     public async Task<object> Any(FindTechStacks request)
     {
-        using var db = AutoQuery.GetDb(request, base.Request);
-        return await AutoQuery.ExecuteAsync(request, AutoQuery.CreateQuery(request, Request, db), db);
+        using var db = autoQuery.GetDb(request, base.Request);
+        return await autoQuery.ExecuteAsync(request, autoQuery.CreateQuery(request, Request, db), db);
     }
 
     public async Task<object> Any(QueryTechStacks request)
     {
-        using var db = AutoQuery.GetDb(request, base.Request);
-        return await AutoQuery.ExecuteAsync(request, AutoQuery.CreateQuery(request, Request, db), db);
+        using var db = autoQuery.GetDb(request, base.Request);
+        return await autoQuery.ExecuteAsync(request, autoQuery.CreateQuery(request, Request, db), db);
     }
 
     private const int TechStacksAppId = 1;
@@ -178,7 +176,7 @@ public class CachedTechnologyStackServices : Service
         {
             Created = DateTime.UtcNow,
 
-            LatestTechStacks = Db.GetTechstackDetails(Db.From<TechnologyStack>().OrderByDescending(x => x.LastModified).Limit(20)),
+            LatestTechStacks = Db.GetTechStackDetails(Db.From<TechnologyStack>().OrderByDescending(x => x.LastModified).Limit(20)),
 
             TopUsers = Db.Select<UserInfo>(
                 @"select u.user_name as UserName, u.default_profile_url as AvatarUrl, COUNT(*) as StacksCount

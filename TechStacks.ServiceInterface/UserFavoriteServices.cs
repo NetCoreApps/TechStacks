@@ -15,7 +15,7 @@ public class UserFavoriteServices : Service
         var session = SessionAs<CustomUserSession>();
         var favorites = Db.Select<UserFavoriteTechnologyStack>(x => x.UserId == session.UserAuthId);
         var results = favorites.Count == 0
-            ? new List<TechnologyStack>()
+            ? []
             : Db.Select(Db.From<TechnologyStack>()
                 .Where(x => Sql.In(x.Id, favorites.Select(y => y.TechnologyStackId))));
 
@@ -81,7 +81,7 @@ public class UserFavoriteServices : Service
         var session = SessionAs<CustomUserSession>();
         var favorites = Db.Select<UserFavoriteTechnology>(x => x.UserId == session.UserAuthId).ToList();
         var results = favorites.Count == 0
-            ? new List<Technology>()
+            ? []
             : Db.Select(Db.From<Technology>()
                 .Where(x => Sql.In(x.Id, favorites.Select(y => y.TechnologyId))));
 

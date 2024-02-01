@@ -10,7 +10,7 @@ namespace TechStacks.ServiceInterface;
 
 public static class TechStackQueries
 {
-    public static List<TechStackDetails> GetTechstackDetails(this IDbConnection db, SqlExpression<TechnologyStack> stackQuery)
+    public static List<TechStackDetails> GetTechStackDetails(this IDbConnection db, SqlExpression<TechnologyStack> stackQuery)
     {
         //distinct
         var latestStacks = db.Select(stackQuery)
@@ -19,7 +19,7 @@ public static class TechStackQueries
             .ToList();
 
         if (latestStacks.Count == 0)
-            return new List<TechStackDetails>();
+            return [];
 
         var technologyChoices =
             db.LoadSelect(db.From<TechnologyChoice>()

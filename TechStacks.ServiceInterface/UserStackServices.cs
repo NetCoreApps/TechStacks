@@ -40,7 +40,7 @@ public class UserStackServices : Service
                 ts.Id == tsc.TechnologyStackId && Sql.In(tsc.TechnologyId, favTechIds));
         }
 
-        return Db.GetTechstackDetails(q);
+        return Db.GetTechStackDetails(q);
     }
 }
 

@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.Caching;
 using ServiceStack.Data;
 using ServiceStack.OrmLite;
 using ServiceStack.Script;
-using TechStacks.ServiceModel;
 using TechStacks.ServiceModel.Types;
 
 namespace TechStacks.ServiceInterface.Html;

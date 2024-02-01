@@ -42,17 +42,25 @@ public class TechnologyServices : Service
 [CacheResponse(Duration = 3600)]
 public class CachedTechnologyServices(IAutoQueryDb autoQuery) : Service
 {
-    public object Any(FindTechnologies request) =>
-        autoQuery.Execute(request, autoQuery.CreateQuery(request, Request.GetRequestParams()));
+    public object Any(FindTechnologies request)
+    {
+        using var db = autoQuery.GetDb(request, base.Request);
+        var q = autoQuery.CreateQuery(request, base.Request, db);
+        return autoQuery.Execute(request, q, base.Request, db);
+    }
 
-    public object Any(QueryTechnology request) =>
-        autoQuery.Execute(request, autoQuery.CreateQuery(request, Request.GetRequestParams()));
+    public object Any(QueryTechnology request)
+    {
+        using var db = autoQuery.GetDb(request, base.Request);
+        var q = autoQuery.CreateQuery(request, base.Request, db);
+        return autoQuery.Execute(request, q, base.Request, db);
+    }
 
     public object Get(GetTechnology request)
     {
         if (string.IsNullOrEmpty(request.Slug))
             throw new ArgumentNullException(nameof(request.Slug));
-            
+
         var tech = int.TryParse(request.Slug, out var id)
             ? Db.SingleById<Technology>(id)
             : Db.Single<Technology>(x => x.Slug == request.Slug.ToLower());
