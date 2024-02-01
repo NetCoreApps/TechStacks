@@ -103,13 +103,15 @@ public class CachedTechnologyStackServices(IAutoQueryDb autoQuery) : Service
     public async Task<object> Any(FindTechStacks request)
     {
         using var db = autoQuery.GetDb(request, base.Request);
-        return await autoQuery.ExecuteAsync(request, autoQuery.CreateQuery(request, Request, db), db);
+        var q = autoQuery.CreateQuery(request, Request, db);
+        return await autoQuery.ExecuteAsync(request, q, db);
     }
 
     public async Task<object> Any(QueryTechStacks request)
     {
         using var db = autoQuery.GetDb(request, base.Request);
-        return await autoQuery.ExecuteAsync(request, autoQuery.CreateQuery(request, Request, db), db);
+        var q = autoQuery.CreateQuery(request, Request, db);
+        return await autoQuery.ExecuteAsync(request, q, db);
     }
 
     private const int TechStacksAppId = 1;
