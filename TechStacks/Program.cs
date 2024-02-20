@@ -37,19 +37,6 @@ services.AddDataProtection()
 
 services.AddAuthorization();
 
-services.AddCors(options => {
-    options.AddDefaultPolicy(policy => {
-        policy.WithOrigins([
-            "http://localhost:5000", "https://localhost:5001", "http://localhost:8080", 
-            "https://localhost:5173", "http://localhost:5173",
-            "http://run.plnkr.co", "http://null.jsbin.com",
-        ])
-        .AllowCredentials()
-        .WithHeaders(["Content-Type", "Allow", "Authorization"])
-        .SetPreflightMaxAge(TimeSpan.FromHours(1));
-    });
-});
-
 // $ dotnet ef migrations add CreateIdentitySchema
 // $ dotnet ef database update
 var connectionString = Environment.GetEnvironmentVariable("TECHSTACKS_DB") ??
