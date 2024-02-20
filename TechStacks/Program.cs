@@ -40,9 +40,9 @@ services.AddAuthorization();
 services.AddCors(options => {
     options.AddDefaultPolicy(policy => {
         policy.WithOrigins([
-            "https://techstacks.io", "https://www.techstacks.io",
-            "http://localhost:3000", "http://localhost:16325", "http://localhost:8080", "http://null.jsbin.com",
-            "http://run.plnkr.co"
+            "http://localhost:5000", "https://localhost:5001", "http://localhost:8080", 
+            "https://localhost:5173", "http://localhost:5173",
+            "http://run.plnkr.co", "http://null.jsbin.com",
         ])
         .AllowCredentials()
         .WithHeaders(["Content-Type", "Allow", "Authorization"])
