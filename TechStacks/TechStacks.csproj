@@ -19,8 +19,8 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.*" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.*" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.*" />
-        <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="8.0.0" />
-        <PackageReference Include="Markdig" Version="0.34.*" />
+        <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="8.*" />
+        <PackageReference Include="Markdig" Version="0.37.*" />
 
         <PackageReference Include="ServiceStack" Version="8.*"/>
         <PackageReference Include="ServiceStack.Mvc" Version="8.*"/>
