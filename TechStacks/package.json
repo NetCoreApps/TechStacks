@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "ui:dev": "npx tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --watch",
-    "ui:build": "npx tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify",
+    "ui:dev": "npx tailwindcss@v3 -i ./tailwind.input.css -o ./wwwroot/css/app.css --watch",
+    "ui:build": "npx tailwindcss@v3 -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify",
     "dtos": "cd src/shared && x ts && tsc -m ES6 dtos.ts",
     "build": "shx cp wwwroot/css/app.css src/static/css/app.css && nuxt build",
     "publish": "nuxt build && dotnet publish -c Release",
