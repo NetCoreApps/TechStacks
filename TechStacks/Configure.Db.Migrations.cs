@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ServiceStack;
 using ServiceStack.Configuration;
@@ -58,6 +59,9 @@ public class ConfigureDbMigrations : IHostingStartup
                 using var scope = scopeFactory.CreateScope();
                 MigrateUserRoles(scope.ServiceProvider).Wait();
             });
+            AppTasks.Register("App.json", args => // Default App.db
+                appHost.VirtualFiles.WriteFile("App_Data/App.json", ClientConfig.ToSystemJson(
+                    migrator.DbFactory.GetTables(namedConnection:null, schema:null))));
             AppTasks.Run();
         });
 
