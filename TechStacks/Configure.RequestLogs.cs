@@ -10,10 +10,10 @@ public class ConfigureRequestLogs : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder) => builder
         .ConfigureServices((context, services) => {
-            
+
             services.AddPlugin(new RequestLogsFeature {
                 RequestLogger = new SqliteRequestLogger(),
-                EnableResponseTracking = true,
+                // EnableResponseTracking = true,
                 EnableRequestBodyTracking = true,
                 EnableErrorTracking = true
             });
