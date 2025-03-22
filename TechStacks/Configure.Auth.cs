@@ -16,7 +16,7 @@ public class ConfigureAuth : IHostingStartup
         .ConfigureServices(services =>
         {
             Console.WriteLine("ConfigureAuth.ConfigureServices()");
-            services.AddPlugin(new AuthFeature(IdentityAuth.For<ApplicationUser,int>(options => {
+            services.AddPlugin(new AuthFeature(IdentityAuth.For<ApplicationUser,ApplicationRole,int>(options => {
                 options.SessionFactory = () => new CustomUserSession();
                 options.CredentialsAuth();
 
@@ -61,82 +61,5 @@ public class ConfigureAuth : IHostingStartup
                 });
 
             })));
-
-            services.TryAddScoped(typeof(RoleManager<IdentityRole>), CreateRoleManagerAdapter<ApplicationRole>);
         });
-
-    public static RoleManager<IdentityRole> CreateRoleManagerAdapter<TRole>(IServiceProvider services) where TRole : class
-    {
-        //var nativeRoleManager = services.GetRequiredService<RoleManager<TRole>>();
-        var adapter = new RoleManager<IdentityRole>(
-            CreateRoleStoreAdapter<TRole>(services),
-            [],
-            services.GetRequiredService<ILookupNormalizer>(),
-            services.GetRequiredService<IdentityErrorDescriber>(),
-            new Logger<RoleManager<IdentityRole>>(services.GetRequiredService<ILoggerFactory>())
-        );
-        return adapter;
-    }
-
-    public static IRoleStore<IdentityRole> CreateRoleStoreAdapter<TRole>(IServiceProvider services) where TRole : class
-    {
-        return new AdapterRoleStore<TRole>(services.GetRequiredService<IRoleStore<TRole>>());
-    }
-
-    class AdapterRoleStore<TRole>(IRoleStore<TRole> store) : IRoleStore<IdentityRole> where TRole : class
-    {
-        public void Dispose()
-        {
-        }
-
-        public Task<IdentityResult> CreateAsync(IdentityRole role, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IdentityResult> UpdateAsync(IdentityRole role, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IdentityResult> DeleteAsync(IdentityRole role, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string> GetRoleIdAsync(IdentityRole role, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string?> GetRoleNameAsync(IdentityRole role, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetRoleNameAsync(IdentityRole role, string? roleName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string?> GetNormalizedRoleNameAsync(IdentityRole role, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetNormalizedRoleNameAsync(IdentityRole role, string? normalizedName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IdentityRole?> FindByIdAsync(string roleId, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IdentityRole?> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
