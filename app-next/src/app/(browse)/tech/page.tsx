@@ -4,6 +4,7 @@ import { getTechnologies } from '@/lib/api/queries-server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { GridSkeleton } from '@/components/shared/loading-skeleton'
 import { EmptyState } from '@/components/shared/error-state'
+import { PageHeader } from '@/components/browse/page-header'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,12 +18,12 @@ export default async function TechPage({
 
   return (
     <div className="container py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight">Technologies</h1>
-        <p className="text-lg text-muted-foreground mt-2">
-          Browse and discover technologies used by top companies
-        </p>
-      </div>
+      <PageHeader
+        title="Technologies"
+        description="Browse and discover technologies used by top companies"
+        createHref="/tech/new"
+        createLabel="Add Technology"
+      />
 
       <div className="mb-6">
         <form action="/tech" method="get">

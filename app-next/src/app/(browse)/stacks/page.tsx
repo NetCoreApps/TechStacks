@@ -4,6 +4,7 @@ import { getTechnologyStacks } from '@/lib/api/queries-server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { GridSkeleton } from '@/components/shared/loading-skeleton'
 import { EmptyState } from '@/components/shared/error-state'
+import { PageHeader } from '@/components/browse/page-header'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,12 +18,12 @@ export default async function StacksPage({
 
   return (
     <div className="container py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight">Technology Stacks</h1>
-        <p className="text-lg text-muted-foreground mt-2">
-          Explore complete technology stacks from successful companies
-        </p>
-      </div>
+      <PageHeader
+        title="Technology Stacks"
+        description="Explore complete technology stacks from successful companies"
+        createHref="/stacks/new"
+        createLabel="Create Stack"
+      />
 
       <div className="mb-6">
         <form action="/stacks" method="get">
