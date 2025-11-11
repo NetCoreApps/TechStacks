@@ -1,0 +1,11 @@
+# Auto-generated files
+src/lib/dtos.ts
+src/lib/dtos.js
+
+# Build output
+.next
+out
+node_modules
+
+# Generated types
+next-env.d.ts
