@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/lib/api/auth'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export function Header() {
   const { user, isAuthenticated, signInWithGitHub, signOut } = useAuth()
@@ -38,6 +39,12 @@ export function Header() {
             Stacks
           </Link>
           <Link
+            href="/organizations"
+            className="transition-colors hover:text-foreground/80 text-foreground/60"
+          >
+            Organizations
+          </Link>
+          <Link
             href="/top"
             className="transition-colors hover:text-foreground/80 text-foreground/60"
           >
@@ -54,6 +61,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
