@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getTechnology } from '@/lib/api/queries-server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { TechnologyHeader } from '@/components/technology/technology-header'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,16 +32,13 @@ export default async function TechDetailPage({
   return (
     <div className="container py-8">
       <div className="mb-8">
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-4xl font-bold tracking-tight">{technology.name}</h1>
-            <p className="text-lg text-muted-foreground mt-2">
-              {technology.tier}
-              {technology.vendorName && ` by ${technology.vendorName}`}
-            </p>
-          </div>
-          <Button size="lg">❤️ Favorite</Button>
-        </div>
+        <TechnologyHeader
+          name={technology.name}
+          tier={technology.tier}
+          vendorName={technology.vendorName}
+          id={technology.id!}
+          favCount={technology.favCount || 0}
+        />
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">

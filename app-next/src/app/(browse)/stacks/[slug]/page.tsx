@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getTechnologyStack } from '@/lib/api/queries-server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { StackHeader } from '@/components/stack/stack-header'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,15 +32,12 @@ export default async function StackDetailPage({
   return (
     <div className="container py-8">
       <div className="mb-8">
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-4xl font-bold tracking-tight">{stack.name}</h1>
-            <p className="text-lg text-muted-foreground mt-2">
-              {stack.vendorName && `by ${stack.vendorName}`}
-            </p>
-          </div>
-          <Button size="lg">❤️ Favorite</Button>
-        </div>
+        <StackHeader
+          name={stack.name}
+          vendorName={stack.vendorName}
+          id={stack.id}
+          favCount={stack.favCount || 0}
+        />
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">

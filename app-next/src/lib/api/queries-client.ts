@@ -12,6 +12,12 @@ import {
   QueryResponse,
   TechnologyView,
   TechnologyStackView,
+  AddFavoriteTechnology,
+  RemoveFavoriteTechnology,
+  AddFavoriteTechStack,
+  RemoveFavoriteTechStack,
+  GetFavoriteTechnologies,
+  GetFavoriteTechStack,
 } from '@/lib/dtos'
 
 // React Query hooks for client-side
@@ -107,5 +113,96 @@ export function useTopTechnologyStacks(take: number = 10) {
       return await client.get(request)
     },
     staleTime: 10 * 60 * 1000,
+  })
+}
+
+// Favorite mutations
+
+export function useAddFavoriteTechnology() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (technologyId: number) => {
+      const request = new AddFavoriteTechnology({ technologyId })
+      return await client.put(request)
+    },
+    onSuccess: () => {
+      // Invalidate relevant queries to refetch
+      queryClient.invalidateQueries({ queryKey: ['technology'] })
+      queryClient.invalidateQueries({ queryKey: ['technologies'] })
+      queryClient.invalidateQueries({ queryKey: ['favorites'] })
+    },
+  })
+}
+
+export function useRemoveFavoriteTechnology() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (technologyId: number) => {
+      const request = new RemoveFavoriteTechnology({ technologyId })
+      return await client.delete(request)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['technology'] })
+      queryClient.invalidateQueries({ queryKey: ['technologies'] })
+      queryClient.invalidateQueries({ queryKey: ['favorites'] })
+    },
+  })
+}
+
+export function useAddFavoriteTechStack() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (technologyStackId: number) => {
+      const request = new AddFavoriteTechStack({ technologyStackId })
+      return await client.put(request)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['techstack'] })
+      queryClient.invalidateQueries({ queryKey: ['techstacks'] })
+      queryClient.invalidateQueries({ queryKey: ['favorites'] })
+    },
+  })
+}
+
+export function useRemoveFavoriteTechStack() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (technologyStackId: number) => {
+      const request = new RemoveFavoriteTechStack({ technologyStackId })
+      return await client.delete(request)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['techstack'] })
+      queryClient.invalidateQueries({ queryKey: ['techstacks'] })
+      queryClient.invalidateQueries({ queryKey: ['favorites'] })
+    },
+  })
+}
+
+// Get user favorites
+
+export function useFavoriteTechnologies() {
+  return useQuery({
+    queryKey: ['favorites', 'technologies'],
+    queryFn: async () => {
+      const request = new GetFavoriteTechnologies()
+      return await client.get(request)
+    },
+    staleTime: 2 * 60 * 1000,
+  })
+}
+
+export function useFavoriteTechStacks() {
+  return useQuery({
+    queryKey: ['favorites', 'techstacks'],
+    queryFn: async () => {
+      const request = new GetFavoriteTechStack()
+      return await client.get(request)
+    },
+    staleTime: 2 * 60 * 1000,
   })
 }
