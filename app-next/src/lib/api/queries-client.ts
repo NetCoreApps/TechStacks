@@ -18,6 +18,8 @@ import {
   RemoveFavoriteTechStack,
   GetFavoriteTechnologies,
   GetFavoriteTechStack,
+  GetOrganizationBySlug,
+  GetUserOrganizations,
 } from '@/lib/dtos'
 
 // React Query hooks for client-side
@@ -201,6 +203,30 @@ export function useFavoriteTechStacks() {
     queryKey: ['favorites', 'techstacks'],
     queryFn: async () => {
       const request = new GetFavoriteTechStack()
+      return await client.get(request)
+    },
+    staleTime: 2 * 60 * 1000,
+  })
+}
+
+// Organization queries
+
+export function useOrganization(slug: string) {
+  return useQuery({
+    queryKey: ['organization', slug],
+    queryFn: async () => {
+      const request = new GetOrganizationBySlug({ slug })
+      return await client.get(request)
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useUserOrganizations() {
+  return useQuery({
+    queryKey: ['user', 'organizations'],
+    queryFn: async () => {
+      const request = new GetUserOrganizations()
       return await client.get(request)
     },
     staleTime: 2 * 60 * 1000,

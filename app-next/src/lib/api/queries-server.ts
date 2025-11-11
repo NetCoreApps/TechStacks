@@ -9,6 +9,10 @@ import {
   QueryResponse,
   TechnologyView,
   TechnologyStackView,
+  GetOrganizationBySlug,
+  GetOrganizationResponse,
+  GetUserOrganizations,
+  GetUserOrganizationsResponse,
 } from '@/lib/dtos'
 
 // Server-side data fetching for RSC
@@ -74,5 +78,17 @@ export async function getTopTechnologyStacks(
     take,
     orderByDesc: 'FavCount',
   })
+  return await serverClient.get(request)
+}
+
+// Organization queries
+
+export async function getOrganization(slug: string): Promise<GetOrganizationResponse> {
+  const request = new GetOrganizationBySlug({ slug })
+  return await serverClient.get(request)
+}
+
+export async function getUserOrganizations(): Promise<GetUserOrganizationsResponse> {
+  const request = new GetUserOrganizations()
   return await serverClient.get(request)
 }
