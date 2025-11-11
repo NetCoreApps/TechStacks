@@ -1,24 +1,32 @@
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import { getTechnology } from '@/lib/api/queries-server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-export default async function TechDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export const dynamic = 'force-dynamic'
+
+export default async function TechDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
   const { slug } = await params
-  // Mock data for demonstration
-  const technology = {
-    name: 'React',
-    tier: 'Frontend Library',
-    vendor: 'Meta',
-    description: 'React is a declarative, efficient, and flexible JavaScript library for building user interfaces. It lets you compose complex UIs from small and isolated pieces of code called "components".',
-    website: 'https://react.dev',
-    favCount: 1234,
-    stackCount: 567,
+
+  let techResponse
+  try {
+    techResponse = await getTechnology(slug)
+  } catch (error) {
+    notFound()
   }
 
-  const relatedStacks = [
-    { id: 1, name: 'Modern Web Stack', techCount: 8 },
-    { id: 2, name: 'E-commerce Platform', techCount: 12 },
-    { id: 3, name: 'SaaS Starter', techCount: 10 },
-  ]
+  const technology = techResponse.technology
+
+  if (!technology) {
+    notFound()
+  }
+
+  const relatedStacks = techResponse.technologyStacks || []
 
   return (
     <div className="container py-8">
@@ -27,7 +35,8 @@ export default async function TechDetailPage({ params }: { params: Promise<{ slu
           <div>
             <h1 className="text-4xl font-bold tracking-tight">{technology.name}</h1>
             <p className="text-lg text-muted-foreground mt-2">
-              {technology.tier} by {technology.vendor}
+              {technology.tier}
+              {technology.vendorName && ` by ${technology.vendorName}`}
             </p>
           </div>
           <Button size="lg">❤️ Favorite</Button>
@@ -35,52 +44,110 @@ export default async function TechDetailPage({ params }: { params: Promise<{ slu
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-8">
           <Card>
             <CardHeader>
               <CardTitle>About {technology.name}</CardTitle>
             </CardHeader>
-            <CardContent className="prose max-w-none">
-              <p>{technology.description}</p>
+            <CardContent className="prose prose-slate max-w-none">
+              {technology.description ? (
+                <p>{technology.description}</p>
+              ) : (
+                <p className="text-muted-foreground italic">No description available.</p>
+              )}
             </CardContent>
           </Card>
 
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">Stacks using {technology.name}</h2>
-            <div className="grid gap-4">
-              {relatedStacks.map((stack) => (
-                <Card key={stack.id}>
-                  <CardHeader>
-                    <CardTitle>{stack.name}</CardTitle>
-                    <CardDescription>{stack.techCount} technologies</CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
+          {relatedStacks.length > 0 && (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">
+                Stacks using {technology.name} ({relatedStacks.length})
+              </h2>
+              <div className="grid gap-4">
+                {relatedStacks.map((stack) => (
+                  <Link key={stack.id} href={`/stacks/${stack.slug}`}>
+                    <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                      <CardHeader>
+                        <CardTitle>{stack.name}</CardTitle>
+                        <CardDescription>
+                          {stack.vendorName && `by ${stack.vendorName}`}
+                        </CardDescription>
+                      </CardHeader>
+                      {stack.description && (
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground line-clamp-2">
+                            {stack.description}
+                          </p>
+                        </CardContent>
+                      )}
+                    </Card>
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
-        <div>
+        <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Stats</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <div className="text-2xl font-bold">{technology.favCount}</div>
+                <div className="text-2xl font-bold">{technology.favCount || 0}</div>
                 <div className="text-sm text-muted-foreground">Favorites</div>
               </div>
               <div>
-                <div className="text-2xl font-bold">{technology.stackCount}</div>
+                <div className="text-2xl font-bold">{relatedStacks.length}</div>
                 <div className="text-sm text-muted-foreground">Used in Stacks</div>
               </div>
-              {technology.website && (
-                <div className="pt-4">
+              <div>
+                <div className="text-2xl font-bold">{technology.viewCount || 0}</div>
+                <div className="text-sm text-muted-foreground">Page Views</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {technology.productUrl && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Links</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button variant="outline" className="w-full" asChild>
+                  <a href={technology.productUrl} target="_blank" rel="noopener noreferrer">
+                    Visit Website →
+                  </a>
+                </Button>
+                {technology.vendorUrl && (
                   <Button variant="outline" className="w-full" asChild>
-                    <a href={technology.website} target="_blank" rel="noopener noreferrer">
-                      Visit Website →
+                    <a href={technology.vendorUrl} target="_blank" rel="noopener noreferrer">
+                      Vendor Site →
                     </a>
                   </Button>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Info</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {technology.createdBy && (
+                <div>
+                  <div className="font-medium">Created by</div>
+                  <div className="text-muted-foreground">{technology.createdBy}</div>
+                </div>
+              )}
+              {technology.created && (
+                <div>
+                  <div className="font-medium">Added</div>
+                  <div className="text-muted-foreground">
+                    {new Date(technology.created).toLocaleDateString()}
+                  </div>
                 </div>
               )}
             </CardContent>
