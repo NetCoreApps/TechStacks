@@ -16,6 +16,110 @@ This document outlines a comprehensive plan to migrate the TechStacks web applic
 
 ---
 
+## 🎯 CRITICAL: ALL DATA FLOWS THROUGH EXISTING C# APIS
+
+**This Next.js application is a pure UI layer with ZERO independent data sources.**
+
+### Data Source Architecture
+
+✅ **What the Next.js app DOES:**
+- Renders beautiful, modern React UI
+- Handles client-side routing and navigation
+- Manages UI state (loading, modals, forms)
+- Caches API responses for performance
+- Handles authentication session display
+
+❌ **What the Next.js app DOES NOT do:**
+- ❌ Direct database access
+- ❌ Independent REST APIs
+- ❌ GraphQL layer
+- ❌ Custom data processing/transformation
+- ❌ Bypassing ServiceStack in any way
+
+### Every Single Piece of Data Comes From C# ServiceStack APIs
+
+| Data Type | Source API Endpoint | Section Reference |
+|-----------|-------------------|-------------------|
+| **Technologies** | `GetTechnology`, `GetAllTechnologies`, `QueryTechnology` | Section 4.2 |
+| **Tech Stacks** | `GetTechnologyStack`, `GetAllTechnologyStacks` | Section 4.2 |
+| **Posts** | `QueryPosts`, `GetPost`, `CreatePost`, `UpdatePost` | Section 4.2 |
+| **Comments** | `GetPostComments`, `CreatePostComment`, `UpdatePostComment` | Section 4.2 |
+| **Organizations** | `GetOrganizationBySlug`, `GetOrganizationById` | Section 4.2 |
+| **Users** | `GetUserInfo`, `GetUserFeed`, `GetUserOrganizations` | Section 4.2 |
+| **Authentication** | `Authenticate`, `SessionInfo` | Section 6 |
+| **Favorites** | `AddFavoriteTechnology`, `RemoveFavoriteTechnology` | Section 4.2 |
+| **Votes** | `UserPostVote`, `UserPostCommentVote` | Section 4.2 |
+| **Search** | `QueryTechnology`, `QueryTechStacks`, `QueryPosts` | Section 4.2 |
+| **Configuration** | `GetConfig`, `Overview` | Section 4.2 |
+
+### Data Flow Diagram
+
+```
+┌─────────────────────────────────────────────────┐
+│  Next.js React Components (UI Only)             │
+│  ├─ Display data from props/state               │
+│  ├─ Handle user interactions                    │
+│  └─ Trigger API calls via gateway               │
+└────────────────┬────────────────────────────────┘
+                 │
+                 ↓
+┌─────────────────────────────────────────────────┐
+│  Zustand Store (Client-side Cache Only)         │
+│  ├─ Caches API responses temporarily            │
+│  ├─ Stores user session from C# API             │
+│  └─ NO independent data processing              │
+└────────────────┬────────────────────────────────┘
+                 │
+                 ↓
+┌─────────────────────────────────────────────────┐
+│  Gateway Layer (lib/api/gateway.ts)             │
+│  ├─ Thin wrapper around JsonServiceClient       │
+│  ├─ Maps function calls to DTO requests         │
+│  └─ NO business logic                           │
+└────────────────┬────────────────────────────────┘
+                 │
+                 ↓
+┌─────────────────────────────────────────────────┐
+│  @servicestack/client (JsonServiceClient)       │
+│  ├─ HTTP calls to /api/* endpoints              │
+│  ├─ Serializes DTOs to JSON                     │
+│  └─ Handles authentication cookies              │
+└────────────────┬────────────────────────────────┘
+                 │
+                 ↓
+┌─────────────────────────────────────────────────┐
+│  C# ServiceStack Backend ← ALL DATA HERE        │
+│  ├─ ServiceStack Services (business logic)      │
+│  ├─ AutoQuery (dynamic queries)                 │
+│  ├─ Validation & Authorization                  │
+│  ├─ OrmLite + Entity Framework                  │
+│  └─ PostgreSQL Database                         │
+└─────────────────────────────────────────────────┘
+```
+
+### API Integration Guarantee
+
+**Every API call in the Next.js app follows this pattern:**
+
+```typescript
+// 1. Import typed DTO from C# project
+import { GetTechnology } from '@/shared/dtos';
+
+// 2. Import gateway method (wrapper around JsonServiceClient)
+import * as gateway from '@/lib/api/gateway';
+
+// 3. Call C# API - no alternative data sources
+export async function loadTechnology(slug: string) {
+  // This calls: https://techstacks.io/api/GetTechnology?slug=typescript
+  const response = await gateway.getTechnology(slug);
+  return response.result; // Data comes directly from C# API
+}
+```
+
+**The DTOs (`shared/dtos.ts`) are auto-generated from the C# project** - ensuring the Next.js app cannot deviate from the ServiceStack API contract.
+
+---
+
 ## Table of Contents
 
 1. [Project Structure & Setup](#1-project-structure--setup)
