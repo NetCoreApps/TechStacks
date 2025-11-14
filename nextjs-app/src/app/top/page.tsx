@@ -116,8 +116,8 @@ export default function TopPage() {
                     </Link>
                     <div className="p-4">
                       <div className="space-y-3">
-                        {tierTechs.slice(0, 5).map((tech: any) => (
-                          <div key={tech.id} className="flex items-center gap-3">
+                        {tierTechs.slice(0, 5).map((tech: any, index: number) => (
+                          <div key={`${tier.name}-${tech.tier}-${tech.slug || index}`} className="flex items-center gap-3">
                             <div className="text-xl font-semibold text-gray-500 min-w-[50px]">
                               <em>({tech.stacksCount})</em>
                             </div>
@@ -158,8 +158,8 @@ export default function TopPage() {
               </Link>
               <div className="p-4">
                 <div className="space-y-3">
-                  {topTechnologies.slice(0, 20).map((tech: any) => (
-                    <div key={tech.id} className="text-lg">
+                  {topTechnologies.slice(0, 20).map((tech: any, index: number) => (
+                    <div key={`top-${tech.slug || tech.id || index}`} className="text-lg">
                       <Link
                         href={routes.tech(tech.slug)}
                         className="text-gray-900 hover:text-primary-600 font-medium"

@@ -82,8 +82,10 @@ app.prepare().then(() => {
             const parsedUrl = parse(req.url, true)
             const { pathname } = parsedUrl
 
-            // Proxy /api requests to the backend
-            if (pathname.startsWith('/api')) {
+            // Proxy /api, /auth, and /Identity requests to the backend
+            if (pathname.startsWith('/api') ||
+                pathname.startsWith('/auth') ||
+                pathname.startsWith('/Identity')) {
                 apiProxy(req, res)
             } else {
                 // Handle all other requests with Next.js
@@ -101,7 +103,7 @@ app.prepare().then(() => {
     })
     .listen(port, () => {
         console.log(`> Ready on http://${hostname}:${port}`)
-        console.log(`> Proxying /api requests to ${target}`)
+        console.log(`> Proxying /api, /auth, and /Identity requests to ${target}`)
     })
 })
 

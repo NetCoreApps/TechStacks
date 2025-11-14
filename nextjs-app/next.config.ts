@@ -12,9 +12,6 @@ const nextConfig: NextConfig = {
     unoptimized: isProd // Required for static export
   },
 
-  // Trailing slashes for compatibility
-  trailingSlash: true,
-
   // TypeScript configuration
   typescript: {
     ignoreBuildErrors: false

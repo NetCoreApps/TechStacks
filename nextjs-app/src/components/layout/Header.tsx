@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
@@ -8,6 +9,11 @@ import routes from '@/lib/utils/routes';
 export function Header() {
   const pathname = usePathname();
   const { isAuthenticated, sessionInfo } = useAuth();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isActive = (path: string) => pathname === path;
 
@@ -63,7 +69,7 @@ export function Header() {
             >
               Technologies
             </Link>
-            {isAuthenticated && (
+            {mounted && isAuthenticated && (
               <Link
                 href={routes.favorites()}
                 className={`px-4 py-2 rounded hover:bg-gray-800 ${
@@ -78,7 +84,10 @@ export function Header() {
 
           {/* User Section */}
           <div className="flex items-center">
-            {isAuthenticated && sessionInfo ? (
+            {!mounted ? (
+              // Placeholder during SSR to prevent hydration mismatch
+              <div className="w-20 h-10"></div>
+            ) : isAuthenticated && sessionInfo ? (
               <div className="relative group">
                 <button className="flex items-center space-x-2 hover:bg-gray-800 rounded px-2 py-1">
                   {sessionInfo.profileUrl && (
