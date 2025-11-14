@@ -1,50 +1,77 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { PostsList } from '@/components/posts/PostsList';
+import * as gateway from '@/lib/api/gateway';
+
 export default function HomePage() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        setLoading(true);
+        const response = await gateway.queryPosts({ orderBy: 'rank', take: 50 });
+        setPosts(response.results || []);
+      } catch (err: any) {
+        console.error('Failed to load posts:', err);
+        setError(err.message || 'Failed to load posts');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPosts();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Welcome to TechStacks
-        </h1>
-        <p className="text-lg text-gray-600">
-          Next.js 16 Migration - Phase 1: Foundation Complete
-        </p>
-        <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-semibold mb-4">Migration Progress</h2>
-          <ul className="space-y-2">
-            <li className="flex items-center">
-              <span className="text-green-500 mr-2">✓</span>
-              Next.js 16 setup complete
-            </li>
-            <li className="flex items-center">
-              <span className="text-green-500 mr-2">✓</span>
-              TypeScript configuration
-            </li>
-            <li className="flex items-center">
-              <span className="text-green-500 mr-2">✓</span>
-              Tailwind CSS v4 configured
-            </li>
-            <li className="flex items-center">
-              <span className="text-green-500 mr-2">✓</span>
-              API client and gateway layer
-            </li>
-            <li className="flex items-center">
-              <span className="text-green-500 mr-2">✓</span>
-              Zustand store for state management
-            </li>
-            <li className="flex items-center">
-              <span className="text-green-500 mr-2">✓</span>
-              Authentication hooks and provider
-            </li>
-            <li className="flex items-center">
-              <span className="text-gray-400 mr-2">○</span>
-              UI component library (pending)
-            </li>
-            <li className="flex items-center">
-              <span className="text-gray-400 mr-2">○</span>
-              Page components (pending)
-            </li>
-          </ul>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">Latest News</h1>
         </div>
+
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="text-gray-600">Loading posts...</div>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 my-4">
+            <p className="text-red-800">{error}</p>
+          </div>
+        )}
+
+        {!loading && !error && posts.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <PostsList posts={posts} />
+            </div>
+            <div className="space-y-4">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-sm font-semibold text-gray-500 uppercase mb-4">
+                  Sponsored by:
+                </h3>
+                <a href="https://servicestack.net" target="_blank" rel="noopener noreferrer">
+                  <img
+                    src="/img/logo-text.svg"
+                    alt="ServiceStack"
+                    className="w-full"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!loading && !error && posts.length === 0 && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 my-4">
+            <p className="text-blue-800">No posts found</p>
+          </div>
+        )}
       </div>
     </div>
   );
