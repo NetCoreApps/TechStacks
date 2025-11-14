@@ -17,7 +17,7 @@ export default function TechStackDetailPage({
   const [stack, setStack] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { isAuthenticated } = useAuth();
-  const { favoriteTechStackIds, addFavoriteTechStack, removeFavoriteTechStack } =
+  const { favoriteTechStackIds, addFavoriteTechStack, removeFavoriteTechStack, config } =
     useAppStore();
 
   useEffect(() => {
@@ -124,31 +124,50 @@ export default function TechStackDetailPage({
 
             {stack.technologyChoices && stack.technologyChoices.length > 0 && (
               <div className="mt-8">
-                <h2 className="text-2xl font-semibold mb-4">Technology Stack</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {stack.technologyChoices.map((choice: any) => (
-                    <div key={choice.technologyId} className="bg-gray-50 rounded-lg p-4">
-                      <div className="flex items-center gap-3">
-                        {choice.technology?.logoUrl && (
-                          <img
-                            src={choice.technology.logoUrl}
-                            alt={choice.technology.name}
-                            className="w-12 h-12 object-contain"
-                          />
-                        )}
-                        <div className="flex-1">
+                <h2 className="text-2xl font-semibold mb-6">Technologies used by {stack.name}</h2>
+                {/* Group by tier */}
+                {config?.allTiers?.map((tier: any) => {
+                  const tierTechs = stack.technologyChoices.filter((tech: any) => tech.tier === tier.name);
+                  if (tierTechs.length === 0) return null;
+
+                  return (
+                    <div key={tier.name} className="mb-8">
+                      <h3 className="text-xl font-semibold text-gray-700 mb-4">{tier.title}</h3>
+                      <div className="flex flex-wrap gap-6 items-center">
+                        {tierTechs.map((tech: any) => (
                           <Link
-                            href={routes.tech(choice.technology?.slug || '')}
-                            className="font-semibold text-gray-900 hover:text-primary-600"
+                            key={tech.id}
+                            href={routes.tech(tech.slug)}
+                            className="hover:opacity-80 transition-opacity"
+                            title={tech.name}
                           >
-                            {choice.technology?.name}
+                            {tech.logoApproved && tech.logoUrl && (
+                              <img
+                                src={tech.logoUrl}
+                                alt={tech.name}
+                                className="max-w-[300px] max-h-20 object-contain"
+                              />
+                            )}
+                            {(!tech.logoApproved || !tech.logoUrl) && (
+                              <div className="px-4 py-2 bg-gray-100 rounded">
+                                <span className="font-semibold text-gray-900">{tech.name}</span>
+                              </div>
+                            )}
                           </Link>
-                          <p className="text-xs text-gray-600">{choice.tier}</p>
-                        </div>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {stack.detailsHtml && (
+              <div className="mt-8">
+                <div
+                  className="prose max-w-none"
+                  dangerouslySetInnerHTML={{ __html: stack.detailsHtml }}
+                />
               </div>
             )}
           </div>

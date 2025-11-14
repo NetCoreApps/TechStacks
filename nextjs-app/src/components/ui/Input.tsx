@@ -3,12 +3,19 @@ import { cn } from '@/lib/utils/cn';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
+  label?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = 'text', error, ...props }, ref) => {
+  ({ className, type = 'text', error, label, ...props }, ref) => {
     return (
       <div className="w-full">
+        {label && (
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            {label}
+            {props.required && <span className="text-red-500 ml-1">*</span>}
+          </label>
+        )}
         <input
           type={type}
           className={cn(

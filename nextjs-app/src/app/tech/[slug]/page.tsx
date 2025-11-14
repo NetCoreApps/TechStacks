@@ -102,16 +102,26 @@ export default function TechnologyDetailPage({
                 </a>
               )}
             </div>
-            <button
-              onClick={handleFavoriteToggle}
-              className={`px-4 py-2 rounded ${
-                isFavorite
-                  ? 'bg-yellow-500 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              {isFavorite ? '★ Favorited' : '☆ Favorite'}
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleFavoriteToggle}
+                className={`px-4 py-2 rounded ${
+                  isFavorite
+                    ? 'bg-yellow-500 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {isFavorite ? '★ Favorited' : '☆ Favorite'}
+              </button>
+              {isAuthenticated && (
+                <Link
+                  href={`/tech/${slug}/edit`}
+                  className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
+                >
+                  Edit
+                </Link>
+              )}
+            </div>
           </div>
 
           {tech.description && (
