@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "TechStacks Next.js 16 application",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "node server.js",
     "build": "next build",
