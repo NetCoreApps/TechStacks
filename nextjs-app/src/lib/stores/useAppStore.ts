@@ -93,8 +93,8 @@ export const useAppStore = create<AppState>()(
             config,
             overview,
             sessionInfo,
-            favoriteTechnologyIds: sessionInfo?.favoriteTechnologyIds || [],
-            favoriteTechStackIds: sessionInfo?.favoriteTechStackIds || [],
+            favoriteTechnologyIds: sessionInfo?.favoriteTechnologies?.map((t: any) => t.id) || [],
+            favoriteTechStackIds: sessionInfo?.favoriteTechStacks?.map((s: any) => s.id) || [],
             loading: false
           });
         } catch (error) {

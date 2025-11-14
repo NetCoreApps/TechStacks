@@ -13,11 +13,11 @@ const getBaseUrl = () => {
 export const client = new JsonServiceClient(getBaseUrl());
 
 // Configure global settings
-client.onAuthenticationRequired = () => {
-  // Redirect to login
-  if (typeof window !== 'undefined') {
-    window.location.href = '/login/github';
-  }
+// Note: We don't automatically redirect on auth required to avoid infinite loops
+// Components should handle authentication state and show login UI when needed
+client.onAuthenticationRequired = async () => {
+  // Don't automatically redirect - let the UI handle it
+  console.warn('Authentication required - user should log in');
 };
 
 // Export for convenience

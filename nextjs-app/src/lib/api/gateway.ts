@@ -39,8 +39,8 @@ export const login = async (
 
   const request = new dtos.Authenticate();
   request.provider = provider;
-  request.userName = userName;
-  request.password = password;
+  if (userName) request.userName = userName;
+  if (password) request.password = password;
 
   const response = await client.post(request);
 
@@ -57,7 +57,8 @@ export const logout = async () => {
   const request = new dtos.Authenticate();
   request.provider = 'logout';
   await client.post(request);
-  client.bearerToken = undefined;
+  delete (client as any).bearerToken;
+  client.headers.delete('Authorization');
 };
 
 // ============================================
@@ -234,7 +235,7 @@ export const favoritePost = async (id: number) => {
   await client.put(request);
 };
 
-export const reportPost = async (id: number, flagType: string, reportNotes: string) => {
+export const reportPost = async (id: number, flagType: dtos.FlagType, reportNotes: string) => {
   const request = new dtos.UserPostReport();
   request.id = id;
   request.flagType = flagType;
@@ -242,7 +243,7 @@ export const reportPost = async (id: number, flagType: string, reportNotes: stri
   await client.put(request);
 };
 
-export const actionPostReport = async (id: number, postId: number, reportAction: string) => {
+export const actionPostReport = async (id: number, postId: number, reportAction: dtos.ReportAction) => {
   const request = new dtos.ActionPostReport();
   request.id = id;
   request.postId = postId;
@@ -307,7 +308,7 @@ export const votePostComment = async (postId: number, commentId: number, weight:
 export const reportPostComment = async (
   postId: number,
   commentId: number,
-  flagType: string,
+  flagType: dtos.FlagType,
   reportNotes: string
 ) => {
   const request = new dtos.UserPostCommentReport();
@@ -322,7 +323,7 @@ export const actionPostCommentReport = async (
   id: number,
   postCommentId: number,
   postId: number,
-  reportAction: string
+  reportAction: dtos.ReportAction
 ) => {
   const request = new dtos.ActionPostCommentReport();
   request.id = id;
@@ -392,10 +393,10 @@ export const lockOrganization = async (id: number, lock: boolean, reason: string
   await client.put(request);
 };
 
-export const subscribeToOrganization = async (organizationId: number, postTypes?: string[]) => {
+export const subscribeToOrganization = async (organizationId: number, postTypes?: dtos.PostType[]) => {
   const request = new dtos.SubscribeToOrganization();
   request.organizationId = organizationId;
-  request.postTypes = postTypes;
+  if (postTypes) request.postTypes = postTypes;
   await client.put(request);
 };
 

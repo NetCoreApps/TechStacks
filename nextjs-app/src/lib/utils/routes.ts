@@ -24,8 +24,11 @@ export const routes = {
   // User routes
   user: (id: number) => `/users/${id}`,
 
-  // Auth
-  login: (provider: string = 'github') => `/login/${provider}`,
+  // Auth - use backend OAuth endpoints
+  authGitHub: () => '/auth/github',
+  authTwitter: () => '/auth/twitter',
+  login: () => '/Identity/Account/Login',
+  logout: () => '/Identity/Account/Logout',
 
   // Other
   favorites: () => '/favorites',
