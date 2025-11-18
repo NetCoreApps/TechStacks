@@ -12,6 +12,8 @@ coverage/
 node_modules
 .nuxt
 appsettings.Production.*
+Configure.secrets.cs
+appsettings.txt
 
 # User-specific files
 *.suo

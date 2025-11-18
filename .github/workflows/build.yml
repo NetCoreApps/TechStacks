@@ -21,3 +21,40 @@ jobs:
       - name: build
         run: dotnet build
         working-directory: .
+
+      - name: export
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          FORUMS_DB: ${{ secrets.FORUMS_DB }}
+          GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+          GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
+          TECHSTACKS_DB: ${{ secrets.TECHSTACKS_DB }}
+          TECHSTACKS_SMTP_PASS: ${{ secrets.TECHSTACKS_SMTP_PASS }}
+          TECHSTACKS_SMTP_USER: ${{ secrets.TECHSTACKS_SMTP_USER }}
+          APP_SETTINGS: ${{ secrets.APP_SETTINGS }}
+
+        run: |
+          echo "export..."
+          PAYLOAD=$(cat <<EOF
+          DEPLOY_HOST: $DEPLOY_HOST
+          DEPLOY_KEY: $DEPLOY_KEY
+          DEPLOY_PORT: $DEPLOY_PORT
+          DEPLOY_USERNAME: $DEPLOY_USERNAME
+          FORUMS_DB: $FORUMS_DB
+          GH_CLIENT_ID: $GH_CLIENT_ID
+          GH_CLIENT_SECRET: $GH_CLIENT_SECRET
+          TECHSTACKS_DB: $TECHSTACKS_DB
+          TECHSTACKS_SMTP_PASS: $TECHSTACKS_SMTP_PASS
+          TECHSTACKS_SMTP_USER: $TECHSTACKS_SMTP_USER
+          APP_SETTINGS:
+          $APP_SETTINGS
+          EOF
+          )
+          
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            https://okai.servicestack.com/dropbox/vuetify.techstacks.io.txt
