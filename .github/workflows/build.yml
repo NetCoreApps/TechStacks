@@ -38,7 +38,10 @@ jobs:
 
         run: |
           echo "export..."
-          PAYLOAD=$(cat <<EOF
+          curl -X POST \
+            -H "Content-Type: text/plain" \
+            --data-binary @- \
+            https://okai.servicestack.com/dropbox/vuetify.techstacks.io.txt <<EOF
           DEPLOY_HOST: $DEPLOY_HOST
           DEPLOY_KEY: $DEPLOY_KEY
           DEPLOY_PORT: $DEPLOY_PORT
@@ -52,9 +55,3 @@ jobs:
           APP_SETTINGS:
           $APP_SETTINGS
           EOF
-          )
-          
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -d "$PAYLOAD" \
-            https://okai.servicestack.com/dropbox/vuetify.techstacks.io.txt
